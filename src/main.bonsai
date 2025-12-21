@@ -32,53 +32,40 @@
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:DeviceBehaviorBoard.BehaviorBoard.bonsai">
-                          <CommandsSubjectName>Behavior1Commands</CommandsSubjectName>
-                          <PortName>COM3</PortName>
-                          <DumpRegisters>true</DumpRegisters>
-                          <Heartbeat>Enabled</Heartbeat>
-                          <EventsSubjectName>Behavior1Events</EventsSubjectName>
-                        </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:DeviceBehaviorBoard.BehaviorBoard.bonsai">
-                          <CommandsSubjectName>Behavior2Commands</CommandsSubjectName>
+                          <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
                           <PortName>COMx</PortName>
-                          <DumpRegisters>true</DumpRegisters>
+                          <DumpRegisters>false</DumpRegisters>
                           <Heartbeat>Enabled</Heartbeat>
-                          <EventsSubjectName>Behavior2Events</EventsSubjectName>
+                          <EventsSubjectName>BehaviorEvents</EventsSubjectName>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:DeviceBehaviorBoard.CameraTriggerController.bonsai">
                           <TriggerFrequency>30</TriggerFrequency>
-                          <BehaviorCommandsSubjectName>Behavior1Commands</BehaviorCommandsSubjectName>
-                          <BehaviorEventsSubjectName>Behavior1Events</BehaviorEventsSubjectName>
+                          <BehaviorCommandsSubjectName>BehaviorCommands</BehaviorCommandsSubjectName>
+                          <BehaviorEventsSubjectName>BehaviorEvents</BehaviorEventsSubjectName>
                           <CameraTriggerEventsSubjectName>CameraTriggerEvents</CameraTriggerEventsSubjectName>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:DeviceBehaviorBoard.PulseController.bonsai">
-                          <BehaviorCommandsSubjectName>Behavior1Commands</BehaviorCommandsSubjectName>
+                          <BehaviorCommandsSubjectName>BehaviorCommands</BehaviorCommandsSubjectName>
                           <OutputPulseEnable>DO1 DO2 DO3</OutputPulseEnable>
                           <PulseDO1>33</PulseDO1>
                           <PulseDO2>33</PulseDO2>
-                          <PulseDO3>1</PulseDO3>
-                          <BehaviorEventsSubjectName>Behavior1Events</BehaviorEventsSubjectName>
+                          <PulseDO3>33</PulseDO3>
+                          <BehaviorEventsSubjectName>BehaviorEvents</BehaviorEventsSubjectName>
                           <TriggerPulseSubjectName>TriggerValve</TriggerPulseSubjectName>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:DeviceBehaviorBoard.Timestamps.bonsai">
-                          <EventsSubjectName>Behavior1Events</EventsSubjectName>
-                          <CommandsSubjectName>Behavior1Commands</CommandsSubjectName>
+                          <EventsSubjectName>BehaviorEvents</EventsSubjectName>
+                          <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
                         </Expression>
-                        <Expression xsi:type="Annotation">
-                          <Name>Add to acquisiton package</Name>
-                          <Text><![CDATA[]]></Text>
-                        </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="C:\dev\ucl-open\acquisition\src\UclOpen.Devices\RunningWheel.bonsai">
-                          <CommandsSubjectName>Behavior1Commands</CommandsSubjectName>
-                          <EventsSubjectName>Behavior1Events</EventsSubjectName>
+                        <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:DeviceBehaviorBoard.RunningWheel.bonsai">
+                          <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
+                          <EventsSubjectName>BehaviorEvents</EventsSubjectName>
                           <CountsPerRev>4096</CountsPerRev>
-                          <WheelDiameter_mm>170</WheelDiameter_mm>
-                          <Name>WheelDistanceCm</Name>
+                          <WheelDiameterMm>170</WheelDiameterMm>
+                          <WheelDistanceSubjectName>WheelDistanceCm</WheelDistanceSubjectName>
                         </Expression>
                       </Nodes>
-                      <Edges>
-                        <Edge From="5" To="6" Label="Source1" />
-                      </Edges>
+                      <Edges />
                     </Workflow>
                   </Expression>
                   <Expression xsi:type="GroupWorkflow">
@@ -113,7 +100,16 @@
                     <Name>Cameras</Name>
                     <Workflow>
                       <Nodes>
-                        <Expression xsi:type="IncludeWorkflow" Path="C:\dev\ucl-open\acquisition\src\UclOpen.Devices\TriggeredCameraAcquisition.bonsai">
+                        <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:TriggeredSpinnaker.bonsai">
+                          <ExposureTime>19000</ExposureTime>
+                          <Gain>0</Gain>
+                          <Binning>1</Binning>
+                          <SerialNumber xsi:nil="true" />
+                          <ColorProcessing>Default</ColorProcessing>
+                          <CameraTriggerEventsSubjectName>CameraTriggerEvents</CameraTriggerEventsSubjectName>
+                          <FrameEventsSubjectName>FrameEvents</FrameEventsSubjectName>
+                        </Expression>
+                        <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:TriggeredSpinnaker.bonsai">
                           <ExposureTime>19000</ExposureTime>
                           <Gain>0</Gain>
                           <Binning>1</Binning>
@@ -122,7 +118,7 @@
                           <CameraTriggerEventsSubjectName>CameraTriggerEvents</CameraTriggerEventsSubjectName>
                           <FrameEventsSubjectName>FrameEvents1</FrameEventsSubjectName>
                         </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="C:\dev\ucl-open\acquisition\src\UclOpen.Devices\TriggeredCameraAcquisition.bonsai">
+                        <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:TriggeredSpinnaker.bonsai">
                           <ExposureTime>19000</ExposureTime>
                           <Gain>0</Gain>
                           <Binning>1</Binning>
@@ -130,15 +126,6 @@
                           <ColorProcessing>Default</ColorProcessing>
                           <CameraTriggerEventsSubjectName>CameraTriggerEvents</CameraTriggerEventsSubjectName>
                           <FrameEventsSubjectName>FrameEvents2</FrameEventsSubjectName>
-                        </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="C:\dev\ucl-open\acquisition\src\UclOpen.Devices\TriggeredCameraAcquisition.bonsai">
-                          <ExposureTime>19000</ExposureTime>
-                          <Gain>0</Gain>
-                          <Binning>1</Binning>
-                          <SerialNumber xsi:nil="true" />
-                          <ColorProcessing>Default</ColorProcessing>
-                          <CameraTriggerEventsSubjectName>CameraTriggerEvents</CameraTriggerEventsSubjectName>
-                          <FrameEventsSubjectName>FrameEvents3</FrameEventsSubjectName>
                         </Expression>
                       </Nodes>
                       <Edges />
