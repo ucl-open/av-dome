@@ -11,18 +11,18 @@ using System.Text;
 [WorkflowElementCategory(ElementCategory.Transform)]
 public class CreateStepperMessage
 {
-    public IObservable<byte[]> Process(IObservable<Tuple<byte, string>> source)
+    public IObservable<byte[]> Process(IObservable<Tuple<string, byte>> source)
     {
         return source.Select(value =>
         {
             // Convert string to byte array using ASCII encoding
-            byte[] stringBytes = Encoding.ASCII.GetBytes(value.Item2);
+            byte[] stringBytes = Encoding.ASCII.GetBytes(value.Item1);
     
             // Create result array with size = 1 + string byte length
             byte[] bytes = new byte[1 + stringBytes.Length];
     
             // Add the single byte at the beginning
-            bytes[0] = value.Item1;
+            bytes[0] = value.Item2;
     
             // Copy string bytes to the result array starting at index 1
             Array.Copy(stringBytes, 0, bytes, 1, stringBytes.Length);
