@@ -9,6 +9,86 @@ namespace AvDome
 {
     #pragma warning disable // Disable all warnings
 
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.7.2.0 (YamlDotNet v16.0.0.0)")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class ArducamOV9180 : Camera
+    {
+    
+        private double _triggerFrequency;
+    
+        private int _deviceIndex;
+    
+        public ArducamOV9180()
+        {
+            _triggerFrequency = 50D;
+            _deviceIndex = 0;
+        }
+    
+        protected ArducamOV9180(ArducamOV9180 other) : 
+                base(other)
+        {
+            _triggerFrequency = other._triggerFrequency;
+            _deviceIndex = other._deviceIndex;
+        }
+    
+        /// <summary>
+        /// The frequency at which the camera is triggered (in Hz).
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="triggerFrequency")]
+        [System.ComponentModel.DescriptionAttribute("The frequency at which the camera is triggered (in Hz).")]
+        public double TriggerFrequency
+        {
+            get
+            {
+                return _triggerFrequency;
+            }
+            set
+            {
+                _triggerFrequency = value;
+            }
+        }
+    
+        /// <summary>
+        /// The index of the device.
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="deviceIndex")]
+        [System.ComponentModel.DescriptionAttribute("The index of the device.")]
+        public int DeviceIndex
+        {
+            get
+            {
+                return _deviceIndex;
+            }
+            set
+            {
+                _deviceIndex = value;
+            }
+        }
+    
+        public System.IObservable<ArducamOV9180> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new ArducamOV9180(this)));
+        }
+    
+        public System.IObservable<ArducamOV9180> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new ArducamOV9180(this));
+        }
+    
+        protected override bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            if (base.PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(", ");
+            }
+            stringBuilder.Append("TriggerFrequency = " + _triggerFrequency + ", ");
+            stringBuilder.Append("DeviceIndex = " + _deviceIndex);
+            return true;
+        }
+    }
+
+
     /// <summary>
     /// Represents a base class for Arduino serial devices used in Bonsai workflows.
     /// </summary>
@@ -293,6 +373,57 @@ namespace AvDome
 
 
     /// <summary>
+    /// Configuration for the camera used by the CameraAcquisition workflow.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.7.2.0 (YamlDotNet v16.0.0.0)")]
+    [YamlDiscriminator("cameraType")]
+    [JsonInheritanceAttribute("Arducam", typeof(ArducamOV9180))]
+    [JsonInheritanceAttribute("Spinnaker", typeof(SpinnakerCamera))]
+    [System.ComponentModel.DescriptionAttribute("Configuration for the camera used by the CameraAcquisition workflow.")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class Camera
+    {
+    
+        public Camera()
+        {
+        }
+    
+        protected Camera(Camera other)
+        {
+        }
+    
+        public System.IObservable<Camera> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new Camera(this)));
+        }
+    
+        public System.IObservable<Camera> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new Camera(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            return false;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    /// <summary>
     /// Represents a CameraController Module for a BehaviourBoard device.
     ///Mirrors the externalized properties of the Bonsai workflow of the same name,
     ///excluding subject name properties.
@@ -380,9 +511,12 @@ namespace AvDome
     
         private UclOpenAvDomeRig _rig;
     
+        private UclOpenAvDomeTaskLogic _taskParameters;
+    
         public Experiment()
         {
             _rig = new UclOpenAvDomeRig();
+            _taskParameters = new UclOpenAvDomeTaskLogic();
         }
     
         protected Experiment(Experiment other)
@@ -391,6 +525,7 @@ namespace AvDome
             _commit = other._commit;
             _repositoryUrl = other._repositoryUrl;
             _rig = other._rig;
+            _taskParameters = other._taskParameters;
         }
     
         /// <summary>
@@ -458,6 +593,20 @@ namespace AvDome
             }
         }
     
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="taskParameters")]
+        public UclOpenAvDomeTaskLogic TaskParameters
+        {
+            get
+            {
+                return _taskParameters;
+            }
+            set
+            {
+                _taskParameters = value;
+            }
+        }
+    
         public System.IObservable<Experiment> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new Experiment(this)));
@@ -473,7 +622,8 @@ namespace AvDome
             stringBuilder.Append("Workflow = " + _workflow + ", ");
             stringBuilder.Append("Commit = " + _commit + ", ");
             stringBuilder.Append("RepositoryUrl = " + _repositoryUrl + ", ");
-            stringBuilder.Append("Rig = " + _rig);
+            stringBuilder.Append("Rig = " + _rig + ", ");
+            stringBuilder.Append("TaskParameters = " + _taskParameters);
             return true;
         }
     
@@ -1238,10 +1388,8 @@ namespace AvDome
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.7.2.0 (YamlDotNet v16.0.0.0)")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
-    public partial class SpinnakerCamera
+    public partial class SpinnakerCamera : Camera
     {
-    
-        private string _cameraType;
     
         private double _triggerFrequency;
     
@@ -1255,7 +1403,6 @@ namespace AvDome
     
         public SpinnakerCamera()
         {
-            _cameraType = "Spinnaker";
             _triggerFrequency = 50D;
             _exposureTime = 15000D;
             _serialNumber = "00000";
@@ -1263,31 +1410,14 @@ namespace AvDome
             _binning = 1;
         }
     
-        protected SpinnakerCamera(SpinnakerCamera other)
+        protected SpinnakerCamera(SpinnakerCamera other) : 
+                base(other)
         {
-            _cameraType = other._cameraType;
             _triggerFrequency = other._triggerFrequency;
             _exposureTime = other._exposureTime;
             _serialNumber = other._serialNumber;
             _gain = other._gain;
             _binning = other._binning;
-        }
-    
-        /// <summary>
-        /// Camera type discriminator for Spinnaker devices.
-        /// </summary>
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="cameraType")]
-        [System.ComponentModel.DescriptionAttribute("Camera type discriminator for Spinnaker devices.")]
-        public string CameraType
-        {
-            get
-            {
-                return _cameraType;
-            }
-            set
-            {
-                _cameraType = value;
-            }
         }
     
         /// <summary>
@@ -1385,28 +1515,18 @@ namespace AvDome
             return System.Reactive.Linq.Observable.Select(source, _ => new SpinnakerCamera(this));
         }
     
-        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        protected override bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
-            stringBuilder.Append("CameraType = " + _cameraType + ", ");
+            if (base.PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(", ");
+            }
             stringBuilder.Append("TriggerFrequency = " + _triggerFrequency + ", ");
             stringBuilder.Append("ExposureTime = " + _exposureTime + ", ");
             stringBuilder.Append("SerialNumber = " + _serialNumber + ", ");
             stringBuilder.Append("Gain = " + _gain + ", ");
             stringBuilder.Append("Binning = " + _binning);
             return true;
-        }
-    
-        public override string ToString()
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" { ");
-            if (PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append("}");
-            return stringBuilder.ToString();
         }
     }
 
@@ -1649,7 +1769,7 @@ namespace AvDome
     
         private System.Collections.Generic.Dictionary<string, LicketySplit> _licketySplits;
     
-        private System.Collections.Generic.Dictionary<string, SpinnakerCamera> _cameras;
+        private System.Collections.Generic.Dictionary<string, Camera> _cameras;
     
         private System.Collections.Generic.Dictionary<string, ArduinoDevice> _ledDriver;
     
@@ -1660,7 +1780,7 @@ namespace AvDome
             _version = "0.0.0-rc1";
             _behaviorBoards = new System.Collections.Generic.Dictionary<string, BehaviorBoard>();
             _licketySplits = new System.Collections.Generic.Dictionary<string, LicketySplit>();
-            _cameras = new System.Collections.Generic.Dictionary<string, SpinnakerCamera>();
+            _cameras = new System.Collections.Generic.Dictionary<string, Camera>();
             _ledDriver = new System.Collections.Generic.Dictionary<string, ArduinoDevice>();
             _lickSpoutStage = new System.Collections.Generic.Dictionary<string, LickSpoutStageDriver>();
         }
@@ -1689,11 +1809,11 @@ namespace AvDome
         }
     
         /// <summary>
-        /// Mapping from logical names to BehaviorBoard devices (e.g. 'main', 'aux').
+        /// Mapping from meaningful names to BehaviorBoard devices (e.g. 'main', 'aux').
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="behaviorBoards")]
-        [System.ComponentModel.DescriptionAttribute("Mapping from logical names to BehaviorBoard devices (e.g. \'main\', \'aux\').")]
+        [System.ComponentModel.DescriptionAttribute("Mapping from meaningful names to BehaviorBoard devices (e.g. \'main\', \'aux\').")]
         public System.Collections.Generic.Dictionary<string, BehaviorBoard> BehaviorBoards
         {
             get
@@ -1707,11 +1827,11 @@ namespace AvDome
         }
     
         /// <summary>
-        /// Mapping from logical names to LicketySplit devices
+        /// Mapping from meaningful names to LicketySplit devices
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="licketySplits")]
-        [System.ComponentModel.DescriptionAttribute("Mapping from logical names to LicketySplit devices")]
+        [System.ComponentModel.DescriptionAttribute("Mapping from meaningful names to LicketySplit devices")]
         public System.Collections.Generic.Dictionary<string, LicketySplit> LicketySplits
         {
             get
@@ -1725,12 +1845,12 @@ namespace AvDome
         }
     
         /// <summary>
-        /// Mapping from logical names to Spinnaker camera devices
+        /// Mapping from meaningful names to camera devices
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="cameras")]
-        [System.ComponentModel.DescriptionAttribute("Mapping from logical names to Spinnaker camera devices")]
-        public System.Collections.Generic.Dictionary<string, SpinnakerCamera> Cameras
+        [System.ComponentModel.DescriptionAttribute("Mapping from meaningful names to camera devices")]
+        public System.Collections.Generic.Dictionary<string, Camera> Cameras
         {
             get
             {
@@ -1743,11 +1863,11 @@ namespace AvDome
         }
     
         /// <summary>
-        /// Mapping from logical names to Arduino devices driving LEDs
+        /// Mapping from meaningful names to Arduino devices driving LEDs
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="ledDriver")]
-        [System.ComponentModel.DescriptionAttribute("Mapping from logical names to Arduino devices driving LEDs")]
+        [System.ComponentModel.DescriptionAttribute("Mapping from meaningful names to Arduino devices driving LEDs")]
         public System.Collections.Generic.Dictionary<string, ArduinoDevice> LedDriver
         {
             get
@@ -1761,12 +1881,12 @@ namespace AvDome
         }
     
         /// <summary>
-        /// Mapping from logical names to Arduino devices driving stepper motors controlling a lick spout stage
+        /// Mapping from meaningful names to Arduino devices driving stepper motors controlling a lick spout stage
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="lickSpoutStage")]
-        [System.ComponentModel.DescriptionAttribute("Mapping from logical names to Arduino devices driving stepper motors controlling " +
-            "a lick spout stage")]
+        [System.ComponentModel.DescriptionAttribute("Mapping from meaningful names to Arduino devices driving stepper motors controlli" +
+            "ng a lick spout stage")]
         public System.Collections.Generic.Dictionary<string, LickSpoutStageDriver> LickSpoutStage
         {
             get
@@ -1815,6 +1935,323 @@ namespace AvDome
     }
 
 
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.7.2.0 (YamlDotNet v16.0.0.0)")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class UclOpenAvDomeTaskLogic
+    {
+    
+        private string _version;
+    
+        private string _name;
+    
+        private UclOpenAvDomeTaskParameters _taskParameters;
+    
+        public UclOpenAvDomeTaskLogic()
+        {
+            _version = "0.0.0-rc1";
+            _name = "UclOpenAvDome";
+            _taskParameters = new UclOpenAvDomeTaskParameters();
+        }
+    
+        protected UclOpenAvDomeTaskLogic(UclOpenAvDomeTaskLogic other)
+        {
+            _version = other._version;
+            _name = other._name;
+            _taskParameters = other._taskParameters;
+        }
+    
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="version")]
+        public string Version
+        {
+            get
+            {
+                return _version;
+            }
+            set
+            {
+                _version = value;
+            }
+        }
+    
+        /// <summary>
+        /// Name of the task logic
+        /// </summary>
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="name")]
+        [System.ComponentModel.DescriptionAttribute("Name of the task logic")]
+        public string Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
+    
+        /// <summary>
+        /// Parameters of the task logic
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="taskParameters")]
+        [System.ComponentModel.DescriptionAttribute("Parameters of the task logic")]
+        public UclOpenAvDomeTaskParameters TaskParameters
+        {
+            get
+            {
+                return _taskParameters;
+            }
+            set
+            {
+                _taskParameters = value;
+            }
+        }
+    
+        public System.IObservable<UclOpenAvDomeTaskLogic> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new UclOpenAvDomeTaskLogic(this)));
+        }
+    
+        public System.IObservable<UclOpenAvDomeTaskLogic> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new UclOpenAvDomeTaskLogic(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("Version = " + _version + ", ");
+            stringBuilder.Append("Name = " + _name + ", ");
+            stringBuilder.Append("TaskParameters = " + _taskParameters);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.7.2.0 (YamlDotNet v16.0.0.0)")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class UclOpenAvDomeTaskParameters
+    {
+    
+        public UclOpenAvDomeTaskParameters()
+        {
+        }
+    
+        protected UclOpenAvDomeTaskParameters(UclOpenAvDomeTaskParameters other)
+        {
+        }
+    
+        public System.IObservable<UclOpenAvDomeTaskParameters> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new UclOpenAvDomeTaskParameters(this)));
+        }
+    
+        public System.IObservable<UclOpenAvDomeTaskParameters> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new UclOpenAvDomeTaskParameters(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            return false;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.9.0.0 (Newtonsoft.Json v13.0.0.0)")]
+    [System.AttributeUsage(System.AttributeTargets.Class | System.AttributeTargets.Interface, AllowMultiple = true)]
+    internal class JsonInheritanceAttribute : System.Attribute
+    {
+        public JsonInheritanceAttribute(string key, System.Type type)
+        {
+            Key = key;
+            Type = type;
+        }
+
+        public string Key { get; private set; }
+
+        public System.Type Type { get; private set; }
+    }
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.7.2.0 (YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DefaultPropertyAttribute("Type")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Combinator)]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ArducamOV9180>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpinnakerCamera>))]
+    public partial class MatchCamera : Bonsai.Expressions.SingleArgumentExpressionBuilder
+    {
+    
+        public Bonsai.Expressions.TypeMapping Type { get; set; }
+
+        public override System.Linq.Expressions.Expression Build(System.Collections.Generic.IEnumerable<System.Linq.Expressions.Expression> arguments)
+        {
+            var typeMapping = Type;
+            var returnType = typeMapping != null ? typeMapping.GetType().GetGenericArguments()[0] : typeof(Camera);
+            return System.Linq.Expressions.Expression.Call(
+                typeof(MatchCamera),
+                "Process",
+                new System.Type[] { returnType },
+                System.Linq.Enumerable.Single(arguments));
+        }
+
+    
+        private static System.IObservable<TResult> Process<TResult>(System.IObservable<Camera> source)
+            where TResult : Camera
+        {
+            return System.Reactive.Linq.Observable.Create<TResult>(observer =>
+            {
+                var sourceObserver = System.Reactive.Observer.Create<Camera>(
+                    value =>
+                    {
+                        var match = value as TResult;
+                        if (match != null) observer.OnNext(match);
+                    },
+                    observer.OnError,
+                    observer.OnCompleted);
+                return System.ObservableExtensions.SubscribeSafe(source, sourceObserver);
+            });
+        }
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.7.2.0 (YamlDotNet v16.0.0.0)")]
+    [System.AttributeUsageAttribute((System.AttributeTargets.Class | System.AttributeTargets.Interface))]
+    public class YamlDiscriminatorAttribute : System.Attribute
+    {
+    
+        public YamlDiscriminatorAttribute(string discriminator)
+        {
+            Discriminator = discriminator;
+        }
+
+        public string Discriminator { get; private set; }
+
+    }
+
+
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.7.2.0 (YamlDotNet v16.0.0.0)")]
+    public class YamlDiscriminatorTypeInspector : YamlDotNet.Serialization.TypeInspectors.ReflectionTypeInspector
+    {
+    
+        readonly YamlDotNet.Serialization.ITypeInspector innerTypeDescriptor;
+
+        public YamlDiscriminatorTypeInspector(YamlDotNet.Serialization.ITypeInspector innerTypeDescriptor)
+        {
+            if (innerTypeDescriptor == null)
+            {
+                throw new System.ArgumentNullException("innerTypeDescriptor");
+            }
+
+            this.innerTypeDescriptor = innerTypeDescriptor;
+        }
+
+        public override System.Collections.Generic.IEnumerable<YamlDotNet.Serialization.IPropertyDescriptor> GetProperties(System.Type type, object container)
+        {
+            var innerProperties = innerTypeDescriptor.GetProperties(type, container);
+
+            var discriminatorAttribute = (YamlDiscriminatorAttribute)System.Attribute.GetCustomAttribute(type, typeof(YamlDiscriminatorAttribute));
+            var inheritanceAttributes = (JsonInheritanceAttribute[])System.Attribute.GetCustomAttributes(type, typeof(JsonInheritanceAttribute));
+            var typeMatch = System.Array.Find(inheritanceAttributes, attribute => attribute.Type == type);
+            if (discriminatorAttribute != null && typeMatch != null)
+            {
+                return System.Linq.Enumerable.Concat(new[]
+                {
+                    new DiscriminatorPropertyDescriptor(discriminatorAttribute.Discriminator, typeMatch.Key)
+                }, innerProperties);
+            }
+
+            return innerProperties;
+        }
+
+        class DiscriminatorPropertyDescriptor : YamlDotNet.Serialization.IPropertyDescriptor
+        {
+            readonly string key;
+
+            public DiscriminatorPropertyDescriptor(string discriminator, string value)
+            {
+                ScalarStyle = YamlDotNet.Core.ScalarStyle.Plain;
+                Name = discriminator;
+                key = value;
+            }
+
+            public string Name { get; private set; }
+
+            public bool Required
+            {
+                get { return true; }
+            }
+
+            public bool CanWrite
+            {
+                get { return true; }
+            }
+
+            public System.Type Type
+            {
+                get { return typeof(string); }
+            }
+
+            public System.Type TypeOverride { get; set; }
+
+            public System.Type ConverterType
+            {
+                get { return null; }
+            }
+
+            public bool AllowNulls
+            {
+                get { return false; }
+            }
+
+            public int Order { get; set; }
+
+            public YamlDotNet.Core.ScalarStyle ScalarStyle { get; set; }
+
+            public T GetCustomAttribute<T>() where T : System.Attribute
+            {
+                return null;
+            }
+
+            public YamlDotNet.Serialization.IObjectDescriptor Read(object target)
+            {
+                return new YamlDotNet.Serialization.ObjectDescriptor(key, Type, Type, ScalarStyle);
+            }
+
+            public void Write(object target, object value)
+            {
+            }
+        }
+    }
+
+
     /// <summary>
     /// Serializes a sequence of data model objects into YAML strings.
     /// </summary>
@@ -1830,10 +2267,16 @@ namespace AvDome
             return System.Reactive.Linq.Observable.Defer(() =>
             {
                 var serializer = new YamlDotNet.Serialization.SerializerBuilder()
+                    .WithTypeInspector(inspector => new YamlDiscriminatorTypeInspector(inspector))
                       .WithTypeConverter(new YamlDotNet.Serialization.Converters.DateTimeOffsetConverter())
                       .Build();
                 return System.Reactive.Linq.Observable.Select(source, value => serializer.Serialize(value)); 
             });
+        }
+
+        public System.IObservable<string> Process(System.IObservable<ArducamOV9180> source)
+        {
+            return Process<ArducamOV9180>(source);
         }
 
         public System.IObservable<string> Process(System.IObservable<ArduinoDevice> source)
@@ -1844,6 +2287,11 @@ namespace AvDome
         public System.IObservable<string> Process(System.IObservable<BehaviorBoard> source)
         {
             return Process<BehaviorBoard>(source);
+        }
+
+        public System.IObservable<string> Process(System.IObservable<Camera> source)
+        {
+            return Process<Camera>(source);
         }
 
         public System.IObservable<string> Process(System.IObservable<CameraController> source)
@@ -1900,6 +2348,16 @@ namespace AvDome
         {
             return Process<UclOpenAvDomeRig>(source);
         }
+
+        public System.IObservable<string> Process(System.IObservable<UclOpenAvDomeTaskLogic> source)
+        {
+            return Process<UclOpenAvDomeTaskLogic>(source);
+        }
+
+        public System.IObservable<string> Process(System.IObservable<UclOpenAvDomeTaskParameters> source)
+        {
+            return Process<UclOpenAvDomeTaskParameters>(source);
+        }
     }
 
 
@@ -1910,8 +2368,10 @@ namespace AvDome
     [System.ComponentModel.DescriptionAttribute("Deserializes a sequence of YAML strings into data model objects.")]
     [System.ComponentModel.DefaultPropertyAttribute("Type")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ArducamOV9180>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ArduinoDevice>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BehaviorBoard>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Camera>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Experiment>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LickSpoutStageDriver>))]
@@ -1923,12 +2383,14 @@ namespace AvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpoutRigPosition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperPositions>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<UclOpenAvDomeRig>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<UclOpenAvDomeTaskLogic>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<UclOpenAvDomeTaskParameters>))]
     public partial class DeserializeFromYaml : Bonsai.Expressions.SingleArgumentExpressionBuilder
     {
     
         public DeserializeFromYaml()
         {
-            Type = new Bonsai.Expressions.TypeMapping<ArduinoDevice>();
+            Type = new Bonsai.Expressions.TypeMapping<ArducamOV9180>();
         }
 
         public Bonsai.Expressions.TypeMapping Type { get; set; }
@@ -1944,11 +2406,27 @@ namespace AvDome
                 System.Linq.Enumerable.Single(arguments));
         }
 
+        private static void AddTypeDiscriminator<T>(YamlDotNet.Serialization.BufferedDeserialization.ITypeDiscriminatingNodeDeserializerOptions o)
+        {
+            var baseType = typeof(T);
+            var discriminator = System.Reflection.CustomAttributeExtensions.GetCustomAttribute<YamlDiscriminatorAttribute>(baseType).Discriminator;
+            var typeMapping = System.Linq.Enumerable.ToDictionary(
+                System.Reflection.CustomAttributeExtensions.GetCustomAttributes<JsonInheritanceAttribute>(baseType),
+                attr => attr.Key,
+                attr => attr.Type);
+            o.AddKeyValueTypeDiscriminator<T>(discriminator, typeMapping);
+        }
+
         private static System.IObservable<T> Process<T>(System.IObservable<string> source)
         {
             return System.Reactive.Linq.Observable.Defer(() =>
             {
                 var serializer = new YamlDotNet.Serialization.DeserializerBuilder()
+                    .WithTypeInspector(inspector => new YamlDiscriminatorTypeInspector(inspector))
+                    .WithTypeDiscriminatingNodeDeserializer(o =>
+                    {
+                        AddTypeDiscriminator<Camera>(o);
+                    })
                       .WithTypeConverter(new YamlDotNet.Serialization.Converters.DateTimeOffsetConverter())
                       .Build();
                 return System.Reactive.Linq.Observable.Select(source, value =>

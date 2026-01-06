@@ -1,5 +1,32 @@
 {
   "$defs": {
+    "ArducamOV9180": {
+      "properties": {
+        "cameraType": {
+          "const": "Arducam",
+          "default": "Arducam",
+          "description": "Camera type discriminator for Arducam devices.",
+          "title": "CameraType",
+          "type": "string"
+        },
+        "triggerFrequency": {
+          "default": 50,
+          "description": "The frequency at which the camera is triggered (in Hz).",
+          "minimum": 1,
+          "title": "TriggerFrequency",
+          "type": "number"
+        },
+        "deviceIndex": {
+          "default": 0,
+          "description": "The index of the device.",
+          "minimum": 0,
+          "title": "DeviceIndex",
+          "type": "integer"
+        }
+      },
+      "title": "ArducamOV9180",
+      "type": "object"
+    },
     "ArduinoDevice": {
       "description": "Represents a base class for Arduino serial devices used in Bonsai workflows.",
       "properties": {
@@ -99,6 +126,25 @@
       "title": "BehaviorBoard",
       "type": "object"
     },
+    "Camera": {
+      "description": "Configuration for the camera used by the CameraAcquisition workflow.",
+      "discriminator": {
+        "mapping": {
+          "Arducam": "#/$defs/ArducamOV9180",
+          "Spinnaker": "#/$defs/SpinnakerCamera"
+        },
+        "propertyName": "cameraType"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ArducamOV9180"
+        },
+        {
+          "$ref": "#/$defs/SpinnakerCamera"
+        }
+      ],
+      "title": "Camera"
+    },
     "CameraController": {
       "description": "Represents a CameraController Module for a BehaviourBoard device.\nMirrors the externalized properties of the Bonsai workflow of the same name,\nexcluding subject name properties.",
       "properties": {
@@ -137,13 +183,18 @@
         "rig": {
           "$ref": "#/$defs/UclOpenAvDomeRig",
           "title": "Rig"
+        },
+        "taskParameters": {
+          "$ref": "#/$defs/UclOpenAvDomeTaskLogic",
+          "title": "TaskParameters"
         }
       },
       "required": [
         "workflow",
         "commit",
         "repositoryUrl",
-        "rig"
+        "rig",
+        "taskParameters"
       ],
       "title": "Experiment",
       "type": "object"
@@ -496,7 +547,7 @@
           "additionalProperties": {
             "$ref": "#/$defs/BehaviorBoard"
           },
-          "description": "Mapping from logical names to BehaviorBoard devices (e.g. 'main', 'aux').",
+          "description": "Mapping from meaningful names to BehaviorBoard devices (e.g. 'main', 'aux').",
           "title": "BehaviorBoards",
           "type": "object"
         },
@@ -504,15 +555,15 @@
           "additionalProperties": {
             "$ref": "#/$defs/LicketySplit"
           },
-          "description": "Mapping from logical names to LicketySplit devices",
+          "description": "Mapping from meaningful names to LicketySplit devices",
           "title": "LicketySplits",
           "type": "object"
         },
         "cameras": {
           "additionalProperties": {
-            "$ref": "#/$defs/SpinnakerCamera"
+            "$ref": "#/$defs/Camera"
           },
-          "description": "Mapping from logical names to Spinnaker camera devices",
+          "description": "Mapping from meaningful names to camera devices",
           "title": "Cameras",
           "type": "object"
         },
@@ -520,7 +571,7 @@
           "additionalProperties": {
             "$ref": "#/$defs/ArduinoDevice"
           },
-          "description": "Mapping from logical names to Arduino devices driving LEDs",
+          "description": "Mapping from meaningful names to Arduino devices driving LEDs",
           "title": "LedDriver",
           "type": "object"
         },
@@ -528,7 +579,7 @@
           "additionalProperties": {
             "$ref": "#/$defs/LickSpoutStageDriver"
           },
-          "description": "Mapping from logical names to Arduino devices driving stepper motors controlling a lick spout stage",
+          "description": "Mapping from meaningful names to Arduino devices driving stepper motors controlling a lick spout stage",
           "title": "LickSpoutStage",
           "type": "object"
         }
@@ -541,6 +592,38 @@
         "lickSpoutStage"
       ],
       "title": "UclOpenAvDomeRig",
+      "type": "object"
+    },
+    "UclOpenAvDomeTaskLogic": {
+      "properties": {
+        "version": {
+          "const": "0.0.0-rc1",
+          "default": "0.0.0-rc1",
+          "title": "Version",
+          "type": "string"
+        },
+        "name": {
+          "const": "UclOpenAvDome",
+          "default": "UclOpenAvDome",
+          "description": "Name of the task logic",
+          "title": "Name",
+          "type": "string"
+        },
+        "taskParameters": {
+          "$ref": "#/$defs/UclOpenAvDomeTaskParameters",
+          "description": "Parameters of the task logic",
+          "title": "TaskParameters"
+        }
+      },
+      "required": [
+        "taskParameters"
+      ],
+      "title": "UclOpenAvDomeTaskLogic",
+      "type": "object"
+    },
+    "UclOpenAvDomeTaskParameters": {
+      "properties": {},
+      "title": "UclOpenAvDomeTaskParameters",
       "type": "object"
     }
   },
