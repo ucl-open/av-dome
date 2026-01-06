@@ -14,7 +14,8 @@ Bonsai/Settings/
 *.bonsai.layout
 local
 .venv
-
+*.editor
+*.layout
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
