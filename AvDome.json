@@ -1,0 +1,549 @@
+{
+  "$defs": {
+    "ArduinoDevice": {
+      "description": "Represents a base class for Arduino serial devices used in Bonsai workflows.",
+      "properties": {
+        "deviceType": {
+          "const": "SerialDevice",
+          "default": "SerialDevice",
+          "title": "DeviceType",
+          "type": "string"
+        },
+        "portName": {
+          "description": "The name of the device serial port.",
+          "examples": [
+            "COMx"
+          ],
+          "title": "PortName",
+          "type": "string"
+        },
+        "baudRate": {
+          "default": 9600,
+          "description": "Baud rate for serial communication.",
+          "title": "BaudRate",
+          "type": "integer"
+        },
+        "samplingInterval": {
+          "description": "Sampling interval, in milliseconds, between analog and I2C measurements.",
+          "title": "SamplingInterval",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "portName",
+        "samplingInterval"
+      ],
+      "title": "ArduinoDevice",
+      "type": "object"
+    },
+    "BehaviorBoard": {
+      "description": "Represents a Harp Behavior Board device.",
+      "properties": {
+        "deviceType": {
+          "const": "HarpBehavior",
+          "default": "HarpBehavior",
+          "title": "DeviceType",
+          "type": "string"
+        },
+        "portName": {
+          "description": "The name of the device serial port.",
+          "examples": [
+            "COM"
+          ],
+          "title": "PortName",
+          "type": "string"
+        },
+        "pulseController": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PulseController"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional PulseController module for generating digital output pulses.",
+          "title": "PulseController"
+        },
+        "cameraController": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CameraController"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional CameraController module for emitting camera trigger pulses.",
+          "title": "CameraController"
+        },
+        "runningWheel": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RunningWheelModule"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional RunningWheelModule module to define wheel geometry.",
+          "title": "RunningWheel"
+        }
+      },
+      "required": [
+        "portName"
+      ],
+      "title": "BehaviorBoard",
+      "type": "object"
+    },
+    "CameraController": {
+      "description": "Represents a CameraController Module for a BehaviourBoard device.\nMirrors the externalized properties of the Bonsai workflow of the same name,\nexcluding subject name properties.",
+      "properties": {
+        "triggerFrequency": {
+          "description": "The frequency, in Hz, at which to emit camera triggers from DO0 of a behavior board (`CameraOutput0`)",
+          "examples": [
+            "50"
+          ],
+          "title": "TriggerFrequency",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "triggerFrequency"
+      ],
+      "title": "CameraController",
+      "type": "object"
+    },
+    "Experiment": {
+      "properties": {
+        "workflow": {
+          "description": "Path to the workflow running the experiment.",
+          "title": "Workflow",
+          "type": "string"
+        },
+        "commit": {
+          "description": "Commit hash of the experiment/rig repo.",
+          "title": "Commit",
+          "type": "string"
+        },
+        "repositoryUrl": {
+          "description": "The URL of the git repository used to version experiment source code.",
+          "title": "RepositoryUrl",
+          "type": "string"
+        },
+        "rig": {
+          "$ref": "#/$defs/UclOpenAvDomeRig",
+          "title": "Rig"
+        }
+      },
+      "required": [
+        "workflow",
+        "commit",
+        "repositoryUrl",
+        "rig"
+      ],
+      "title": "Experiment",
+      "type": "object"
+    },
+    "LickSpoutStageDriver": {
+      "description": "Represents an Arduino device driving stepper motors controlling a lick spout stage.",
+      "properties": {
+        "deviceType": {
+          "const": "LickSpoutStageDriver",
+          "default": "LickSpoutStageDriver",
+          "title": "DeviceType",
+          "type": "string"
+        },
+        "portName": {
+          "description": "The name of the device serial port.",
+          "examples": [
+            "COMx"
+          ],
+          "title": "PortName",
+          "type": "string"
+        },
+        "baudRate": {
+          "default": 9600,
+          "description": "Baud rate for serial communication.",
+          "title": "BaudRate",
+          "type": "integer"
+        },
+        "newLine": {
+          "default": "\r\n",
+          "description": "Line termination sequence used to delimit incoming messages.",
+          "title": "NewLine",
+          "type": "string"
+        },
+        "readBufferSize": {
+          "default": 4096,
+          "description": "Size, in bytes, of the read buffer.",
+          "title": "ReadBufferSize",
+          "type": "integer"
+        },
+        "writeBufferSize": {
+          "default": 2048,
+          "description": "Size, in bytes, of the write buffer.",
+          "title": "WriteBufferSize",
+          "type": "integer"
+        },
+        "byteMove": {
+          "default": 71,
+          "description": "Command byte for MOVE.",
+          "maximum": 255,
+          "minimum": 0,
+          "title": "ByteMove",
+          "type": "integer"
+        },
+        "byteSetSpeed": {
+          "default": 72,
+          "description": "Command byte for SET SPEED.",
+          "maximum": 255,
+          "minimum": 0,
+          "title": "ByteSetSpeed",
+          "type": "integer"
+        },
+        "byteSetAcceleration": {
+          "default": 73,
+          "description": "Command byte for SET ACCELERATION.",
+          "maximum": 255,
+          "minimum": 0,
+          "title": "ByteSetAcceleration",
+          "type": "integer"
+        },
+        "speed": {
+          "default": 300,
+          "description": "Default motor speed.",
+          "title": "Speed",
+          "type": "integer"
+        },
+        "accelMajor": {
+          "default": 20,
+          "description": "Major acceleration component.",
+          "title": "AccelMajor",
+          "type": "integer"
+        },
+        "accelMinor": {
+          "default": 2,
+          "description": "Minor acceleration component.",
+          "title": "AccelMinor",
+          "type": "integer"
+        },
+        "setPositions": {
+          "$ref": "#/$defs/SpoutRigPosition",
+          "title": "SetPositions"
+        }
+      },
+      "required": [
+        "portName",
+        "setPositions"
+      ],
+      "title": "LickSpoutStageDriver",
+      "type": "object"
+    },
+    "LicketySplit": {
+      "description": "Represents a Harp LicketySplit device.",
+      "properties": {
+        "deviceType": {
+          "const": "LicketySplit",
+          "default": "LicketySplit",
+          "title": "DeviceType",
+          "type": "string"
+        },
+        "portName": {
+          "description": "The name of the device serial port.",
+          "examples": [
+            "COM"
+          ],
+          "title": "PortName",
+          "type": "string"
+        },
+        "channel0TriggerThreshold": {
+          "default": 0,
+          "description": "ADC threshold above which Channel 0 triggers a lick",
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "Channel0TriggerThreshold",
+          "type": "integer"
+        },
+        "channel0UntriggerThreshold": {
+          "default": 0,
+          "description": "ADC threshold below which Channel 0 untriggers a lick",
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "Channel0UntriggerThreshold",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "portName"
+      ],
+      "title": "LicketySplit",
+      "type": "object"
+    },
+    "PulseController": {
+      "description": "Represents the PulseController module on the BehaviourBoard.\nMirrors the externalized properties of the Bonsai workflow of the same name,\nexcluding subject name properties.",
+      "properties": {
+        "outputPulseEnable": {
+          "description": "List of digital output lines that are enabled for pulse generation.",
+          "items": {
+            "type": "string"
+          },
+          "title": "OutputPulseEnable",
+          "type": "array"
+        },
+        "pulseWidths": {
+          "$ref": "#/$defs/PulseWidths",
+          "description": "Pulse width configuration for DO1, DO2, and DO3 lines."
+        }
+      },
+      "required": [
+        "pulseWidths"
+      ],
+      "title": "PulseController",
+      "type": "object"
+    },
+    "PulseWidths": {
+      "properties": {
+        "PulseDO1": {
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "PulseDo1",
+          "type": "integer"
+        },
+        "PulseDO2": {
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "PulseDo2",
+          "type": "integer"
+        },
+        "PulseDO3": {
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "PulseDo3",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "PulseDO1",
+        "PulseDO2",
+        "PulseDO3"
+      ],
+      "title": "PulseWidths",
+      "type": "object"
+    },
+    "RunningWheelModule": {
+      "description": "Represents the RunningWheel Bonsai workflow module.\nExposes wheel geometry parameters used to compute speed and distance from encoder counts.",
+      "properties": {
+        "countsPerRev": {
+          "description": "Number of encoder counts per full revolution of the running wheel.",
+          "title": "CountsPerRev",
+          "type": "integer"
+        },
+        "wheelDiameterMm": {
+          "description": "The diameter, in millimeters, of the running wheel.",
+          "title": "WheelDiameterMm",
+          "type": "number"
+        }
+      },
+      "required": [
+        "countsPerRev",
+        "wheelDiameterMm"
+      ],
+      "title": "RunningWheelModule",
+      "type": "object"
+    },
+    "SpinnakerCamera": {
+      "properties": {
+        "cameraType": {
+          "const": "Spinnaker",
+          "default": "Spinnaker",
+          "description": "Camera type discriminator for Spinnaker devices.",
+          "title": "CameraType",
+          "type": "string"
+        },
+        "triggerFrequency": {
+          "default": 50,
+          "description": "The frequency at which the camera is triggered (in Hz).",
+          "minimum": 1,
+          "title": "TriggerFrequency",
+          "type": "number"
+        },
+        "exposureTime": {
+          "default": 15000,
+          "description": "The exposure time for the camera (in microseconds).",
+          "minimum": 0,
+          "title": "ExposureTime",
+          "type": "number"
+        },
+        "serialNumber": {
+          "default": "00000",
+          "description": "The serial number of the camera.",
+          "title": "SerialNumber",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "gain": {
+          "default": 1,
+          "description": "The camera gain.",
+          "minimum": 0,
+          "title": "Gain",
+          "type": "number"
+        },
+        "binning": {
+          "default": 1,
+          "description": "The binning setting for the camera.",
+          "minimum": 1,
+          "title": "Binning",
+          "type": "integer"
+        }
+      },
+      "title": "SpinnakerCamera",
+      "type": "object"
+    },
+    "SpoutRigPosition": {
+      "description": "Dictionary of named absolute positions, e.g.:\n  home, both_in, both_out",
+      "properties": {
+        "positions": {
+          "additionalProperties": {
+            "$ref": "#/$defs/StepperPositions"
+          },
+          "description": "Named absolute positions of the lick spout stage stepper rig, keyed by a string identifier.",
+          "examples": [
+            {
+              "both_in": {
+                "base_transverse": 500,
+                "left_elevation": 1000,
+                "left_radial": 2000,
+                "right_elevation": 1000,
+                "right_radial": 2000
+              },
+              "both_out": {
+                "base_transverse": 500,
+                "left_elevation": 1000,
+                "left_radial": 1000,
+                "right_elevation": 1000,
+                "right_radial": 1000
+              },
+              "home": {
+                "base_transverse": 0,
+                "left_elevation": 0,
+                "left_radial": 0,
+                "right_elevation": 0,
+                "right_radial": 0
+              }
+            }
+          ],
+          "title": "Positions",
+          "type": "object"
+        }
+      },
+      "title": "SpoutRigPosition",
+      "type": "object"
+    },
+    "StepperPositions": {
+      "description": "Absolute target position for the 5-axis spout rig, expressed in task-relative axes.",
+      "properties": {
+        "leftElevation": {
+          "description": "Left spout elevation axis absolute position (steps). Maps to motor 1",
+          "title": "LeftElevation",
+          "type": "integer"
+        },
+        "rightElevation": {
+          "description": "Right spout elevation axis absolute position (steps). Maps to motor 2",
+          "title": "RightElevation",
+          "type": "integer"
+        },
+        "rightRadial": {
+          "description": "Right spout radial axis (in/out) absolute position (steps). Maps to motor 3",
+          "title": "RightRadial",
+          "type": "integer"
+        },
+        "leftRadial": {
+          "description": "Left spout radial axis (in/out) absolute position (steps). Maps to motor 4",
+          "title": "LeftRadial",
+          "type": "integer"
+        },
+        "baseTransverse": {
+          "description": "Base transverse axis absolute position (steps). Maps to motor 5",
+          "title": "BaseTransverse",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "leftElevation",
+        "rightElevation",
+        "rightRadial",
+        "leftRadial",
+        "baseTransverse"
+      ],
+      "title": "StepperPositions",
+      "type": "object"
+    },
+    "UclOpenAvDomeRig": {
+      "properties": {
+        "version": {
+          "const": "0.0.0-rc1",
+          "default": "0.0.0-rc1",
+          "title": "Version",
+          "type": "string"
+        },
+        "behaviorBoards": {
+          "additionalProperties": {
+            "$ref": "#/$defs/BehaviorBoard"
+          },
+          "description": "Mapping from logical names to BehaviorBoard devices (e.g. 'main', 'aux').",
+          "title": "BehaviorBoards",
+          "type": "object"
+        },
+        "licketySplits": {
+          "additionalProperties": {
+            "$ref": "#/$defs/LicketySplit"
+          },
+          "description": "Mapping from logical names to LicketySplit devices",
+          "title": "LicketySplits",
+          "type": "object"
+        },
+        "cameras": {
+          "additionalProperties": {
+            "$ref": "#/$defs/SpinnakerCamera"
+          },
+          "description": "Mapping from logical names to Spinnaker camera devices",
+          "title": "Cameras",
+          "type": "object"
+        },
+        "ledDriver": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ArduinoDevice"
+          },
+          "description": "Mapping from logical names to Arduino devices driving LEDs",
+          "title": "LedDriver",
+          "type": "object"
+        },
+        "lickSpoutStage": {
+          "additionalProperties": {
+            "$ref": "#/$defs/LickSpoutStageDriver"
+          },
+          "description": "Mapping from logical names to Arduino devices driving stepper motors controlling a lick spout stage",
+          "title": "LickSpoutStage",
+          "type": "object"
+        }
+      },
+      "required": [
+        "behaviorBoards",
+        "licketySplits",
+        "cameras",
+        "ledDriver",
+        "lickSpoutStage"
+      ],
+      "title": "UclOpenAvDomeRig",
+      "type": "object"
+    }
+  },
+  "title": "AvDome",
+  "type": "object"
+}
