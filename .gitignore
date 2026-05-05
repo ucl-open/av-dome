@@ -11,7 +11,8 @@ Bonsai/Settings/
 *.dll
 *.exe
 *.exe.settings
-*.bonsai.layout
+*.layout
+*.editor
 local
 .venv
 

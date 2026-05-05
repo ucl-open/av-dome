@@ -18,3 +18,13 @@ if (Test-Path -Path ./.venv) {
 .\.venv\Scripts\Activate.ps1
 Write-Output "Synchronizing environment..."
 &uv sync 
+
+if (-not (Test-Path -Path src\Extensions)) {
+    Write-Output "Creating bonsai extensions folder..."
+    New-Item -ItemType Directory -Path src\Extensions | Out-Null
+}
+
+if (-not (Test-Path -Path src\DataSchemas)) {
+    Write-Output "Creating sgen output folder..."
+    New-Item -ItemType Directory -Path src\DataSchemas | Out-Null
+}

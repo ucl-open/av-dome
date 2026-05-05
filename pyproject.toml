@@ -16,8 +16,8 @@ version = "0.0.0-rc1"
 readme = {file = "README.md", content-type = "text/markdown"}
 
 dependencies = [
-  "swc-aeon>=0.1.0",
-   "ucl-open-rigs",
+  "swc-aeon>=0.2.0",
+  "ucl-open",
   "pydantic-settings"
 ]
 
@@ -47,5 +47,5 @@ ignore-words-list = 'nd'
 required-version = '>=0.8.4'
 
 [tool.uv.sources]
-ucl-open-rigs = {git = "https://github.com/ucl-open/ucl_open_rigs/", branch = "test_build"}
-swc-aeon = { git = "https://github.com/SainsburyWellcomeCentre/aeon_api.git", branch = "pydantic-schema" }
+ucl-open = {git = "https://github.com/ucl-open/ucl-open", branch = "main"}
+swc-aeon = { git = "https://github.com/SainsburyWellcomeCentre/aeon_api.git", branch = "main" }

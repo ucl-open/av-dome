@@ -1,14 +1,11 @@
 from typing import Literal, Dict
 from pydantic import Field
 
-from swc.aeon.io import reader
 from ucl_open.rigs.base import BaseSchema
 import ucl_open.rigs.device as Device
 from ucl_open.rigs.video import SpinnakerCamera
 
 from ucl_open_av_dome import __semver__
-
-# class StepperMotor(Device.ArduinoDevice):
 
 
 class UclOpenAvDomeRig(BaseSchema):
