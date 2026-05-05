@@ -1,0 +1,58 @@
+# yaml-language-server: $schema=data-schema.json
+GratingsSpecifications:
+  duration: 1.5
+  contrast:
+    - 0
+    - 0.1
+    - 0.2
+    - 0.4
+    - 0.8
+  extentX: 1
+  extentY: 1
+  orientation: 1
+  spatialFrequency: 0.0666666667
+  temporalFrequency: 0
+  flickerFrequency: 8
+  azimuth:
+    - -60
+    - 60
+  elevation: 15
+  aperture: 1
+  opacity: 1
+  phase: 1
+  radius: 1
+  presentation: true
+AudioSpecifications:
+  duration: 1.5
+  azimuth:
+    - -60
+    - 0
+    - 60
+  elevation: 0
+  goCue: 0.1
+  presentation: true
+TrialStructure:
+  trialTypeRatios:
+    - 10
+    - 10
+    - 5
+    - 5
+    - 1
+  iti:
+    - 1.5
+    - 2.5
+  quiescent:
+    - 0.1
+    - 0.25
+  openLoop: 0.5
+  closedLoop: 1
+  incorrectDelay: 2
+  timeout: 2
+Optogenetics:
+  enabled: true
+  zapitConfigPath: "C:/path/to/your/zapit_config.yml"
+  stimProbability: 0.75  
+  stimDelay: 0.0  
+  stimDuration: 1.5  
+  excludeRepeats: true  
+  pseudorandomSelection: true  

@@ -1,0 +1,272 @@
+{
+  "$id": "AvTask",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "AvTask",
+  "description": "Describes audiovisual task configuration parameters",
+  "definitions": {
+    "GratingsSpecifications": {
+      "type": "object",
+      "properties": {
+        "duration": {
+          "type": "number",
+          "description": "Duration of the grating stimulus in seconds",
+          "default": 1.5
+        },
+        "contrast": {
+          "type": "array",
+          "items": { "type": "number" },
+          "default": [0, 0.1, 0.2, 0.4, 0.8],
+          "description": "Array of possible contrasts per trial"
+        },
+        "extentX": {
+          "type": "number",
+          "description": "Horizontal extent of the grating stimulus",
+          "default": 1
+        },
+        "extentY": {
+          "type": "number",
+          "description": "Vertical extent of the grating stimulus",
+          "default": 1
+        },
+        "orientation": {
+          "type": "number",
+          "description": "Orientation of the grating stimulus in degrees",
+          "default": 0
+        },
+        "spatialFrequency": {
+          "type": "number",
+          "description": "Spatial frequency of the grating (cycles/degree)",
+          "default": 0.0666666667
+        },
+        "temporalFrequency": {
+          "type": "number",
+          "description": "Temporal frequency of the grating (Hz)",
+          "default": 0
+        },
+        "flickerFrequency": {
+          "type": "number",
+          "description": "Frequency of the grating flicker (Hz)",
+          "default": 8
+        },
+        "azimuth": {
+          "type": "array",
+          "items": { "type": "number" },
+          "default": [-60, 60],
+          "description": "Array of azimuth values for stimulus presentation"
+        },
+        "elevation": {
+          "type": "number",
+          "description": "Elevation angle of stimulus presentation",
+          "default": 15
+        },
+        "aperture": {
+          "type": "number",
+          "description": "Aperture size of the stimulus",
+          "default": 1
+        },
+        "opacity": {
+          "type": "number",
+          "description": "Opacity of the stimulus (0 to 1)",
+          "default": 1
+        },
+        "phase": {
+          "type": "number",
+          "description": "Phase of the grating",
+          "default": 0
+        },
+        "radius": {
+          "type": "number",
+          "description": "Radius of the stimulus mask (norm.). 1: full size according to extent.",
+          "default": 1
+        },
+        "presentation": {
+          "type": "boolean",
+          "description": "Whether the stimulus is presented",
+          "default": true
+        }
+      },
+      "required": [
+        "duration",
+        "contrast",
+        "extentX",
+        "extentY",
+        "orientation",
+        "spatialFrequency",
+        "temporalFrequency",
+        "azimuth",
+        "elevation",
+        "aperture",
+        "opacity",
+        "phase",
+        "radius",
+        "presentation"
+      ]
+    },
+    "AudioSettings": {
+      "type": "object",
+      "properties": {
+        "duration": {
+          "type": "number",
+          "description": "Duration of the auditory stimulus in seconds",
+          "default": 1.5
+        },
+        "azimuth": {
+          "type": "array",
+          "items": { "type": "number" },
+          "default": [-60, 0, 60],
+          "description": "Azimuth angles for auditory stimulus"
+        },
+        "elevation": {
+          "type": "number",
+          "description": "Elevation angle for audio playback",
+          "default": 15
+        },
+        "goCue": {
+          "type": "number",
+          "description": "Duration of the auditory go cue (in seconds)",
+          "default": 0.1
+        },
+        "presentation": {
+          "type": "boolean",
+          "description": "Whether the auditory stimulus is presented",
+          "default": true
+        }
+      },
+      "required": [
+        "duration",
+        "azimuth",
+        "elevation",
+        "goCue",
+        "presentation"
+      ]
+    },
+    "TrialStructure": {
+      "type": "object",
+      "properties": {
+        "trialTypeRatios": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "minItems": 5,
+          "maxItems": 5,
+          "description": "ratios of [visual, auditory, multi. coherent, multi. conflict, neutral] trials. Default based on Coen 2023: [10, 10, 5, 5, 1]",
+          "default": [10, 10, 5, 5, 1]
+        },
+        "iti": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "Min and max intertrial interval (seconds)",
+          "default": [1.5, 2.5]
+        },
+        "quiescent": {
+          "type": "array",
+          "items": { "type": "number" },
+          "minItems": 1,
+          "maxItems": 2,
+          "description": "Min and optional max duration of quiescence (seconds)",
+          "default": [0.1, 0.25]
+        },
+        "openLoop": {
+          "type": "number",
+          "description": "Duration of open-loop period (seconds)",
+          "default": 0.5
+        },
+        "closedLoop": {
+          "type": "number",
+          "description": "Duration of closed-loop period (seconds)",
+          "default": 1
+        },
+        "incorrectDelay": {
+          "type": "number",
+          "description": "Delay duration following incorrect responses (seconds)",
+          "default": 2
+        },
+        "timeout": {
+          "type": "number",
+          "description": "Delay duration following no response (seconds)",
+          "default": 2
+        }
+      },
+      "required": [
+        "iti",
+        "quiescent",
+        "openLoop",
+        "closedLoop",
+        "incorrectDelay",
+        "timeout"
+      ]
+    },
+    "OptogeneticsSettings": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether optogenetic stimulation is enabled",
+          "default": false
+        },
+        "zapitConfigPath": {
+          "type": "string",
+          "description": "Path to the Zapit YAML configuration file",
+          "default": ""
+        },
+        "stimProbability": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Probability of trials receiving optogenetic stimulation (75% in the reference methodology)",
+          "default": 0.75
+        },
+        "stimDelay": {
+          "type": "number",
+          "description": "Delay after visual stimulus onset before optogenetic stimulation (seconds)",
+          "default": 0.0
+        },
+        "stimDuration": {
+          "type": "number",
+          "description": "Duration of optogenetic stimulation (seconds) - covers full response window",
+          "default": 1.5
+        },
+        "excludeRepeats": {
+          "type": "boolean",
+          "description": "Whether to exclude optogenetic stimulation on trial repetitions due to incorrect choices or timeouts",
+          "default": true
+        },
+        "pseudorandomSelection": {
+          "type": "boolean",
+          "description": "Use pseudorandom condition selection to ensure even distribution across cortical sites",
+          "default": true
+        }
+      },
+      "required": [
+        "enabled",
+        "zapitConfigPath",
+        "stimProbability",
+        "stimDelay",
+        "stimDuration",
+        "excludeRepeats",
+        "pseudorandomSelection"
+      ]
+    }
+  },
+  "properties": {
+    "GratingsSpecifications": {
+      "$ref": "#/definitions/GratingsSpecifications"
+    },
+    "AudioSpecifications": {
+      "$ref": "#/definitions/AudioSettings"
+    },
+    "TrialStructure": {
+      "$ref": "#/definitions/TrialStructure"
+    },
+    "Optogenetics": {
+      "$ref": "#/definitions/OptogeneticsSettings"
+    }
+  },
+  "required": [
+    "GratingsSpecifications",
+    "AudioSpecifications",
+    "TrialStructure",
+    "Optogenetics"
+  ]
+}
