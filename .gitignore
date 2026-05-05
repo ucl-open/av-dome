@@ -3,9 +3,7 @@
 .vscode
 bin
 obj
-Packages
-Bonsai.exe.WebView2
-Bonsai/Settings/
+.bonsai/
 *.bin
 *.avi
 *.dll
@@ -13,6 +11,9 @@ Bonsai/Settings/
 *.exe.settings
 *.layout
 *.editor
+!.bonsai/Bonsai.config
+!.bonsai/NuGet.config
+
 local
 .venv
 
