@@ -3,7 +3,6 @@
 .vscode
 bin
 obj
-.bonsai/
 *.bin
 *.avi
 *.dll
@@ -11,10 +10,10 @@ obj
 *.exe.settings
 *.layout
 *.editor
+.bonsai/**
 !.bonsai/Bonsai.config
 !.bonsai/NuGet.config
 
-local
 .venv
 
 
