@@ -130,7 +130,9 @@ public class TrialTypeInitialise
         switch (lastTrialData.trialType)
         {
             case 0: // Unisensory Visual
+                return false;
             case 1: // Unisensory Audio  
+                return false;
             case 2: // Multisensory Coherent
                 // Repeat if incorrect OR timeout
                 return !WasCorrect || WasTimeout;
@@ -150,31 +152,6 @@ public class TrialTypeInitialise
     
     private TrialData CloneTrial(TrialData original)
     {
-        // return new TrialData
-        // {
-        //     ITI = original.ITI,
-        //     Quiescent = original.Quiescent,
-        //     visualAzimuth = original.visualAzimuth,
-        //     visualContrast = original.visualContrast,
-        //     visualExtentX = original.visualExtentX,
-        //     visualExtentY = original.visualExtentY,
-        //     isVisualActive = original.isVisualActive,
-        //     audioAzimuth = original.audioAzimuth,
-        //     audioElevation = original.audioElevation,
-        //     isAudioActive = original.isAudioActive,
-        //     trialType = original.trialType,
-        //     IsRepeat = true,
-        //     RepeatCount = currentRepeatCount + 1,
-        //     RewardProbability = original.RewardProbability,
-        //     IsRewarded = original.IsRewarded, 
-        //     targetSide = original.targetSide,
-        //     OptogeneticCondition = original.OptogeneticCondition,
-        //     OptogeneticDelay = original.OptogeneticDelay,
-        //     OptogeneticDuration = original.OptogeneticDuration,
-        //     OptogeneticPower = original.OptogeneticPower,
-        //     OptogeneticEnabled = original.OptogeneticEnabled
-            
-        // };
         return original;
     }
     
@@ -206,8 +183,8 @@ public class TrialTypeInitialise
             value.TrialStructure.Quiescent != null &&
             value.TrialStructure.Quiescent.Count >= 2)
         {
-            trialData.Quiescent = value.TrialStructure.Quiescent[0] + 
-                (trialRand.NextDouble() * (value.TrialStructure.Quiescent[1] - value.TrialStructure.Quiescent[0]));
+            // trialData.Quiescent = value.TrialStructure.Quiescent[0] + 
+            //     (trialRand.NextDouble() * (value.TrialStructure.Quiescent[1] - value.TrialStructure.Quiescent[0]));
         }
 
         // Determine the trial type (set to above 4 if you want the random number)
@@ -233,7 +210,11 @@ public class TrialTypeInitialise
                 SetupNeutralTrial(trialData, value, trialRand);
                 break;
         }
+
+        // easier to define random phase of grating here once:
+        trialData.visualPhase = 2 * Math.PI * trialRand.NextDouble();
         
+        // General Trial Settings
         trialData.trialType = selectedTrialType;
         trialData.IsRepeat = false;
         trialData.RepeatCount = 0;
@@ -468,21 +449,21 @@ private int GetPseudorandomCondition(Random rand)
             trial.targetSide = rand.NextDouble() >= 0.5 ? trial.targetSide = "Right" : trial.targetSide = "Left";
         }
 
-        // Set other visual parameters
-        if (spec.GratingsSpecifications != null)
-        {
-            trial.visualExtentX = spec.GratingsSpecifications.ExtentX;
-            trial.visualExtentY = spec.GratingsSpecifications.ExtentY;
-        }
+        // // Set other visual parameters
+        // if (spec.GratingsSpecifications != null)
+        // {
+        //     trial.visualExtentX = spec.GratingsSpecifications.ExtentX;
+        //     trial.visualExtentY = spec.GratingsSpecifications.ExtentY;
+        // }
 
         // Set auditory stimulus to center (0°)
         trial.audioAzimuth = 0;
-        trial.audioElevation = 0;
+        // trial.audioElevation = 0;
         // trial.audioLocationX = 0; // Sin(0°) = 0
         // trial.audioSpeakerID = GetClosestSpeaker(trial.audioAzimuth, trial.audioElevation);
 
-        trial.isVisualActive = true;
-        trial.isAudioActive = true;
+        // trial.isVisualActive = true;
+        // trial.isAudioActive = true;
 
         trial.RewardProbability = 1;
         trial.IsRewarded = true;
@@ -497,11 +478,11 @@ private int GetPseudorandomCondition(Random rand)
         trial.visualContrast = 0;
 
         // Set other visual parameters
-        if (spec.GratingsSpecifications != null)
-        {
-            trial.visualExtentX = spec.GratingsSpecifications.ExtentX;
-            trial.visualExtentY = spec.GratingsSpecifications.ExtentY;
-        }
+        // if (spec.GratingsSpecifications != null)
+        // {
+        //     trial.visualExtentX = spec.GratingsSpecifications.ExtentX;
+        //     trial.visualExtentY = spec.GratingsSpecifications.ExtentY;
+        // }
 
         // Set auditory azimuth (-60°, 0°, or +60°)
         if (spec.AudioSpecifications != null &&
@@ -513,7 +494,7 @@ private int GetPseudorandomCondition(Random rand)
         }
 
         // Set audio elevation from AudioSpecifications
-        trial.audioElevation = (spec.AudioSpecifications != null) ? spec.AudioSpecifications.Elevation : 0;
+        // trial.audioElevation = (spec.AudioSpecifications != null) ? spec.AudioSpecifications.Elevation : 0;
 
         // // Calculate auditory locationX from azimuth
         // trial.audioLocationX = Math.Sin(trial.audioAzimuth * Math.PI / 180.0);
@@ -540,8 +521,8 @@ private int GetPseudorandomCondition(Random rand)
         // trial.visualLocationX = 0;
         trial.visualAzimuth = 0;
 
-        trial.isVisualActive = true;
-        trial.isAudioActive = true;
+        // trial.isVisualActive = true;
+        // trial.isAudioActive = true;
         
         trial.RewardProbability = 1; 
         trial.IsRewarded = true;
@@ -614,8 +595,8 @@ private int GetPseudorandomCondition(Random rand)
                 }
             }
 
-            trial.visualExtentX = spec.GratingsSpecifications.ExtentX;
-            trial.visualExtentY = spec.GratingsSpecifications.ExtentY;
+            // trial.visualExtentX = spec.GratingsSpecifications.ExtentX;
+            // trial.visualExtentY = spec.GratingsSpecifications.ExtentY;
         }
 
         // Set audio parameters
@@ -648,8 +629,8 @@ private int GetPseudorandomCondition(Random rand)
                 trial.audioAzimuth = isRightSide ? 60.0 : -60.0;
             }
 
-            // Set audio elevation from AudioSpecifications
-            trial.audioElevation = (spec.AudioSpecifications != null) ? spec.AudioSpecifications.Elevation : 0;
+            // // Set audio elevation from AudioSpecifications
+            // trial.audioElevation = (spec.AudioSpecifications != null) ? spec.AudioSpecifications.Elevation : 0;
         }
 
         // // Calculate locations from azimuth
@@ -659,8 +640,8 @@ private int GetPseudorandomCondition(Random rand)
         // // Get the speaker ID for this azimuth/elevation combination
         // trial.audioSpeakerID = GetClosestSpeaker(trial.audioAzimuth, trial.audioElevation);
 
-        trial.isVisualActive = true;
-        trial.isAudioActive = true;
+        // trial.isVisualActive = true;
+        // trial.isAudioActive = true;
         
         trial.RewardProbability = 1;
         trial.IsRewarded = true;
@@ -726,8 +707,8 @@ private int GetPseudorandomCondition(Random rand)
                 }
             }
 
-            trial.visualExtentX = spec.GratingsSpecifications.ExtentX;
-            trial.visualExtentY = spec.GratingsSpecifications.ExtentY;
+            // trial.visualExtentX = spec.GratingsSpecifications.ExtentX;
+            // trial.visualExtentY = spec.GratingsSpecifications.ExtentY;
         }
 
         // Set audio parameters on the opposite side
@@ -761,7 +742,7 @@ private int GetPseudorandomCondition(Random rand)
             }
 
             // Set audio elevation (default to 0° if not specified)
-            trial.audioElevation = 0;
+            // trial.audioElevation = 0;
         }
 
         // // Calculate locations from azimuth
@@ -771,8 +752,8 @@ private int GetPseudorandomCondition(Random rand)
         // // Get the speaker ID for this azimuth/elevation combination
         // trial.audioSpeakerID = GetClosestSpeaker(trial.audioAzimuth, trial.audioElevation);
 
-        trial.isVisualActive = true;
-        trial.isAudioActive = true;
+        // trial.isVisualActive = true;
+        // trial.isAudioActive = true;
 
         trial.RewardProbability = 0.5; 
         trial.IsRewarded = rand.NextDouble() < 0.5;
@@ -786,74 +767,65 @@ private int GetPseudorandomCondition(Random rand)
         // trial.targetSide = "Both";
         trial.targetSide = rand.NextDouble() >= 0.5 ? trial.targetSide = "Right" : trial.targetSide = "Left";
 
+        // Set visual position to center (irrelevant for gray screen)
+        trial.visualAzimuth = 0;
         // Set visual contrast to zero
         trial.visualContrast = 0;
 
-        // Set other visual parameters
-        if (spec.GratingsSpecifications != null)
-        {
-            trial.visualExtentX = spec.GratingsSpecifications.ExtentX;
-            trial.visualExtentY = spec.GratingsSpecifications.ExtentY;
-        }
-
         // Set auditory stimulus to center (0°)
         trial.audioAzimuth = 0;
-        trial.audioElevation = 0;
-        // trial.audioLocationX = 0; // Sin(0°) = 0
+        // trial.audioElevation = 15;
 
         // // Get the speaker ID for center position
         // trial.audioSpeakerID = GetClosestSpeaker(trial.audioAzimuth, trial.audioElevation);
 
-        // Set visual position to center (irrelevant for gray screen)
-        // trial.visualLocationX = 0;
-        trial.visualAzimuth = 0;
-
-        trial.isVisualActive = true;
-        trial.isAudioActive = true;
+        // trial.isVisualActive = true;
+        // trial.isAudioActive = true;
         
-        trial.RewardProbability = 0.5; // Default reward probability for conflict trials
-        trial.IsRewarded = rand.NextDouble() < 0.5;
+        // trial.RewardProbability = 0.5; // Default reward probability for conflict trials
+        // trial.IsRewarded = rand.NextDouble() < 0.5;
+        
+        // Check this again, but the 50% should come from the random targetSide, no additional random, right?!
+        trial.RewardProbability = 1.0; // Default reward probability for conflict trials
+        trial.IsRewarded = true;
     }
 }
 
 public class TrialData
 {
-    public double ITI;
-    public double Quiescent;
-
-    // public double visualLocationX;
-    public double visualAzimuth;
-    public double visualContrast;
-    public double visualExtentX;
-    public double visualExtentY;
-    public bool isVisualActive;
-
-    // public double audioLocationX;
-    public double audioAzimuth;
-    public double audioElevation;
-    // public int audioSpeakerID;
-    public bool isAudioActive;
-
+    // TrialStructure
     public int trialType;
-
     public double RewardProbability;
-
     public bool IsRewarded;
-
     // Trial repetition tracking
     public bool IsRepeat;
     public int RepeatCount;
-
     public string targetSide;
-    // public double X { get { return visualLocationX; } }
-    public double Y { get { return 0; } }
-    public double Orientation { get { return visualAzimuth; } }
-    public double SpatialFrequency { get { return 0.1; } }
-    public double TemporalFrequency { get { return 0; } }
-    public double Contrast { get { return visualContrast; } }
-    public double Diameter { get { return visualExtentX; } }
-    public string Id { get { return Guid.NewGuid().ToString(); } }
+    public double ITI;
+    public double openLoopDuration { get { return 0.5; } }
+    public double closedLoopDuration { get { return 1.0; } }
+
+    // VisualStimulus
+    public double visualAzimuth;
+    public double visualElevation { get { return 15; } }
+    public double visualGaussianWindowSigma { get { return 15; } }  // in deg
+    public double visualContrast;
+    public double visualOrientation { get { return 0; } }
+    public double visualSpatialFrequency { get { return 0.066666667; } }
+    public double visualTemporalFrequency { get { return 0; } }
+    public double visualFlickerFrequency { get { return 8; } }  // in Hz
+    public double visualPhase;
     
+    // public bool isVisualActive;
+
+    // AuditoryStimulus
+    public double audioAzimuth;
+    public double audioElevation { get { return 15; } }
+    public double audioFlickerFrequency { get { return 8; } }  // in Hz
+    // public int audioSpeakerID;
+    // public bool isAudioActive;
+    
+    // Optogenetics
     public bool OptogeneticEnabled;
     public int OptogeneticCondition;
     public double OptogeneticDelay;
