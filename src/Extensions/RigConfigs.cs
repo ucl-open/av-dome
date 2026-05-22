@@ -4,17 +4,28 @@ using System.ComponentModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Collections;
 
 [Combinator]
 [Description("")]
 [WorkflowElementCategory(ElementCategory.Transform)]
 public class RigConfigs
 {
+    public String MachineName = System.Environment.MachineName;  // This fetches the current Rig PCs name to fetch calibrations. Ensure these names are correct and unique!
+
     public IObservable<RigSpecificConfigs> Process(IObservable<String> source)
     {
         return source.Select(value =>
         {
-            return GreenDome2configs();
+            switch (MachineName)
+            {
+                case "GREEN-DOME-2":
+                    return GreenDome2configs();
+                case "BLUE-OPTO-2":
+                    return BlueOpto2configs();
+                default:
+                    throw new ArgumentException("Invalide System Name for RigConfig!");
+            }
         });
     }
 
@@ -39,6 +50,33 @@ public class RigConfigs
         // Valve Calibration
         currentRigConfigs.ValveOpenTimeLeft = 30;  // in ms. ~10ms min.
         currentRigConfigs.ValveOpenTimeRight = 30;  // in ms. ~10ms min.
+
+        // MeshMapping for Visual Stimuli
+        currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
+
+        return currentRigConfigs;
+    }
+
+    private RigSpecificConfigs BlueOpto2configs()
+    {
+        RigSpecificConfigs currentRigConfigs = new RigSpecificConfigs();
+
+        // COM ports
+        currentRigConfigs.COMPortBehaviourBoard = "COM11";
+        currentRigConfigs.COMPortStepperDriver1 = "COM14";  // Motors 1,2,3
+        currentRigConfigs.COMPortStepperDriver2 = "COM12";  // Motors 4,5
+        currentRigConfigs.COMPortTimestampGenerator = "COM16";
+        currentRigConfigs.COMPortLicketySplitLeft = "COM15";
+        currentRigConfigs.COMPortLicketySplitRight = "COM13";
+        
+        // Cameras
+        currentRigConfigs.SerialNumberCamera1 = "25366326";  // Face
+        currentRigConfigs.SerialNumberCamera2 = "25366328";  // Pupil
+        currentRigConfigs.SerialNumberCamera3 = "25366318";  // Body
+
+        // Valve Calibration
+        currentRigConfigs.ValveOpenTimeLeft = 15;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 130;  // in ms. ~10ms min.
 
         // MeshMapping for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
