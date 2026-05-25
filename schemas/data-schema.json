@@ -21,12 +21,12 @@
         "extentX": {
           "type": "number",
           "description": "Horizontal extent of the grating stimulus",
-          "default": 1
+          "default": 100
         },
         "extentY": {
           "type": "number",
           "description": "Vertical extent of the grating stimulus",
-          "default": 1
+          "default": 100
         },
         "orientation": {
           "type": "number",
