@@ -17,17 +17,19 @@ public class TrialTypeInitialise
 {
     public int Seed { get; set; }
     [Description("Set to -1 to use the weighted random selection (recommended). Or force specific trial: 0=UnisensoryVisual, 1=UnisensoryAudio, 2=Multisensory (coherent), 3=Multisensory (conflict), 4=Neutral")]
+    public int trainingStageId { get; set; }  // This is set by bonsai over the GUI.
     public int TrialType { get; set; }
     
     // Response handling properties
-    [Description("Last response from subject: -1 (Left), 1 (Right), 0 (Timeout/No response)")]
-    public float LastResponse { get; set; }
+    // Currently unused:
+    // [Description("Last response from subject: -1 (Left), 1 (Right), 0 (Timeout/No response)")]
+    // public float LastResponse { get; set; }
     
-    [Description("Whether the last trial ended in a timeout")]
-    public bool WasTimeout { get; set; }
-    
-    [Description("Whether the last response was correct")]
+    [Description("Whether the last response was correct. This is used to determine if a trial should be repeated.")]
     public bool WasCorrect { get; set; }
+
+    [Description("Whether the last trial ended in a timeout. This is used to determine if a trial should be repeated.")]
+    public bool WasTimeout { get; set; }
 
     // Speaker calibration data
     private static readonly Dictionary<string, int> SpeakerCalibration = new Dictionary<string, int>
@@ -67,8 +69,10 @@ public class TrialTypeInitialise
     };
 
     // We'll create a new Random instance for each trial
+    
     private List<int> trialWeights;
-    private int totalWeight;
+    public float autoRewardProbability;  // probability of automatically rewarding the trial (for early training stages)
+    public float RewardSizeInUl;  // Size of rewards in ul.
     
     // Track if we need to shuffle the trial order for true randomization
     private List<int> shuffledTrialSequence;
@@ -89,8 +93,8 @@ public class TrialTypeInitialise
     {
         // Set up the weighted distribution
         // Ratio of 10/10/5/5/1 for trial types 0,1,2,3,4
-        List<int> trialWeights = new List<int> { 10, 10, 5, 5, 1 };
-        int totalWeight = trialWeights.Sum();
+        // List<int> trialWeights = new List<int> { 10, 10, 5, 5, 1 };
+        // int totalWeight = trialWeights.Sum();
 
         return source.Select(value =>
         {
@@ -103,7 +107,7 @@ public class TrialTypeInitialise
                 var repeatTrial = CloneTrial(lastTrialData);
                 repeatTrial.IsRepeat = true;
                 repeatTrial.RepeatCount = currentRepeatCount;
-                return repeatTrial;
+                return repeatTrial;  // Note no optogenetics in repeat trials!
             }
 
             if (value.Optogenetics != null && value.Optogenetics.Enabled)
@@ -114,7 +118,14 @@ public class TrialTypeInitialise
             // Generate new trial
             currentRepeatCount = 0;
             isFirstTrial = false;
+
+            // Depending on training stage, different trialsTypes are presented and autoRewards enabled/disabled. Changes made here, affect GenerateNewTrial()
+            ApplyTrainingStageRules();
+
+            // Determine settings for the upcoming trials
             var newTrial = GenerateNewTrial(value);
+
+            // Keep a records of the last trial for trial cloning.
             lastTrialData = newTrial;
             return newTrial;
         });
@@ -130,17 +141,17 @@ public class TrialTypeInitialise
         switch (lastTrialData.trialType)
         {
             case 0: // Unisensory Visual
-                return false;
+                // Repeat if incorrect OR timeout
+                return !WasCorrect || WasTimeout;
             case 1: // Unisensory Audio  
-                return false;
+                // Repeat if incorrect OR timeout
+                return !WasCorrect || WasTimeout;
             case 2: // Multisensory Coherent
                 // Repeat if incorrect OR timeout
                 return !WasCorrect || WasTimeout;
-                
             case 3: // Multisensory Conflict
                 // Only repeat for timeout (not for unrewarded choice)
                 return WasTimeout;
-                
             case 4: // Neutral
                 // Only repeat for timeout
                 return WasTimeout;
@@ -150,11 +161,54 @@ public class TrialTypeInitialise
         }
     }
     
-    private TrialData CloneTrial(TrialData original)
+    private TrialData CloneTrial(TrialData original) 
     {
         return original;
     }
     
+    private void ApplyTrainingStageRules()
+    {
+        // // Training Stages (5 total):
+        // Stage 0 — Habituation - Present coherent trials only but automatically reward animal in 80% of trials. 
+        // Stage 1 — Coherent trials only: Mice were trained until they reached ~70% performance with only audiovisual coherent trials.
+        // Stage 2 — Unisensory auditory added: Auditory trials were introduced.
+        // Stage 3 — Unisensory visual added: Visual trials were introduced.
+        // Stage 4 — Conflict trials added: Neutral and conflict trials were introduced based on experimenter discretion.
+        switch (trainingStageId)
+        {
+            case 0: // Habituation phase - Coherent trials only
+                trialWeights = new List<int> { 0, 0, 10, 0, 0 };
+                autoRewardProbability = 0.8; // Automatically reward 80% of trials (handled in trial generation)
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                break;
+            case 1: // Coherent trials only
+                trialWeights = new List<int> { 0, 0, 10, 0, 0 };
+                autoRewardProbability = 0.2; // Still automatically reward 20% of trials to help mice transition to new task structure
+                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                break;
+            case 2: // Unisensory auditory added
+                trialWeights = new List<int> { 0, 10, 10, 0, 0 };
+                autoRewardProbability = 0.1; // Still automatically reward 10% of trials
+                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                break;
+            case 3: // Unisensory visual added
+                trialWeights = new List<int> { 10, 10, 10, 0, 0 };
+                autoRewardProbability = 0.1; // Still automatically reward 10% of trials
+                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                break;
+            case 4: // Conflict and Neutral trials added
+                trialWeights = new List<int> { 10, 10, 5, 5, 1 };
+                autoRewardProbability = 0.0;  // No more automatic rewards in final stage
+                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                break;
+            default:
+                trialWeights = new List<int> { 10, 10, 5, 5, 1 };
+                autoRewardProbability = 0.0;
+                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                break;
+        }
+    }
+
     private TrialData GenerateNewTrial(AvTask value)
     {
         // Create a new random instance for each trial to ensure different sequences
@@ -171,22 +225,20 @@ public class TrialTypeInitialise
         
         var trialData = new TrialData();
 
-        if (value.TrialStructure != null &&
-            value.TrialStructure.Iti != null &&
-            value.TrialStructure.Iti.Count >= 2)
-        {
-            trialData.ITI = value.TrialStructure.Iti[0] + 
-                (trialRand.NextDouble() * (value.TrialStructure.Iti[1] - value.TrialStructure.Iti[0]));
-        }
+        // // Define general trial parameters
+        // Variables defined by training-stage
+        trialData.autoRewardProbability = autoRewardProbability;  // probability of automatically rewarding the trial (for early training stages)
+        trialData.autoReward = drawRandomBasedOnProbability(autoRewardProbability, trialRand);  // This defines whether the current trial is automatically rewarded
+        trialData.RewardSizeInUl = RewardSizeInUl;  // Size of rewards in ul.
 
-        if (value.TrialStructure != null &&
-            value.TrialStructure.Quiescent != null &&
-            value.TrialStructure.Quiescent.Count >= 2)
-        {
-            // trialData.Quiescent = value.TrialStructure.Quiescent[0] + 
-            //     (trialRand.NextDouble() * (value.TrialStructure.Quiescent[1] - value.TrialStructure.Quiescent[0]));
-        }
+        trialData.ITI = drawRandomUniformFromRange(value.TrialStructure.Iti, trialRand);
+        // trialData.Quiescent = drawRandomUniformFromRange(value.TrialStructure.Quiescent, trialRand);
 
+        // define random phase of grating:
+        trialData.visualPhase = 2 * Math.PI * trialRand.NextDouble();
+
+
+        // Option to externally define trial type for testing. Set to -1 for regular operation!!!
         // Determine the trial type (set to above 4 if you want the random number)
         int selectedTrialType = (TrialType >= 0 && TrialType <= 4) 
             ? TrialType 
@@ -211,9 +263,6 @@ public class TrialTypeInitialise
                 break;
         }
 
-        // easier to define random phase of grating here once:
-        trialData.visualPhase = 2 * Math.PI * trialRand.NextDouble();
-        
         // General Trial Settings
         trialData.trialType = selectedTrialType;
         trialData.IsRepeat = false;
@@ -226,13 +275,7 @@ public class TrialTypeInitialise
     // Now using the Fisher-Yates shuffle to ensure balanced distribution
     private int GetWeightedRandomTrialType(TrialData trialData, AvTask config, Random random)
     {
-        // Set up the weighted distribution
-        // Ratio of 10/10/5/5/1 for trial types 0,1,2,3,4
-        // List<int> trialWeights = new List<int> { 10, 10, 5, 5, 1 };
-        // List<int> trialWeights = new List<int> { 10, 10, 5, 5, 1 };
-        List<int> trialWeights = config.TrialStructure.TrialTypeRatios;
-        // Console.WriteLine(trialWeights);
-        // Console.WriteLine(config.TrialStructure.TrialTypeRatios);
+        // trialWeights: now defined by ApplyTrainingStageRules() at GenerateNewTrial() and stored in the class variable.
 
         // If we've run through all trials in the block or haven't initialized yet,
         // generate a new shuffled sequence ensuring proper proportions
@@ -269,131 +312,131 @@ public class TrialTypeInitialise
     }
 
     private void LoadZapitConfigIfNeeded(string configPath)
-{
-    try
     {
-        if (!string.IsNullOrEmpty(configPath) && 
-            File.Exists(configPath) &&
-            (DateTime.Now - _zapitConfigLastLoaded).TotalMinutes > 5)
+        try
         {
-            LoadZapitConditions(configPath);
-            _zapitConfigLastLoaded = DateTime.Now;
-            Console.WriteLine("Loaded Zapit config with " + _zapitConditions.Count + " stimulation conditions");
-        }
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine("Warning: Error loading Zapit configuration: " + ex.Message);
-        _zapitConditions.Clear();
-    }
-}
-
-private void LoadZapitConditions(string configPath)
-{
-    var yaml = File.ReadAllText(configPath);
-    var deserializer = new DeserializerBuilder()
-        .WithNamingConvention(CamelCaseNamingConvention.Instance)
-        .IgnoreUnmatchedProperties()
-        .Build();
-
-    var yamlData = deserializer.Deserialize<Dictionary<string, object>>(yaml);
-    _zapitConditions.Clear();
-
-    foreach (var kvp in yamlData)
-    {
-        if (kvp.Key.StartsWith("stimLocations"))
-        {
-            var numberStr = kvp.Key.Substring("stimLocations".Length);
-            int conditionNumber;  // Declare separately
-            if (int.TryParse(numberStr, out conditionNumber))
+            if (!string.IsNullOrEmpty(configPath) && 
+                File.Exists(configPath) &&
+                (DateTime.Now - _zapitConfigLastLoaded).TotalMinutes > 5)
             {
-                _zapitConditions.Add(conditionNumber);
+                LoadZapitConditions(configPath);
+                _zapitConfigLastLoaded = DateTime.Now;
+                Console.WriteLine("Loaded Zapit config with " + _zapitConditions.Count + " stimulation conditions");
             }
         }
-    }
-    
-    _zapitConditions.Sort();
-}
-
-private void SetupOptogeneticParameters(TrialData trialData, AvTask config, Random rand)
-{
-    // Default: no optogenetic stimulation
-    trialData.OptogeneticEnabled = false;
-    trialData.OptogeneticCondition = 0;
-    trialData.OptogeneticDelay = 0;
-    trialData.OptogeneticDuration = 0;
-    trialData.OptogeneticPower = 0;
-
-    // Check if optogenetics is enabled
-    if (config.Optogenetics == null || !config.Optogenetics.Enabled)
-        return;
-
-    // Check if Zapit conditions are available
-    if (_zapitConditions.Count == 0)
-    {
-        Console.WriteLine("Warning: Optogenetics enabled but no Zapit conditions available");
-        return;
-    }
-
-    // Exclude stimulation on repeat trials if configured
-    if (config.Optogenetics.ExcludeRepeats && trialData.IsRepeat)
-        return;
-
-    // Roll for stimulation (75% default)
-    if (rand.NextDouble() < config.Optogenetics.StimProbability)
-    {
-        trialData.OptogeneticEnabled = true;
-        
-        // Pseudorandom condition selection
-        if (config.Optogenetics.PseudorandomSelection)
+        catch (Exception ex)
         {
-            trialData.OptogeneticCondition = GetPseudorandomCondition(rand);
+            Console.WriteLine("Warning: Error loading Zapit configuration: " + ex.Message);
+            _zapitConditions.Clear();
         }
-        else
+    }
+
+    private void LoadZapitConditions(string configPath)
+    {
+        var yaml = File.ReadAllText(configPath);
+        var deserializer = new DeserializerBuilder()
+            .WithNamingConvention(CamelCaseNamingConvention.Instance)
+            .IgnoreUnmatchedProperties()
+            .Build();
+
+        var yamlData = deserializer.Deserialize<Dictionary<string, object>>(yaml);
+        _zapitConditions.Clear();
+
+        foreach (var kvp in yamlData)
         {
-            trialData.OptogeneticCondition = _zapitConditions[rand.Next(_zapitConditions.Count)];
+            if (kvp.Key.StartsWith("stimLocations"))
+            {
+                var numberStr = kvp.Key.Substring("stimLocations".Length);
+                int conditionNumber;  // Declare separately
+                if (int.TryParse(numberStr, out conditionNumber))
+                {
+                    _zapitConditions.Add(conditionNumber);
+                }
+            }
         }
         
-        // Set timing parameters from config
-        trialData.OptogeneticDelay = config.Optogenetics.StimDelay;
-        trialData.OptogeneticDuration = config.Optogenetics.StimDuration;
-        trialData.OptogeneticPower = 0; // Will be set by Zapit config
+        _zapitConditions.Sort();
     }
-}
 
-private int GetPseudorandomCondition(Random rand)
-{
-    // Initialize or refill the condition queue when empty
-    if (_conditionQueue.Count == 0)
+    private void SetupOptogeneticParameters(TrialData trialData, AvTask config, Random rand)
     {
-        _conditionQueue.AddRange(_zapitConditions);
-        
-        // Shuffle using Fisher-Yates
-        int n = _conditionQueue.Count;
-        while (n > 1)
+        // Default: no optogenetic stimulation
+        trialData.OptogeneticEnabled = false;
+        trialData.OptogeneticCondition = 0;
+        trialData.OptogeneticDelay = 0;
+        trialData.OptogeneticDuration = 0;
+        trialData.OptogeneticPower = 0;
+
+        // Check if optogenetics is enabled
+        if (config.Optogenetics == null || !config.Optogenetics.Enabled)
+            return;
+
+        // Check if Zapit conditions are available
+        if (_zapitConditions.Count == 0)
         {
-            n--;
-            int k = rand.Next(n + 1);
-            int temp = _conditionQueue[k];
-            _conditionQueue[k] = _conditionQueue[n];
-            _conditionQueue[n] = temp;
+            Console.WriteLine("Warning: Optogenetics enabled but no Zapit conditions available");
+            return;
+        }
+
+        // Exclude stimulation on repeat trials if configured
+        if (config.Optogenetics.ExcludeRepeats && trialData.IsRepeat)
+            return;
+
+        // Roll for stimulation (75% default)
+        if (rand.NextDouble() < config.Optogenetics.StimProbability)
+        {
+            trialData.OptogeneticEnabled = true;
+            
+            // Pseudorandom condition selection
+            if (config.Optogenetics.PseudorandomSelection)
+            {
+                trialData.OptogeneticCondition = GetPseudorandomCondition(rand);
+            }
+            else
+            {
+                trialData.OptogeneticCondition = _zapitConditions[rand.Next(_zapitConditions.Count)];
+            }
+            
+            // Set timing parameters from config
+            trialData.OptogeneticDelay = config.Optogenetics.StimDelay;
+            trialData.OptogeneticDuration = config.Optogenetics.StimDuration;
+            trialData.OptogeneticPower = 0; // Will be set by Zapit config
+        }
+    }
+
+    private int GetPseudorandomCondition(Random rand)
+    {
+        // Initialize or refill the condition queue when empty
+        if (_conditionQueue.Count == 0)
+        {
+            _conditionQueue.AddRange(_zapitConditions);
+            
+            // Shuffle using Fisher-Yates
+            int n = _conditionQueue.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = rand.Next(n + 1);
+                int temp = _conditionQueue[k];
+                _conditionQueue[k] = _conditionQueue[n];
+                _conditionQueue[n] = temp;
+            }
+            
+            _currentConditionIndex = 0;
         }
         
-        _currentConditionIndex = 0;
+        // Get next condition from shuffled queue
+        int selectedCondition = _conditionQueue[_currentConditionIndex];
+        _currentConditionIndex++;
+        
+        // Clear queue when exhausted
+        if (_currentConditionIndex >= _conditionQueue.Count)
+        {
+            _conditionQueue.Clear();
+        }
+        
+        return selectedCondition;
     }
-    
-    // Get next condition from shuffled queue
-    int selectedCondition = _conditionQueue[_currentConditionIndex];
-    _currentConditionIndex++;
-    
-    // Clear queue when exhausted
-    if (_currentConditionIndex >= _conditionQueue.Count)
-    {
-        _conditionQueue.Clear();
-    }
-    
-    return selectedCondition;
-}
 
 
     private void SetupUnisensoryVisualTrial(TrialData trial, AvTask spec, Random rand)
@@ -755,8 +798,11 @@ private int GetPseudorandomCondition(Random rand)
         // trial.isVisualActive = true;
         // trial.isAudioActive = true;
 
-        trial.RewardProbability = 0.5; 
-        trial.IsRewarded = rand.NextDouble() < 0.5;
+        // Check this again, but the 50% should come from the random targetSide, no additional random, right?!
+        trial.RewardProbability = 1.0; // Default reward probability for conflict trials
+        trial.IsRewarded = true;
+        // trial.RewardProbability = 0.5; 
+        // trial.IsRewarded = rand.NextDouble() < 0.5;
     }
 
     private void SetupNeutralTrial(TrialData trial, AvTask spec, Random rand)
@@ -789,19 +835,54 @@ private int GetPseudorandomCondition(Random rand)
         trial.RewardProbability = 1.0; // Default reward probability for conflict trials
         trial.IsRewarded = true;
     }
+
+    // handy function with overloads    
+    float drawRandomUniformFromRange(float lowerBound, float upperBound, Random trialRand)
+    {
+        return lowerBound + (float)(trialRand.NextDouble() * (upperBound - lowerBound));
+    }
+
+    float drawRandomUniformFromRange(float[] range, Random trialRand)
+    {
+        return range[0] + (float)(trialRand.NextDouble() * (range[1] - range[0]));
+    }
+
+    // These felt like a bit much, and would siable the ability to define a Seed...
+    // float drawRandomUniformFromRange(float lowerBound, float upperBound)
+    // {
+    //     Random trialRand = new Random();
+    //     return lowerBound + (float)(trialRand.NextDouble() * (upperBound - lowerBound));
+    // }
+
+    // float drawRandomUniformFromRange(float[] boundVar)
+    // {
+    //     Random trialRand = new Random();
+    //     return boundVar[0] + (float)(trialRand.NextDouble() * (boundVar[1] - boundVar[0]));
+    // }
+
+    // Now also draw random from probability
+    bool drawRandomBasedOnProbability(float probability, Random trialRand)
+    {
+        // draw binary true falls on the given probability
+        return trialRand.NextDouble() < probability;
+    }
+
 }
 
 public class TrialData
 {
     // TrialStructure
     public int trialType;
-    public double RewardProbability;
+    public double RewardProbability;  // Probability of reward delivery for this trial (used for random reward assignment in conflict and neutral trials)
     public bool IsRewarded;
     // Trial repetition tracking
     public bool IsRepeat;
     public int RepeatCount;
     public string targetSide;
     public double ITI;
+    public float autoRewardProbability;  // probability of automatically rewarding the trial (for early training stages)
+    public float RewardSizeInUl;  // Size of rewards in ul.
+
     public double openLoopDuration { get { return 0.5; } }
     public double closedLoopDuration { get { return 1.0; } }
 
