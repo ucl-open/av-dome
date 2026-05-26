@@ -51,8 +51,9 @@ public class RigConfigs
         currentRigConfigs.ValveOpenTimeLeft = 30;  // in ms. ~10ms min.
         currentRigConfigs.ValveOpenTimeRight = 30;  // in ms. ~10ms min.
 
-        // MeshMapping for Visual Stimuli
+        // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
+        currentRigConfigs.GammaLUTFilePath = @"C:\RigConfigs\gammalut.bmp";  // path to Gamma Lookup Table file
 
         return currentRigConfigs;
     }
@@ -78,8 +79,9 @@ public class RigConfigs
         currentRigConfigs.ValveOpenTimeLeft = 15;  // in ms. ~10ms min.
         currentRigConfigs.ValveOpenTimeRight = 130;  // in ms. ~10ms min.
 
-        // MeshMapping for Visual Stimuli
+        // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
+        currentRigConfigs.GammaLUTFilePath = @"C:\RigConfigs\gammalut.bmp";  // path to Gamma Lookup Table file
 
         return currentRigConfigs;
     }
@@ -105,6 +107,7 @@ public class RigSpecificConfigs
     public Double ValveOpenTimeLeft;  // in ms. ~10ms min.
     public Double ValveOpenTimeRight;  // in ms. ~10ms min.
 
-    // Visual Stimuli
+    // Visual stimulus calibrations
     public String MeshMapFilePath;  // MeshMapping Interpolation file
+    public String GammaLUTFilePath;  // Gamma Lookup Table file
 }
