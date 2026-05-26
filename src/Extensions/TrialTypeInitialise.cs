@@ -71,8 +71,8 @@ public class TrialTypeInitialise
     // We'll create a new Random instance for each trial
     
     private List<int> trialWeights;
-    public float autoRewardProbability;  // probability of automatically rewarding the trial (for early training stages)
-    public float RewardSizeInUl;  // Size of rewards in ul.
+    public double autoRewardProbability;  // probability of automatically rewarding the trial (for early training stages)
+    public double RewardSizeInUl;  // Size of rewards in ul.
     
     // Track if we need to shuffle the trial order for true randomization
     private List<int> shuffledTrialSequence;
@@ -837,14 +837,21 @@ public class TrialTypeInitialise
     }
 
     // handy function with overloads    
-    float drawRandomUniformFromRange(float lowerBound, float upperBound, Random trialRand)
+    double drawRandomUniformFromRange(double lowerBound, double upperBound, Random trialRand)
     {
-        return lowerBound + (float)(trialRand.NextDouble() * (upperBound - lowerBound));
+        return lowerBound + (double)(trialRand.NextDouble() * (upperBound - lowerBound));
     }
 
-    float drawRandomUniformFromRange(float[] range, Random trialRand)
+    double drawRandomUniformFromRange(double[] range, Random trialRand)
     {
-        return range[0] + (float)(trialRand.NextDouble() * (range[1] - range[0]));
+        return range[0] + (double)(trialRand.NextDouble() * (range[1] - range[0]));
+    }
+
+    // Overload to accept List<double> since some configs use lists
+    double drawRandomUniformFromRange(List<double> range, Random trialRand)
+    {
+        if (range == null || range.Count < 2) return 0.0;
+        return range[0] + (double)(trialRand.NextDouble() * (range[1] - range[0]));
     }
 
     // These felt like a bit much, and would siable the ability to define a Seed...
@@ -861,7 +868,7 @@ public class TrialTypeInitialise
     // }
 
     // Now also draw random from probability
-    bool drawRandomBasedOnProbability(float probability, Random trialRand)
+    bool drawRandomBasedOnProbability(double probability, Random trialRand)
     {
         // draw binary true falls on the given probability
         return trialRand.NextDouble() < probability;
@@ -880,8 +887,9 @@ public class TrialData
     public int RepeatCount;
     public string targetSide;
     public double ITI;
-    public float autoRewardProbability;  // probability of automatically rewarding the trial (for early training stages)
-    public float RewardSizeInUl;  // Size of rewards in ul.
+    public double autoRewardProbability;  // probability of automatically rewarding the trial (for early training stages)
+    public bool autoReward;  // Bool defining if current trial is autoRewarded or not
+    public double RewardSizeInUl;  // Size of rewards in ul.
 
     public double openLoopDuration { get { return 0.5; } }
     public double closedLoopDuration { get { return 1.0; } }
