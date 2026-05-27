@@ -134,7 +134,7 @@ public class TrialTypeInitialise
     private bool ShouldRepeatTrial()
     {
         // Don't repeat if no previous trial or max repeats reached or this is the first trial
-        if (lastTrialData == null || currentRepeatCount >= MAX_REPEATS || isFirstTrial) 
+        if (lastTrialData == null || currentRepeatCount >= MAX_REPEATS || isFirstTrial || trainingStageId == 0)
             return false;
             
         // Check repetition rules based on trial type
@@ -188,12 +188,12 @@ public class TrialTypeInitialise
                 break;
             case 2: // Unisensory auditory added
                 trialWeights = new List<int> { 0, 10, 10, 0, 0 };
-                autoRewardProbability = 0.1; // Still automatically reward 10% of trials
+                autoRewardProbability = 0.0; // Still automatically reward 10% of trials
                 RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 break;
             case 3: // Unisensory visual added
                 trialWeights = new List<int> { 10, 10, 10, 0, 0 };
-                autoRewardProbability = 0.1; // Still automatically reward 10% of trials
+                autoRewardProbability = 0.0; // Still automatically reward 10% of trials
                 RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 break;
             case 4: // Conflict and Neutral trials added
