@@ -55,6 +55,9 @@ public class RigConfigs
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
         currentRigConfigs.GammaLUTFilePath = @"C:\RigConfigs\gammalut.bmp";  // path to Gamma Lookup Table file
 
+        // StepperMotor Default Position
+        currentRigConfigs.StepperMotorDefaultPosition = new int[] { 3200, 5500, 4700, 1850, 950 };  // 5 Motors
+
         return currentRigConfigs;
     }
 
@@ -77,11 +80,14 @@ public class RigConfigs
 
         // Valve Calibration
         currentRigConfigs.ValveOpenTimeLeft = 15;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 130;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 30;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
         currentRigConfigs.GammaLUTFilePath = @"C:\RigConfigs\gammalut.bmp";  // path to Gamma Lookup Table file
+
+        // StepperMotor Default Position
+        currentRigConfigs.StepperMotorDefaultPosition = new int[] { 2800, 6400, 6350, 3650, 2300 };  // 5 Motors
 
         return currentRigConfigs;
     }
@@ -110,4 +116,7 @@ public class RigSpecificConfigs
     // Visual stimulus calibrations
     public String MeshMapFilePath;  // MeshMapping Interpolation file
     public String GammaLUTFilePath;  // Gamma Lookup Table file
+
+    // StepperMotor Default Position
+    public int[] StepperMotorDefaultPosition;  // 5 Motors
 }
