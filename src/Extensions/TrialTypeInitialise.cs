@@ -134,7 +134,7 @@ public class TrialTypeInitialise
     private bool ShouldRepeatTrial()
     {
         // Don't repeat if no previous trial or max repeats reached or this is the first trial
-        if (lastTrialData == null || currentRepeatCount >= MAX_REPEATS || isFirstTrial || trainingStageId == 0)
+        if (lastTrialData == null || currentRepeatCount >= MAX_REPEATS || isFirstTrial || trainingStageId < 2)
             return false;
             
         // Check repetition rules based on trial type
@@ -178,33 +178,33 @@ public class TrialTypeInitialise
         {
             case 0: // Habituation phase - Coherent trials only
                 trialWeights = new List<int> { 0, 0, 10, 0, 0 };
-                autoRewardProbability = 0.8; // Automatically reward 80% of trials (handled in trial generation)
-                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                autoRewardProbability = 0.5; // Automatically reward 80% of trials (handled in trial generation)
+                RewardSizeInUl = 6; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 break;
             case 1: // Coherent trials only
                 trialWeights = new List<int> { 0, 0, 10, 0, 0 };
-                autoRewardProbability = 0.2; // Still automatically reward 20% of trials to help mice transition to new task structure
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                autoRewardProbability = 0.0; // Still automatically reward 20% of trials to help mice transition to new task structure
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 break;
             case 2: // Unisensory auditory added
                 trialWeights = new List<int> { 0, 10, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Still automatically reward 10% of trials
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 break;
             case 3: // Unisensory visual added
                 trialWeights = new List<int> { 10, 10, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Still automatically reward 10% of trials
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 break;
             case 4: // Conflict and Neutral trials added
                 trialWeights = new List<int> { 10, 10, 5, 5, 1 };
                 autoRewardProbability = 0.0;  // No more automatic rewards in final stage
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 break;
             default:
                 trialWeights = new List<int> { 10, 10, 5, 5, 1 };
                 autoRewardProbability = 0.0;
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 break;
         }
     }
@@ -230,6 +230,10 @@ public class TrialTypeInitialise
         trialData.autoRewardProbability = autoRewardProbability;  // probability of automatically rewarding the trial (for early training stages)
         trialData.autoReward = drawRandomBasedOnProbability(autoRewardProbability, trialRand);  // This defines whether the current trial is automatically rewarded
         trialData.RewardSizeInUl = RewardSizeInUl;  // Size of rewards in ul.
+
+        // If largeReward trial, overwrite the reward size for this trial.
+        trialData.largeReward = drawRandomBasedOnProbability(trialData.LargeRewardProbability, trialRand);  // This defines whether the current trial is a largeReward Trial.
+        trialData.RewardSizeInUl = trialData.largeReward ? RewardSizeInUl * trialData.LargeRewardMultiplier : RewardSizeInUl;
 
         trialData.ITI = drawRandomUniformFromRange(value.TrialStructure.Iti, trialRand);
         // trialData.Quiescent = drawRandomUniformFromRange(value.TrialStructure.Quiescent, trialRand);
@@ -889,10 +893,15 @@ public class TrialData
     public double ITI;
     public double autoRewardProbability;  // probability of automatically rewarding the trial (for early training stages)
     public bool autoReward;  // Bool defining if current trial is autoRewarded or not
+    public bool largeReward;  // Bool defining if current trial is autoRewarded or not
     public double RewardSizeInUl;  // Size of rewards in ul.
+    public double LargeRewardMultiplier { get { return 10; } }  // Size of rewards in ul.
+    public double LargeRewardProbability { get { return 0.1; } }  // Probability of receiving a large reward
 
-    public double openLoopDuration { get { return 0.5; } }
-    public double closedLoopDuration { get { return 1.0; } }
+    // public double openLoopDuration { get { return 0.5; } }
+    public double openLoopDuration { get { return 0.0; } }
+    // public double closedLoopDuration { get { return 1.0; } }
+    public double closedLoopDuration { get { return 1.5; } }
 
     // VisualStimulus
     public double visualAzimuth;
