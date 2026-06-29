@@ -82,7 +82,7 @@ public class TrialTypeInitialise
     // Trial repetition tracking
     private TrialData lastTrialData = null;
     private int currentRepeatCount = 0;
-    private const int MAX_REPEATS = 9;
+    private const int MAX_REPEATS = 5;
     private bool isFirstTrial = true;
 
     private static List<int> _zapitConditions = new List<int>();
@@ -135,7 +135,7 @@ public class TrialTypeInitialise
     private bool ShouldRepeatTrial()
     {
         // Don't repeat if no previous trial or max repeats reached or this is the first trial
-        if (lastTrialData == null || currentRepeatCount >= MAX_REPEATS || isFirstTrial || trainingStageId < 2)
+        if (lastTrialData == null || currentRepeatCount >= MAX_REPEATS || isFirstTrial || trainingStageId == 0)
             return false;
             
         // Check repetition rules based on trial type
@@ -179,39 +179,39 @@ public class TrialTypeInitialise
         {
             case 0: // Habituation phase - Coherent trials only
                 trialWeights = new List<int> { 0, 0, 10, 0, 0 };
-                autoRewardProbability = 0.5; // Automatically reward 80% of trials (handled in trial generation)
-                BothSpoutsProbability = 0.2; // Only regular trials
+                autoRewardProbability = 0.0; // Automatically reward 80% of trials (handled in trial generation)
+                BothSpoutsProbability = 0.25; // Only regular trials
                 RewardSizeInUl = 6; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 break;
             case 1: // Coherent trials only
                 trialWeights = new List<int> { 0, 0, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Still automatically reward 20% of trials to help mice transition to new task structure
                 BothSpoutsProbability = 0.8; // Only regular trials
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 break;
             case 2: // Unisensory auditory added
                 trialWeights = new List<int> { 0, 10, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Still automatically reward 10% of trials
                 BothSpoutsProbability = 1.0; // Only regular trials
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 break;
             case 3: // Unisensory visual added
                 trialWeights = new List<int> { 10, 10, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Still automatically reward 10% of trials
                 BothSpoutsProbability = 1.0; // Only regular trials
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 break;
             case 4: // Conflict and Neutral trials added
                 trialWeights = new List<int> { 10, 10, 5, 5, 1 };
                 autoRewardProbability = 0.0;  // No more automatic rewards in final stage
                 BothSpoutsProbability = 1.0; // Only regular trials
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 break;
             default:
                 trialWeights = new List<int> { 10, 10, 5, 5, 1 };
                 autoRewardProbability = 0.0;
                 BothSpoutsProbability = 1.0; // Only regular trials
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 break;
         }
     }
@@ -905,8 +905,8 @@ public class TrialData
     public bool autoReward;  // Bool defining if current trial is autoRewarded or not
     public bool largeReward;  // Bool defining if current trial is autoRewarded or not
     public double RewardSizeInUl;  // Size of rewards in ul.
-    public double LargeRewardMultiplier { get { return 10; } }  // Size of rewards in ul.
-    public double LargeRewardProbability { get { return 0.1; } }  // Probability of receiving a large reward
+    public double LargeRewardMultiplier { get { return 5; } }  // Size of rewards in ul.
+    public double LargeRewardProbability { get { return 0.05; } }  // Probability of receiving a large reward
     public bool BothSpouts;  // Bool defining if current trial is presenting both spouts (regular trial) or just the correct spout (used for initial training).
     public double BothSpoutsProbability { get; set; }  // by default only regular trials. 
 

@@ -172,7 +172,7 @@
                               </Expression>
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="DoubleProperty">
-                                  <Value>354426375</Value>
+                                  <Value>605291354</Value>
                                 </Combinator>
                               </Expression>
                               <Expression xsi:type="rx:BehaviorSubject">
@@ -2619,7 +2619,7 @@
                             <p6:HostApi>Windows WDM-KS</p6:HostApi>
                             <p6:DeviceName>Speakers (XMOS xCORE-200 MC (UAC2.0))</p6:DeviceName>
                             <p6:SampleRate>48000</p6:SampleRate>
-                            <p6:SuggestedLatency>0.01</p6:SuggestedLatency>
+                            <p6:SuggestedLatency>0.002</p6:SuggestedLatency>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -3215,10 +3215,10 @@
             </Expression>
             <Expression xsi:type="gui:ToggleButtonBuilder">
               <gui:Name>Start</gui:Name>
-              <gui:Enabled>true</gui:Enabled>
+              <gui:Enabled>false</gui:Enabled>
               <gui:Visible>true</gui:Visible>
               <gui:Text>Start / Pause</gui:Text>
-              <gui:Checked>true</gui:Checked>
+              <gui:Checked>false</gui:Checked>
             </Expression>
             <Expression xsi:type="rx:BehaviorSubject">
               <Name>StartSession</Name>
@@ -3238,7 +3238,7 @@
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
               <gui:Text>Confirm MouseID</gui:Text>
-              <gui:Checked>true</gui:Checked>
+              <gui:Checked>false</gui:Checked>
             </Expression>
             <Expression xsi:type="rx:Condition">
               <Name>True? Pressed</Name>
@@ -3285,7 +3285,7 @@
             </Expression>
             <Expression xsi:type="gui:ComboBoxBuilder">
               <gui:Name>Mouse ID</gui:Name>
-              <gui:Enabled>false</gui:Enabled>
+              <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
               <gui:Items>
                 <gui:string>GN001</gui:string>
@@ -3308,7 +3308,7 @@
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:ComboBoxBuilder">
               <gui:Name>Training</gui:Name>
-              <gui:Enabled>false</gui:Enabled>
+              <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
               <gui:Items>
                 <gui:string>Stage 0</gui:string>
@@ -3350,7 +3350,7 @@
               <gui:Name>Session Time</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>00:00:42</gui:Text>
+              <gui:Text>00:00:24</gui:Text>
               <gui:Multiline>false</gui:Multiline>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
@@ -3377,7 +3377,7 @@
               <gui:Name>Trial Count</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>7</gui:Text>
+              <gui:Text>0</gui:Text>
               <gui:Multiline>false</gui:Multiline>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
@@ -3403,7 +3403,7 @@
               <gui:Name>TargetSide</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>Right</gui:Text>
+              <gui:Text>Left</gui:Text>
               <gui:Multiline>false</gui:Multiline>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
@@ -3430,7 +3430,7 @@
               <gui:Name>Auto Reward</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>False</gui:Text>
+              <gui:Text>True</gui:Text>
               <gui:Multiline>false</gui:Multiline>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
@@ -3457,7 +3457,7 @@
               <gui:Name>TrialType</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>2</gui:Text>
+              <gui:Text>0</gui:Text>
               <gui:Multiline>false</gui:Multiline>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
@@ -3484,7 +3484,7 @@
               <gui:Name>VisualLocationX</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>60</gui:Text>
+              <gui:Text>-60</gui:Text>
               <gui:Multiline>false</gui:Multiline>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
@@ -3511,7 +3511,7 @@
               <gui:Name>AudioLocationX</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>60</gui:Text>
+              <gui:Text>0</gui:Text>
               <gui:Multiline>false</gui:Multiline>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
@@ -3538,7 +3538,7 @@
               <gui:Name>Reward Size</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>2</gui:Text>
+              <gui:Text>6</gui:Text>
               <gui:Multiline>false</gui:Multiline>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
@@ -3565,7 +3565,7 @@
               <gui:Name>Water Delivered in ul</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>20</gui:Text>
+              <gui:Text>0</gui:Text>
               <gui:Multiline>false</gui:Multiline>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
@@ -3897,7 +3897,7 @@
               <gui:Name>BLANK</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>5000,5800,7900,2600,4850;</gui:Text>
+              <gui:Text>3950,5800,7900,2600,1700;</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:ButtonBuilder">
@@ -6755,7 +6755,7 @@ Item4 as ExposureTime)</scr:Expression>
                                       <Property Name="FileName" />
                                     </Expression>
                                     <Expression xsi:type="io:CsvWriter">
-                                      <io:FileName>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-26T12-42-32\Cameras\VideoData_Camera1.csv</io:FileName>
+                                      <io:FileName>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-29T10-18-48\Cameras\VideoData_Camera1.csv</io:FileName>
                                       <io:Append>false</io:Append>
                                       <io:Overwrite>true</io:Overwrite>
                                       <io:Suffix>None</io:Suffix>
@@ -6849,7 +6849,7 @@ Item4 as ExposureTime)</scr:Expression>
                               </Expression>
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="cv:VideoWriter">
-                                  <cv:FileName>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-26T12-42-32\Cameras\VideoData_Camera1.avi</cv:FileName>
+                                  <cv:FileName>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-29T10-18-48\Cameras\VideoData_Camera1.avi</cv:FileName>
                                   <cv:Suffix>None</cv:Suffix>
                                   <cv:Buffered>true</cv:Buffered>
                                   <cv:Overwrite>false</cv:Overwrite>
@@ -7045,7 +7045,7 @@ Item4 as ExposureTime)</scr:Expression>
                                       <Property Name="FileName" />
                                     </Expression>
                                     <Expression xsi:type="io:CsvWriter">
-                                      <io:FileName>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-26T12-42-32\Cameras\VideoData_Camera2.csv</io:FileName>
+                                      <io:FileName>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-29T10-18-48\Cameras\VideoData_Camera2.csv</io:FileName>
                                       <io:Append>false</io:Append>
                                       <io:Overwrite>true</io:Overwrite>
                                       <io:Suffix>None</io:Suffix>
@@ -7139,7 +7139,7 @@ Item4 as ExposureTime)</scr:Expression>
                               </Expression>
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="cv:VideoWriter">
-                                  <cv:FileName>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-26T12-42-32\Cameras\VideoData_Camera2.avi</cv:FileName>
+                                  <cv:FileName>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-29T10-18-48\Cameras\VideoData_Camera2.avi</cv:FileName>
                                   <cv:Suffix>None</cv:Suffix>
                                   <cv:Buffered>true</cv:Buffered>
                                   <cv:Overwrite>true</cv:Overwrite>
@@ -7335,7 +7335,7 @@ Item4 as ExposureTime)</scr:Expression>
                                       <Property Name="FileName" />
                                     </Expression>
                                     <Expression xsi:type="io:CsvWriter">
-                                      <io:FileName>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-26T12-42-32\Cameras\VideoData_Camera3.csv</io:FileName>
+                                      <io:FileName>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-29T10-18-48\Cameras\VideoData_Camera3.csv</io:FileName>
                                       <io:Append>false</io:Append>
                                       <io:Overwrite>true</io:Overwrite>
                                       <io:Suffix>None</io:Suffix>
@@ -7429,7 +7429,7 @@ Item4 as ExposureTime)</scr:Expression>
                               </Expression>
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="cv:VideoWriter">
-                                  <cv:FileName>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-26T12-42-32\Cameras\VideoData_Camera3.avi</cv:FileName>
+                                  <cv:FileName>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-29T10-18-48\Cameras\VideoData_Camera3.avi</cv:FileName>
                                   <cv:Suffix>None</cv:Suffix>
                                   <cv:Buffered>true</cv:Buffered>
                                   <cv:Overwrite>true</cv:Overwrite>
@@ -7855,7 +7855,7 @@ Item4 as ExposureTime)</scr:Expression>
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="dsp:MatrixWriter">
-                                              <dsp:Path>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-26T12-42-32\LicketySplitLeft_8\LicketySplitLeft_8.bin</dsp:Path>
+                                              <dsp:Path>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-29T10-18-48\LicketySplitLeft_8\LicketySplitLeft_8.bin</dsp:Path>
                                               <dsp:Suffix>Timestamp</dsp:Suffix>
                                               <dsp:Overwrite>false</dsp:Overwrite>
                                               <dsp:Layout>ColumnMajor</dsp:Layout>
@@ -8321,7 +8321,7 @@ Item4 as ExposureTime)</scr:Expression>
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="dsp:MatrixWriter">
-                                              <dsp:Path>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-26T12-42-32\LicketySplitRight_8\LicketySplitRight_8.bin</dsp:Path>
+                                              <dsp:Path>C:\Data\AV_Dome\sub-GN001\ses-Stage 1_date-2026-06-29T10-18-48\LicketySplitRight_8\LicketySplitRight_8.bin</dsp:Path>
                                               <dsp:Suffix>Timestamp</dsp:Suffix>
                                               <dsp:Overwrite>false</dsp:Overwrite>
                                               <dsp:Layout>ColumnMajor</dsp:Layout>
@@ -8586,7 +8586,6 @@ Item4 as ExposureTime)</scr:Expression>
             </Expression>
             <Expression xsi:type="ExternalizedMapping">
               <Property Name="Seed" />
-              <Property Name="trainingStageId" />
             </Expression>
             <Expression xsi:type="rx:SelectMany">
               <Name>RedefineTrial</Name>
@@ -8597,7 +8596,107 @@ Item4 as ExposureTime)</scr:Expression>
                   </Expression>
                   <Expression xsi:type="ExternalizedMapping">
                     <Property Name="Seed" />
-                    <Property Name="trainingStageId" />
+                  </Expression>
+                  <Expression xsi:type="rx:Defer">
+                    <Name>Get training stage</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>trainingStageStr</Name>
+                        </Expression>
+                        <Expression xsi:type="rx:Condition">
+                          <Name>Stage 0?</Name>
+                          <Workflow>
+                            <Nodes>
+                              <Expression xsi:type="WorkflowInput">
+                                <Name>Source1</Name>
+                              </Expression>
+                              <Expression xsi:type="ExternalizedMapping">
+                                <Property Name="Value" />
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="StringProperty">
+                                  <Value>Stage 0</Value>
+                                </Combinator>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="rx:Zip" />
+                              </Expression>
+                              <Expression xsi:type="Equal" />
+                              <Expression xsi:type="WorkflowOutput" />
+                            </Nodes>
+                            <Edges>
+                              <Edge From="0" To="3" Label="Source1" />
+                              <Edge From="1" To="2" Label="Source1" />
+                              <Edge From="2" To="3" Label="Source2" />
+                              <Edge From="3" To="4" Label="Source1" />
+                              <Edge From="4" To="5" Label="Source1" />
+                            </Edges>
+                          </Workflow>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="IntProperty">
+                            <Value>0</Value>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="rx:Condition">
+                          <Name>Stage 1?</Name>
+                          <Workflow>
+                            <Nodes>
+                              <Expression xsi:type="WorkflowInput">
+                                <Name>Source1</Name>
+                              </Expression>
+                              <Expression xsi:type="ExternalizedMapping">
+                                <Property Name="Value" />
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="StringProperty">
+                                  <Value>Stage 1</Value>
+                                </Combinator>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="rx:Zip" />
+                              </Expression>
+                              <Expression xsi:type="Equal" />
+                              <Expression xsi:type="WorkflowOutput" />
+                            </Nodes>
+                            <Edges>
+                              <Edge From="0" To="3" Label="Source1" />
+                              <Edge From="1" To="2" Label="Source1" />
+                              <Edge From="2" To="3" Label="Source2" />
+                              <Edge From="3" To="4" Label="Source1" />
+                              <Edge From="4" To="5" Label="Source1" />
+                            </Edges>
+                          </Workflow>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="IntProperty">
+                            <Value>1</Value>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Merge" />
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="1" To="2" Label="Source1" />
+                        <Edge From="1" To="4" Label="Source1" />
+                        <Edge From="2" To="3" Label="Source1" />
+                        <Edge From="3" To="6" Label="Source1" />
+                        <Edge From="4" To="5" Label="Source1" />
+                        <Edge From="5" To="6" Label="Source2" />
+                        <Edge From="6" To="7" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="trainingStageId" />
+                    </PropertyMappings>
                   </Expression>
                   <Expression xsi:type="WorkflowInput">
                     <Name>Source1</Name>
@@ -8628,7 +8727,7 @@ Item4 as ExposureTime)</scr:Expression>
                     <Combinator xsi:type="p1:TrialTypeInitialise">
                       <p1:autoRewardProbability>0</p1:autoRewardProbability>
                       <p1:BothSpoutsProbability>0.8</p1:BothSpoutsProbability>
-                      <p1:RewardSizeInUl>2</p1:RewardSizeInUl>
+                      <p1:RewardSizeInUl>4</p1:RewardSizeInUl>
                       <p1:Seed>-1</p1:Seed>
                       <p1:trainingStageId>1</p1:trainingStageId>
                       <p1:TrialType>-1</p1:TrialType>
@@ -8639,17 +8738,19 @@ Item4 as ExposureTime)</scr:Expression>
                   <Expression xsi:type="WorkflowOutput" />
                 </Nodes>
                 <Edges>
-                  <Edge From="0" To="9" Label="Source1" />
-                  <Edge From="1" To="9" Label="Source2" />
+                  <Edge From="0" To="11" Label="Source1" />
+                  <Edge From="1" To="11" Label="Source2" />
                   <Edge From="2" To="3" Label="Source1" />
-                  <Edge From="3" To="4" Label="Source1" />
-                  <Edge From="3" To="5" Label="Source1" />
-                  <Edge From="4" To="6" Label="Source1" />
-                  <Edge From="5" To="6" Label="Source2" />
-                  <Edge From="6" To="7" Label="Source1" />
-                  <Edge From="7" To="8" Label="Source1" />
-                  <Edge From="8" To="9" Label="Source3" />
+                  <Edge From="3" To="11" Label="Source3" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source1" />
+                  <Edge From="5" To="7" Label="Source1" />
+                  <Edge From="6" To="8" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source2" />
+                  <Edge From="8" To="9" Label="Source1" />
                   <Edge From="9" To="10" Label="Source1" />
+                  <Edge From="10" To="11" Label="Source4" />
+                  <Edge From="11" To="12" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -9266,7 +9367,7 @@ Item4 as ExposureTime)</scr:Expression>
                           <ExtentY>100</ExtentY>
                           <SpatialFrequency>0.06666667</SpatialFrequency>
                           <TemporalFrequency>0</TemporalFrequency>
-                          <Phase>95.41844</Phase>
+                          <Phase>29.7403545</Phase>
                           <Angle>0</Angle>
                           <SquareWave>false</SquareWave>
                           <Contrast>0.1</Contrast>
@@ -10471,7 +10572,7 @@ Item4 as ExposureTime)</scr:Expression>
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="gl:Delay">
-                            <gl:DueTime>PT1.25S</gl:DueTime>
+                            <gl:DueTime>PT1.096S</gl:DueTime>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="WorkflowOutput" />
