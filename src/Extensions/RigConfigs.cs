@@ -11,12 +11,15 @@ using System.Collections;
 [WorkflowElementCategory(ElementCategory.Transform)]
 public class RigConfigs
 {
-    public String MachineName = System.Environment.MachineName;  // This fetches the current Rig PCs name to fetch calibrations. Ensure these names are correct and unique!
+    public String MachineName;
 
     public IObservable<RigSpecificConfigs> Process(IObservable<String> source)
     {
         return source.Select(value =>
         {
+            MachineName = System.Environment.MachineName;  // This fetches the current Rig PCs name to fetch calibrations. Ensure these names are correct and unique!
+
+            Console.WriteLine(MachineName);
             switch (MachineName)
             {
                 case "GREEN-DOME-2":
