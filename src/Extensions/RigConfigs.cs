@@ -59,7 +59,7 @@ public class RigConfigs
         currentRigConfigs.GammaLUTFilePath = @"C:\RigConfigs\gammalut.bmp";  // path to Gamma Lookup Table file
 
         // StepperMotor Default Position
-        currentRigConfigs.StepperMotorDefaultPosition = new int[] { 3200, 5500, 4700, 1850, 950 };  // 5 Motors
+        currentRigConfigs.StepperMotorDefaultPosition = new int[] { 500, 790, 710, 300, 180 };  // 5 Motors
 
         return currentRigConfigs;
     }
