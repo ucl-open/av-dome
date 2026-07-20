@@ -6,9 +6,12 @@
                  xmlns:sys="clr-namespace:System;assembly=mscorlib"
                  xmlns:harp="clr-namespace:Bonsai.Harp;assembly=Bonsai.Harp"
                  xmlns:p2="clr-namespace:Harp.StepperDriver;assembly=Harp.StepperDriver"
+                 xmlns:p3="clr-namespace:Bonsai.Mixer;assembly=Bonsai.Mixer"
+                 xmlns:p4="clr-namespace:OpenCV.Net;assembly=OpenCV.Net"
                  xmlns:gui="clr-namespace:Bonsai.Gui;assembly=Bonsai.Gui"
                  xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
                  xmlns:beh="clr-namespace:Harp.Behavior;assembly=Harp.Behavior"
+                 xmlns:dsp="clr-namespace:Bonsai.Dsp;assembly=Bonsai.Dsp"
                  xmlns:wie="clr-namespace:Bonsai.Windows.Input;assembly=Bonsai.Windows.Input"
                  xmlns="https://bonsai-rx.org/2018/workflow">
   <Workflow>
@@ -20,7 +23,7 @@
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="p1:RigConfigs">
-          <p1:MachineName>BLUE-OPTO-2</p1:MachineName>
+          <p1:MachineName>GREEN-DOME-2</p1:MachineName>
         </Combinator>
       </Expression>
       <Expression xsi:type="Combinator">
@@ -112,7 +115,7 @@
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.BehaviorBoard.bonsai">
                           <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
-                          <PortName>COM11</PortName>
+                          <PortName>COM10</PortName>
                           <DumpRegisters>true</DumpRegisters>
                           <Heartbeat>Enabled</Heartbeat>
                           <EventsSubjectName>BehaviorEvents</EventsSubjectName>
@@ -168,7 +171,7 @@
                                   <harp:VisualIndicators>On</harp:VisualIndicators>
                                   <harp:Heartbeat>Enabled</harp:Heartbeat>
                                   <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                                  <harp:PortName>COM14</harp:PortName>
+                                  <harp:PortName>COM7</harp:PortName>
                                 </Combinator>
                               </Expression>
                               <Expression xsi:type="rx:BehaviorSubject">
@@ -188,7 +191,7 @@
                                   <harp:VisualIndicators>On</harp:VisualIndicators>
                                   <harp:Heartbeat>Enabled</harp:Heartbeat>
                                   <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                                  <harp:PortName>COM12</harp:PortName>
+                                  <harp:PortName>COM8</harp:PortName>
                                 </Combinator>
                               </Expression>
                               <Expression xsi:type="rx:BehaviorSubject">
@@ -920,6 +923,72 @@
                       </Edges>
                     </Workflow>
                   </Expression>
+                  <Expression xsi:type="GroupWorkflow">
+                    <Name>Audio</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="GroupWorkflow">
+                          <Name>MixerDevice</Name>
+                          <Workflow>
+                            <Nodes>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="p3:CreateMixerContext">
+                                  <p3:HostApi>Windows WDM-KS</p3:HostApi>
+                                  <p3:DeviceName>Speakers (XMOS xCORE-200 MC (UAC2.0))</p3:DeviceName>
+                                  <p3:SampleRate>48000</p3:SampleRate>
+                                  <p3:SuggestedLatency>0.002</p3:SuggestedLatency>
+                                </Combinator>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="p3:StartMixer" />
+                              </Expression>
+                              <Expression xsi:type="rx:BehaviorSubject">
+                                <Name>Mixer</Name>
+                              </Expression>
+                              <Expression xsi:type="WorkflowOutput" />
+                              <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p4:Mat">
+                                <rx:Name>MixerBuffer</rx:Name>
+                              </Expression>
+                              <Expression xsi:type="SubscribeSubject">
+                                <Name>Mixer</Name>
+                              </Expression>
+                              <Expression xsi:type="PropertyMapping">
+                                <PropertyMappings>
+                                  <Property Name="Mixer" />
+                                </PropertyMappings>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="p3:QueueBuffer" />
+                              </Expression>
+                            </Nodes>
+                            <Edges>
+                              <Edge From="0" To="1" Label="Source1" />
+                              <Edge From="1" To="2" Label="Source1" />
+                              <Edge From="2" To="3" Label="Source1" />
+                              <Edge From="4" To="7" Label="Source1" />
+                              <Edge From="5" To="6" Label="Source1" />
+                              <Edge From="6" To="7" Label="Source2" />
+                            </Edges>
+                          </Workflow>
+                        </Expression>
+                        <Expression xsi:type="Annotation">
+                          <Name>Any errors during boot up can cause blue screens, so we delay this a bit</Name>
+                          <Text><![CDATA[Any errors during boot up can cause blue screens, so we delay this a bit]]></Text>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:DelaySubscription">
+                            <rx:DueTime>PT3S</rx:DueTime>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="2" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source2" />
+                        <Edge From="2" To="3" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
                 </Nodes>
                 <Edges>
                   <Edge From="0" To="1" Label="Source1" />
@@ -983,7 +1052,7 @@
               <gui:Name>BLANK</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>3950,5800,7900,2600,1700;</gui:Text>
+              <gui:Text>500,790,710,300,180;</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:ButtonBuilder">
@@ -1280,6 +1349,52 @@
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:ButtonBuilder">
+              <gui:Name>Speaker0</gui:Name>
+              <gui:Enabled>true</gui:Enabled>
+              <gui:Visible>true</gui:Visible>
+              <gui:Text>Speaker0</gui:Text>
+            </Expression>
+            <Expression xsi:type="rx:PublishSubject">
+              <Name>Speaker0</Name>
+            </Expression>
+            <Expression xsi:type="VisualizerMapping" />
+            <Expression xsi:type="gui:ButtonBuilder">
+              <gui:Name>Speaker1</gui:Name>
+              <gui:Enabled>true</gui:Enabled>
+              <gui:Visible>true</gui:Visible>
+              <gui:Text>Speaker1</gui:Text>
+            </Expression>
+            <Expression xsi:type="rx:PublishSubject">
+              <Name>Speaker1</Name>
+            </Expression>
+            <Expression xsi:type="VisualizerMapping" />
+            <Expression xsi:type="gui:ButtonBuilder">
+              <gui:Name>Speaker2</gui:Name>
+              <gui:Enabled>true</gui:Enabled>
+              <gui:Visible>true</gui:Visible>
+              <gui:Text>Speaker2</gui:Text>
+            </Expression>
+            <Expression xsi:type="rx:PublishSubject">
+              <Name>Speaker2</Name>
+            </Expression>
+            <Expression xsi:type="VisualizerMapping" />
+            <Expression xsi:type="gui:TableLayoutPanelBuilder">
+              <gui:Enabled>true</gui:Enabled>
+              <gui:Visible>true</gui:Visible>
+              <gui:ColumnCount>3</gui:ColumnCount>
+              <gui:RowCount>1</gui:RowCount>
+              <gui:ColumnStyles />
+              <gui:RowStyles />
+              <gui:CellSpans />
+            </Expression>
+            <Expression xsi:type="VisualizerMapping" />
+            <Expression xsi:type="gui:GroupBoxBuilder">
+              <gui:Enabled>true</gui:Enabled>
+              <gui:Visible>true</gui:Visible>
+              <gui:Text>SpeakerTest</gui:Text>
+            </Expression>
+            <Expression xsi:type="VisualizerMapping" />
+            <Expression xsi:type="gui:ButtonBuilder">
               <gui:Name>LONG LEFT FLUSH</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
@@ -1331,7 +1446,7 @@
               <gui:Name>Flush Valves</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:ColumnCount>2</gui:ColumnCount>
+              <gui:ColumnCount>3</gui:ColumnCount>
               <gui:RowCount>2</gui:RowCount>
               <gui:ColumnStyles />
               <gui:RowStyles />
@@ -1426,12 +1541,12 @@
             <Edge From="68" To="69" Label="Source1" />
             <Edge From="69" To="70" Label="Source1" />
             <Edge From="70" To="71" Label="Source1" />
-            <Edge From="70" To="105" Label="Source1" />
+            <Edge From="70" To="118" Label="Source1" />
             <Edge From="71" To="72" Label="Source25" />
             <Edge From="72" To="73" Label="Source1" />
             <Edge From="73" To="74" Label="Source1" />
             <Edge From="74" To="75" Label="Source1" />
-            <Edge From="75" To="104" Label="Source1" />
+            <Edge From="75" To="117" Label="Source1" />
             <Edge From="76" To="77" Label="Source1" />
             <Edge From="77" To="78" Label="Source1" />
             <Edge From="78" To="79" Label="Source1" />
@@ -1445,23 +1560,36 @@
             <Edge From="86" To="87" Label="Source1" />
             <Edge From="87" To="88" Label="Source1" />
             <Edge From="88" To="89" Label="Source1" />
-            <Edge From="89" To="104" Label="Source2" />
+            <Edge From="89" To="117" Label="Source2" />
             <Edge From="90" To="91" Label="Source1" />
             <Edge From="91" To="92" Label="Source1" />
-            <Edge From="92" To="93" Label="Source1" />
+            <Edge From="92" To="99" Label="Source1" />
             <Edge From="93" To="94" Label="Source1" />
-            <Edge From="94" To="100" Label="Source1" />
-            <Edge From="95" To="96" Label="Source1" />
+            <Edge From="94" To="95" Label="Source1" />
+            <Edge From="95" To="99" Label="Source2" />
             <Edge From="96" To="97" Label="Source1" />
             <Edge From="97" To="98" Label="Source1" />
-            <Edge From="98" To="99" Label="Source1" />
-            <Edge From="99" To="100" Label="Source2" />
+            <Edge From="98" To="99" Label="Source3" />
+            <Edge From="99" To="100" Label="Source1" />
             <Edge From="100" To="101" Label="Source1" />
             <Edge From="101" To="102" Label="Source1" />
-            <Edge From="102" To="103" Label="Source1" />
-            <Edge From="103" To="104" Label="Source3" />
+            <Edge From="102" To="117" Label="Source3" />
+            <Edge From="103" To="104" Label="Source1" />
+            <Edge From="104" To="105" Label="Source1" />
             <Edge From="105" To="106" Label="Source1" />
-            <Edge From="107" To="108" Label="Source1" />
+            <Edge From="106" To="107" Label="Source1" />
+            <Edge From="107" To="113" Label="Source1" />
+            <Edge From="108" To="109" Label="Source1" />
+            <Edge From="109" To="110" Label="Source1" />
+            <Edge From="110" To="111" Label="Source1" />
+            <Edge From="111" To="112" Label="Source1" />
+            <Edge From="112" To="113" Label="Source2" />
+            <Edge From="113" To="114" Label="Source1" />
+            <Edge From="114" To="115" Label="Source1" />
+            <Edge From="115" To="116" Label="Source1" />
+            <Edge From="116" To="117" Label="Source4" />
+            <Edge From="118" To="119" Label="Source1" />
+            <Edge From="120" To="121" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -2572,6 +2700,124 @@
                   <Edge From="10" To="11" Label="Source1" />
                   <Edge From="12" To="13" Label="Source1" />
                   <Edge From="14" To="15" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>TestSpeakers</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>Speaker0</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="IntProperty">
+                      <Value>0</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>Speaker1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="IntProperty">
+                      <Value>1</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>Speaker2</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="IntProperty">
+                      <Value>2</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Merge" />
+                  </Expression>
+                  <Expression xsi:type="rx:SelectMany">
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="ExternalizedMapping">
+                          <Property Name="BufferLength" />
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="dsp:FunctionGenerator">
+                            <dsp:BufferLength>48000</dsp:BufferLength>
+                            <dsp:Frequency>1000</dsp:Frequency>
+                            <dsp:Waveform>Sine</dsp:Waveform>
+                            <dsp:SampleRate>48000</dsp:SampleRate>
+                            <dsp:Depth>F32</dsp:Depth>
+                            <dsp:Amplitude>0.05</dsp:Amplitude>
+                            <dsp:Offset>0</dsp:Offset>
+                            <dsp:Phase>0</dsp:Phase>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Take">
+                            <rx:Count>1</rx:Count>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="p1:Broadcast">
+                            <p1:ChannelCount>32</p1:ChannelCount>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Take">
+                            <rx:Count>1</rx:Count>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:ToArray" />
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="Channels" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="p1:ChannelActivation">
+                            <p1:Channels>
+                              <p1:int>2</p1:int>
+                            </p1:Channels>
+                            <p1:Gain>
+                              <p1:double>1</p1:double>
+                            </p1:Gain>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="MulticastSubject">
+                          <Name>MixerBuffer</Name>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
+                        <Edge From="2" To="3" Label="Source1" />
+                        <Edge From="3" To="8" Label="Source1" />
+                        <Edge From="4" To="5" Label="Source1" />
+                        <Edge From="5" To="6" Label="Source1" />
+                        <Edge From="6" To="7" Label="Source1" />
+                        <Edge From="7" To="8" Label="Source2" />
+                        <Edge From="8" To="9" Label="Source1" />
+                        <Edge From="9" To="10" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="6" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="3" To="6" Label="Source2" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source3" />
+                  <Edge From="6" To="7" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
