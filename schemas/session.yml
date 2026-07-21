@@ -39,8 +39,8 @@ TrialStructure:
     - 5
     - 1
   iti:
-    - 1.5
     - 2.5
+    - 3.5
   quiescent:
     - 0.1
     - 0.25
