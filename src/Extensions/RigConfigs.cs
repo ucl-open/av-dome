@@ -52,14 +52,14 @@ public class RigConfigs
 
         // Valve Calibration
         currentRigConfigs.ValveOpenTimeLeft = 30;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 30;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 28;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
         currentRigConfigs.GammaLUTFilePath = @"C:\RigConfigs\gammalut.bmp";  // path to Gamma Lookup Table file
 
         // StepperMotor Default Position
-        currentRigConfigs.StepperMotorDefaultPosition = new int[] { 500, 790, 710, 300, 180 };  // 5 Motors
+        currentRigConfigs.StepperMotorDefaultPosition = new int[] { 5900, 6040, 4610, 1500, 0 };  // 5 Motors
 
         return currentRigConfigs;
     }
