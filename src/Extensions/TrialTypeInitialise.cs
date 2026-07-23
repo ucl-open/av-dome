@@ -121,7 +121,7 @@ public class TrialTypeInitialise
             isFirstTrial = false;
 
             // Depending on training stage, different trialsTypes are presented and autoRewards enabled/disabled. Changes made here, affect GenerateNewTrial()
-            ApplyTrainingStageRules();
+            value = ApplyTrainingStageRules(value);
 
             // Determine settings for the upcoming trials
             var newTrial = GenerateNewTrial(value);
@@ -167,7 +167,7 @@ public class TrialTypeInitialise
         return original;
     }
     
-    private void ApplyTrainingStageRules()
+    private AvTask ApplyTrainingStageRules(AvTask value)
     {
         // // Training Stages (5 total):
         // Stage 0 — Habituation - Present coherent trials only but automatically reward animal in 80% of trials. 
@@ -180,40 +180,47 @@ public class TrialTypeInitialise
             case 0: // Habituation phase - Coherent trials only
                 trialWeights = new List<int> { 0, 0, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Automatically reward 80% of trials (handled in trial generation)
-                BothSpoutsProbability = 0.25; // Only regular trials
-                RewardSizeInUl = 6; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                BothSpoutsProbability = 0.5; // Only regular trials
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                value.GratingsSpecifications.Contrast = new List<double> { 1.0 }; // Set contrast for gratings
                 break;
             case 1: // Coherent trials only
                 trialWeights = new List<int> { 0, 0, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Still automatically reward 20% of trials to help mice transition to new task structure
-                BothSpoutsProbability = 0.8; // Only regular trials
-                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                BothSpoutsProbability = 0.9; // Only regular trials
+                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.1, 0.2, 0.4, 0.8 }; // Set contrast for gratings
                 break;
             case 2: // Unisensory auditory added
                 trialWeights = new List<int> { 0, 10, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Still automatically reward 10% of trials
                 BothSpoutsProbability = 1.0; // Only regular trials
-                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.1, 0.2, 0.4, 0.8 }; // Set contrast for gratings
                 break;
             case 3: // Unisensory visual added
                 trialWeights = new List<int> { 10, 10, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Still automatically reward 10% of trials
                 BothSpoutsProbability = 1.0; // Only regular trials
-                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.1, 0.2, 0.4, 0.8 }; // Set contrast for gratings
                 break;
             case 4: // Conflict and Neutral trials added
                 trialWeights = new List<int> { 10, 10, 5, 5, 1 };
                 autoRewardProbability = 0.0;  // No more automatic rewards in final stage
                 BothSpoutsProbability = 1.0; // Only regular trials
-                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.1, 0.2, 0.4, 0.8 }; // Set contrast for gratings
                 break;
             default:
                 trialWeights = new List<int> { 10, 10, 5, 5, 1 };
                 autoRewardProbability = 0.0;
                 BothSpoutsProbability = 1.0; // Only regular trials
-                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.1, 0.2, 0.4, 0.8 }; // Set contrast for gratings
                 break;
         }
+        return value;
     }
 
     private TrialData GenerateNewTrial(AvTask value)
