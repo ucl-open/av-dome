@@ -11,12 +11,15 @@ using System.Collections;
 [WorkflowElementCategory(ElementCategory.Transform)]
 public class RigConfigs
 {
-    public String MachineName = System.Environment.MachineName;  // This fetches the current Rig PCs name to fetch calibrations. Ensure these names are correct and unique!
+    public String MachineName;
 
     public IObservable<RigSpecificConfigs> Process(IObservable<String> source)
     {
         return source.Select(value =>
         {
+            MachineName = System.Environment.MachineName;  // This fetches the current Rig PCs name to fetch calibrations. Ensure these names are correct and unique!
+
+            Console.WriteLine(MachineName);
             switch (MachineName)
             {
                 case "GREEN-DOME-2":
@@ -49,14 +52,14 @@ public class RigConfigs
 
         // Valve Calibration
         currentRigConfigs.ValveOpenTimeLeft = 30;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 30;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 28;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
         currentRigConfigs.GammaLUTFilePath = @"C:\RigConfigs\gammalut.bmp";  // path to Gamma Lookup Table file
 
         // StepperMotor Default Position
-        currentRigConfigs.StepperMotorDefaultPosition = new int[] { 3200, 5500, 4700, 1850, 950 };  // 5 Motors
+        currentRigConfigs.StepperMotorDefaultPosition = new int[] { 5900, 6040, 4610, 1500, 0 };  // 5 Motors
 
         return currentRigConfigs;
     }
@@ -79,8 +82,8 @@ public class RigConfigs
         currentRigConfigs.SerialNumberCamera3 = "25366318";  // Body
 
         // Valve Calibration
-        currentRigConfigs.ValveOpenTimeLeft = 15;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 30;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeLeft = 20;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 25;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
