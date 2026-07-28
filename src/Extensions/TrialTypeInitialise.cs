@@ -187,7 +187,7 @@ public class TrialTypeInitialise
             case 1: // Coherent trials only
                 trialWeights = new List<int> { 0, 0, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Still automatically reward 20% of trials to help mice transition to new task structure
-                BothSpoutsProbability = 0.9; // Only regular trials
+                BothSpoutsProbability = 1.0; // Only regular trials
                 RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
                 value.GratingsSpecifications.Contrast = new List<double> { 0, 0.1, 0.2, 0.4, 0.8 }; // Set contrast for gratings
                 break;

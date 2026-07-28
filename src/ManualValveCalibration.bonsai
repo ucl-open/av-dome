@@ -11,7 +11,7 @@
     <Nodes>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="FloatProperty">
-          <Value>16</Value>
+          <Value>28</Value>
         </Combinator>
       </Expression>
       <Expression xsi:type="PropertyMapping">
@@ -21,7 +21,7 @@
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="FloatProperty">
-          <Value>31</Value>
+          <Value>37</Value>
         </Combinator>
       </Expression>
       <Expression xsi:type="PropertyMapping">
@@ -45,7 +45,7 @@
           <Nodes>
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.BehaviorBoard.bonsai">
               <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
-              <PortName>COM11</PortName>
+              <PortName>COM10</PortName>
               <DumpRegisters>true</DumpRegisters>
               <Heartbeat>Disabled</Heartbeat>
               <EventsSubjectName>BehaviorEvents</EventsSubjectName>
@@ -58,8 +58,8 @@
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.PulseController.bonsai">
               <BehaviorCommandsSubjectName>BehaviorCommands</BehaviorCommandsSubjectName>
               <OutputPulseEnable>DO1 DO2 DO3</OutputPulseEnable>
-              <PulseDO1>16</PulseDO1>
-              <PulseDO2>31</PulseDO2>
+              <PulseDO1>28</PulseDO1>
+              <PulseDO2>39</PulseDO2>
               <PulseDO3>20</PulseDO3>
               <BehaviorEventsSubjectName>BehaviorEvents</BehaviorEventsSubjectName>
               <TriggerPulseSubjectName>TriggerValve</TriggerPulseSubjectName>
@@ -73,7 +73,7 @@
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="rx:Timer">
           <rx:DueTime>PT1S</rx:DueTime>
-          <rx:Period>PT0.25S</rx:Period>
+          <rx:Period>PT0.12S</rx:Period>
         </Combinator>
       </Expression>
       <Expression xsi:type="Combinator">
@@ -87,7 +87,7 @@
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="IntProperty">
-          <Value>1</Value>
+          <Value>2</Value>
         </Combinator>
       </Expression>
       <Expression xsi:type="MulticastSubject">
