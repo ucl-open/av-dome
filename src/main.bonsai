@@ -2378,19 +2378,24 @@
                         <Expression xsi:type="ExternalizedMapping">
                           <Property Name="FileName" DisplayName="BackgroundPath" />
                         </Expression>
-                        <Expression xsi:type="Combinator">
+                        <Expression xsi:type="Disable">
+                          <Builder xsi:type="Combinator">
                           <Combinator xsi:type="al:AudioReader">
                             <al:FileName>C:\dev\av-dome\src\LocalFiles\background_white_noise.wav</al:FileName>
                             <al:BufferLength>0</al:BufferLength>
                             <al:SampleRate>0</al:SampleRate>
                           </Combinator>
+</Builder>
                         </Expression>
-                        <Expression xsi:type="Combinator">
+                        <Expression xsi:type="Disable">
+                          <Builder xsi:type="Combinator">
                           <Combinator xsi:type="rx:Take">
                             <rx:Count>1</rx:Count>
                           </Combinator>
+</Builder>
                         </Expression>
-                        <Expression xsi:type="Combinator">
+                        <Expression xsi:type="Disable">
+                          <Builder xsi:type="Combinator">
                           <Combinator xsi:type="dsp:Rescale">
                             <dsp:Min>-32768</dsp:Min>
                             <dsp:Max>32768</dsp:Max>
@@ -2398,16 +2403,21 @@
                             <dsp:RangeMax>1</dsp:RangeMax>
                             <dsp:RescaleType>Linear</dsp:RescaleType>
                           </Combinator>
+</Builder>
                         </Expression>
-                        <Expression xsi:type="Combinator">
+                        <Expression xsi:type="Disable">
+                          <Builder xsi:type="Combinator">
                           <Combinator xsi:type="dsp:ConvertScale">
                             <dsp:Depth>F32</dsp:Depth>
                             <dsp:Scale>1</dsp:Scale>
                             <dsp:Shift>0</dsp:Shift>
                           </Combinator>
+</Builder>
                         </Expression>
-                        <Expression xsi:type="rx:AsyncSubject">
+                        <Expression xsi:type="Disable">
+                          <Builder xsi:type="rx:AsyncSubject">
                           <Name>waveformBackground</Name>
+</Builder>
                         </Expression>
                         <Expression xsi:type="ExternalizedMapping">
                           <Property Name="FileName" DisplayName="PinkNoisePath" />
@@ -8700,58 +8710,86 @@ Item4 as ExposureTime)</scr:Expression>
           </Edges>
         </Workflow>
       </Expression>
-      <Expression xsi:type="SubscribeSubject">
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="SubscribeSubject">
         <Name>FrameEvents1</Name>
+</Builder>
       </Expression>
-      <Expression xsi:type="Combinator">
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
         <Combinator xsi:type="rx:Skip">
           <rx:Count>1</rx:Count>
         </Combinator>
+</Builder>
       </Expression>
-      <Expression xsi:type="IncludeWorkflow" Path="Extensions\DroppedFramesMonitor.bonsai" />
-      <Expression xsi:type="Combinator">
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="IncludeWorkflow" Path="Extensions\DroppedFramesMonitor.bonsai" />
+</Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
         <Combinator xsi:type="StringProperty">
           <Value>Camera1</Value>
         </Combinator>
+</Builder>
       </Expression>
-      <Expression xsi:type="SubscribeSubject">
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="SubscribeSubject">
         <Name>FrameEvents2</Name>
+</Builder>
       </Expression>
-      <Expression xsi:type="Combinator">
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
         <Combinator xsi:type="rx:Skip">
           <rx:Count>1</rx:Count>
         </Combinator>
+</Builder>
       </Expression>
-      <Expression xsi:type="IncludeWorkflow" Path="Extensions\DroppedFramesMonitor.bonsai" />
-      <Expression xsi:type="Combinator">
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="IncludeWorkflow" Path="Extensions\DroppedFramesMonitor.bonsai" />
+</Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
         <Combinator xsi:type="StringProperty">
           <Value>Camera2</Value>
         </Combinator>
+</Builder>
       </Expression>
-      <Expression xsi:type="SubscribeSubject">
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="SubscribeSubject">
         <Name>FrameEvents3</Name>
+</Builder>
       </Expression>
-      <Expression xsi:type="Combinator">
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
         <Combinator xsi:type="rx:Skip">
           <rx:Count>1</rx:Count>
         </Combinator>
+</Builder>
       </Expression>
-      <Expression xsi:type="IncludeWorkflow" Path="Extensions\DroppedFramesMonitor.bonsai" />
-      <Expression xsi:type="Combinator">
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="IncludeWorkflow" Path="Extensions\DroppedFramesMonitor.bonsai" />
+</Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
         <Combinator xsi:type="StringProperty">
           <Value>Camera3</Value>
         </Combinator>
+</Builder>
       </Expression>
-      <Expression xsi:type="Combinator">
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="Combinator">
         <Combinator xsi:type="rx:Merge" />
+</Builder>
       </Expression>
-      <Expression xsi:type="io:CsvWriter">
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="io:CsvWriter">
         <io:FileName>C:\testdata\droppedFrames.csv</io:FileName>
         <io:Append>true</io:Append>
         <io:Overwrite>false</io:Overwrite>
         <io:Suffix>None</io:Suffix>
         <io:IncludeHeader>false</io:IncludeHeader>
         <io:Selector>it</io:Selector>
+</Builder>
       </Expression>
       <Expression xsi:type="SubscribeSubject">
         <Name>ResponseData</Name>
