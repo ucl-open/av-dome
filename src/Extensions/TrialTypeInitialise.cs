@@ -19,6 +19,7 @@ public class TrialTypeInitialise
     [Description("Set to -1 to use the weighted random selection (recommended). Or force specific trial: 0=UnisensoryVisual, 1=UnisensoryAudio, 2=Multisensory (coherent), 3=Multisensory (conflict), 4=Neutral")]
     public int trainingStageId { get; set; }  // This is set by bonsai over the GUI.
     public int TrialType { get; set; }
+    // public String mouseID { get; set; }
     
     // Response handling properties
     // Currently unused:
@@ -289,6 +290,17 @@ public class TrialTypeInitialise
         trialData.IsRepeat = false;
         trialData.RepeatCount = 0;
         SetupOptogeneticParameters(trialData, value, trialRand);
+
+        // this seems like a good spot to individualize mice for testing purposes:
+
+        // trialData.licksMoveGrating = 0;
+        // trialData.licksToTarget = 1;
+        // var list = new List<string>() { "AM009", "AM018", "AM020", "Dummy" };
+        // if (list.Contains(mouseID)) {
+        //     trialData.licksMoveGrating = 1;
+        //     trialData.licksToTarget = 4;
+        // }
+
         return trialData;
     }
     
@@ -917,10 +929,11 @@ public class TrialData
     public bool BothSpouts;  // Bool defining if current trial is presenting both spouts (regular trial) or just the correct spout (used for initial training).
     public double BothSpoutsProbability { get; set; }  // by default only regular trials. 
 
-    // public double openLoopDuration { get { return 0.5; } }
-    public double openLoopDuration { get { return 0.0; } }
-    // public double closedLoopDuration { get { return 1.0; } }
-    public double closedLoopDuration { get { return 1.5; } }
+    // public double licksMoveGrating { get; set; }  // use lick-grating closed loop?
+    // public double licksToTarget { get; set; }  // when above true, how often until reward and how much to move by
+ 
+    public double openLoopDuration { get { return 0.5; } }
+    public double closedLoopDuration { get { return 1.0; } }
 
     // VisualStimulus
     public double visualAzimuth;
