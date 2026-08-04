@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<WorkflowBuilder Version="2.9.0"
+<WorkflowBuilder Version="2.9.1"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xmlns:p1="clr-namespace:;assembly=Extensions"
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
@@ -936,6 +936,7 @@
                                   <p3:HostApi>Windows WDM-KS</p3:HostApi>
                                   <p3:DeviceName>Speakers (XMOS xCORE-200 MC (UAC2.0))</p3:DeviceName>
                                   <p3:SampleRate>48000</p3:SampleRate>
+                                  <p3:ChannelCount xsi:nil="true" />
                                   <p3:SuggestedLatency>0.002</p3:SuggestedLatency>
                                 </Combinator>
                               </Expression>
@@ -952,22 +953,16 @@
                               <Expression xsi:type="SubscribeSubject">
                                 <Name>Mixer</Name>
                               </Expression>
-                              <Expression xsi:type="PropertyMapping">
-                                <PropertyMappings>
-                                  <Property Name="Mixer" />
-                                </PropertyMappings>
-                              </Expression>
                               <Expression xsi:type="Combinator">
-                                <Combinator xsi:type="p3:QueueBuffer" />
+                                <Combinator xsi:type="p3:PlayBuffer" />
                               </Expression>
                             </Nodes>
                             <Edges>
                               <Edge From="0" To="1" Label="Source1" />
                               <Edge From="1" To="2" Label="Source1" />
                               <Edge From="2" To="3" Label="Source1" />
-                              <Edge From="4" To="7" Label="Source1" />
-                              <Edge From="5" To="6" Label="Source1" />
-                              <Edge From="6" To="7" Label="Source2" />
+                              <Edge From="4" To="6" Label="Source1" />
+                              <Edge From="5" To="6" Label="Source2" />
                             </Edges>
                           </Workflow>
                         </Expression>
@@ -1052,7 +1047,7 @@
               <gui:Name>BLANK</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>500,790,710,300,180;</gui:Text>
+              <gui:Text>5900,6040,4610,1500,0;</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:ButtonBuilder">
@@ -1649,7 +1644,7 @@
                               <Expression xsi:type="beh:CreateMessage">
                                 <harp:MessageType>Write</harp:MessageType>
                                 <harp:Payload xsi:type="beh:CreatePulseDO1Payload">
-                                  <beh:PulseDO1>15</beh:PulseDO1>
+                                  <beh:PulseDO1>28</beh:PulseDO1>
                                 </harp:Payload>
                               </Expression>
                               <Expression xsi:type="ExternalizedMapping">
@@ -1664,7 +1659,7 @@
                               <Expression xsi:type="beh:CreateMessage">
                                 <harp:MessageType>Write</harp:MessageType>
                                 <harp:Payload xsi:type="beh:CreatePulseDO2Payload">
-                                  <beh:PulseDO2>30</beh:PulseDO2>
+                                  <beh:PulseDO2>34</beh:PulseDO2>
                                 </harp:Payload>
                               </Expression>
                               <Expression xsi:type="MulticastSubject">
