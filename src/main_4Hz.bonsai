@@ -6883,7 +6883,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="StringProperty">
-                <Value>C:\Data\AV_Dome</Value>
+                <Value>C:\Data\AV_Dome_4Hz_movingStim</Value>
               </Combinator>
             </Expression>
             <Expression xsi:type="PropertyMapping">
