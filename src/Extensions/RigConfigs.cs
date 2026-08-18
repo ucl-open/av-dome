@@ -24,6 +24,8 @@ public class RigConfigs
             {
                 case "GREEN-DOME-2":
                     return GreenDome2configs();
+                case "BLUE-OPTO-1":
+                    return BlueOpto1configs();
                 case "BLUE-OPTO-2":
                     return BlueOpto2configs();
                 default:
@@ -64,6 +66,37 @@ public class RigConfigs
         return currentRigConfigs;
     }
 
+    private RigSpecificConfigs BlueOpto1configs()
+    {
+        RigSpecificConfigs currentRigConfigs = new RigSpecificConfigs();
+
+        // COM ports
+        currentRigConfigs.COMPortBehaviourBoard = "COM6";
+        currentRigConfigs.COMPortStepperDriver1 = "COM3";  // Motors 1,2,3
+        currentRigConfigs.COMPortStepperDriver2 = "COM4";  // Motors 4,5
+        currentRigConfigs.COMPortTimestampGenerator = "COM5";
+        currentRigConfigs.COMPortLicketySplitLeft = "COM7";
+        currentRigConfigs.COMPortLicketySplitRight = "COM8";
+        
+        // Cameras
+        currentRigConfigs.SerialNumberCamera1 = "23201535";  // Face
+        currentRigConfigs.SerialNumberCamera2 = "23201529";  // Pupil
+        currentRigConfigs.SerialNumberCamera3 = "23199186";  // Body
+
+        // Valve Calibration
+        currentRigConfigs.ValveOpenTimeLeft = 40;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 40;  // in ms. ~10ms min.
+
+        // MeshMapping and Gamma calibration for Visual Stimuli
+        currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
+        currentRigConfigs.GammaLUTFilePath = @"C:\RigConfigs\gammalut.bmp";  // path to Gamma Lookup Table file
+
+        // StepperMotor Default Position
+        currentRigConfigs.StepperMotorDefaultPosition = new int[] { 3950, 5800, 7900, 2600, 1700 };  // 5 Motors
+
+        return currentRigConfigs;
+    }
+
     private RigSpecificConfigs BlueOpto2configs()
     {
         RigSpecificConfigs currentRigConfigs = new RigSpecificConfigs();
@@ -95,6 +128,7 @@ public class RigConfigs
         return currentRigConfigs;
     }
 }
+
 
 public class RigSpecificConfigs
 {
