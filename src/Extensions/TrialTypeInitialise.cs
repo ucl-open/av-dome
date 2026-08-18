@@ -920,6 +920,7 @@ public class TrialData
     public int RepeatCount;
     public string targetSide;
     public double ITI;
+    public double IncorrectTimeoutDuration { get { return 3.0; } }  // in seconds
     public double autoRewardProbability;  // probability of automatically rewarding the trial (for early training stages)
     public bool autoReward;  // Bool defining if current trial is autoRewarded or not
     public bool largeReward;  // Bool defining if current trial is autoRewarded or not
@@ -932,8 +933,8 @@ public class TrialData
     // public double licksMoveGrating { get; set; }  // use lick-grating closed loop?
     // public double licksToTarget { get; set; }  // when above true, how often until reward and how much to move by
  
-    public double openLoopDuration { get { return 0.5; } }
-    public double closedLoopDuration { get { return 1.0; } }
+    public double openLoopDuration { get { return 0.0; } }
+    public double closedLoopDuration { get { return 1.5; } }
 
     // VisualStimulus
     public double visualAzimuth;
