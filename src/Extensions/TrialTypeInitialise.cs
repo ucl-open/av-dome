@@ -183,14 +183,14 @@ public class TrialTypeInitialise
                 autoRewardProbability = 0.0; // Automatically reward 80% of trials (handled in trial generation)
                 BothSpoutsProbability = 0.5; // Only regular trials
                 RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
-                value.GratingsSpecifications.Contrast = new List<double> { 1.0, 0.5 }; // Set contrast for gratings
+                value.GratingsSpecifications.Contrast = new List<double> { 1.0 }; // Set contrast for gratings
                 break;
             case 1: // Coherent trials only
                 trialWeights = new List<int> { 0, 0, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Still automatically reward 20% of trials to help mice transition to new task structure
                 BothSpoutsProbability = 1.0; // Only regular trials
                 RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
-                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.25, 0.5, 1.0 }; // Set contrast for gratings
+                value.GratingsSpecifications.Contrast = new List<double> { 1.0 }; // Set contrast for gratings
                 break;
             case 2: // Unisensory auditory added
                 trialWeights = new List<int> { 0, 10, 10, 0, 0 };
