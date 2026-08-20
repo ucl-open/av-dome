@@ -183,14 +183,14 @@ public class TrialTypeInitialise
                 autoRewardProbability = 0.0; // Automatically reward 80% of trials (handled in trial generation)
                 BothSpoutsProbability = 0.5; // Only regular trials
                 RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
-                value.GratingsSpecifications.Contrast = new List<double> { 2.0 }; // Set contrast for gratings
+                value.GratingsSpecifications.Contrast = new List<double> { 3.0 }; // Set contrast for gratings
                 break;
             case 1: // Coherent trials only
                 trialWeights = new List<int> { 0, 0, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Still automatically reward 20% of trials to help mice transition to new task structure
                 BothSpoutsProbability = 1.0; // Only regular trials
                 RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
-                value.GratingsSpecifications.Contrast = new List<double> { 2.0 }; // Set contrast for gratings
+                value.GratingsSpecifications.Contrast = new List<double> { 3.0 }; // Set contrast for gratings
                 break;
             case 2: // Unisensory auditory added
                 trialWeights = new List<int> { 0, 10, 10, 0, 0 };
@@ -920,13 +920,13 @@ public class TrialData
     public int RepeatCount;
     public string targetSide;
     public double ITI;
-    public double IncorrectTimeoutDuration { get { return 3.0; } }  // in seconds
+    public double IncorrectTimeoutDuration { get { return 4.0; } }  // in seconds
     public double autoRewardProbability;  // probability of automatically rewarding the trial (for early training stages)
     public bool autoReward;  // Bool defining if current trial is autoRewarded or not
     public bool largeReward;  // Bool defining if current trial is autoRewarded or not
     public double RewardSizeInUl;  // Size of rewards in ul.
-    public double LargeRewardMultiplier { get { return 5; } }  // Size of rewards in ul.
-    public double LargeRewardProbability { get { return 0.05; } }  // Probability of receiving a large reward
+    public double LargeRewardMultiplier { get { return 1; } }  // Size of rewards in ul.
+    public double LargeRewardProbability { get { return 0.00; } }  // Probability of receiving a large reward
     public bool BothSpouts;  // Bool defining if current trial is presenting both spouts (regular trial) or just the correct spout (used for initial training).
     public double BothSpoutsProbability { get; set; }  // by default only regular trials. 
 
@@ -939,7 +939,7 @@ public class TrialData
     // VisualStimulus
     public double visualAzimuth;
     public double visualElevation { get { return 15; } }
-    public double visualGaussianWindowSigma { get { return 15; } }  // in deg
+    public double visualGaussianWindowSigma { get { return 20; } }  // in deg
     public double visualContrast;
     public double visualOrientation { get { return 0; } }
     public double visualSpatialFrequency { get { return 0.066666667; } }
