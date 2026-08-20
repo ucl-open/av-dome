@@ -2659,22 +2659,40 @@
                           <Name>Mixer</Name>
                         </Expression>
                         <Expression xsi:type="WorkflowOutput" />
-                        <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p7:Mat">
-                          <rx:Name>MixerBuffer</rx:Name>
+                        <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p6:MixerSourceContext">
+                          <rx:Name>MixerStimSource</rx:Name>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
                           <Name>Mixer</Name>
                         </Expression>
                         <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="p6:PlayBuffer" />
+                          <Combinator xsi:type="p6:CreateSource">
+                            <p6:Looping>false</p6:Looping>
+                            <p6:Playing>true</p6:Playing>
+                            <p6:Gain>1</p6:Gain>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="MulticastSubject">
+                          <Name>MixerStimSource</Name>
+                        </Expression>
+                        <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p7:Mat">
+                          <rx:Name>MixerBuffer</rx:Name>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>MixerStimSource</Name>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="p6:AppendBuffer" />
                         </Expression>
                       </Nodes>
                       <Edges>
                         <Edge From="0" To="1" Label="Source1" />
                         <Edge From="1" To="2" Label="Source1" />
                         <Edge From="2" To="3" Label="Source1" />
-                        <Edge From="4" To="6" Label="Source1" />
-                        <Edge From="5" To="6" Label="Source2" />
+                        <Edge From="5" To="6" Label="Source1" />
+                        <Edge From="6" To="7" Label="Source1" />
+                        <Edge From="8" To="10" Label="Source1" />
+                        <Edge From="9" To="10" Label="Source2" />
                       </Edges>
                     </Workflow>
                   </Expression>
