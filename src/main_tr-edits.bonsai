@@ -11310,6 +11310,68 @@ Things we want to do with this:
         <Combinator xsi:type="rx:Repeat" />
       </Expression>
       <Expression xsi:type="IncludeWorkflow" Path="Extensions\StallDiagnostics.bonsai" />
+      <Expression xsi:type="GroupWorkflow">
+        <Name>StimulusTriggerLogs</Name>
+        <Description>Harp-timestamped CSV logs of stimulus trigger subjects. Onset is already logged by StallDiagnostics (StimulusStartEvents = StartAuditoryStimulus); this group adds visual-stimulus end (StopStimuli), stimulus-pipeline completion (StimuliFinished) and the auditory go cue (StartAuditoryGoCue).</Description>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>StopStimuli</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
+              <Name>Timestamp</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+              <LogName>StimulusStopEvents</LogName>
+              <Selector>Seconds</Selector>
+              <Extension>csv</Extension>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>StimuliFinished</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
+              <Name>Timestamp</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+              <LogName>StimuliFinishedEvents</LogName>
+              <Selector>Seconds</Selector>
+              <Extension>csv</Extension>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>StartAuditoryGoCue</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
+              <Name>Timestamp</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+              <LogName>GoCueEvents</LogName>
+              <Selector>Seconds,Value</Selector>
+              <Extension>csv</Extension>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>StartAuditoryStimulus</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
+              <Name>Timestamp</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+              <LogName>StimulusStartEvents</LogName>
+              <Selector>Seconds,Value</Selector>
+              <Extension>csv</Extension>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="5" Label="Source1" />
+            <Edge From="6" To="7" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="10" To="11" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
     </Nodes>
     <Edges>
       <Edge From="0" To="1" Label="Source1" />

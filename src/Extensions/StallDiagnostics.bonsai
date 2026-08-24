@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <WorkflowBuilder Version="2.9.0"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
@@ -7,7 +7,7 @@
                  xmlns:gl="clr-namespace:Bonsai.Shaders;assembly=Bonsai.Shaders"
                  xmlns:p1="clr-namespace:;assembly=Extensions"
                  xmlns="https://bonsai-rx.org/2018/workflow">
-  <Description>Drop-in stall diagnostics: dual watchdog (gl render loop + harp clock, refereed by the system clock), harp-stamped heartbeat and event-tap CSVs (RenderHeartbeat, ResponseEvents, StimulusStartEvents, TrialStartEvents). If either clock stalls for more than 5 s the workflow terminates with an exception carrying the watchdog message. Host workflow must provide the externalized subjects and PathPrefix.</Description>
+  <Description>Drop-in stall diagnostics: dual watchdog (gl render loop + harp clock, refereed by the system clock), harp-stamped heartbeat and event-tap CSVs (RenderHeartbeat, ResponseEvents, TrialStartEvents). If either clock stalls for more than 5 s the workflow terminates with an exception carrying the watchdog message. Host workflow must provide the externalized subjects and PathPrefix.</Description>
   <Workflow>
     <Nodes>
       <Expression xsi:type="Combinator">
@@ -150,17 +150,6 @@
         <Extension>csv</Extension>
       </Expression>
       <Expression xsi:type="SubscribeSubject">
-        <Name>StartAuditoryStimulus</Name>
-      </Expression>
-      <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
-        <Name>Timestamp</Name>
-      </Expression>
-      <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
-        <LogName>StimulusStartEvents</LogName>
-        <Selector>Seconds,Value</Selector>
-        <Extension>csv</Extension>
-      </Expression>
-      <Expression xsi:type="SubscribeSubject">
         <Name>thisTrialData</Name>
       </Expression>
       <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
@@ -176,9 +165,6 @@
       </Expression>
       <Expression xsi:type="ExternalizedMapping">
         <Property Name="Name" DisplayName="ResponseSubjectName" Description="The subject carrying trial response events (default: TrialSuccess)." />
-      </Expression>
-      <Expression xsi:type="ExternalizedMapping">
-        <Property Name="Name" DisplayName="StimulusSubjectName" Description="The subject marking stimulus start (default: StartAuditoryStimulus)." />
       </Expression>
       <Expression xsi:type="ExternalizedMapping">
         <Property Name="Name" DisplayName="TrialStartSubjectName" Description="The subject emitting per-trial data at trial start (default: thisTrialData)." />
@@ -212,16 +198,12 @@
       <Edge From="29" To="30" Label="Source1" />
       <Edge From="31" To="32" Label="Source1" />
       <Edge From="32" To="33" Label="Source1" />
-      <Edge From="34" To="35" Label="Source1" />
-      <Edge From="35" To="36" Label="Source1" />
-      <Edge From="37" To="7" Label="Source1" />
-      <Edge From="37" To="5" Label="Source2" />
-      <Edge From="37" To="29" Label="Source2" />
-      <Edge From="37" To="32" Label="Source2" />
-      <Edge From="37" To="35" Label="Source2" />
-      <Edge From="38" To="28" Label="Source1" />
-      <Edge From="39" To="31" Label="Source1" />
-      <Edge From="40" To="34" Label="Source1" />
+      <Edge From="34" To="7" Label="Source1" />
+      <Edge From="34" To="5" Label="Source2" />
+      <Edge From="34" To="29" Label="Source2" />
+      <Edge From="34" To="32" Label="Source2" />
+      <Edge From="35" To="28" Label="Source1" />
+      <Edge From="36" To="31" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
