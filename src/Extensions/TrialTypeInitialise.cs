@@ -920,6 +920,7 @@ public class TrialData
     public int RepeatCount;
     public string targetSide;
     public double ITI;
+    public double SpoutINDelay { get { return 0.5; } }  // in seconds. Relative to stimulus onset when to move response spouts IN
     public double IncorrectTimeoutDuration { get { return 4.0; } }  // in seconds
     public double autoRewardProbability;  // probability of automatically rewarding the trial (for early training stages)
     public bool autoReward;  // Bool defining if current trial is autoRewarded or not
