@@ -10621,7 +10621,7 @@ Item4 as ExposureTime)</scr:Expression>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Amb" />
+                    <Combinator xsi:type="rx:Merge" />
                   </Expression>
                   <Expression xsi:type="rx:SelectMany">
                     <Name>Stop Stimulus</Name>
