@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=../src/DataSchemas/ucl_open_av_dome.json
+#
+# av-dome rig configuration TEMPLATE
+#
+# Per-rig configuration files are NOT committed to this repo. To deploy a rig:
+#   1. Copy this file to the rig config location (default: C:\RigConfigs\) and
+#      rename it to the rig PC's machine name, e.g. C:\RigConfigs\GREEN-DOME-2.yml
+#      (the workflow resolves the file by hostname and fails at startup if missing).
+#   2. Fill in the values for that rig.
+#   3. Off-repo copies should replace the $schema path above with an absolute path
+#      to a checked-out src/DataSchemas/ucl_open_av_dome.json (or a raw GitHub URL)
+#      to keep editor validation working.
+#
+# version must match the ucl-open-av-dome python package semver that generated the schema.
+version: 0.0.0-rc1
+rootPath: C:\Data
+
+behaviorBoard:
+  portName: COM1
+
+timestampGenerator:
+  portName: COM2
+
+lickSpoutStage:
+  driverA:
+    portName: COM3        # motors 1,2,3
+  driverB:
+    portName: COM4        # motors 4,5
+  axisMapping:
+    leftElevation: { board: a, motor: 0 }     # motor 1
+    rightElevation: { board: a, motor: 1 }    # motor 2
+    rightRadial: { board: a, motor: 2 }       # motor 3
+    leftRadial: { board: b, motor: 0 }        # motor 4
+    baseTransverse: { board: b, motor: 1 }    # motor 5
+
+licketySplitLeft:
+  portName: COM5
+licketySplitRight:
+  portName: COM6
+
+cameraFace:
+  serialNumber: "00000000"
+cameraPupil:
+  serialNumber: "00000000"
+cameraBody:
+  serialNumber: "00000000"
+
+valveLeft:
+  openTime: 40            # ms; ~10 ms practical minimum
+  output:
+    discriminatorType: BehaviorBoardOutput
+    device: behavior_board
+    port: DO1
+valveRight:
+  openTime: 40
+  output:
+    discriminatorType: BehaviorBoardOutput
+    device: behavior_board
+    port: DO2
+
+projectionCalibration:
+  meshMapPath: C:\RigConfigs\MeshMap.csv
+  gammaLutPath: C:\RigConfigs\gammalut.bmp
+
+# Default absolute stage position at session start (steps)
+lickSpoutDefaultPosition:
+  leftElevation: 0        # motor 1
+  rightElevation: 0       # motor 2
+  rightRadial: 0          # motor 3
+  leftRadial: 0           # motor 4
+  baseTransverse: 0       # motor 5
