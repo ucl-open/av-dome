@@ -11727,7 +11727,11 @@ Things we want to do with this:
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="rx:Repeat" />
       </Expression>
-      <Expression xsi:type="IncludeWorkflow" Path="Extensions\StallDiagnostics.bonsai" />
+      <Expression xsi:type="IncludeWorkflow" Path="Extensions\StallDiagnostics.bonsai">
+        <HarpClockSubjectName>Timestamp</HarpClockSubjectName>
+        <ResponseSubjectName>ResponseData</ResponseSubjectName>
+        <TrialStartSubjectName>thisTrialData</TrialStartSubjectName>
+      </Expression>
       <Expression xsi:type="GroupWorkflow">
         <Name>StimulusTriggerLogs</Name>
         <Description>Harp-timestamped CSV log of the auditory/stimulus-presentation trigger (StartAuditoryStimulus).</Description>
