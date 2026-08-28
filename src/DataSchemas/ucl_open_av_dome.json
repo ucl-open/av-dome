@@ -1,5 +1,61 @@
 {
   "$defs": {
+    "AudioDevice": {
+      "description": "A multi-channel audio output device driven through the mixer.",
+      "properties": {
+        "deviceName": {
+          "description": "The name of the audio output device.",
+          "examples": [
+            "Speakers (XMOS xCORE-200 MC (UAC2.0))"
+          ],
+          "title": "DeviceName",
+          "type": "string"
+        },
+        "hostApi": {
+          "default": "Windows WDM-KS",
+          "description": "The audio host API used to open the device.",
+          "title": "HostApi",
+          "type": "string"
+        },
+        "sampleRate": {
+          "default": 48000,
+          "description": "Output sampling rate, in Hz.",
+          "exclusiveMinimum": 0,
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "title": "SampleRate",
+          "type": "integer"
+        },
+        "channelCount": {
+          "default": 32,
+          "description": "Number of output channels.",
+          "exclusiveMinimum": 0,
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "title": "ChannelCount",
+          "type": "integer"
+        },
+        "suggestedLatency": {
+          "default": 0.002,
+          "description": "Suggested output latency, in seconds.",
+          "exclusiveMinimum": 0,
+          "title": "SuggestedLatency",
+          "type": "number"
+        },
+        "bootDelay": {
+          "default": 3.0,
+          "description": "Delay before starting the mixer, in seconds. Guards against a driver fault on startup.",
+          "minimum": 0,
+          "title": "BootDelay",
+          "type": "number"
+        }
+      },
+      "required": [
+        "deviceName"
+      ],
+      "title": "AudioDevice",
+      "type": "object"
+    },
     "BehaviorBoard": {
       "description": "Represents a Harp Behavior Board device.",
       "properties": {
@@ -157,6 +213,28 @@
         },
         "axisMapping": {
           "$ref": "#/$defs/StageAxisMapping",
+          "default": {
+            "leftElevation": {
+              "board": "a",
+              "motor": 0
+            },
+            "rightElevation": {
+              "board": "a",
+              "motor": 1
+            },
+            "rightRadial": {
+              "board": "a",
+              "motor": 2
+            },
+            "leftRadial": {
+              "board": "a",
+              "motor": 3
+            },
+            "baseTransverse": {
+              "board": "b",
+              "motor": 0
+            }
+          },
           "description": "Maps each stage axis to its board and motor index.",
           "title": "AxisMapping"
         }
@@ -371,6 +449,11 @@
       "description": "Represents the PulseController module on the BehaviorBoard.",
       "properties": {
         "activePulses": {
+          "default": [
+            "DO1",
+            "DO2",
+            "DO3"
+          ],
           "description": "List of digital output lines that are enabled for pulse generation.",
           "items": {
             "type": "string"
@@ -474,6 +557,149 @@
       "title": "RunningWheel",
       "type": "object"
     },
+    "Speaker": {
+      "description": "A single speaker in a spatial audio array.",
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/SphericalPosition",
+          "description": "Position of the speaker relative to the subject.",
+          "title": "Position"
+        },
+        "channel": {
+          "description": "Mixer output channel driving this speaker.",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "title": "Channel",
+          "type": "integer"
+        },
+        "gain": {
+          "default": 1.0,
+          "description": "Gain correction applied to this speaker's channel.",
+          "minimum": 0,
+          "title": "Gain",
+          "type": "number"
+        }
+      },
+      "required": [
+        "position",
+        "channel"
+      ],
+      "title": "Speaker",
+      "type": "object"
+    },
+    "SpeakerArray": {
+      "description": "A spatial speaker array driven by a single audio device.",
+      "properties": {
+        "device": {
+          "$ref": "#/$defs/AudioDevice",
+          "description": "The audio device driving the array.",
+          "title": "Device"
+        },
+        "speakers": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Speaker"
+          },
+          "description": "Speakers in the array, keyed by name.",
+          "examples": [
+            {
+              "centre": {
+                "channel": 2,
+                "position": {
+                  "azimuth": 0,
+                  "elevation": 15
+                }
+              },
+              "left": {
+                "channel": 0,
+                "position": {
+                  "azimuth": -90,
+                  "elevation": 15
+                }
+              },
+              "right": {
+                "channel": 1,
+                "position": {
+                  "azimuth": 90,
+                  "elevation": 15
+                }
+              }
+            }
+          ],
+          "title": "Speakers",
+          "type": "object"
+        },
+        "syncChannel": {
+          "anyOf": [
+            {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Channel carrying a sync copy of each stimulus, for alignment with acquisition.",
+          "title": "SyncChannel"
+        },
+        "syncGain": {
+          "default": 0.2,
+          "description": "Gain applied to the sync channel.",
+          "minimum": 0,
+          "title": "SyncGain",
+          "type": "number"
+        },
+        "unusedChannels": {
+          "description": "Output channels with nothing connected.",
+          "items": {
+            "maximum": 2147483647,
+            "minimum": -2147483648,
+            "type": "integer"
+          },
+          "title": "UnusedChannels",
+          "type": "array"
+        }
+      },
+      "required": [
+        "device",
+        "speakers"
+      ],
+      "title": "SpeakerArray",
+      "type": "object"
+    },
+    "SphericalPosition": {
+      "description": "A position on a sphere centred on the subject.",
+      "properties": {
+        "azimuth": {
+          "description": "Azimuth, in degrees. Zero is straight ahead, positive to the right.",
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Azimuth",
+          "type": "number"
+        },
+        "elevation": {
+          "description": "Elevation, in degrees. Zero is the horizontal plane.",
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Elevation",
+          "type": "number"
+        },
+        "radius": {
+          "default": 1.0,
+          "description": "Distance from the subject, in metres.",
+          "exclusiveMinimum": 0,
+          "title": "Radius",
+          "type": "number"
+        }
+      },
+      "required": [
+        "azimuth",
+        "elevation"
+      ],
+      "title": "SphericalPosition",
+      "type": "object"
+    },
     "SpinnakerCamera": {
       "properties": {
         "triggerFrequency": {
@@ -528,22 +754,42 @@
       "properties": {
         "leftElevation": {
           "$ref": "#/$defs/MotorAddress",
+          "default": {
+            "board": "a",
+            "motor": 0
+          },
           "title": "LeftElevation"
         },
         "rightElevation": {
           "$ref": "#/$defs/MotorAddress",
+          "default": {
+            "board": "a",
+            "motor": 1
+          },
           "title": "RightElevation"
         },
         "rightRadial": {
           "$ref": "#/$defs/MotorAddress",
+          "default": {
+            "board": "a",
+            "motor": 2
+          },
           "title": "RightRadial"
         },
         "leftRadial": {
           "$ref": "#/$defs/MotorAddress",
+          "default": {
+            "board": "a",
+            "motor": 3
+          },
           "title": "LeftRadial"
         },
         "baseTransverse": {
           "$ref": "#/$defs/MotorAddress",
+          "default": {
+            "board": "b",
+            "motor": 0
+          },
           "title": "BaseTransverse"
         }
       },
@@ -668,6 +914,10 @@
           "$ref": "#/$defs/ProjectionCalibration",
           "description": "Mesh-map and gamma-LUT file paths for the dome projection"
         },
+        "speakerArray": {
+          "$ref": "#/$defs/SpeakerArray",
+          "description": "Dome speaker array and audio output device"
+        },
         "lickSpoutDefaultPosition": {
           "$ref": "#/$defs/StepperPositions",
           "description": "Default absolute stage position at session start",
@@ -687,6 +937,7 @@
         "valveLeft",
         "valveRight",
         "projectionCalibration",
+        "speakerArray",
         "lickSpoutDefaultPosition"
       ],
       "title": "UclOpenAvDomeRig",

@@ -45,6 +45,8 @@ namespace UclOpenAvDome
     
         private ProjectionCalibration _projectionCalibration;
     
+        private SpeakerArray _speakerArray;
+    
         private StepperPositions _lickSpoutDefaultPosition;
     
         public UclOpenAvDomeRig()
@@ -61,6 +63,7 @@ namespace UclOpenAvDome
             _valveLeft = new RewardValve();
             _valveRight = new RewardValve();
             _projectionCalibration = new ProjectionCalibration();
+            _speakerArray = new SpeakerArray();
             _lickSpoutDefaultPosition = new StepperPositions();
         }
     
@@ -79,6 +82,7 @@ namespace UclOpenAvDome
             _valveLeft = other._valveLeft;
             _valveRight = other._valveRight;
             _projectionCalibration = other._projectionCalibration;
+            _speakerArray = other._speakerArray;
             _lickSpoutDefaultPosition = other._lickSpoutDefaultPosition;
         }
     
@@ -324,6 +328,25 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
+        /// Dome speaker array and audio output device
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("speakerArray", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="speakerArray")]
+        [System.ComponentModel.DescriptionAttribute("Dome speaker array and audio output device")]
+        public SpeakerArray SpeakerArray
+        {
+            get
+            {
+                return _speakerArray;
+            }
+            set
+            {
+                _speakerArray = value;
+            }
+        }
+    
+        /// <summary>
         /// Default absolute stage position at session start
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
@@ -367,7 +390,194 @@ namespace UclOpenAvDome
             stringBuilder.Append("ValveLeft = " + _valveLeft + ", ");
             stringBuilder.Append("ValveRight = " + _valveRight + ", ");
             stringBuilder.Append("ProjectionCalibration = " + _projectionCalibration + ", ");
+            stringBuilder.Append("SpeakerArray = " + _speakerArray + ", ");
             stringBuilder.Append("LickSpoutDefaultPosition = " + _lickSpoutDefaultPosition);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    /// <summary>
+    /// A multi-channel audio output device driven through the mixer.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute("A multi-channel audio output device driven through the mixer.")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class AudioDevice
+    {
+    
+        private string _deviceName;
+    
+        private string _hostApi;
+    
+        private int _sampleRate;
+    
+        private int _channelCount;
+    
+        private double _suggestedLatency;
+    
+        private double _bootDelay;
+    
+        public AudioDevice()
+        {
+            _hostApi = "Windows WDM-KS";
+            _sampleRate = 48000;
+            _channelCount = 32;
+            _suggestedLatency = 0.002D;
+            _bootDelay = 3D;
+        }
+    
+        protected AudioDevice(AudioDevice other)
+        {
+            _deviceName = other._deviceName;
+            _hostApi = other._hostApi;
+            _sampleRate = other._sampleRate;
+            _channelCount = other._channelCount;
+            _suggestedLatency = other._suggestedLatency;
+            _bootDelay = other._bootDelay;
+        }
+    
+        /// <summary>
+        /// The name of the audio output device.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("deviceName", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="deviceName")]
+        [System.ComponentModel.DescriptionAttribute("The name of the audio output device.")]
+        public string DeviceName
+        {
+            get
+            {
+                return _deviceName;
+            }
+            set
+            {
+                _deviceName = value;
+            }
+        }
+    
+        /// <summary>
+        /// The audio host API used to open the device.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("hostApi")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="hostApi")]
+        [System.ComponentModel.DescriptionAttribute("The audio host API used to open the device.")]
+        public string HostApi
+        {
+            get
+            {
+                return _hostApi;
+            }
+            set
+            {
+                _hostApi = value;
+            }
+        }
+    
+        /// <summary>
+        /// Output sampling rate, in Hz.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("sampleRate")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="sampleRate")]
+        [System.ComponentModel.DescriptionAttribute("Output sampling rate, in Hz.")]
+        public int SampleRate
+        {
+            get
+            {
+                return _sampleRate;
+            }
+            set
+            {
+                _sampleRate = value;
+            }
+        }
+    
+        /// <summary>
+        /// Number of output channels.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("channelCount")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="channelCount")]
+        [System.ComponentModel.DescriptionAttribute("Number of output channels.")]
+        public int ChannelCount
+        {
+            get
+            {
+                return _channelCount;
+            }
+            set
+            {
+                _channelCount = value;
+            }
+        }
+    
+        /// <summary>
+        /// Suggested output latency, in seconds.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("suggestedLatency")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="suggestedLatency")]
+        [System.ComponentModel.DescriptionAttribute("Suggested output latency, in seconds.")]
+        public double SuggestedLatency
+        {
+            get
+            {
+                return _suggestedLatency;
+            }
+            set
+            {
+                _suggestedLatency = value;
+            }
+        }
+    
+        /// <summary>
+        /// Delay before starting the mixer, in seconds. Guards against a driver fault on startup.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("bootDelay")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="bootDelay")]
+        [System.ComponentModel.DescriptionAttribute("Delay before starting the mixer, in seconds. Guards against a driver fault on sta" +
+            "rtup.")]
+        public double BootDelay
+        {
+            get
+            {
+                return _bootDelay;
+            }
+            set
+            {
+                _bootDelay = value;
+            }
+        }
+    
+        public System.IObservable<AudioDevice> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new AudioDevice(this)));
+        }
+    
+        public System.IObservable<AudioDevice> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new AudioDevice(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("DeviceName = " + _deviceName + ", ");
+            stringBuilder.Append("HostApi = " + _hostApi + ", ");
+            stringBuilder.Append("SampleRate = " + _sampleRate + ", ");
+            stringBuilder.Append("ChannelCount = " + _channelCount + ", ");
+            stringBuilder.Append("SuggestedLatency = " + _suggestedLatency + ", ");
+            stringBuilder.Append("BootDelay = " + _bootDelay);
             return true;
         }
     
@@ -773,6 +983,7 @@ namespace UclOpenAvDome
         {
             _driverA = new HarpStepperDriver();
             _driverB = new HarpStepperDriver();
+            _axisMapping = new StageAxisMapping();
         }
     
         protected HarpLickSpoutStage(HarpLickSpoutStage other)
@@ -1893,6 +2104,403 @@ namespace UclOpenAvDome
     }
 
 
+    /// <summary>
+    /// A single speaker in a spatial audio array.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute("A single speaker in a spatial audio array.")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class Speaker
+    {
+    
+        private SphericalPosition _position;
+    
+        private int _channel;
+    
+        private double _gain;
+    
+        public Speaker()
+        {
+            _position = new SphericalPosition();
+            _gain = 1D;
+        }
+    
+        protected Speaker(Speaker other)
+        {
+            _position = other._position;
+            _channel = other._channel;
+            _gain = other._gain;
+        }
+    
+        /// <summary>
+        /// Position of the speaker relative to the subject.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("position", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="position")]
+        [System.ComponentModel.DescriptionAttribute("Position of the speaker relative to the subject.")]
+        public SphericalPosition Position
+        {
+            get
+            {
+                return _position;
+            }
+            set
+            {
+                _position = value;
+            }
+        }
+    
+        /// <summary>
+        /// Mixer output channel driving this speaker.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("channel", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="channel")]
+        [System.ComponentModel.DescriptionAttribute("Mixer output channel driving this speaker.")]
+        public int Channel
+        {
+            get
+            {
+                return _channel;
+            }
+            set
+            {
+                _channel = value;
+            }
+        }
+    
+        /// <summary>
+        /// Gain correction applied to this speaker's channel.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("gain")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="gain")]
+        [System.ComponentModel.DescriptionAttribute("Gain correction applied to this speaker\'s channel.")]
+        public double Gain
+        {
+            get
+            {
+                return _gain;
+            }
+            set
+            {
+                _gain = value;
+            }
+        }
+    
+        public System.IObservable<Speaker> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new Speaker(this)));
+        }
+    
+        public System.IObservable<Speaker> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new Speaker(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("Position = " + _position + ", ");
+            stringBuilder.Append("Channel = " + _channel + ", ");
+            stringBuilder.Append("Gain = " + _gain);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    /// <summary>
+    /// A spatial speaker array driven by a single audio device.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute("A spatial speaker array driven by a single audio device.")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class SpeakerArray
+    {
+    
+        private AudioDevice _device;
+    
+        private System.Collections.Generic.Dictionary<string, Speaker> _speakers;
+    
+        private int? _syncChannel;
+    
+        private double _syncGain;
+    
+        private System.Collections.Generic.List<int> _unusedChannels;
+    
+        public SpeakerArray()
+        {
+            _device = new AudioDevice();
+            _speakers = new System.Collections.Generic.Dictionary<string, Speaker>();
+            _syncGain = 0.2D;
+            _unusedChannels = new System.Collections.Generic.List<int>();
+        }
+    
+        protected SpeakerArray(SpeakerArray other)
+        {
+            _device = other._device;
+            _speakers = other._speakers;
+            _syncChannel = other._syncChannel;
+            _syncGain = other._syncGain;
+            _unusedChannels = other._unusedChannels;
+        }
+    
+        /// <summary>
+        /// The audio device driving the array.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("device", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="device")]
+        [System.ComponentModel.DescriptionAttribute("The audio device driving the array.")]
+        public AudioDevice Device
+        {
+            get
+            {
+                return _device;
+            }
+            set
+            {
+                _device = value;
+            }
+        }
+    
+        /// <summary>
+        /// Speakers in the array, keyed by name.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("speakers", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="speakers")]
+        [System.ComponentModel.DescriptionAttribute("Speakers in the array, keyed by name.")]
+        public System.Collections.Generic.Dictionary<string, Speaker> Speakers
+        {
+            get
+            {
+                return _speakers;
+            }
+            set
+            {
+                _speakers = value;
+            }
+        }
+    
+        /// <summary>
+        /// Channel carrying a sync copy of each stimulus, for alignment with acquisition.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("syncChannel")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="syncChannel")]
+        [System.ComponentModel.DescriptionAttribute("Channel carrying a sync copy of each stimulus, for alignment with acquisition.")]
+        public int? SyncChannel
+        {
+            get
+            {
+                return _syncChannel;
+            }
+            set
+            {
+                _syncChannel = value;
+            }
+        }
+    
+        /// <summary>
+        /// Gain applied to the sync channel.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("syncGain")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="syncGain")]
+        [System.ComponentModel.DescriptionAttribute("Gain applied to the sync channel.")]
+        public double SyncGain
+        {
+            get
+            {
+                return _syncGain;
+            }
+            set
+            {
+                _syncGain = value;
+            }
+        }
+    
+        /// <summary>
+        /// Output channels with nothing connected.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("unusedChannels")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="unusedChannels")]
+        [System.ComponentModel.DescriptionAttribute("Output channels with nothing connected.")]
+        public System.Collections.Generic.List<int> UnusedChannels
+        {
+            get
+            {
+                return _unusedChannels;
+            }
+            set
+            {
+                _unusedChannels = value;
+            }
+        }
+    
+        public System.IObservable<SpeakerArray> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new SpeakerArray(this)));
+        }
+    
+        public System.IObservable<SpeakerArray> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new SpeakerArray(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("Device = " + _device + ", ");
+            stringBuilder.Append("Speakers = " + _speakers + ", ");
+            stringBuilder.Append("SyncChannel = " + _syncChannel + ", ");
+            stringBuilder.Append("SyncGain = " + _syncGain + ", ");
+            stringBuilder.Append("UnusedChannels = " + _unusedChannels);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    /// <summary>
+    /// A position on a sphere centred on the subject.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute("A position on a sphere centred on the subject.")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class SphericalPosition
+    {
+    
+        private double _azimuth;
+    
+        private double _elevation;
+    
+        private double _radius;
+    
+        public SphericalPosition()
+        {
+            _radius = 1D;
+        }
+    
+        protected SphericalPosition(SphericalPosition other)
+        {
+            _azimuth = other._azimuth;
+            _elevation = other._elevation;
+            _radius = other._radius;
+        }
+    
+        /// <summary>
+        /// Azimuth, in degrees. Zero is straight ahead, positive to the right.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("azimuth", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="azimuth")]
+        [System.ComponentModel.DescriptionAttribute("Azimuth, in degrees. Zero is straight ahead, positive to the right.")]
+        public double Azimuth
+        {
+            get
+            {
+                return _azimuth;
+            }
+            set
+            {
+                _azimuth = value;
+            }
+        }
+    
+        /// <summary>
+        /// Elevation, in degrees. Zero is the horizontal plane.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("elevation", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="elevation")]
+        [System.ComponentModel.DescriptionAttribute("Elevation, in degrees. Zero is the horizontal plane.")]
+        public double Elevation
+        {
+            get
+            {
+                return _elevation;
+            }
+            set
+            {
+                _elevation = value;
+            }
+        }
+    
+        /// <summary>
+        /// Distance from the subject, in metres.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("radius")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="radius")]
+        [System.ComponentModel.DescriptionAttribute("Distance from the subject, in metres.")]
+        public double Radius
+        {
+            get
+            {
+                return _radius;
+            }
+            set
+            {
+                _radius = value;
+            }
+        }
+    
+        public System.IObservable<SphericalPosition> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new SphericalPosition(this)));
+        }
+    
+        public System.IObservable<SphericalPosition> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new SphericalPosition(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("Azimuth = " + _azimuth + ", ");
+            stringBuilder.Append("Elevation = " + _elevation + ", ");
+            stringBuilder.Append("Radius = " + _radius);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
@@ -2103,6 +2711,11 @@ namespace UclOpenAvDome
     
         public StageAxisMapping()
         {
+            _leftElevation = new MotorAddress();
+            _rightElevation = new MotorAddress();
+            _rightRadial = new MotorAddress();
+            _leftRadial = new MotorAddress();
+            _baseTransverse = new MotorAddress();
         }
     
         protected StageAxisMapping(StageAxisMapping other)
@@ -2951,6 +3564,11 @@ namespace UclOpenAvDome
             return Process<UclOpenAvDomeRig>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<AudioDevice> source)
+        {
+            return Process<AudioDevice>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<BehaviorBoard> source)
         {
             return Process<BehaviorBoard>(source);
@@ -3026,6 +3644,21 @@ namespace UclOpenAvDome
             return Process<RunningWheel>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<Speaker> source)
+        {
+            return Process<Speaker>(source);
+        }
+
+        public System.IObservable<string> Process(System.IObservable<SpeakerArray> source)
+        {
+            return Process<SpeakerArray>(source);
+        }
+
+        public System.IObservable<string> Process(System.IObservable<SphericalPosition> source)
+        {
+            return Process<SphericalPosition>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<SpinnakerCamera> source)
         {
             return Process<SpinnakerCamera>(source);
@@ -3061,6 +3694,7 @@ namespace UclOpenAvDome
     [System.ComponentModel.DefaultPropertyAttribute("Type")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<UclOpenAvDomeRig>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<AudioDevice>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BehaviorBoard>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BehaviorBoardOutput>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraTriggerController>))]
@@ -3076,6 +3710,9 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseWidths>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RewardValve>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RunningWheel>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Speaker>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpeakerArray>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SphericalPosition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpinnakerCamera>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StageAxisMapping>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperPositions>))]
@@ -3246,6 +3883,11 @@ namespace UclOpenAvDome
             return Process<UclOpenAvDomeRig>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<AudioDevice> source)
+        {
+            return Process<AudioDevice>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<BehaviorBoard> source)
         {
             return Process<BehaviorBoard>(source);
@@ -3321,6 +3963,21 @@ namespace UclOpenAvDome
             return Process<RunningWheel>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<Speaker> source)
+        {
+            return Process<Speaker>(source);
+        }
+
+        public System.IObservable<string> Process(System.IObservable<SpeakerArray> source)
+        {
+            return Process<SpeakerArray>(source);
+        }
+
+        public System.IObservable<string> Process(System.IObservable<SphericalPosition> source)
+        {
+            return Process<SphericalPosition>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<SpinnakerCamera> source)
         {
             return Process<SpinnakerCamera>(source);
@@ -3356,6 +4013,7 @@ namespace UclOpenAvDome
     [System.ComponentModel.DefaultPropertyAttribute("Type")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<UclOpenAvDomeRig>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<AudioDevice>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BehaviorBoard>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BehaviorBoardOutput>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraTriggerController>))]
@@ -3371,6 +4029,9 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseWidths>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RewardValve>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RunningWheel>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Speaker>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpeakerArray>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SphericalPosition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpinnakerCamera>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StageAxisMapping>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperPositions>))]
