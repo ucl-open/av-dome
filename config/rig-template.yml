@@ -17,9 +17,21 @@ rootPath: C:\Data
 
 behaviorBoard:
   portName: COM1
+  pulseController:
+    outputPulseEnable: [DO1, DO2]   # DO3 unused on this rig
+    pulseWidths:
+      PulseDO1: 40    # ms, left reward valve open time
+      PulseDO2: 40    # ms, right reward valve open time
+  cameraTriggerController:
+    trigger0Frequency: 50     # Hz, cameras on DO0
+    trigger1Frequency: 50     # Hz, cameras on DO1
+  runningWheel:
+    wheelDiameterMm: 170
+    countsPerRev: 4096
 
 timestampGenerator:
   portName: COM2
+  timerFrequency: Timer1000Hz
 
 lickSpoutStage:
   driverA:
@@ -35,28 +47,29 @@ lickSpoutStage:
 
 licketySplitLeft:
   portName: COM5
+  channel0TriggerThreshold: 0     # ADC counts above which a lick registers
+  channel0UntriggerThreshold: 0   # ADC counts below which the lick ends
 licketySplitRight:
   portName: COM6
+  channel0TriggerThreshold: 0
+  channel0UntriggerThreshold: 0
 
 cameraFace:
   serialNumber: "00000000"
+  exposureTime: 19000    # microseconds
+  gain: 0
+  binning: 1
 cameraPupil:
   serialNumber: "00000000"
+  exposureTime: 19000    # microseconds
+  gain: 20
+  binning: 1
 cameraBody:
   serialNumber: "00000000"
+  exposureTime: 19000    # microseconds
+  gain: 0
+  binning: 1
 
-valveLeft:
-  openTime: 40            # ms; ~10 ms practical minimum
-  output:
-    discriminatorType: BehaviorBoardOutput
-    device: behavior_board
-    port: DO1
-valveRight:
-  openTime: 40
-  output:
-    discriminatorType: BehaviorBoardOutput
-    device: behavior_board
-    port: DO2
 
 projectionCalibration:
   meshMapPath: C:\RigConfigs\MeshMap.csv
