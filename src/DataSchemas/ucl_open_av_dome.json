@@ -113,45 +113,6 @@
       "title": "BehaviorBoard",
       "type": "object"
     },
-    "BehaviorBoardOutput": {
-      "description": "An output channel on a Harp behavior board.",
-      "properties": {
-        "device": {
-          "description": "The name of the rig device providing this output.",
-          "examples": [
-            "behavior_board"
-          ],
-          "title": "Device",
-          "type": "string"
-        },
-        "port": {
-          "description": "The behavior board output port.",
-          "enum": [
-            "DO0",
-            "DO1",
-            "DO2",
-            "DO3",
-            "SupplyPort0",
-            "SupplyPort1",
-            "SupplyPort2"
-          ],
-          "title": "Port",
-          "type": "string"
-        },
-        "discriminatorType": {
-          "const": "BehaviorBoardOutput",
-          "default": "BehaviorBoardOutput",
-          "title": "DiscriminatorType",
-          "type": "string"
-        }
-      },
-      "required": [
-        "device",
-        "port"
-      ],
-      "title": "BehaviorBoardOutput",
-      "type": "object"
-    },
     "CameraTriggerController": {
       "description": "Represents a CameraTriggerController module on a BehaviorBoard device.",
       "properties": {
@@ -178,25 +139,6 @@
       ],
       "title": "CameraTriggerController",
       "type": "object"
-    },
-    "DigitalOutput": {
-      "description": "Discriminated digital output address (behavior board or output expander).",
-      "discriminator": {
-        "mapping": {
-          "BehaviorBoardOutput": "#/$defs/BehaviorBoardOutput",
-          "OutputExpanderOutput": "#/$defs/OutputExpanderOutput"
-        },
-        "propertyName": "discriminatorType"
-      },
-      "oneOf": [
-        {
-          "$ref": "#/$defs/BehaviorBoardOutput"
-        },
-        {
-          "$ref": "#/$defs/OutputExpanderOutput"
-        }
-      ],
-      "title": "DigitalOutput"
     },
     "HarpLickSpoutStage": {
       "description": "Harp-based lick spout stage: two StepperDriver boards driving a 5-axis rig.\nCalibration (named positions) is stored separately in a SpoutRigPosition YAML file.",
@@ -376,48 +318,6 @@
       "title": "MotorAddress",
       "type": "object"
     },
-    "OutputExpanderOutput": {
-      "description": "An output channel on a Harp output expander.",
-      "properties": {
-        "device": {
-          "description": "The name of the rig device providing this output.",
-          "examples": [
-            "output_expander"
-          ],
-          "title": "Device",
-          "type": "string"
-        },
-        "channel": {
-          "description": "The output expander channel.",
-          "enum": [
-            "Out0",
-            "Out1",
-            "Out2",
-            "Out3",
-            "Out4",
-            "Out5",
-            "Out6",
-            "Out7",
-            "Out8",
-            "Out9"
-          ],
-          "title": "Channel",
-          "type": "string"
-        },
-        "discriminatorType": {
-          "const": "OutputExpanderOutput",
-          "default": "OutputExpanderOutput",
-          "title": "DiscriminatorType",
-          "type": "string"
-        }
-      },
-      "required": [
-        "device",
-        "channel"
-      ],
-      "title": "OutputExpanderOutput",
-      "type": "object"
-    },
     "ProjectionCalibration": {
       "description": "File-based calibration assets for mesh-mapped projection displays.",
       "properties": {
@@ -448,7 +348,7 @@
     "PulseController": {
       "description": "Represents the PulseController module on the BehaviorBoard.",
       "properties": {
-        "activePulses": {
+        "outputPulseEnable": {
           "default": [
             "DO1",
             "DO2",
@@ -458,7 +358,7 @@
           "items": {
             "type": "string"
           },
-          "title": "ActivePulses",
+          "title": "OutputPulseEnable",
           "type": "array"
         },
         "pulseWidths": {
@@ -473,86 +373,74 @@
       "type": "object"
     },
     "PulseWidths": {
+      "description": "Pulse durations for the behavior board digital outputs, in milliseconds.\n\nA line that is not used on a rig may be omitted.",
       "properties": {
         "PulseDO1": {
-          "maximum": 65535,
-          "minimum": 0,
-          "title": "PulseDo1",
-          "type": "integer"
-        },
-        "PulseDO2": {
-          "maximum": 65535,
-          "minimum": 0,
-          "title": "PulseDo2",
-          "type": "integer"
-        },
-        "PulseDO3": {
-          "maximum": 65535,
-          "minimum": 0,
-          "title": "PulseDo3",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "PulseDO1",
-        "PulseDO2",
-        "PulseDO3"
-      ],
-      "title": "PulseWidths",
-      "type": "object"
-    },
-    "RewardValve": {
-      "description": "A liquid-reward solenoid valve driven by a digital output line.",
-      "properties": {
-        "openTime": {
-          "description": "Calibrated valve open time delivering the target reward volume, in milliseconds.",
-          "exclusiveMinimum": 0,
-          "title": "OpenTime",
-          "type": "number"
-        },
-        "output": {
-          "$ref": "#/$defs/DigitalOutput",
-          "description": "The digital output driving this valve.",
-          "title": "Output"
-        },
-        "calibration": {
           "anyOf": [
             {
-              "$ref": "#/$defs/ValveCalibration"
+              "maximum": 65535,
+              "minimum": 0,
+              "type": "integer"
             },
             {
               "type": "null"
             }
           ],
           "default": null,
-          "description": "Calibration measurements this valve's open time was derived from.",
-          "title": "Calibration"
+          "description": "Pulse duration on DO1, in milliseconds.",
+          "title": "PulseDo1"
+        },
+        "PulseDO2": {
+          "anyOf": [
+            {
+              "maximum": 65535,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Pulse duration on DO2, in milliseconds.",
+          "title": "PulseDo2"
+        },
+        "PulseDO3": {
+          "anyOf": [
+            {
+              "maximum": 65535,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Pulse duration on DO3, in milliseconds.",
+          "title": "PulseDo3"
         }
       },
-      "required": [
-        "openTime",
-        "output"
-      ],
-      "title": "RewardValve",
+      "title": "PulseWidths",
       "type": "object"
     },
     "RunningWheel": {
       "description": "Represents configuration parameters of the RunningWheel module.\nExposes wheel geometry parameters used to compute speed and distance from encoder counts.",
       "properties": {
-        "countsPerRevolution": {
+        "countsPerRev": {
           "description": "Number of encoder counts per full revolution of the running wheel.",
-          "title": "CountsPerRevolution",
+          "title": "CountsPerRev",
           "type": "integer"
         },
-        "wheelDiameter": {
-          "description": "The diameter of the running wheel, in metric units.",
-          "title": "WheelDiameter",
+        "wheelDiameterMm": {
+          "description": "The diameter of the running wheel, in millimetres.",
+          "title": "WheelDiameterMm",
           "type": "number"
         }
       },
       "required": [
-        "countsPerRevolution",
-        "wheelDiameter"
+        "countsPerRev",
+        "wheelDiameterMm"
       ],
       "title": "RunningWheel",
       "type": "object"
@@ -900,16 +788,6 @@
           "description": "Body camera",
           "title": "CameraBody"
         },
-        "valveLeft": {
-          "$ref": "#/$defs/RewardValve",
-          "description": "Left reward valve",
-          "title": "ValveLeft"
-        },
-        "valveRight": {
-          "$ref": "#/$defs/RewardValve",
-          "description": "Right reward valve",
-          "title": "ValveRight"
-        },
         "projectionCalibration": {
           "$ref": "#/$defs/ProjectionCalibration",
           "description": "Mesh-map and gamma-LUT file paths for the dome projection"
@@ -934,69 +812,11 @@
         "cameraFace",
         "cameraPupil",
         "cameraBody",
-        "valveLeft",
-        "valveRight",
         "projectionCalibration",
         "speakerArray",
         "lickSpoutDefaultPosition"
       ],
       "title": "UclOpenAvDomeRig",
-      "type": "object"
-    },
-    "ValveCalibration": {
-      "description": "A valve calibration measurement set with an optional linear fit.",
-      "properties": {
-        "points": {
-          "description": "Measured open-time/volume calibration points.",
-          "items": {
-            "$ref": "#/$defs/ValveCalibrationPoint"
-          },
-          "title": "Points",
-          "type": "array"
-        },
-        "slope": {
-          "default": null,
-          "description": "Fitted slope of the open-time to volume relationship, in uL/ms.",
-          "title": "Slope",
-          "type": [
-            "number",
-            "null"
-          ]
-        },
-        "intercept": {
-          "default": null,
-          "description": "Fitted intercept of the open-time to volume relationship, in uL.",
-          "title": "Intercept",
-          "type": [
-            "number",
-            "null"
-          ]
-        }
-      },
-      "title": "ValveCalibration",
-      "type": "object"
-    },
-    "ValveCalibrationPoint": {
-      "description": "A single measured point relating valve open time to delivered volume.",
-      "properties": {
-        "openTime": {
-          "description": "Valve open time, in milliseconds.",
-          "exclusiveMinimum": 0,
-          "title": "OpenTime",
-          "type": "number"
-        },
-        "volume": {
-          "description": "Measured delivered volume, in microliters.",
-          "minimum": 0,
-          "title": "Volume",
-          "type": "number"
-        }
-      },
-      "required": [
-        "openTime",
-        "volume"
-      ],
-      "title": "ValveCalibrationPoint",
       "type": "object"
     }
   },

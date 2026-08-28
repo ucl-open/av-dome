@@ -39,10 +39,6 @@ namespace UclOpenAvDome
     
         private SpinnakerCamera _cameraBody;
     
-        private RewardValve _valveLeft;
-    
-        private RewardValve _valveRight;
-    
         private ProjectionCalibration _projectionCalibration;
     
         private SpeakerArray _speakerArray;
@@ -60,8 +56,6 @@ namespace UclOpenAvDome
             _cameraFace = new SpinnakerCamera();
             _cameraPupil = new SpinnakerCamera();
             _cameraBody = new SpinnakerCamera();
-            _valveLeft = new RewardValve();
-            _valveRight = new RewardValve();
             _projectionCalibration = new ProjectionCalibration();
             _speakerArray = new SpeakerArray();
             _lickSpoutDefaultPosition = new StepperPositions();
@@ -79,8 +73,6 @@ namespace UclOpenAvDome
             _cameraFace = other._cameraFace;
             _cameraPupil = other._cameraPupil;
             _cameraBody = other._cameraBody;
-            _valveLeft = other._valveLeft;
-            _valveRight = other._valveRight;
             _projectionCalibration = other._projectionCalibration;
             _speakerArray = other._speakerArray;
             _lickSpoutDefaultPosition = other._lickSpoutDefaultPosition;
@@ -271,44 +263,6 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
-        /// Left reward valve
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("valveLeft", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="valveLeft")]
-        [System.ComponentModel.DescriptionAttribute("Left reward valve")]
-        public RewardValve ValveLeft
-        {
-            get
-            {
-                return _valveLeft;
-            }
-            set
-            {
-                _valveLeft = value;
-            }
-        }
-    
-        /// <summary>
-        /// Right reward valve
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("valveRight", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="valveRight")]
-        [System.ComponentModel.DescriptionAttribute("Right reward valve")]
-        public RewardValve ValveRight
-        {
-            get
-            {
-                return _valveRight;
-            }
-            set
-            {
-                _valveRight = value;
-            }
-        }
-    
-        /// <summary>
         /// Mesh-map and gamma-LUT file paths for the dome projection
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
@@ -387,8 +341,6 @@ namespace UclOpenAvDome
             stringBuilder.Append("CameraFace = " + _cameraFace + ", ");
             stringBuilder.Append("CameraPupil = " + _cameraPupil + ", ");
             stringBuilder.Append("CameraBody = " + _cameraBody + ", ");
-            stringBuilder.Append("ValveLeft = " + _valveLeft + ", ");
-            stringBuilder.Append("ValveRight = " + _valveRight + ", ");
             stringBuilder.Append("ProjectionCalibration = " + _projectionCalibration + ", ");
             stringBuilder.Append("SpeakerArray = " + _speakerArray + ", ");
             stringBuilder.Append("LickSpoutDefaultPosition = " + _lickSpoutDefaultPosition);
@@ -736,90 +688,6 @@ namespace UclOpenAvDome
 
 
     /// <summary>
-    /// An output channel on a Harp behavior board.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.ComponentModel.DescriptionAttribute("An output channel on a Harp behavior board.")]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    [Bonsai.CombinatorAttribute(MethodName="Generate")]
-    public partial class BehaviorBoardOutput : DigitalOutput
-    {
-    
-        private string _device;
-    
-        private BehaviorBoardOutputPort _port;
-    
-        public BehaviorBoardOutput()
-        {
-        }
-    
-        protected BehaviorBoardOutput(BehaviorBoardOutput other) : 
-                base(other)
-        {
-            _device = other._device;
-            _port = other._port;
-        }
-    
-        /// <summary>
-        /// The name of the rig device providing this output.
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("device", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="device")]
-        [System.ComponentModel.DescriptionAttribute("The name of the rig device providing this output.")]
-        public string Device
-        {
-            get
-            {
-                return _device;
-            }
-            set
-            {
-                _device = value;
-            }
-        }
-    
-        /// <summary>
-        /// The behavior board output port.
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("port", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="port")]
-        [System.ComponentModel.DescriptionAttribute("The behavior board output port.")]
-        public BehaviorBoardOutputPort Port
-        {
-            get
-            {
-                return _port;
-            }
-            set
-            {
-                _port = value;
-            }
-        }
-    
-        public System.IObservable<BehaviorBoardOutput> Generate()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new BehaviorBoardOutput(this)));
-        }
-    
-        public System.IObservable<BehaviorBoardOutput> Generate<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new BehaviorBoardOutput(this));
-        }
-    
-        protected override bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
-            if (base.PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(", ");
-            }
-            stringBuilder.Append("Device = " + _device + ", ");
-            stringBuilder.Append("Port = " + _port);
-            return true;
-        }
-    }
-
-
-    /// <summary>
     /// Represents a CameraTriggerController module on a BehaviorBoard device.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
@@ -896,54 +764,6 @@ namespace UclOpenAvDome
             stringBuilder.Append("Trigger0Frequency = " + _trigger0Frequency + ", ");
             stringBuilder.Append("Trigger1Frequency = " + _trigger1Frequency);
             return true;
-        }
-    
-        public override string ToString()
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" { ");
-            if (PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append("}");
-            return stringBuilder.ToString();
-        }
-    }
-
-
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [Newtonsoft.Json.JsonConverter(typeof(JsonInheritanceConverter), "discriminatorType")]
-    [YamlDiscriminator("discriminatorType")]
-    [JsonInheritanceAttribute("BehaviorBoardOutput", typeof(BehaviorBoardOutput))]
-    [JsonInheritanceAttribute("OutputExpanderOutput", typeof(OutputExpanderOutput))]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    [Bonsai.CombinatorAttribute(MethodName="Generate")]
-    public partial class DigitalOutput
-    {
-    
-        public DigitalOutput()
-        {
-        }
-    
-        protected DigitalOutput(DigitalOutput other)
-        {
-        }
-    
-        public System.IObservable<DigitalOutput> Generate()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new DigitalOutput(this)));
-        }
-    
-        public System.IObservable<DigitalOutput> Generate<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new DigitalOutput(this));
-        }
-    
-        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
-            return false;
         }
     
         public override string ToString()
@@ -1525,90 +1345,6 @@ namespace UclOpenAvDome
 
 
     /// <summary>
-    /// An output channel on a Harp output expander.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.ComponentModel.DescriptionAttribute("An output channel on a Harp output expander.")]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    [Bonsai.CombinatorAttribute(MethodName="Generate")]
-    public partial class OutputExpanderOutput : DigitalOutput
-    {
-    
-        private string _device;
-    
-        private OutputExpanderOutputChannel _channel;
-    
-        public OutputExpanderOutput()
-        {
-        }
-    
-        protected OutputExpanderOutput(OutputExpanderOutput other) : 
-                base(other)
-        {
-            _device = other._device;
-            _channel = other._channel;
-        }
-    
-        /// <summary>
-        /// The name of the rig device providing this output.
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("device", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="device")]
-        [System.ComponentModel.DescriptionAttribute("The name of the rig device providing this output.")]
-        public string Device
-        {
-            get
-            {
-                return _device;
-            }
-            set
-            {
-                _device = value;
-            }
-        }
-    
-        /// <summary>
-        /// The output expander channel.
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("channel", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="channel")]
-        [System.ComponentModel.DescriptionAttribute("The output expander channel.")]
-        public OutputExpanderOutputChannel Channel
-        {
-            get
-            {
-                return _channel;
-            }
-            set
-            {
-                _channel = value;
-            }
-        }
-    
-        public System.IObservable<OutputExpanderOutput> Generate()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new OutputExpanderOutput(this)));
-        }
-    
-        public System.IObservable<OutputExpanderOutput> Generate<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new OutputExpanderOutput(this));
-        }
-    
-        protected override bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
-            if (base.PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(", ");
-            }
-            stringBuilder.Append("Device = " + _device + ", ");
-            stringBuilder.Append("Channel = " + _channel);
-            return true;
-        }
-    }
-
-
-    /// <summary>
     /// File-based calibration assets for mesh-mapped projection displays.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
@@ -1710,19 +1446,19 @@ namespace UclOpenAvDome
     public partial class PulseController
     {
     
-        private System.Collections.Generic.List<string> _activePulses;
+        private System.Collections.Generic.List<string> _outputPulseEnable;
     
         private PulseWidths _pulseWidths;
     
         public PulseController()
         {
-            _activePulses = new System.Collections.Generic.List<string>();
+            _outputPulseEnable = new System.Collections.Generic.List<string>();
             _pulseWidths = new PulseWidths();
         }
     
         protected PulseController(PulseController other)
         {
-            _activePulses = other._activePulses;
+            _outputPulseEnable = other._outputPulseEnable;
             _pulseWidths = other._pulseWidths;
         }
     
@@ -1730,18 +1466,18 @@ namespace UclOpenAvDome
         /// List of digital output lines that are enabled for pulse generation.
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("activePulses")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="activePulses")]
+        [Newtonsoft.Json.JsonPropertyAttribute("outputPulseEnable")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="outputPulseEnable")]
         [System.ComponentModel.DescriptionAttribute("List of digital output lines that are enabled for pulse generation.")]
-        public System.Collections.Generic.List<string> ActivePulses
+        public System.Collections.Generic.List<string> OutputPulseEnable
         {
             get
             {
-                return _activePulses;
+                return _outputPulseEnable;
             }
             set
             {
-                _activePulses = value;
+                _outputPulseEnable = value;
             }
         }
     
@@ -1776,7 +1512,7 @@ namespace UclOpenAvDome
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
-            stringBuilder.Append("ActivePulses = " + _activePulses + ", ");
+            stringBuilder.Append("OutputPulseEnable = " + _outputPulseEnable + ", ");
             stringBuilder.Append("PulseWidths = " + _pulseWidths);
             return true;
         }
@@ -1796,17 +1532,24 @@ namespace UclOpenAvDome
     }
 
 
+    /// <summary>
+    /// Pulse durations for the behavior board digital outputs, in milliseconds.
+    ///
+    ///A line that is not used on a rig may be omitted.
+    /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute("Pulse durations for the behavior board digital outputs, in milliseconds.\n\nA line " +
+        "that is not used on a rig may be omitted.")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
     public partial class PulseWidths
     {
     
-        private int _pulseDO1;
+        private int? _pulseDO1;
     
-        private int _pulseDO2;
+        private int? _pulseDO2;
     
-        private int _pulseDO3;
+        private int? _pulseDO3;
     
         public PulseWidths()
         {
@@ -1819,9 +1562,13 @@ namespace UclOpenAvDome
             _pulseDO3 = other._pulseDO3;
         }
     
-        [Newtonsoft.Json.JsonPropertyAttribute("PulseDO1", Required=Newtonsoft.Json.Required.Always)]
+        /// <summary>
+        /// Pulse duration on DO1, in milliseconds.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("PulseDO1")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="PulseDO1")]
-        public int PulseDO1
+        [System.ComponentModel.DescriptionAttribute("Pulse duration on DO1, in milliseconds.")]
+        public int? PulseDO1
         {
             get
             {
@@ -1833,9 +1580,13 @@ namespace UclOpenAvDome
             }
         }
     
-        [Newtonsoft.Json.JsonPropertyAttribute("PulseDO2", Required=Newtonsoft.Json.Required.Always)]
+        /// <summary>
+        /// Pulse duration on DO2, in milliseconds.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("PulseDO2")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="PulseDO2")]
-        public int PulseDO2
+        [System.ComponentModel.DescriptionAttribute("Pulse duration on DO2, in milliseconds.")]
+        public int? PulseDO2
         {
             get
             {
@@ -1847,9 +1598,13 @@ namespace UclOpenAvDome
             }
         }
     
-        [Newtonsoft.Json.JsonPropertyAttribute("PulseDO3", Required=Newtonsoft.Json.Required.Always)]
+        /// <summary>
+        /// Pulse duration on DO3, in milliseconds.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("PulseDO3")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="PulseDO3")]
-        public int PulseDO3
+        [System.ComponentModel.DescriptionAttribute("Pulse duration on DO3, in milliseconds.")]
+        public int? PulseDO3
         {
             get
             {
@@ -1895,122 +1650,6 @@ namespace UclOpenAvDome
 
 
     /// <summary>
-    /// A liquid-reward solenoid valve driven by a digital output line.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.ComponentModel.DescriptionAttribute("A liquid-reward solenoid valve driven by a digital output line.")]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    [Bonsai.CombinatorAttribute(MethodName="Generate")]
-    public partial class RewardValve
-    {
-    
-        private double _openTime;
-    
-        private DigitalOutput _output;
-    
-        private ValveCalibration _calibration;
-    
-        public RewardValve()
-        {
-        }
-    
-        protected RewardValve(RewardValve other)
-        {
-            _openTime = other._openTime;
-            _output = other._output;
-            _calibration = other._calibration;
-        }
-    
-        /// <summary>
-        /// Calibrated valve open time delivering the target reward volume, in milliseconds.
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("openTime", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="openTime")]
-        [System.ComponentModel.DescriptionAttribute("Calibrated valve open time delivering the target reward volume, in milliseconds.")]
-        public double OpenTime
-        {
-            get
-            {
-                return _openTime;
-            }
-            set
-            {
-                _openTime = value;
-            }
-        }
-    
-        /// <summary>
-        /// The digital output driving this valve.
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("output", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="output")]
-        [System.ComponentModel.DescriptionAttribute("The digital output driving this valve.")]
-        public DigitalOutput Output
-        {
-            get
-            {
-                return _output;
-            }
-            set
-            {
-                _output = value;
-            }
-        }
-    
-        /// <summary>
-        /// Calibration measurements this valve's open time was derived from.
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("calibration")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="calibration")]
-        [System.ComponentModel.DescriptionAttribute("Calibration measurements this valve\'s open time was derived from.")]
-        public ValveCalibration Calibration
-        {
-            get
-            {
-                return _calibration;
-            }
-            set
-            {
-                _calibration = value;
-            }
-        }
-    
-        public System.IObservable<RewardValve> Generate()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new RewardValve(this)));
-        }
-    
-        public System.IObservable<RewardValve> Generate<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new RewardValve(this));
-        }
-    
-        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
-            stringBuilder.Append("OpenTime = " + _openTime + ", ");
-            stringBuilder.Append("Output = " + _output + ", ");
-            stringBuilder.Append("Calibration = " + _calibration);
-            return true;
-        }
-    
-        public override string ToString()
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" { ");
-            if (PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append("}");
-            return stringBuilder.ToString();
-        }
-    }
-
-
-    /// <summary>
     /// Represents configuration parameters of the RunningWheel module.
     ///Exposes wheel geometry parameters used to compute speed and distance from encoder counts.
     /// </summary>
@@ -2022,9 +1661,9 @@ namespace UclOpenAvDome
     public partial class RunningWheel
     {
     
-        private int _countsPerRevolution;
+        private int _countsPerRev;
     
-        private double _wheelDiameter;
+        private double _wheelDiameterMm;
     
         public RunningWheel()
         {
@@ -2032,43 +1671,43 @@ namespace UclOpenAvDome
     
         protected RunningWheel(RunningWheel other)
         {
-            _countsPerRevolution = other._countsPerRevolution;
-            _wheelDiameter = other._wheelDiameter;
+            _countsPerRev = other._countsPerRev;
+            _wheelDiameterMm = other._wheelDiameterMm;
         }
     
         /// <summary>
         /// Number of encoder counts per full revolution of the running wheel.
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("countsPerRevolution", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="countsPerRevolution")]
+        [Newtonsoft.Json.JsonPropertyAttribute("countsPerRev", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="countsPerRev")]
         [System.ComponentModel.DescriptionAttribute("Number of encoder counts per full revolution of the running wheel.")]
-        public int CountsPerRevolution
+        public int CountsPerRev
         {
             get
             {
-                return _countsPerRevolution;
+                return _countsPerRev;
             }
             set
             {
-                _countsPerRevolution = value;
+                _countsPerRev = value;
             }
         }
     
         /// <summary>
-        /// The diameter of the running wheel, in metric units.
+        /// The diameter of the running wheel, in millimetres.
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("wheelDiameter", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="wheelDiameter")]
-        [System.ComponentModel.DescriptionAttribute("The diameter of the running wheel, in metric units.")]
-        public double WheelDiameter
+        [Newtonsoft.Json.JsonPropertyAttribute("wheelDiameterMm", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="wheelDiameterMm")]
+        [System.ComponentModel.DescriptionAttribute("The diameter of the running wheel, in millimetres.")]
+        public double WheelDiameterMm
         {
             get
             {
-                return _wheelDiameter;
+                return _wheelDiameterMm;
             }
             set
             {
-                _wheelDiameter = value;
+                _wheelDiameterMm = value;
             }
         }
     
@@ -2084,8 +1723,8 @@ namespace UclOpenAvDome
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
-            stringBuilder.Append("CountsPerRevolution = " + _countsPerRevolution + ", ");
-            stringBuilder.Append("WheelDiameter = " + _wheelDiameter);
+            stringBuilder.Append("CountsPerRev = " + _countsPerRev + ", ");
+            stringBuilder.Append("WheelDiameterMm = " + _wheelDiameterMm);
             return true;
         }
     
@@ -3027,249 +2666,6 @@ namespace UclOpenAvDome
     }
 
 
-    /// <summary>
-    /// A valve calibration measurement set with an optional linear fit.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.ComponentModel.DescriptionAttribute("A valve calibration measurement set with an optional linear fit.")]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    [Bonsai.CombinatorAttribute(MethodName="Generate")]
-    public partial class ValveCalibration
-    {
-    
-        private System.Collections.Generic.List<ValveCalibrationPoint> _points;
-    
-        private double? _slope;
-    
-        private double? _intercept;
-    
-        public ValveCalibration()
-        {
-            _points = new System.Collections.Generic.List<ValveCalibrationPoint>();
-        }
-    
-        protected ValveCalibration(ValveCalibration other)
-        {
-            _points = other._points;
-            _slope = other._slope;
-            _intercept = other._intercept;
-        }
-    
-        /// <summary>
-        /// Measured open-time/volume calibration points.
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("points")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="points")]
-        [System.ComponentModel.DescriptionAttribute("Measured open-time/volume calibration points.")]
-        public System.Collections.Generic.List<ValveCalibrationPoint> Points
-        {
-            get
-            {
-                return _points;
-            }
-            set
-            {
-                _points = value;
-            }
-        }
-    
-        /// <summary>
-        /// Fitted slope of the open-time to volume relationship, in uL/ms.
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("slope")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="slope")]
-        [System.ComponentModel.DescriptionAttribute("Fitted slope of the open-time to volume relationship, in uL/ms.")]
-        public double? Slope
-        {
-            get
-            {
-                return _slope;
-            }
-            set
-            {
-                _slope = value;
-            }
-        }
-    
-        /// <summary>
-        /// Fitted intercept of the open-time to volume relationship, in uL.
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("intercept")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="intercept")]
-        [System.ComponentModel.DescriptionAttribute("Fitted intercept of the open-time to volume relationship, in uL.")]
-        public double? Intercept
-        {
-            get
-            {
-                return _intercept;
-            }
-            set
-            {
-                _intercept = value;
-            }
-        }
-    
-        public System.IObservable<ValveCalibration> Generate()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new ValveCalibration(this)));
-        }
-    
-        public System.IObservable<ValveCalibration> Generate<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new ValveCalibration(this));
-        }
-    
-        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
-            stringBuilder.Append("Points = " + _points + ", ");
-            stringBuilder.Append("Slope = " + _slope + ", ");
-            stringBuilder.Append("Intercept = " + _intercept);
-            return true;
-        }
-    
-        public override string ToString()
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" { ");
-            if (PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append("}");
-            return stringBuilder.ToString();
-        }
-    }
-
-
-    /// <summary>
-    /// A single measured point relating valve open time to delivered volume.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.ComponentModel.DescriptionAttribute("A single measured point relating valve open time to delivered volume.")]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    [Bonsai.CombinatorAttribute(MethodName="Generate")]
-    public partial class ValveCalibrationPoint
-    {
-    
-        private double _openTime;
-    
-        private double _volume;
-    
-        public ValveCalibrationPoint()
-        {
-        }
-    
-        protected ValveCalibrationPoint(ValveCalibrationPoint other)
-        {
-            _openTime = other._openTime;
-            _volume = other._volume;
-        }
-    
-        /// <summary>
-        /// Valve open time, in milliseconds.
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("openTime", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="openTime")]
-        [System.ComponentModel.DescriptionAttribute("Valve open time, in milliseconds.")]
-        public double OpenTime
-        {
-            get
-            {
-                return _openTime;
-            }
-            set
-            {
-                _openTime = value;
-            }
-        }
-    
-        /// <summary>
-        /// Measured delivered volume, in microliters.
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("volume", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="volume")]
-        [System.ComponentModel.DescriptionAttribute("Measured delivered volume, in microliters.")]
-        public double Volume
-        {
-            get
-            {
-                return _volume;
-            }
-            set
-            {
-                _volume = value;
-            }
-        }
-    
-        public System.IObservable<ValveCalibrationPoint> Generate()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new ValveCalibrationPoint(this)));
-        }
-    
-        public System.IObservable<ValveCalibrationPoint> Generate<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new ValveCalibrationPoint(this));
-        }
-    
-        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
-            stringBuilder.Append("OpenTime = " + _openTime + ", ");
-            stringBuilder.Append("Volume = " + _volume);
-            return true;
-        }
-    
-        public override string ToString()
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" { ");
-            if (PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append("}");
-            return stringBuilder.ToString();
-        }
-    }
-
-
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-    public enum BehaviorBoardOutputPort
-    {
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="DO0")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DO0")]
-        DO0 = 0,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="DO1")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DO1")]
-        DO1 = 1,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="DO2")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DO2")]
-        DO2 = 2,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="DO3")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DO3")]
-        DO3 = 3,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="SupplyPort0")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="SupplyPort0")]
-        SupplyPort0 = 4,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="SupplyPort1")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="SupplyPort1")]
-        SupplyPort1 = 5,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="SupplyPort2")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="SupplyPort2")]
-        SupplyPort2 = 6,
-    }
-
-
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
     [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
     public enum HarpStepperDriverMicrostepResolution
@@ -3316,231 +2712,6 @@ namespace UclOpenAvDome
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-    public enum OutputExpanderOutputChannel
-    {
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Out0")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Out0")]
-        Out0 = 0,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Out1")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Out1")]
-        Out1 = 1,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Out2")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Out2")]
-        Out2 = 2,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Out3")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Out3")]
-        Out3 = 3,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Out4")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Out4")]
-        Out4 = 4,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Out5")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Out5")]
-        Out5 = 5,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Out6")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Out6")]
-        Out6 = 6,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Out7")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Out7")]
-        Out7 = 7,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Out8")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Out8")]
-        Out8 = 8,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Out9")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Out9")]
-        Out9 = 9,
-    }
-
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.9.0.0 (Newtonsoft.Json v13.0.0.0)")]
-    [System.AttributeUsage(System.AttributeTargets.Class | System.AttributeTargets.Interface, AllowMultiple = true)]
-    internal class JsonInheritanceAttribute : System.Attribute
-    {
-        public JsonInheritanceAttribute(string key, System.Type type)
-        {
-            Key = key;
-            Type = type;
-        }
-
-        public string Key { get; private set; }
-
-        public System.Type Type { get; private set; }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.9.0.0 (Newtonsoft.Json v13.0.0.0)")]
-    public class JsonInheritanceConverter : Newtonsoft.Json.JsonConverter
-    {
-        internal static readonly string DefaultDiscriminatorName = "discriminator";
-
-        private readonly string _discriminatorName;
-
-        [System.ThreadStatic]
-        private static bool _isReading;
-
-        [System.ThreadStatic]
-        private static bool _isWriting;
-
-        public JsonInheritanceConverter()
-        {
-            _discriminatorName = DefaultDiscriminatorName;
-        }
-
-        public JsonInheritanceConverter(string discriminatorName)
-        {
-            _discriminatorName = discriminatorName;
-        }
-
-        public string DiscriminatorName { get { return _discriminatorName; } }
-
-        public override void WriteJson(Newtonsoft.Json.JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
-        {
-            try
-            {
-                _isWriting = true;
-
-                var jObject = Newtonsoft.Json.Linq.JObject.FromObject(value, serializer);
-                jObject.AddFirst(new Newtonsoft.Json.Linq.JProperty(_discriminatorName, GetSubtypeDiscriminator(value.GetType())));
-                writer.WriteToken(jObject.CreateReader());
-            }
-            finally
-            {
-                _isWriting = false;
-            }
-        }
-
-        public override bool CanWrite
-        {
-            get
-            {
-                if (_isWriting)
-                {
-                    _isWriting = false;
-                    return false;
-                }
-                return true;
-            }
-        }
-
-        public override bool CanRead
-        {
-            get
-            {
-                if (_isReading)
-                {
-                    _isReading = false;
-                    return false;
-                }
-                return true;
-            }
-        }
-
-        public override bool CanConvert(System.Type objectType)
-        {
-            return true;
-        }
-
-        public override object ReadJson(Newtonsoft.Json.JsonReader reader, System.Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer serializer)
-        {
-            var jObject = serializer.Deserialize<Newtonsoft.Json.Linq.JObject>(reader);
-            if (jObject == null)
-                return null;
-
-            var discriminatorValue = jObject.GetValue(_discriminatorName);
-            var discriminator = discriminatorValue != null ? Newtonsoft.Json.Linq.Extensions.Value<string>(discriminatorValue) : null;
-            var subtype = GetObjectSubtype(objectType, discriminator);
-
-            var objectContract = serializer.ContractResolver.ResolveContract(subtype) as Newtonsoft.Json.Serialization.JsonObjectContract;
-            if (objectContract == null || System.Linq.Enumerable.All(objectContract.Properties, p => p.PropertyName != _discriminatorName))
-            {
-                jObject.Remove(_discriminatorName);
-            }
-
-            try
-            {
-                _isReading = true;
-                return serializer.Deserialize(jObject.CreateReader(), subtype);
-            }
-            finally
-            {
-                _isReading = false;
-            }
-        }
-
-        private System.Type GetObjectSubtype(System.Type objectType, string discriminator)
-        {
-            foreach (var attribute in System.Reflection.CustomAttributeExtensions.GetCustomAttributes<JsonInheritanceAttribute>(System.Reflection.IntrospectionExtensions.GetTypeInfo(objectType), true))
-            {
-                if (attribute.Key == discriminator)
-                    return attribute.Type;
-            }
-
-            return objectType;
-        }
-
-        private string GetSubtypeDiscriminator(System.Type objectType)
-        {
-            foreach (var attribute in System.Reflection.CustomAttributeExtensions.GetCustomAttributes<JsonInheritanceAttribute>(System.Reflection.IntrospectionExtensions.GetTypeInfo(objectType), true))
-            {
-                if (attribute.Type == objectType)
-                    return attribute.Key;
-            }
-
-            return objectType.Name;
-        }
-    }
-
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.ComponentModel.DefaultPropertyAttribute("Type")]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Combinator)]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BehaviorBoardOutput>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<OutputExpanderOutput>))]
-    public partial class MatchDigitalOutput : Bonsai.Expressions.SingleArgumentExpressionBuilder
-    {
-    
-        public Bonsai.Expressions.TypeMapping Type { get; set; }
-
-        public override System.Linq.Expressions.Expression Build(System.Collections.Generic.IEnumerable<System.Linq.Expressions.Expression> arguments)
-        {
-            var typeMapping = Type;
-            var returnType = typeMapping != null ? typeMapping.GetType().GetGenericArguments()[0] : typeof(DigitalOutput);
-            return System.Linq.Expressions.Expression.Call(
-                typeof(MatchDigitalOutput),
-                "Process",
-                new System.Type[] { returnType },
-                System.Linq.Enumerable.Single(arguments));
-        }
-
-    
-        private static System.IObservable<TResult> Process<TResult>(System.IObservable<DigitalOutput> source)
-            where TResult : DigitalOutput
-        {
-            return System.Reactive.Linq.Observable.Create<TResult>(observer =>
-            {
-                var sourceObserver = System.Reactive.Observer.Create<DigitalOutput>(
-                    value =>
-                    {
-                        var match = value as TResult;
-                        if (match != null) observer.OnNext(match);
-                    },
-                    observer.OnError,
-                    observer.OnCompleted);
-                return System.ObservableExtensions.SubscribeSafe(source, sourceObserver);
-            });
-        }
-    }
-
-
     /// <summary>
     /// Serializes a sequence of data model objects into JSON strings.
     /// </summary>
@@ -3574,19 +2745,9 @@ namespace UclOpenAvDome
             return Process<BehaviorBoard>(source);
         }
 
-        public System.IObservable<string> Process(System.IObservable<BehaviorBoardOutput> source)
-        {
-            return Process<BehaviorBoardOutput>(source);
-        }
-
         public System.IObservable<string> Process(System.IObservable<CameraTriggerController> source)
         {
             return Process<CameraTriggerController>(source);
-        }
-
-        public System.IObservable<string> Process(System.IObservable<DigitalOutput> source)
-        {
-            return Process<DigitalOutput>(source);
         }
 
         public System.IObservable<string> Process(System.IObservable<HarpLickSpoutStage> source)
@@ -3614,11 +2775,6 @@ namespace UclOpenAvDome
             return Process<MotorAddress>(source);
         }
 
-        public System.IObservable<string> Process(System.IObservable<OutputExpanderOutput> source)
-        {
-            return Process<OutputExpanderOutput>(source);
-        }
-
         public System.IObservable<string> Process(System.IObservable<ProjectionCalibration> source)
         {
             return Process<ProjectionCalibration>(source);
@@ -3632,11 +2788,6 @@ namespace UclOpenAvDome
         public System.IObservable<string> Process(System.IObservable<PulseWidths> source)
         {
             return Process<PulseWidths>(source);
-        }
-
-        public System.IObservable<string> Process(System.IObservable<RewardValve> source)
-        {
-            return Process<RewardValve>(source);
         }
 
         public System.IObservable<string> Process(System.IObservable<RunningWheel> source)
@@ -3673,16 +2824,6 @@ namespace UclOpenAvDome
         {
             return Process<StepperPositions>(source);
         }
-
-        public System.IObservable<string> Process(System.IObservable<ValveCalibration> source)
-        {
-            return Process<ValveCalibration>(source);
-        }
-
-        public System.IObservable<string> Process(System.IObservable<ValveCalibrationPoint> source)
-        {
-            return Process<ValveCalibrationPoint>(source);
-        }
     }
 
 
@@ -3696,19 +2837,15 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<UclOpenAvDomeRig>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<AudioDevice>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BehaviorBoard>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BehaviorBoardOutput>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraTriggerController>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DigitalOutput>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpLickSpoutStage>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpStepperDriver>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpTimestampGeneratorGen3>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LicketySplit>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<MotorAddress>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<OutputExpanderOutput>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ProjectionCalibration>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseWidths>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RewardValve>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RunningWheel>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Speaker>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpeakerArray>))]
@@ -3716,8 +2853,6 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpinnakerCamera>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StageAxisMapping>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperPositions>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ValveCalibration>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ValveCalibrationPoint>))]
     public partial class DeserializeFromJson : Bonsai.Expressions.SingleArgumentExpressionBuilder
     {
     
@@ -3746,116 +2881,6 @@ namespace UclOpenAvDome
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.AttributeUsageAttribute((System.AttributeTargets.Class | System.AttributeTargets.Interface))]
-    public class YamlDiscriminatorAttribute : System.Attribute
-    {
-    
-        public YamlDiscriminatorAttribute(string discriminator)
-        {
-            Discriminator = discriminator;
-        }
-
-        public string Discriminator { get; private set; }
-
-    }
-
-
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    public class YamlDiscriminatorTypeInspector : YamlDotNet.Serialization.TypeInspectors.ReflectionTypeInspector
-    {
-    
-        readonly YamlDotNet.Serialization.ITypeInspector innerTypeDescriptor;
-
-        public YamlDiscriminatorTypeInspector(YamlDotNet.Serialization.ITypeInspector innerTypeDescriptor)
-        {
-            if (innerTypeDescriptor == null)
-            {
-                throw new System.ArgumentNullException("innerTypeDescriptor");
-            }
-
-            this.innerTypeDescriptor = innerTypeDescriptor;
-        }
-
-        public override System.Collections.Generic.IEnumerable<YamlDotNet.Serialization.IPropertyDescriptor> GetProperties(System.Type type, object container)
-        {
-            var innerProperties = innerTypeDescriptor.GetProperties(type, container);
-
-            var discriminatorAttribute = (YamlDiscriminatorAttribute)System.Attribute.GetCustomAttribute(type, typeof(YamlDiscriminatorAttribute));
-            var inheritanceAttributes = (JsonInheritanceAttribute[])System.Attribute.GetCustomAttributes(type, typeof(JsonInheritanceAttribute));
-            var typeMatch = System.Array.Find(inheritanceAttributes, attribute => attribute.Type == type);
-            if (discriminatorAttribute != null && typeMatch != null)
-            {
-                return System.Linq.Enumerable.Concat(new[]
-                {
-                    new DiscriminatorPropertyDescriptor(discriminatorAttribute.Discriminator, typeMatch.Key)
-                }, innerProperties);
-            }
-
-            return innerProperties;
-        }
-
-        class DiscriminatorPropertyDescriptor : YamlDotNet.Serialization.IPropertyDescriptor
-        {
-            readonly string key;
-
-            public DiscriminatorPropertyDescriptor(string discriminator, string value)
-            {
-                ScalarStyle = YamlDotNet.Core.ScalarStyle.Plain;
-                Name = discriminator;
-                key = value;
-            }
-
-            public string Name { get; private set; }
-
-            public bool Required
-            {
-                get { return true; }
-            }
-
-            public bool CanWrite
-            {
-                get { return true; }
-            }
-
-            public System.Type Type
-            {
-                get { return typeof(string); }
-            }
-
-            public System.Type TypeOverride { get; set; }
-
-            public System.Type ConverterType
-            {
-                get { return null; }
-            }
-
-            public bool AllowNulls
-            {
-                get { return false; }
-            }
-
-            public int Order { get; set; }
-
-            public YamlDotNet.Core.ScalarStyle ScalarStyle { get; set; }
-
-            public T GetCustomAttribute<T>() where T : System.Attribute
-            {
-                return null;
-            }
-
-            public YamlDotNet.Serialization.IObjectDescriptor Read(object target)
-            {
-                return new YamlDotNet.Serialization.ObjectDescriptor(key, Type, Type, ScalarStyle);
-            }
-
-            public void Write(object target, object value)
-            {
-            }
-        }
-    }
-
-
     /// <summary>
     /// Serializes a sequence of data model objects into YAML strings.
     /// </summary>
@@ -3871,7 +2896,6 @@ namespace UclOpenAvDome
             return System.Reactive.Linq.Observable.Defer(() =>
             {
                 var serializer = new YamlDotNet.Serialization.SerializerBuilder()
-                    .WithTypeInspector(inspector => new YamlDiscriminatorTypeInspector(inspector))
                       .WithTypeConverter(new YamlDotNet.Serialization.Converters.DateTimeOffsetConverter())
                       .Build();
                 return System.Reactive.Linq.Observable.Select(source, value => serializer.Serialize(value)); 
@@ -3893,19 +2917,9 @@ namespace UclOpenAvDome
             return Process<BehaviorBoard>(source);
         }
 
-        public System.IObservable<string> Process(System.IObservable<BehaviorBoardOutput> source)
-        {
-            return Process<BehaviorBoardOutput>(source);
-        }
-
         public System.IObservable<string> Process(System.IObservable<CameraTriggerController> source)
         {
             return Process<CameraTriggerController>(source);
-        }
-
-        public System.IObservable<string> Process(System.IObservable<DigitalOutput> source)
-        {
-            return Process<DigitalOutput>(source);
         }
 
         public System.IObservable<string> Process(System.IObservable<HarpLickSpoutStage> source)
@@ -3933,11 +2947,6 @@ namespace UclOpenAvDome
             return Process<MotorAddress>(source);
         }
 
-        public System.IObservable<string> Process(System.IObservable<OutputExpanderOutput> source)
-        {
-            return Process<OutputExpanderOutput>(source);
-        }
-
         public System.IObservable<string> Process(System.IObservable<ProjectionCalibration> source)
         {
             return Process<ProjectionCalibration>(source);
@@ -3951,11 +2960,6 @@ namespace UclOpenAvDome
         public System.IObservable<string> Process(System.IObservable<PulseWidths> source)
         {
             return Process<PulseWidths>(source);
-        }
-
-        public System.IObservable<string> Process(System.IObservable<RewardValve> source)
-        {
-            return Process<RewardValve>(source);
         }
 
         public System.IObservable<string> Process(System.IObservable<RunningWheel> source)
@@ -3992,16 +2996,6 @@ namespace UclOpenAvDome
         {
             return Process<StepperPositions>(source);
         }
-
-        public System.IObservable<string> Process(System.IObservable<ValveCalibration> source)
-        {
-            return Process<ValveCalibration>(source);
-        }
-
-        public System.IObservable<string> Process(System.IObservable<ValveCalibrationPoint> source)
-        {
-            return Process<ValveCalibrationPoint>(source);
-        }
     }
 
 
@@ -4015,19 +3009,15 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<UclOpenAvDomeRig>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<AudioDevice>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BehaviorBoard>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BehaviorBoardOutput>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraTriggerController>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DigitalOutput>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpLickSpoutStage>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpStepperDriver>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpTimestampGeneratorGen3>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LicketySplit>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<MotorAddress>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<OutputExpanderOutput>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ProjectionCalibration>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseWidths>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RewardValve>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RunningWheel>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Speaker>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpeakerArray>))]
@@ -4035,8 +3025,6 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpinnakerCamera>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StageAxisMapping>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperPositions>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ValveCalibration>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ValveCalibrationPoint>))]
     public partial class DeserializeFromYaml : Bonsai.Expressions.SingleArgumentExpressionBuilder
     {
     
@@ -4058,27 +3046,11 @@ namespace UclOpenAvDome
                 System.Linq.Enumerable.Single(arguments));
         }
 
-        private static void AddTypeDiscriminator<T>(YamlDotNet.Serialization.BufferedDeserialization.ITypeDiscriminatingNodeDeserializerOptions o)
-        {
-            var baseType = typeof(T);
-            var discriminator = System.Reflection.CustomAttributeExtensions.GetCustomAttribute<YamlDiscriminatorAttribute>(baseType).Discriminator;
-            var typeMapping = System.Linq.Enumerable.ToDictionary(
-                System.Reflection.CustomAttributeExtensions.GetCustomAttributes<JsonInheritanceAttribute>(baseType),
-                attr => attr.Key,
-                attr => attr.Type);
-            o.AddKeyValueTypeDiscriminator<T>(discriminator, typeMapping);
-        }
-
         private static System.IObservable<T> Process<T>(System.IObservable<string> source)
         {
             return System.Reactive.Linq.Observable.Defer(() =>
             {
                 var serializer = new YamlDotNet.Serialization.DeserializerBuilder()
-                    .WithTypeInspector(inspector => new YamlDiscriminatorTypeInspector(inspector))
-                    .WithTypeDiscriminatingNodeDeserializer(o =>
-                    {
-                        AddTypeDiscriminator<DigitalOutput>(o);
-                    })
                       .WithTypeConverter(new YamlDotNet.Serialization.Converters.DateTimeOffsetConverter())
                       .Build();
                 return System.Reactive.Linq.Observable.Select(source, value =>

@@ -1,7 +1,7 @@
 from typing import Literal
 
 from pydantic import Field
-from ucl_open.components import ProjectionCalibration, RewardValve, SpeakerArray
+from ucl_open.components import ProjectionCalibration, SpeakerArray
 from ucl_open.core.rig import Rig
 from ucl_open.devices import (
     BehaviorBoard,
@@ -29,8 +29,6 @@ class UclOpenAvDomeRig(Rig):
     camera_face: SpinnakerCamera = Field(description="Face camera")
     camera_pupil: SpinnakerCamera = Field(description="Pupil camera")
     camera_body: SpinnakerCamera = Field(description="Body camera")
-    valve_left: RewardValve = Field(description="Left reward valve")
-    valve_right: RewardValve = Field(description="Right reward valve")
     projection_calibration: ProjectionCalibration = Field(
         description="Mesh-map and gamma-LUT file paths for the dome projection"
     )
