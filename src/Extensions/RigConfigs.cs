@@ -24,6 +24,8 @@ public class RigConfigs
             {
                 case "GREEN-DOME-2":
                     return GreenDome2configs();
+                case "BLUE-OPTO-1":
+                    return BlueOpto1configs();
                 case "BLUE-OPTO-2":
                     return BlueOpto2configs();
                 default:
@@ -51,8 +53,8 @@ public class RigConfigs
         currentRigConfigs.SerialNumberCamera3 = "25366329";  // Body
 
         // Valve Calibration
-        currentRigConfigs.ValveOpenTimeLeft = 28;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 34;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeLeft = 55;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 28;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
@@ -60,6 +62,37 @@ public class RigConfigs
 
         // StepperMotor Default Position
         currentRigConfigs.StepperMotorDefaultPosition = new int[] { 5900, 6040, 4610, 1500, 0 };  // 5 Motors
+
+        return currentRigConfigs;
+    }
+
+    private RigSpecificConfigs BlueOpto1configs()
+    {
+        RigSpecificConfigs currentRigConfigs = new RigSpecificConfigs();
+
+        // COM ports
+        currentRigConfigs.COMPortBehaviourBoard = "COM6";
+        currentRigConfigs.COMPortStepperDriver1 = "COM3";  // Motors 1,2,3
+        currentRigConfigs.COMPortStepperDriver2 = "COM4";  // Motors 4,5
+        currentRigConfigs.COMPortTimestampGenerator = "COM5";
+        currentRigConfigs.COMPortLicketySplitLeft = "COM7";
+        currentRigConfigs.COMPortLicketySplitRight = "COM11";
+        
+        // Cameras
+        currentRigConfigs.SerialNumberCamera1 = "23201535";  // Face
+        currentRigConfigs.SerialNumberCamera2 = "26120781";  // Pupil
+        currentRigConfigs.SerialNumberCamera3 = "23199186";  // Body
+
+        // Valve Calibration
+        currentRigConfigs.ValveOpenTimeLeft = 40;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 37;  // in ms. ~10ms min.
+
+        // MeshMapping and Gamma calibration for Visual Stimuli
+        currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
+        currentRigConfigs.GammaLUTFilePath = @"C:\RigConfigs\gammalut.bmp";  // path to Gamma Lookup Table file
+
+        // StepperMotor Default Position
+        currentRigConfigs.StepperMotorDefaultPosition = new int[] { 2300, 7150, 8800, 5750, 6350 };  // 5 Motors
 
         return currentRigConfigs;
     }
@@ -82,8 +115,8 @@ public class RigConfigs
         currentRigConfigs.SerialNumberCamera3 = "25366318";  // Body
 
         // Valve Calibration
-        currentRigConfigs.ValveOpenTimeLeft = 20;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 25;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeLeft = 40;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 50;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
@@ -95,6 +128,7 @@ public class RigConfigs
         return currentRigConfigs;
     }
 }
+
 
 public class RigSpecificConfigs
 {

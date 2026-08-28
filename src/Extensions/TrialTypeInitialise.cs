@@ -19,6 +19,7 @@ public class TrialTypeInitialise
     [Description("Set to -1 to use the weighted random selection (recommended). Or force specific trial: 0=UnisensoryVisual, 1=UnisensoryAudio, 2=Multisensory (coherent), 3=Multisensory (conflict), 4=Neutral")]
     public int trainingStageId { get; set; }  // This is set by bonsai over the GUI.
     public int TrialType { get; set; }
+    // public String mouseID { get; set; }
     
     // Response handling properties
     // Currently unused:
@@ -182,42 +183,42 @@ public class TrialTypeInitialise
                 autoRewardProbability = 0.0; // Automatically reward 80% of trials (handled in trial generation)
                 BothSpoutsProbability = 0.5; // Only regular trials
                 RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
-                value.GratingsSpecifications.Contrast = new List<double> { 1.0 }; // Set contrast for gratings
+                value.GratingsSpecifications.Contrast = new List<double> { 3.0 }; // Set contrast for gratings
                 break;
             case 1: // Coherent trials only
                 trialWeights = new List<int> { 0, 0, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Still automatically reward 20% of trials to help mice transition to new task structure
                 BothSpoutsProbability = 1.0; // Only regular trials
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
-                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.1, 0.2, 0.4, 0.8 }; // Set contrast for gratings
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                value.GratingsSpecifications.Contrast = new List<double> { 3.0 }; // Set contrast for gratings
                 break;
             case 2: // Unisensory auditory added
                 trialWeights = new List<int> { 0, 10, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Still automatically reward 10% of trials
                 BothSpoutsProbability = 1.0; // Only regular trials
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
-                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.1, 0.2, 0.4, 0.8 }; // Set contrast for gratings
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.25, 0.5, 1.0 }; // Set contrast for gratings
                 break;
             case 3: // Unisensory visual added
                 trialWeights = new List<int> { 10, 10, 10, 0, 0 };
                 autoRewardProbability = 0.0; // Still automatically reward 10% of trials
                 BothSpoutsProbability = 1.0; // Only regular trials
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
-                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.1, 0.2, 0.4, 0.8 }; // Set contrast for gratings
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.25, 0.5, 1.0 }; // Set contrast for gratings
                 break;
             case 4: // Conflict and Neutral trials added
                 trialWeights = new List<int> { 10, 10, 5, 5, 1 };
                 autoRewardProbability = 0.0;  // No more automatic rewards in final stage
                 BothSpoutsProbability = 1.0; // Only regular trials
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
-                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.1, 0.2, 0.4, 0.8 }; // Set contrast for gratings
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.25, 0.5, 1.0 }; // Set contrast for gratings
                 break;
             default:
                 trialWeights = new List<int> { 10, 10, 5, 5, 1 };
                 autoRewardProbability = 0.0;
                 BothSpoutsProbability = 1.0; // Only regular trials
-                RewardSizeInUl = 2; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
-                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.1, 0.2, 0.4, 0.8 }; // Set contrast for gratings
+                RewardSizeInUl = 4; // Currently quite hacky. In bonsai I define the opening duration of the solenoid for 2ul and here, where I set 4ul, I'll make bonsai open the valve twice in a row. This needs to chance sooner rather than later!
+                value.GratingsSpecifications.Contrast = new List<double> { 0, 0.25, 0.5, 1.0 }; // Set contrast for gratings
                 break;
         }
         return value;
@@ -289,6 +290,17 @@ public class TrialTypeInitialise
         trialData.IsRepeat = false;
         trialData.RepeatCount = 0;
         SetupOptogeneticParameters(trialData, value, trialRand);
+
+        // this seems like a good spot to individualize mice for testing purposes:
+
+        // trialData.licksMoveGrating = 0;
+        // trialData.licksToTarget = 1;
+        // var list = new List<string>() { "AM009", "AM018", "AM020", "Dummy" };
+        // if (list.Contains(mouseID)) {
+        //     trialData.licksMoveGrating = 1;
+        //     trialData.licksToTarget = 4;
+        // }
+
         return trialData;
     }
     
@@ -908,24 +920,27 @@ public class TrialData
     public int RepeatCount;
     public string targetSide;
     public double ITI;
+    public double SpoutINDelay { get { return 0.5; } }  // in seconds. Relative to stimulus onset when to move response spouts IN
+    public double IncorrectTimeoutDuration { get { return 4.0; } }  // in seconds
     public double autoRewardProbability;  // probability of automatically rewarding the trial (for early training stages)
     public bool autoReward;  // Bool defining if current trial is autoRewarded or not
     public bool largeReward;  // Bool defining if current trial is autoRewarded or not
     public double RewardSizeInUl;  // Size of rewards in ul.
-    public double LargeRewardMultiplier { get { return 5; } }  // Size of rewards in ul.
-    public double LargeRewardProbability { get { return 0.05; } }  // Probability of receiving a large reward
+    public double LargeRewardMultiplier { get { return 1; } }  // Size of rewards in ul.
+    public double LargeRewardProbability { get { return 0.00; } }  // Probability of receiving a large reward
     public bool BothSpouts;  // Bool defining if current trial is presenting both spouts (regular trial) or just the correct spout (used for initial training).
     public double BothSpoutsProbability { get; set; }  // by default only regular trials. 
 
-    // public double openLoopDuration { get { return 0.5; } }
+    // public double licksMoveGrating { get; set; }  // use lick-grating closed loop?
+    // public double licksToTarget { get; set; }  // when above true, how often until reward and how much to move by
+ 
     public double openLoopDuration { get { return 0.0; } }
-    // public double closedLoopDuration { get { return 1.0; } }
     public double closedLoopDuration { get { return 1.5; } }
 
     // VisualStimulus
     public double visualAzimuth;
     public double visualElevation { get { return 15; } }
-    public double visualGaussianWindowSigma { get { return 15; } }  // in deg
+    public double visualGaussianWindowSigma { get { return 20; } }  // in deg
     public double visualContrast;
     public double visualOrientation { get { return 0; } }
     public double visualSpatialFrequency { get { return 0.066666667; } }
