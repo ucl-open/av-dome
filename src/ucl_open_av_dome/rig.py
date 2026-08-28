@@ -1,7 +1,7 @@
 from typing import Literal
 
 from pydantic import Field
-from ucl_open.components import ProjectionCalibration, RewardValve
+from ucl_open.components import ProjectionCalibration, RewardValve, SpeakerArray
 from ucl_open.core.rig import Rig
 from ucl_open.devices import (
     BehaviorBoard,
@@ -34,6 +34,7 @@ class UclOpenAvDomeRig(Rig):
     projection_calibration: ProjectionCalibration = Field(
         description="Mesh-map and gamma-LUT file paths for the dome projection"
     )
+    speaker_array: SpeakerArray = Field(description="Dome speaker array and audio output device")
     lick_spout_default_position: StepperPositions = Field(
         description="Default absolute stage position at session start"
     )
