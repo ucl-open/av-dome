@@ -18,7 +18,7 @@ rootPath: C:\Data
 behaviorBoard:
   portName: COM1
   pulseController:
-    outputPulseEnable: [DO1, DO2]   # DO3 unused on this rig
+    outputPulseEnable: "DO1, DO2, DO3"
     pulseWidths:
       PulseDO1: 40    # ms, left reward valve open time
       PulseDO2: 40    # ms, right reward valve open time
@@ -127,6 +127,7 @@ speakerArray:
   #   layer4_-90:    { position: { azimuth: -90,    elevation: -15 }, channel: 24 }
   #   layer4_-120:   { position: { azimuth: -120,   elevation: -15 }, channel: 25 }
 
+interPulseInterval: 50   # ms between consecutive reward pulses; must let the valve seat
 # Default absolute stage position at session start (steps)
 lickSpoutDefaultPosition:
   leftElevation: 0        # motor 1
