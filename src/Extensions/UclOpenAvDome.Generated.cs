@@ -45,6 +45,8 @@ namespace UclOpenAvDome
     
         private StepperPositions _lickSpoutDefaultPosition;
     
+        private int _interPulseInterval;
+    
         public UclOpenAvDomeRig()
         {
             _version = "0.0.0-rc1";
@@ -59,6 +61,7 @@ namespace UclOpenAvDome
             _projectionCalibration = new ProjectionCalibration();
             _speakerArray = new SpeakerArray();
             _lickSpoutDefaultPosition = new StepperPositions();
+            _interPulseInterval = 50;
         }
     
         protected UclOpenAvDomeRig(UclOpenAvDomeRig other)
@@ -76,6 +79,7 @@ namespace UclOpenAvDome
             _projectionCalibration = other._projectionCalibration;
             _speakerArray = other._speakerArray;
             _lickSpoutDefaultPosition = other._lickSpoutDefaultPosition;
+            _interPulseInterval = other._interPulseInterval;
         }
     
         /// <summary>
@@ -319,6 +323,26 @@ namespace UclOpenAvDome
             }
         }
     
+        /// <summary>
+        /// Gap between consecutive reward pulses, in milliseconds. Must be long enough for the valve to seat before the next trigger; 0 re-triggers the instant the board closes the valve and risks merged or dropped pulses.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("interPulseInterval")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="interPulseInterval")]
+        [System.ComponentModel.DescriptionAttribute("Gap between consecutive reward pulses, in milliseconds. Must be long enough for t" +
+            "he valve to seat before the next trigger; 0 re-triggers the instant the board cl" +
+            "oses the valve and risks merged or dropped pulses.")]
+        public int InterPulseInterval
+        {
+            get
+            {
+                return _interPulseInterval;
+            }
+            set
+            {
+                _interPulseInterval = value;
+            }
+        }
+    
         public System.IObservable<UclOpenAvDomeRig> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new UclOpenAvDomeRig(this)));
@@ -343,7 +367,8 @@ namespace UclOpenAvDome
             stringBuilder.Append("CameraBody = " + _cameraBody + ", ");
             stringBuilder.Append("ProjectionCalibration = " + _projectionCalibration + ", ");
             stringBuilder.Append("SpeakerArray = " + _speakerArray + ", ");
-            stringBuilder.Append("LickSpoutDefaultPosition = " + _lickSpoutDefaultPosition);
+            stringBuilder.Append("LickSpoutDefaultPosition = " + _lickSpoutDefaultPosition + ", ");
+            stringBuilder.Append("InterPulseInterval = " + _interPulseInterval);
             return true;
         }
     
@@ -1055,11 +1080,11 @@ namespace UclOpenAvDome
     
         private string _portName;
     
-        private TimerFrequency _timerFrequency;
+        private Harp.TimestampGeneratorGen3.TimerRate _timerFrequency;
     
         public HarpTimestampGeneratorGen3()
         {
-            _timerFrequency = TimerFrequency.Timer1000Hz;
+            _timerFrequency = Harp.TimestampGeneratorGen3.TimerRate.Timer1000Hz;
         }
     
         protected HarpTimestampGeneratorGen3(HarpTimestampGeneratorGen3 other)
@@ -1092,7 +1117,7 @@ namespace UclOpenAvDome
         [Newtonsoft.Json.JsonPropertyAttribute("timerFrequency")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="timerFrequency")]
         [System.ComponentModel.DescriptionAttribute("Frequency of the timer output signal.")]
-        public TimerFrequency TimerFrequency
+        public Harp.TimestampGeneratorGen3.TimerRate TimerFrequency
         {
             get
             {
@@ -1446,13 +1471,12 @@ namespace UclOpenAvDome
     public partial class PulseController
     {
     
-        private System.Collections.Generic.List<string> _outputPulseEnable;
+        private Harp.Behavior.DigitalOutputs _outputPulseEnable;
     
         private PulseWidths _pulseWidths;
     
         public PulseController()
         {
-            _outputPulseEnable = new System.Collections.Generic.List<string>();
             _pulseWidths = new PulseWidths();
         }
     
@@ -1463,13 +1487,13 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
-        /// List of digital output lines that are enabled for pulse generation.
+        /// Digital output lines enabled for pulse generation, comma separated.
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [Newtonsoft.Json.JsonPropertyAttribute("outputPulseEnable")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="outputPulseEnable")]
-        [System.ComponentModel.DescriptionAttribute("List of digital output lines that are enabled for pulse generation.")]
-        public System.Collections.Generic.List<string> OutputPulseEnable
+        [System.ComponentModel.DescriptionAttribute("Digital output lines enabled for pulse generation, comma separated.")]
+        public Harp.Behavior.DigitalOutputs OutputPulseEnable
         {
             get
             {
@@ -1545,14 +1569,15 @@ namespace UclOpenAvDome
     public partial class PulseWidths
     {
     
-        private int? _pulseDO1;
+        private int _pulseDO1;
     
-        private int? _pulseDO2;
+        private int _pulseDO2;
     
-        private int? _pulseDO3;
+        private int _pulseDO3;
     
         public PulseWidths()
         {
+            _pulseDO3 = 0;
         }
     
         protected PulseWidths(PulseWidths other)
@@ -1565,10 +1590,10 @@ namespace UclOpenAvDome
         /// <summary>
         /// Pulse duration on DO1, in milliseconds.
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("PulseDO1")]
+        [Newtonsoft.Json.JsonPropertyAttribute("PulseDO1", Required=Newtonsoft.Json.Required.Always)]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="PulseDO1")]
         [System.ComponentModel.DescriptionAttribute("Pulse duration on DO1, in milliseconds.")]
-        public int? PulseDO1
+        public int PulseDO1
         {
             get
             {
@@ -1583,10 +1608,10 @@ namespace UclOpenAvDome
         /// <summary>
         /// Pulse duration on DO2, in milliseconds.
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("PulseDO2")]
+        [Newtonsoft.Json.JsonPropertyAttribute("PulseDO2", Required=Newtonsoft.Json.Required.Always)]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="PulseDO2")]
         [System.ComponentModel.DescriptionAttribute("Pulse duration on DO2, in milliseconds.")]
-        public int? PulseDO2
+        public int PulseDO2
         {
             get
             {
@@ -1604,7 +1629,7 @@ namespace UclOpenAvDome
         [Newtonsoft.Json.JsonPropertyAttribute("PulseDO3")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="PulseDO3")]
         [System.ComponentModel.DescriptionAttribute("Pulse duration on DO3, in milliseconds.")]
-        public int? PulseDO3
+        public int PulseDO3
         {
             get
             {
@@ -2632,37 +2657,6 @@ namespace UclOpenAvDome
             stringBuilder.Append("}");
             return stringBuilder.ToString();
         }
-    }
-
-
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-    public enum TimerFrequency
-    {
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Disabled")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Disabled")]
-        Disabled = 0,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Timer50Hz")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Timer50Hz")]
-        Timer50Hz = 1,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Timer100Hz")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Timer100Hz")]
-        Timer100Hz = 2,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Timer200Hz")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Timer200Hz")]
-        Timer200Hz = 3,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Timer500Hz")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Timer500Hz")]
-        Timer500Hz = 4,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="Timer1000Hz")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Timer1000Hz")]
-        Timer1000Hz = 5,
     }
 
 

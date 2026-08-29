@@ -36,3 +36,13 @@ class UclOpenAvDomeRig(Rig):
     lick_spout_default_position: StepperPositions = Field(
         description="Default absolute stage position at session start"
     )
+    # Reward delivery structure; moves to the task schema when task parameters migrate.
+    inter_pulse_interval: int = Field(
+        default=50,
+        ge=0,
+        description=(
+            "Gap between consecutive reward pulses, in milliseconds. Must be long enough for the "
+            "valve to seat before the next trigger; 0 re-triggers the instant the board closes the "
+            "valve and risks merged or dropped pulses."
+        ),
+    )

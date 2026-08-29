@@ -140,6 +140,16 @@
       "title": "CameraTriggerController",
       "type": "object"
     },
+    "DigitalOutputs": {
+      "allOf": [
+        {
+          "type": "string"
+        }
+      ],
+      "description": "A set of behavior board digital output lines, written comma separated.",
+      "title": "DigitalOutputs",
+      "x-sgen-typename": "Harp.Behavior.DigitalOutputs"
+    },
     "HarpLickSpoutStage": {
       "description": "Harp-based lick spout stage: two StepperDriver boards driving a 5-axis rig.\nCalibration (named positions) is stored separately in a SpoutRigPosition YAML file.",
       "properties": {
@@ -349,17 +359,10 @@
       "description": "Represents the PulseController module on the BehaviorBoard.",
       "properties": {
         "outputPulseEnable": {
-          "default": [
-            "DO1",
-            "DO2",
-            "DO3"
-          ],
-          "description": "List of digital output lines that are enabled for pulse generation.",
-          "items": {
-            "type": "string"
-          },
-          "title": "OutputPulseEnable",
-          "type": "array"
+          "$ref": "#/$defs/DigitalOutputs",
+          "default": "DO1, DO2, DO3",
+          "description": "Digital output lines enabled for pulse generation, comma separated.",
+          "title": "OutputPulseEnable"
         },
         "pulseWidths": {
           "$ref": "#/$defs/PulseWidths",
@@ -376,51 +379,32 @@
       "description": "Pulse durations for the behavior board digital outputs, in milliseconds.\n\nA line that is not used on a rig may be omitted.",
       "properties": {
         "PulseDO1": {
-          "anyOf": [
-            {
-              "maximum": 65535,
-              "minimum": 0,
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
           "description": "Pulse duration on DO1, in milliseconds.",
-          "title": "PulseDo1"
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "PulseDo1",
+          "type": "integer"
         },
         "PulseDO2": {
-          "anyOf": [
-            {
-              "maximum": 65535,
-              "minimum": 0,
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
           "description": "Pulse duration on DO2, in milliseconds.",
-          "title": "PulseDo2"
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "PulseDo2",
+          "type": "integer"
         },
         "PulseDO3": {
-          "anyOf": [
-            {
-              "maximum": 65535,
-              "minimum": 0,
-              "type": "integer"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
+          "default": 0,
           "description": "Pulse duration on DO3, in milliseconds.",
-          "title": "PulseDo3"
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "PulseDo3",
+          "type": "integer"
         }
       },
+      "required": [
+        "PulseDO1",
+        "PulseDO2"
+      ],
       "title": "PulseWidths",
       "type": "object"
     },
@@ -733,7 +717,8 @@
         "Timer1000Hz"
       ],
       "title": "TimerFrequency",
-      "type": "string"
+      "type": "string",
+      "x-sgen-typename": "Harp.TimestampGeneratorGen3.TimerRate"
     },
     "UclOpenAvDomeRig": {
       "description": "Rig configuration for the av-dome experiment.",
@@ -800,6 +785,13 @@
           "$ref": "#/$defs/StepperPositions",
           "description": "Default absolute stage position at session start",
           "title": "LickSpoutDefaultPosition"
+        },
+        "interPulseInterval": {
+          "default": 50,
+          "description": "Gap between consecutive reward pulses, in milliseconds. Must be long enough for the valve to seat before the next trigger; 0 re-triggers the instant the board closes the valve and risks merged or dropped pulses.",
+          "minimum": 0,
+          "title": "InterPulseInterval",
+          "type": "integer"
         }
       },
       "required": [
