@@ -450,29 +450,12 @@ wheels = [
 
 [[package]]
 name = "ucl-open"
-source = { editable = "../ucl-open" }
+version = "0.0.0"
+source = { git = "https://github.com/ucl-open/ucl-open?branch=main#db7c6361057c7cdbe43354490419f22afaec1d6f" }
 dependencies = [
     { name = "pydantic" },
     { name = "pydantic-yaml" },
     { name = "swc-aeon" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "pydantic", specifier = ">=2.12.3" },
-    { name = "pydantic-yaml", specifier = ">=1.6.0" },
-    { name = "swc-aeon", specifier = ">=0.2.0" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "pandas-stubs" },
-    { name = "pre-commit" },
-    { name = "pyright", specifier = "==1.1.409" },
-    { name = "pytest" },
-    { name = "pytest-cov" },
-    { name = "pytest-mock" },
-    { name = "ruff" },
 ]
 
 [[package]]
@@ -489,5 +472,5 @@ dependencies = [
 requires-dist = [
     { name = "pydantic-settings" },
     { name = "swc-aeon", git = "https://github.com/SainsburyWellcomeCentre/aeon_api.git?branch=main" },
-    { name = "ucl-open", editable = "../ucl-open" },
+    { name = "ucl-open", git = "https://github.com/ucl-open/ucl-open?branch=main" },
 ]

@@ -47,6 +47,5 @@ ignore-words-list = 'nd'
 required-version = '>=0.8.4'
 
 [tool.uv.sources]
-# TODO: revert to git main once the components/yaml additions are pushed upstream
-ucl-open = { path = "../ucl-open", editable = true }
+ucl-open = {git = "https://github.com/ucl-open/ucl-open", branch = "main"}
 swc-aeon = { git = "https://github.com/SainsburyWellcomeCentre/aeon_api.git", branch = "main" }
