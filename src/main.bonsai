@@ -1549,7 +1549,7 @@
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="al:AudioReader">
-                            <al:FileName>C:\dev\av-dome\src\LocalFiles\filtered_pink_pulse_train.wav</al:FileName>
+                            <al:FileName>LocalFiles\filtered_pink_pulse_train.wav</al:FileName>
                             <al:BufferLength>0</al:BufferLength>
                             <al:SampleRate>0</al:SampleRate>
                           </Combinator>

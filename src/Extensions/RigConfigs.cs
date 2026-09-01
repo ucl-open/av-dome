@@ -53,8 +53,8 @@ public class RigConfigs
         currentRigConfigs.SerialNumberCamera3 = "25366329";  // Body
 
         // Valve Calibration
-        currentRigConfigs.ValveOpenTimeLeft = 40;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 40;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeLeft = 55;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 28;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
@@ -76,23 +76,23 @@ public class RigConfigs
         currentRigConfigs.COMPortStepperDriver2 = "COM4";  // Motors 4,5
         currentRigConfigs.COMPortTimestampGenerator = "COM5";
         currentRigConfigs.COMPortLicketySplitLeft = "COM7";
-        currentRigConfigs.COMPortLicketySplitRight = "COM8";
+        currentRigConfigs.COMPortLicketySplitRight = "COM11";
         
         // Cameras
         currentRigConfigs.SerialNumberCamera1 = "23201535";  // Face
-        currentRigConfigs.SerialNumberCamera2 = "23201529";  // Pupil
+        currentRigConfigs.SerialNumberCamera2 = "26120781";  // Pupil
         currentRigConfigs.SerialNumberCamera3 = "23199186";  // Body
 
         // Valve Calibration
         currentRigConfigs.ValveOpenTimeLeft = 40;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 40;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 37;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
         currentRigConfigs.GammaLUTFilePath = @"C:\RigConfigs\gammalut.bmp";  // path to Gamma Lookup Table file
 
         // StepperMotor Default Position
-        currentRigConfigs.StepperMotorDefaultPosition = new int[] { 3950, 5800, 7900, 2600, 1700 };  // 5 Motors
+        currentRigConfigs.StepperMotorDefaultPosition = new int[] { 2300, 7150, 8800, 5750, 6350 };  // 5 Motors
 
         return currentRigConfigs;
     }
