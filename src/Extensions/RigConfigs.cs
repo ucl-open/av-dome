@@ -85,7 +85,7 @@ public class RigConfigs
 
         // Valve Calibration
         currentRigConfigs.ValveOpenTimeLeft = 40;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 37;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 25;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
