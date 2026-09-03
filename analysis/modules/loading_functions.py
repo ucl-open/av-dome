@@ -24,7 +24,7 @@ def load_sessions(root_folder, all_subjects, show_warnings=False):
                 continue
             #
             
-            if len(data.keys()) < 38:
+            if len(data.keys()) < 38:  # Initally not all variables were saved
                 continue
             #
             # print(len(data.keys()))
@@ -59,6 +59,8 @@ def load_sessions(root_folder, all_subjects, show_warnings=False):
             data["session_path"] = str(session)
             data["subject"] = subject
             data["dateTime"] = str(session).split("_date-")[-1]  # Extract the dateTime from the session path
+            date_token = str(session).split("_date-")[-1]
+            data["date"] = date_token.split("T")[0]  # Extract the date from the session path
 
             try:
                 data["trainingStage"] = np.int32(str(session).split("Stage ")[-1].split("_date")[0])
@@ -147,8 +149,21 @@ def edit_columns(df):
 
         df["training_stage"] = df[stage_col].apply(extract_stage)
 
-    # Simplified session_id assignment from the end of each session_path.
-    if "session_path" in df.columns:
+    # Assign session_id from the date field, ordered by actual session date.
+    if "date" in df.columns:
+        session_dates = df["date"].dropna().astype(str).unique()
+
+        def parse_date_token(date_str):
+            try:
+                return pd.to_datetime(date_str, errors="coerce")
+            except Exception:
+                return pd.NaT
+
+        ordered_dates = sorted(session_dates, key=parse_date_token)
+        date_id_map = {date: i for i, date in enumerate(ordered_dates)}
+        df["session_id"] = df["date"].astype(str).map(date_id_map).astype("int64")
+    elif "session_path" in df.columns:
+        # Fallback behavior if date is not present.
         session_paths = df["session_path"].dropna().astype(str).unique()
 
         def parse_session_id(path):
