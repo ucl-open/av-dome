@@ -1163,21 +1163,9 @@
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="rx:Zip" />
                               </Expression>
-                              <Expression xsi:type="Unit" />
-                              <Expression xsi:type="Combinator">
-                                <Combinator xsi:type="rx:Delay">
-                                  <rx:DueTime>PT2S</rx:DueTime>
-                                </Combinator>
+                              <Expression xsi:type="IncludeWorkflow" Path="Extensions\HarpDelay.bonsai">
+                                <DueSeconds>2</DueSeconds>
                               </Expression>
-                              <Expression xsi:type="Combinator">
-                                <Combinator xsi:type="BooleanProperty">
-                                  <Value>true</Value>
-                                </Combinator>
-                              </Expression>
-                              <Expression xsi:type="MulticastSubject">
-                                <Name>SteppersZEROed</Name>
-                              </Expression>
-                              <Expression xsi:type="Unit" />
                               <Expression xsi:type="rx:SelectMany">
                                 <Name>SendSpoutInCommand</Name>
                                 <Workflow>
@@ -1209,114 +1197,15 @@
                                   </Edges>
                                 </Workflow>
                               </Expression>
-                              <Expression xsi:type="Unit" />
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="BooleanProperty">
+                                  <Value>true</Value>
+                                </Combinator>
+                              </Expression>
+                              <Expression xsi:type="MulticastSubject">
+                                <Name>SteppersZEROed</Name>
+                              </Expression>
                               <Expression xsi:type="WorkflowOutput" />
-                              <Expression xsi:type="Disable">
-                                <Builder xsi:type="Annotation">
-                                  <Name>Need to give motors time to reach ZERO before moving again</Name>
-                                  <Text><![CDATA[Need to give motors time to reach ZERO before moving again]]></Text>
-                                </Builder>
-                              </Expression>
-                              <Expression xsi:type="Disable">
-                                <Builder xsi:type="Combinator">
-                                  <Combinator xsi:type="rx:Timer">
-                                    <rx:DueTime>PT4S</rx:DueTime>
-                                  </Combinator>
-                                </Builder>
-                              </Expression>
-                              <Expression xsi:type="Disable">
-                                <Builder xsi:type="rx:SelectMany">
-                                  <Name>SendSpoutInCommand</Name>
-                                  <Workflow>
-                                    <Nodes>
-                                      <Expression xsi:type="WorkflowInput">
-                                        <Name>Source1</Name>
-                                      </Expression>
-                                      <Expression xsi:type="Annotation">
-                                        <Name>MoveToInPosition</Name>
-                                        <Text><![CDATA[MoveToInPosition]]></Text>
-                                      </Expression>
-                                      <Expression xsi:type="SubscribeSubject">
-                                        <Name>StepperPosition_BothIn</Name>
-                                      </Expression>
-                                      <Expression xsi:type="MulticastSubject">
-                                        <Name>StepperPositionCommand</Name>
-                                      </Expression>
-                                      <Expression xsi:type="Combinator">
-                                        <Combinator xsi:type="rx:Sample" />
-                                      </Expression>
-                                      <Expression xsi:type="WorkflowOutput" />
-                                    </Nodes>
-                                    <Edges>
-                                      <Edge From="0" To="4" Label="Source1" />
-                                      <Edge From="1" To="2" Label="Source1" />
-                                      <Edge From="2" To="3" Label="Source1" />
-                                      <Edge From="3" To="4" Label="Source2" />
-                                      <Edge From="4" To="5" Label="Source1" />
-                                    </Edges>
-                                  </Workflow>
-                                </Builder>
-                              </Expression>
-                              <Expression xsi:type="Disable">
-                                <Builder xsi:type="IncludeWorkflow" Path="Extensions\ZEROingMotors.bonsai">
-                                  <SubjectName_switchState>_Motor0_switchState</SubjectName_switchState>
-                                  <MotorID>0</MotorID>
-                                  <SubjectName_StepperDriver>StepperDriver1Commands</SubjectName_StepperDriver>
-                                  <SubjectName_switchState_again>_Motor0_switchState</SubjectName_switchState_again>
-                                </Builder>
-                              </Expression>
-                              <Expression xsi:type="Disable">
-                                <Builder xsi:type="IncludeWorkflow" Path="Extensions\ZEROingMotors.bonsai">
-                                  <SubjectName_switchState>_Motor1_switchState</SubjectName_switchState>
-                                  <MotorID>1</MotorID>
-                                  <SubjectName_StepperDriver>StepperDriver1Commands</SubjectName_StepperDriver>
-                                  <SubjectName_switchState_again>_Motor1_switchState</SubjectName_switchState_again>
-                                </Builder>
-                              </Expression>
-                              <Expression xsi:type="Disable">
-                                <Builder xsi:type="IncludeWorkflow" Path="Extensions\ZEROingMotors.bonsai">
-                                  <SubjectName_switchState>_Motor2_switchState</SubjectName_switchState>
-                                  <MotorID>2</MotorID>
-                                  <SubjectName_StepperDriver>StepperDriver1Commands</SubjectName_StepperDriver>
-                                  <SubjectName_switchState_again>_Motor2_switchState</SubjectName_switchState_again>
-                                </Builder>
-                              </Expression>
-                              <Expression xsi:type="Disable">
-                                <Builder xsi:type="IncludeWorkflow" Path="Extensions\ZEROingMotors.bonsai">
-                                  <SubjectName_switchState>_Motor3_switchState</SubjectName_switchState>
-                                  <MotorID>0</MotorID>
-                                  <SubjectName_StepperDriver>StepperDriver2Commands</SubjectName_StepperDriver>
-                                  <SubjectName_switchState_again>_Motor3_switchState</SubjectName_switchState_again>
-                                </Builder>
-                              </Expression>
-                              <Expression xsi:type="Disable">
-                                <Builder xsi:type="IncludeWorkflow" Path="Extensions\ZEROingMotors.bonsai">
-                                  <SubjectName_switchState>_Motor4_switchState</SubjectName_switchState>
-                                  <MotorID>1</MotorID>
-                                  <SubjectName_StepperDriver>StepperDriver2Commands</SubjectName_StepperDriver>
-                                  <SubjectName_switchState_again>_Motor4_switchState</SubjectName_switchState_again>
-                                </Builder>
-                              </Expression>
-                              <Expression xsi:type="Disable">
-                                <Builder xsi:type="Combinator">
-                                  <Combinator xsi:type="rx:Zip" />
-                                </Builder>
-                              </Expression>
-                              <Expression xsi:type="Disable">
-                                <Builder xsi:type="Combinator">
-                                  <Combinator xsi:type="rx:SubscribeWhen" />
-                                </Builder>
-                              </Expression>
-                              <Expression xsi:type="Disable">
-                                <Builder xsi:type="Combinator">
-                                  <Combinator xsi:type="rx:Delay">
-                                    <rx:DueTime>PT2S</rx:DueTime>
-                                  </Combinator>
-                                </Builder>
-                              </Expression>
-                              <Expression xsi:type="Disable">
-                                <Builder xsi:type="WorkflowOutput" />
-                              </Expression>
                             </Nodes>
                             <Edges>
                               <Edge From="0" To="5" Label="Source1" />
@@ -1329,41 +1218,40 @@
                               <Edge From="7" To="8" Label="Source1" />
                               <Edge From="8" To="9" Label="Source1" />
                               <Edge From="9" To="10" Label="Source1" />
-                              <Edge From="10" To="11" Label="Source1" />
-                              <Edge From="11" To="12" Label="Source1" />
-                              <Edge From="12" To="13" Label="Source1" />
-                              <Edge From="14" To="15" Label="Source1" />
-                              <Edge From="15" To="16" Label="Source1" />
-                              <Edge From="16" To="23" Label="Source1" />
-                              <Edge From="17" To="22" Label="Source1" />
-                              <Edge From="18" To="22" Label="Source2" />
-                              <Edge From="19" To="22" Label="Source3" />
-                              <Edge From="20" To="22" Label="Source4" />
-                              <Edge From="21" To="22" Label="Source5" />
-                              <Edge From="22" To="23" Label="Source2" />
-                              <Edge From="23" To="24" Label="Source1" />
-                              <Edge From="24" To="25" Label="Source1" />
                             </Edges>
                           </Workflow>
                         </Expression>
-                        <Expression xsi:type="GroupWorkflow">
-                          <Name>MoveMotors</Name>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>StepperPositionCommand</Name>
+                        </Expression>
+                        <Expression xsi:type="IncludeWorkflow" Path="Extensions\MoveStepperMotors.bonsai" />
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>SteppersZEROed</Name>
+                        </Expression>
+                        <Expression xsi:type="rx:Condition">
                           <Workflow>
                             <Nodes>
-                              <Expression xsi:type="SubscribeSubject">
-                                <Name>StepperPositionCommand</Name>
+                              <Expression xsi:type="WorkflowInput">
+                                <Name>Source1</Name>
                               </Expression>
-                              <Expression xsi:type="IncludeWorkflow" Path="Extensions\MoveStepperMotors.bonsai" />
+                              <Expression xsi:type="WorkflowOutput" />
                             </Nodes>
                             <Edges>
                               <Edge From="0" To="1" Label="Source1" />
                             </Edges>
                           </Workflow>
                         </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:SubscribeWhen" />
+                        </Expression>
                       </Nodes>
                       <Edges>
                         <Edge From="0" To="1" Label="Source1" />
                         <Edge From="1" To="2" Label="Source1" />
+                        <Edge From="7" To="8" Label="Source1" />
+                        <Edge From="8" To="11" Label="Source1" />
+                        <Edge From="9" To="10" Label="Source1" />
+                        <Edge From="10" To="11" Label="Source2" />
                       </Edges>
                     </Workflow>
                   </Expression>
