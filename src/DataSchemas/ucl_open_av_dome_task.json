@@ -1,0 +1,477 @@
+{
+  "$defs": {
+    "AudioStimulus": {
+      "description": "Auditory stimulus parameters common to all trials.",
+      "properties": {
+        "speakerLocations": {
+          "description": "Candidate sound positions, one drawn per trial; keep an azimuth-0 entry for trials that place the sound at the centre",
+          "items": {
+            "$ref": "#/$defs/SphericalPosition"
+          },
+          "title": "SpeakerLocations",
+          "type": "array"
+        },
+        "flickerFrequency": {
+          "default": 8.0,
+          "description": "Auditory stimulus flicker frequency, in Hz",
+          "title": "FlickerFrequency",
+          "type": "number"
+        }
+      },
+      "required": [
+        "speakerLocations"
+      ],
+      "title": "AudioStimulus",
+      "type": "object"
+    },
+    "OptogeneticsSettings": {
+      "description": "Zapit optogenetic stimulation parameters.",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "description": "Whether optogenetic stimulation is enabled",
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "zapitConfigPath": {
+          "default": "",
+          "description": "Path to the Zapit YAML config listing stimulation conditions",
+          "title": "ZapitConfigPath",
+          "type": "string"
+        },
+        "stimProbability": {
+          "default": 0.75,
+          "description": "Probability that a trial receives stimulation",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "StimProbability",
+          "type": "number"
+        },
+        "stimDelay": {
+          "default": 0.0,
+          "description": "Delay from trial start to stimulation onset, in seconds",
+          "minimum": 0,
+          "title": "StimDelay",
+          "type": "number"
+        },
+        "stimDuration": {
+          "default": 1.5,
+          "description": "Stimulation duration, in seconds",
+          "minimum": 0,
+          "title": "StimDuration",
+          "type": "number"
+        },
+        "excludeRepeats": {
+          "default": true,
+          "description": "Whether repeat trials are excluded from stimulation",
+          "title": "ExcludeRepeats",
+          "type": "boolean"
+        },
+        "pseudorandomSelection": {
+          "default": true,
+          "description": "Draw conditions from a shuffled queue rather than independently",
+          "title": "PseudorandomSelection",
+          "type": "boolean"
+        }
+      },
+      "title": "OptogeneticsSettings",
+      "type": "object"
+    },
+    "RepeatRule": {
+      "description": "When a trial type is repeated after a failed trial.",
+      "enum": [
+        "never",
+        "onFailure",
+        "onTimeout"
+      ],
+      "title": "RepeatRule",
+      "type": "string"
+    },
+    "RepeatSettings": {
+      "description": "Trial repetition policy.",
+      "properties": {
+        "maxRepeats": {
+          "default": 5,
+          "description": "Maximum number of consecutive repeats of the same trial",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "title": "MaxRepeats",
+          "type": "integer"
+        },
+        "rulesPerType": {
+          "default": [
+            "onFailure",
+            "onFailure",
+            "onFailure",
+            "onTimeout",
+            "onTimeout"
+          ],
+          "description": "Repeat rule per trial type, indexed by trial type",
+          "items": {
+            "$ref": "#/$defs/RepeatRule"
+          },
+          "title": "RulesPerType",
+          "type": "array"
+        }
+      },
+      "title": "RepeatSettings",
+      "type": "object"
+    },
+    "RewardSettings": {
+      "description": "Reward delivery parameters; per-stage reward size lives in the training stage table.",
+      "properties": {
+        "rewardProbability": {
+          "default": 1.0,
+          "description": "Probability that a correct response is rewarded",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "RewardProbability",
+          "type": "number"
+        },
+        "largeRewardMultiplier": {
+          "default": 1.0,
+          "description": "Reward size multiplier applied on large-reward trials",
+          "minimum": 0,
+          "title": "LargeRewardMultiplier",
+          "type": "number"
+        },
+        "largeRewardProbability": {
+          "default": 0.0,
+          "description": "Probability that a trial is a large-reward trial",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "LargeRewardProbability",
+          "type": "number"
+        }
+      },
+      "title": "RewardSettings",
+      "type": "object"
+    },
+    "SphericalPosition": {
+      "description": "A position on a sphere centred on the subject.",
+      "properties": {
+        "azimuth": {
+          "description": "Azimuth, in degrees. Zero is straight ahead, positive to the right.",
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Azimuth",
+          "type": "number"
+        },
+        "elevation": {
+          "description": "Elevation, in degrees. Zero is the horizontal plane.",
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Elevation",
+          "type": "number"
+        },
+        "radius": {
+          "default": 1.0,
+          "description": "Distance from the subject, in metres.",
+          "exclusiveMinimum": 0,
+          "title": "Radius",
+          "type": "number"
+        }
+      },
+      "required": [
+        "azimuth",
+        "elevation"
+      ],
+      "title": "SphericalPosition",
+      "type": "object"
+    },
+    "TrainingStage": {
+      "description": "One complete row of the training stage table; stages are selected by index at runtime.",
+      "properties": {
+        "label": {
+          "description": "Human-readable stage name, for documentation and logs",
+          "title": "Label",
+          "type": "string"
+        },
+        "trialWeights": {
+          "description": "Relative draw weight per trial type, indexed by trial type",
+          "items": {
+            "maximum": 2147483647,
+            "minimum": -2147483648,
+            "type": "integer"
+          },
+          "title": "TrialWeights",
+          "type": "array"
+        },
+        "autoRewardProbability": {
+          "description": "Probability that a trial is automatically rewarded",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "AutoRewardProbability",
+          "type": "number"
+        },
+        "bothSpoutsProbability": {
+          "description": "Probability that both spouts are presented rather than only the correct one",
+          "maximum": 1,
+          "minimum": 0,
+          "title": "BothSpoutsProbability",
+          "type": "number"
+        },
+        "rewardSizeUl": {
+          "description": "Reward size, in microliters; delivered as ceil(size/2) valve pulses",
+          "minimum": 0,
+          "title": "RewardSizeUl",
+          "type": "number"
+        },
+        "contrasts": {
+          "description": "Candidate grating contrasts to draw from on visual trials",
+          "items": {
+            "type": "number"
+          },
+          "title": "Contrasts",
+          "type": "array"
+        },
+        "allowRepeats": {
+          "description": "Whether failed trials may be repeated in this stage",
+          "title": "AllowRepeats",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "label",
+        "trialWeights",
+        "autoRewardProbability",
+        "bothSpoutsProbability",
+        "rewardSizeUl",
+        "contrasts",
+        "allowRepeats"
+      ],
+      "title": "TrainingStage",
+      "type": "object"
+    },
+    "TrialStructure": {
+      "description": "Timing parameters of the trial state machine.",
+      "properties": {
+        "itiMin": {
+          "default": 4.0,
+          "description": "Lower bound of the uniformly drawn inter-trial interval, in seconds",
+          "minimum": 0,
+          "title": "ItiMin",
+          "type": "number"
+        },
+        "itiMax": {
+          "default": 5.0,
+          "description": "Upper bound of the uniformly drawn inter-trial interval, in seconds",
+          "minimum": 0,
+          "title": "ItiMax",
+          "type": "number"
+        },
+        "quiescentMin": {
+          "default": 0.1,
+          "description": "Lower bound of the uniformly drawn quiescent period, in seconds",
+          "minimum": 0,
+          "title": "QuiescentMin",
+          "type": "number"
+        },
+        "quiescentMax": {
+          "default": 0.25,
+          "description": "Upper bound of the uniformly drawn quiescent period, in seconds",
+          "minimum": 0,
+          "title": "QuiescentMax",
+          "type": "number"
+        },
+        "openLoopDuration": {
+          "default": 0.0,
+          "description": "Open-loop period after stimulus onset, in seconds",
+          "minimum": 0,
+          "title": "OpenLoopDuration",
+          "type": "number"
+        },
+        "closedLoopDuration": {
+          "default": 1.5,
+          "description": "Closed-loop response period, in seconds",
+          "minimum": 0,
+          "title": "ClosedLoopDuration",
+          "type": "number"
+        },
+        "incorrectTimeoutDuration": {
+          "default": 4.0,
+          "description": "Timeout after an incorrect response, in seconds",
+          "minimum": 0,
+          "title": "IncorrectTimeoutDuration",
+          "type": "number"
+        },
+        "spoutInDelay": {
+          "default": 0.5,
+          "description": "Delay from stimulus onset to moving the response spouts in, in seconds",
+          "minimum": 0,
+          "title": "SpoutInDelay",
+          "type": "number"
+        }
+      },
+      "title": "TrialStructure",
+      "type": "object"
+    },
+    "UclOpenAvDomeTaskLogic": {
+      "description": "Task logic definition for the av-dome experiment.",
+      "properties": {
+        "taskParameters": {
+          "$ref": "#/$defs/UclOpenAvDomeTaskParameters",
+          "description": "Parameters of the task logic",
+          "title": "TaskParameters"
+        },
+        "version": {
+          "const": "0.0.0-rc1",
+          "default": "0.0.0-rc1",
+          "title": "Version",
+          "type": "string"
+        },
+        "name": {
+          "const": "UclOpenAvDome",
+          "default": "UclOpenAvDome",
+          "description": "Name of the task logic",
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "taskParameters"
+      ],
+      "title": "UclOpenAvDomeTaskLogic",
+      "type": "object"
+    },
+    "UclOpenAvDomeTaskParameters": {
+      "description": "Task parameters for the av-dome audiovisual localisation task.",
+      "properties": {
+        "rngSeed": {
+          "default": null,
+          "description": "Seed of the random number generator for these task parameters",
+          "title": "RngSeed",
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "trialStructure": {
+          "$ref": "#/$defs/TrialStructure",
+          "description": "Timing parameters of the trial state machine"
+        },
+        "visualStimulus": {
+          "$ref": "#/$defs/VisualStimulus",
+          "description": "Grating stimulus parameters"
+        },
+        "audioStimulus": {
+          "$ref": "#/$defs/AudioStimulus",
+          "description": "Auditory stimulus parameters"
+        },
+        "reward": {
+          "$ref": "#/$defs/RewardSettings",
+          "description": "Reward delivery parameters",
+          "title": "Reward"
+        },
+        "repeats": {
+          "$ref": "#/$defs/RepeatSettings",
+          "description": "Trial repetition policy",
+          "title": "Repeats"
+        },
+        "optogenetics": {
+          "$ref": "#/$defs/OptogeneticsSettings",
+          "description": "Zapit optogenetic stimulation parameters",
+          "title": "Optogenetics"
+        },
+        "trainingStages": {
+          "description": "Training stage table indexed by stage id; ids past the end clamp to the last row",
+          "items": {
+            "$ref": "#/$defs/TrainingStage"
+          },
+          "title": "TrainingStages",
+          "type": "array"
+        }
+      },
+      "required": [
+        "trialStructure",
+        "visualStimulus",
+        "audioStimulus",
+        "reward",
+        "repeats",
+        "optogenetics",
+        "trainingStages"
+      ],
+      "title": "UclOpenAvDomeTaskParameters",
+      "type": "object"
+    },
+    "VisualStimulus": {
+      "description": "Grating stimulus parameters common to all trials; contrast is set per training stage.",
+      "properties": {
+        "azimuthMin": {
+          "default": -60.0,
+          "description": "Lower bound of the uniformly drawn grating azimuth, in degrees",
+          "maximum": 180,
+          "minimum": -180,
+          "title": "AzimuthMin",
+          "type": "number"
+        },
+        "azimuthMax": {
+          "default": 60.0,
+          "description": "Upper bound of the uniformly drawn grating azimuth, in degrees",
+          "maximum": 180,
+          "minimum": -180,
+          "title": "AzimuthMax",
+          "type": "number"
+        },
+        "elevationMin": {
+          "default": 15.0,
+          "description": "Lower bound of the uniformly drawn grating elevation, in degrees",
+          "maximum": 90,
+          "minimum": -90,
+          "title": "ElevationMin",
+          "type": "number"
+        },
+        "elevationMax": {
+          "default": 15.0,
+          "description": "Upper bound of the uniformly drawn grating elevation, in degrees",
+          "maximum": 90,
+          "minimum": -90,
+          "title": "ElevationMax",
+          "type": "number"
+        },
+        "coherentAzimuthCap": {
+          "default": 80.0,
+          "description": "On coherent trials the grating azimuth magnitude is kept below this cap, in degrees",
+          "maximum": 180,
+          "minimum": 0,
+          "title": "CoherentAzimuthCap",
+          "type": "number"
+        },
+        "gaussianWindowSigma": {
+          "default": 20.0,
+          "description": "Sigma of the Gaussian aperture window, in degrees",
+          "title": "GaussianWindowSigma",
+          "type": "number"
+        },
+        "orientation": {
+          "default": 0.0,
+          "description": "Grating orientation, in degrees",
+          "title": "Orientation",
+          "type": "number"
+        },
+        "spatialFrequency": {
+          "default": 0.066666667,
+          "description": "Grating spatial frequency, in cycles per degree",
+          "title": "SpatialFrequency",
+          "type": "number"
+        },
+        "temporalFrequency": {
+          "default": 0.0,
+          "description": "Grating drift temporal frequency, in Hz",
+          "title": "TemporalFrequency",
+          "type": "number"
+        },
+        "flickerFrequency": {
+          "default": 8.0,
+          "description": "Grating contrast flicker frequency, in Hz",
+          "title": "FlickerFrequency",
+          "type": "number"
+        }
+      },
+      "title": "VisualStimulus",
+      "type": "object"
+    }
+  },
+  "$ref": "#/$defs/UclOpenAvDomeTaskLogic",
+  "title": "RootModel[UclOpenAvDomeTaskLogic]"
+}
