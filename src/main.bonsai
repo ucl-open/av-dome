@@ -15,7 +15,7 @@
                  xmlns:p4="clr-namespace:Bonsai.Mixer;assembly=Bonsai.Mixer"
                  xmlns:p5="clr-namespace:OpenCV.Net;assembly=OpenCV.Net"
                  xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
-                 xmlns:p6="clr-namespace:DataSchema;assembly=Extensions"
+                 xmlns:p6="clr-namespace:UclOpenAvDomeTask;assembly=Extensions"
                  xmlns:gui="clr-namespace:Bonsai.Gui;assembly=Bonsai.Gui"
                  xmlns:cv="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision"
                  xmlns:zg="clr-namespace:Bonsai.Gui.ZedGraph;assembly=Bonsai.Gui.ZedGraph"
@@ -1977,37 +1977,34 @@
         <Workflow>
           <Nodes>
             <Expression xsi:type="Annotation">
-              <Name>Read Schema defining what makes valide trial settings</Name>
-              <Text><![CDATA[Read Schema defining what makes valide trial settings]]></Text>
+              <Name>Read task configuration</Name>
+              <Text><![CDATA[Load the task parameters from the committed task YAML, validated against the generated task schema. The loaded config is snapshotted to the session folder as TaskSchema.json.]]></Text>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="io:ReadAllText">
-                <io:Path>C:\dev\av-dome\schemas\session.yml</io:Path>
+                <io:Path>..\config\task.yml</io:Path>
               </Combinator>
             </Expression>
             <Expression xsi:type="p6:DeserializeFromYaml">
-              <p6:Type xsi:type="TypeMapping" TypeArguments="p6:AvTask" />
+              <p6:Type xsi:type="TypeMapping" TypeArguments="p6:UclOpenAvDomeTaskLogic" />
             </Expression>
             <Expression xsi:type="rx:AsyncSubject">
-              <Name>TrialConfig</Name>
+              <Name>TaskConfig</Name>
             </Expression>
             <Expression xsi:type="Annotation">
               <Name>Initialized first trial</Name>
               <Text><![CDATA[Initialized first trial]]></Text>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>TrialConfig</Name>
+              <Name>TaskConfig</Name>
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p1:TrialTypeInitialise">
-                <p1:autoRewardProbability>0</p1:autoRewardProbability>
-                <p1:BothSpoutsProbability>1</p1:BothSpoutsProbability>
-                <p1:RewardSizeInUl>4</p1:RewardSizeInUl>
-                <p1:Seed>-1</p1:Seed>
+              <Combinator xsi:type="p1:InitialiseTrial">
                 <p1:trainingStageId>1</p1:trainingStageId>
                 <p1:TrialType>-1</p1:TrialType>
                 <p1:WasCorrect>true</p1:WasCorrect>
                 <p1:WasTimeout>false</p1:WasTimeout>
+                <p1:SeedOffset>0</p1:SeedOffset>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:BehaviorSubject">
@@ -5803,6 +5800,8 @@
     Value.Item2.RepeatCount as RepeatCount,
     Value.Item2.targetSide as targetSide,
     Value.Item2.ITI as ITI,
+    Value.Item2.Quiescent as Quiescent,
+    Value.Item2.rngSeedUsed as rngSeedUsed,
     Value.Item2.autoRewardProbability as autoRewardProbability,
     Value.Item2.autoReward as autoReward,
     Value.Item2.largeReward as largeReward,
@@ -6784,6 +6783,22 @@ Item4 as ExposureTime)</scr:Expression>
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogDataSchema.bonsai">
               <Name>RigSchema</Name>
             </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>TaskConfig</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p6:SerializeToJson">
+                <p6:Formatting>None</p6:Formatting>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Delay">
+                <rx:DueTime>PT1S</rx:DueTime>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogDataSchema.bonsai">
+              <Name>TaskSchema</Name>
+            </Expression>
           </Nodes>
           <Edges>
             <Edge From="6" To="7" Label="Source1" />
@@ -6794,6 +6809,9 @@ Item4 as ExposureTime)</scr:Expression>
             <Edge From="13" To="14" Label="Source1" />
             <Edge From="14" To="15" Label="Source1" />
             <Edge From="15" To="16" Label="Source1" />
+            <Edge From="17" To="18" Label="Source1" />
+            <Edge From="18" To="19" Label="Source1" />
+            <Edge From="19" To="20" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -6819,17 +6837,17 @@ Item4 as ExposureTime)</scr:Expression>
               <Name>source</Name>
             </Expression>
             <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Seed" />
+              <Property Name="SeedOffset" />
             </Expression>
             <Expression xsi:type="rx:SelectMany">
               <Name>RedefineTrial</Name>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>TrialConfig</Name>
+                    <Name>TaskConfig</Name>
                   </Expression>
                   <Expression xsi:type="ExternalizedMapping">
-                    <Property Name="Seed" />
+                    <Property Name="SeedOffset" />
                   </Expression>
                   <Expression xsi:type="rx:Defer">
                     <Name>Get training stage</Name>
@@ -7109,34 +7127,44 @@ Item4 as ExposureTime)</scr:Expression>
                       <Property Name="WasCorrect" />
                     </PropertyMappings>
                   </Expression>
+                  <Expression xsi:type="Equal">
+                    <Operand xsi:type="StringProperty">
+                      <Value>NoResponse</Value>
+                    </Operand>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="WasTimeout" />
+                    </PropertyMappings>
+                  </Expression>
                   <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="p1:TrialTypeInitialise">
-                      <p1:autoRewardProbability>0</p1:autoRewardProbability>
-                      <p1:BothSpoutsProbability>1</p1:BothSpoutsProbability>
-                      <p1:RewardSizeInUl>4</p1:RewardSizeInUl>
-                      <p1:Seed>-1</p1:Seed>
+                    <Combinator xsi:type="p1:InitialiseTrial">
                       <p1:trainingStageId>1</p1:trainingStageId>
                       <p1:TrialType>-1</p1:TrialType>
                       <p1:WasCorrect>false</p1:WasCorrect>
                       <p1:WasTimeout>false</p1:WasTimeout>
+                      <p1:SeedOffset>1</p1:SeedOffset>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="WorkflowOutput" />
                 </Nodes>
                 <Edges>
-                  <Edge From="0" To="11" Label="Source1" />
-                  <Edge From="1" To="11" Label="Source2" />
+                  <Edge From="0" To="13" Label="Source1" />
+                  <Edge From="1" To="13" Label="Source2" />
                   <Edge From="2" To="3" Label="Source1" />
-                  <Edge From="3" To="11" Label="Source3" />
+                  <Edge From="3" To="13" Label="Source3" />
                   <Edge From="4" To="5" Label="Source1" />
                   <Edge From="5" To="6" Label="Source1" />
                   <Edge From="5" To="7" Label="Source1" />
+                  <Edge From="5" To="11" Label="Source1" />
                   <Edge From="6" To="8" Label="Source1" />
                   <Edge From="7" To="8" Label="Source2" />
                   <Edge From="8" To="9" Label="Source1" />
                   <Edge From="9" To="10" Label="Source1" />
-                  <Edge From="10" To="11" Label="Source4" />
+                  <Edge From="10" To="13" Label="Source4" />
                   <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="12" To="13" Label="Source5" />
+                  <Edge From="13" To="14" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -7469,7 +7497,6 @@ Item4 as ExposureTime)</scr:Expression>
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p1:SpatialLookup">
-                            <p1:Elevation>0</p1:Elevation>
                             <p1:Locations>
                               <p1:Vector3>
                                 <p1:X>-90</p1:X>
@@ -8482,21 +8509,6 @@ Item4 as ExposureTime)</scr:Expression>
                           <Expression xsi:type="Annotation">
                             <Text><![CDATA[TODO: add to trialDataSchemas]]></Text>
                           </Expression>
-                          <Expression xsi:type="Disable">
-                            <Builder xsi:type="SubscribeSubject">
-                              <Name>TrialConfig</Name>
-                            </Builder>
-                          </Expression>
-                          <Expression xsi:type="Disable">
-                            <Builder xsi:type="MemberSelector">
-                              <Selector>Quiescence.Timeout</Selector>
-                            </Builder>
-                          </Expression>
-                          <Expression xsi:type="Disable">
-                            <Builder xsi:type="scr:ExpressionTransform">
-                              <scr:Expression>TimeSpan.FromSeconds(it)</scr:Expression>
-                            </Builder>
-                          </Expression>
                         </Nodes>
                         <Edges>
                           <Edge From="0" To="3" Label="Source1" />
@@ -8504,9 +8516,6 @@ Item4 as ExposureTime)</scr:Expression>
                           <Edge From="2" To="3" Label="Source2" />
                           <Edge From="3" To="4" Label="Source1" />
                           <Edge From="4" To="5" Label="Source1" />
-                          <Edge From="6" To="7" Label="Source1" />
-                          <Edge From="7" To="8" Label="Source1" />
-                          <Edge From="8" To="9" Label="Source1" />
                         </Edges>
                       </Workflow>
                     </Expression>
@@ -8618,21 +8627,6 @@ Item4 as ExposureTime)</scr:Expression>
                           <Expression xsi:type="Annotation">
                             <Text><![CDATA[TODO: add to trialDataSchemas]]></Text>
                           </Expression>
-                          <Expression xsi:type="Disable">
-                            <Builder xsi:type="SubscribeSubject">
-                              <Name>TrialConfig</Name>
-                            </Builder>
-                          </Expression>
-                          <Expression xsi:type="Disable">
-                            <Builder xsi:type="MemberSelector">
-                              <Selector>Quiescence.Timeout</Selector>
-                            </Builder>
-                          </Expression>
-                          <Expression xsi:type="Disable">
-                            <Builder xsi:type="scr:ExpressionTransform">
-                              <scr:Expression>TimeSpan.FromSeconds(it)</scr:Expression>
-                            </Builder>
-                          </Expression>
                         </Nodes>
                         <Edges>
                           <Edge From="0" To="3" Label="Source1" />
@@ -8640,9 +8634,6 @@ Item4 as ExposureTime)</scr:Expression>
                           <Edge From="2" To="3" Label="Source2" />
                           <Edge From="3" To="4" Label="Source1" />
                           <Edge From="4" To="5" Label="Source1" />
-                          <Edge From="6" To="7" Label="Source1" />
-                          <Edge From="7" To="8" Label="Source1" />
-                          <Edge From="8" To="9" Label="Source1" />
                         </Edges>
                       </Workflow>
                     </Expression>
