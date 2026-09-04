@@ -5786,9 +5786,8 @@
                   <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
                     <Name>Timestamp</Name>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="scr:ExpressionTransform">
-                      <scr:Expression>new(
+                  <Expression xsi:type="scr:ExpressionTransform">
+                    <scr:Expression>new(
     Seconds as Seconds,
     Value.Item1.CorrectResponse as correctResponse,
     Value.Item1.Response as response,
@@ -5830,7 +5829,6 @@
     Value.Item2.visualFlickerFrequency as visualFlickerFrequency,
     Value.Item2.audioElevation as audioElevation,
     Value.Item2.audioFlickerFrequency as audioFlickerFrequency)</scr:Expression>
-                    </Builder>
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
                     <LogName>TrialSettings</LogName>
