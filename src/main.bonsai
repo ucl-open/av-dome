@@ -8118,11 +8118,11 @@ Item4 as ExposureTime)</scr:Expression>
               <Selector>closedLoopDuration</Selector>
             </Expression>
             <Expression xsi:type="scr:ExpressionTransform">
-              <scr:Expression>TimeSpan.FromSeconds(it)</scr:Expression>
+              <scr:Expression>it</scr:Expression>
             </Expression>
             <Expression xsi:type="PropertyMapping">
               <PropertyMappings>
-                <Property Name="DueTime" />
+                <Property Name="DueSeconds" />
               </PropertyMappings>
             </Expression>
             <Expression xsi:type="Disable">
@@ -9830,7 +9830,7 @@ Item2.Item2 as autoReward) </scr:Expression>
             <Edge From="13" To="14" Label="Source2" />
             <Edge From="14" To="15" Label="Source1" />
             <Edge From="15" To="16" Label="Source1" />
-            <Edge From="16" To="17" Label="Source2" />
+            <Edge From="16" To="18" Label="Source2" />
             <Edge From="17" To="18" Label="Source1" />
             <Edge From="18" To="19" Label="Source1" />
             <Edge From="18" To="28" Label="Source2" />
