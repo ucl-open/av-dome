@@ -1434,15 +1434,20 @@
               <Name>Audio</Name>
               <Workflow>
                 <Nodes>
-                  <Expression xsi:type="ExternalizedMapping">
-                    <Property Name="PinkNoisePath" Category="Audio Paths" />
-                  </Expression>
                   <Expression xsi:type="GroupWorkflow">
                     <Name>LoadAudioFiles</Name>
                     <Workflow>
                       <Nodes>
-                        <Expression xsi:type="ExternalizedMapping">
-                          <Property Name="FileName" DisplayName="PinkNoisePath" />
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>TaskConfig</Name>
+                        </Expression>
+                        <Expression xsi:type="MemberSelector">
+                          <Selector>TaskParameters.AudioStimulus.StimulusPath</Selector>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="FileName" />
+                          </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="al:AudioReader">
@@ -1509,17 +1514,6 @@
                           <Name>TaskConfig</Name>
                         </Expression>
                         <Expression xsi:type="MemberSelector">
-                          <Selector>TaskParameters.AudioStimulus.StimulusPath</Selector>
-                        </Expression>
-                        <Expression xsi:type="PropertyMapping">
-                          <PropertyMappings>
-                            <Property Name="FileName" />
-                          </PropertyMappings>
-                        </Expression>
-                        <Expression xsi:type="SubscribeSubject">
-                          <Name>TaskConfig</Name>
-                        </Expression>
-                        <Expression xsi:type="MemberSelector">
                           <Selector>TaskParameters.ErrorSound.Path</Selector>
                         </Expression>
                         <Expression xsi:type="PropertyMapping">
@@ -1565,21 +1559,20 @@
                         <Edge From="2" To="3" Label="Source1" />
                         <Edge From="3" To="4" Label="Source1" />
                         <Edge From="4" To="5" Label="Source1" />
+                        <Edge From="5" To="6" Label="Source1" />
                         <Edge From="6" To="7" Label="Source1" />
-                        <Edge From="7" To="8" Label="Source1" />
                         <Edge From="8" To="9" Label="Source1" />
                         <Edge From="9" To="10" Label="Source1" />
                         <Edge From="10" To="11" Label="Source1" />
+                        <Edge From="11" To="12" Label="Source1" />
                         <Edge From="12" To="13" Label="Source1" />
-                        <Edge From="13" To="14" Label="Source1" />
-                        <Edge From="14" To="1" Label="Source2" />
+                        <Edge From="14" To="15" Label="Source1" />
                         <Edge From="15" To="16" Label="Source1" />
                         <Edge From="16" To="17" Label="Source1" />
                         <Edge From="17" To="18" Label="Source1" />
                         <Edge From="18" To="19" Label="Source1" />
                         <Edge From="19" To="20" Label="Source1" />
                         <Edge From="20" To="21" Label="Source1" />
-                        <Edge From="21" To="22" Label="Source1" />
                       </Edges>
                     </Workflow>
                   </Expression>
@@ -2018,15 +2011,14 @@
                   </Expression>
                 </Nodes>
                 <Edges>
-                  <Edge From="0" To="1" Label="Source1" />
-                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="4" To="5" Label="Source1" />
                   <Edge From="5" To="6" Label="Source1" />
-                  <Edge From="6" To="7" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source1" />
                   <Edge From="8" To="9" Label="Source1" />
-                  <Edge From="9" To="10" Label="Source1" />
-                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="10" To="11" Label="Source1" />
+                  <Edge From="12" To="13" Label="Source1" />
                   <Edge From="13" To="14" Label="Source1" />
-                  <Edge From="14" To="15" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -2069,6 +2061,15 @@
             </Expression>
             <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Boolean">
               <rx:Name>SteppersZEROed</rx:Name>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Int32">
+              <rx:Name>DecisionVariable</rx:Name>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Double">
+              <rx:Name>visualAzimuthStart</rx:Name>
+            </Expression>
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Double">
+              <rx:Name>visualAzimuth</rx:Name>
             </Expression>
           </Nodes>
           <Edges>
@@ -5829,6 +5830,21 @@
                       <Property Name="SessionId" Selector="Item2" />
                     </PropertyMappings>
                   </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>RigConfigs</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>RootPath</Selector>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>TaskConfig</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>TaskParameters.DatasetName</Selector>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
                   <Expression xsi:type="scr:ExpressionTransform">
                     <scr:Expression>Item1 + "\\" + Item2</scr:Expression>
                   </Expression>
@@ -5854,21 +5870,6 @@
                     <Combinator xsi:type="rx:SubscribeWhen" />
                   </Expression>
                   <Expression xsi:type="WorkflowOutput" />
-                  <Expression xsi:type="SubscribeSubject">
-                    <Name>RigConfigs</Name>
-                  </Expression>
-                  <Expression xsi:type="MemberSelector">
-                    <Selector>RootPath</Selector>
-                  </Expression>
-                  <Expression xsi:type="SubscribeSubject">
-                    <Name>TaskConfig</Name>
-                  </Expression>
-                  <Expression xsi:type="MemberSelector">
-                    <Selector>TaskParameters.DatasetName</Selector>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Zip" />
-                  </Expression>
                 </Nodes>
                 <Edges>
                   <Edge From="0" To="4" Label="Source1" />
@@ -5878,18 +5879,18 @@
                   <Edge From="4" To="5" Label="Source1" />
                   <Edge From="5" To="6" Label="Source1" />
                   <Edge From="6" To="7" Label="Source1" />
-                  <Edge From="7" To="10" Label="Source1" />
+                  <Edge From="7" To="15" Label="Source1" />
                   <Edge From="8" To="9" Label="Source1" />
-                  <Edge From="9" To="10" Label="Source2" />
+                  <Edge From="9" To="12" Label="Source1" />
                   <Edge From="10" To="11" Label="Source1" />
-                  <Edge From="11" To="13" Label="Source1" />
-                  <Edge From="12" To="13" Label="Source2" />
+                  <Edge From="11" To="12" Label="Source2" />
+                  <Edge From="12" To="13" Label="Source1" />
                   <Edge From="13" To="14" Label="Source1" />
+                  <Edge From="14" To="15" Label="Source2" />
                   <Edge From="15" To="16" Label="Source1" />
-                  <Edge From="16" To="19" Label="Source1" />
-                  <Edge From="17" To="18" Label="Source1" />
-                  <Edge From="18" To="19" Label="Source2" />
-                  <Edge From="19" To="8" Label="Source1" />
+                  <Edge From="16" To="18" Label="Source1" />
+                  <Edge From="17" To="18" Label="Source2" />
+                  <Edge From="18" To="19" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -6898,6 +6899,7 @@ Item4 as ExposureTime)</scr:Expression>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogDataSchema.bonsai">
               <Name>RigSchema</Name>
+              <Extension>json</Extension>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>TaskConfig</Name>
@@ -6909,6 +6911,7 @@ Item4 as ExposureTime)</scr:Expression>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogDataSchema.bonsai">
               <Name>TaskSchema</Name>
+              <Extension>json</Extension>
             </Expression>
           </Nodes>
           <Edges>
@@ -7296,6 +7299,42 @@ Item4 as ExposureTime)</scr:Expression>
       </Expression>
       <Expression xsi:type="MulticastSubject">
         <Name>thisTrialData</Name>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>thisTrialData</Name>
+      </Expression>
+      <Expression xsi:type="rx:SelectMany">
+        <Name>SetTrialVars</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>visualAzimuth</Selector>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>visualAzimuthStart</Name>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>visualAzimuth</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="IntProperty">
+                <Value>0</Value>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>DecisionVariable</Name>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="1" To="3" Label="Source1" />
+            <Edge From="4" To="5" Label="Source1" />
+          </Edges>
+        </Workflow>
       </Expression>
       <Expression xsi:type="SubscribeSubject">
         <Name>thisTrialData</Name>
@@ -7786,7 +7825,6 @@ Item4 as ExposureTime)</scr:Expression>
                         </Expression>
                         <Expression xsi:type="PropertyMapping">
                           <PropertyMappings>
-                            <Property Name="LocationX" Selector="visualAzimuth" />
                             <Property Name="Contrast" Selector="visualContrast" />
                             <Property Name="LocationY" Selector="visualElevation" />
                             <Property Name="TemporalFrequency" Selector="visualTemporalFrequency" />
@@ -7871,6 +7909,14 @@ Item4 as ExposureTime)</scr:Expression>
                         <Expression xsi:type="PropertyMapping">
                           <PropertyMappings>
                             <Property Name="Radius" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>visualAzimuth</Name>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="LocationX" />
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="BonVision:Primitives.DrawGratings.bonsai">
@@ -7962,7 +8008,7 @@ Item4 as ExposureTime)</scr:Expression>
                         <Edge From="0" To="1" Label="Source1" />
                         <Edge From="1" To="2" Label="Source1" />
                         <Edge From="3" To="12" Label="Source1" />
-                        <Edge From="3" To="47" Label="Source1" />
+                        <Edge From="3" To="49" Label="Source1" />
                         <Edge From="4" To="10" Label="Source1" />
                         <Edge From="5" To="6" Label="Source1" />
                         <Edge From="6" To="8" Label="Source1" />
@@ -7975,27 +8021,27 @@ Item4 as ExposureTime)</scr:Expression>
                         <Edge From="12" To="14" Label="Source1" />
                         <Edge From="13" To="17" Label="Source1" />
                         <Edge From="14" To="16" Label="Source1" />
-                        <Edge From="14" To="46" Label="Source1" />
+                        <Edge From="14" To="48" Label="Source1" />
                         <Edge From="15" To="16" Label="Source2" />
                         <Edge From="16" To="17" Label="Source2" />
                         <Edge From="17" To="19" Label="Source1" />
-                        <Edge From="17" To="44" Label="Source1" />
+                        <Edge From="17" To="46" Label="Source1" />
                         <Edge From="18" To="19" Label="Source2" />
                         <Edge From="19" To="22" Label="Source1" />
                         <Edge From="20" To="21" Label="Source1" />
                         <Edge From="21" To="22" Label="Source2" />
-                        <Edge From="21" To="45" Label="Source2" />
-                        <Edge From="21" To="50" Label="Source2" />
-                        <Edge From="22" To="51" Label="Source1" />
+                        <Edge From="21" To="47" Label="Source2" />
+                        <Edge From="21" To="52" Label="Source2" />
+                        <Edge From="22" To="53" Label="Source1" />
                         <Edge From="23" To="24" Label="Source1" />
                         <Edge From="24" To="25" Label="Source1" />
-                        <Edge From="25" To="44" Label="Source2" />
+                        <Edge From="25" To="46" Label="Source2" />
                         <Edge From="26" To="27" Label="Source1" />
                         <Edge From="27" To="28" Label="Source1" />
                         <Edge From="28" To="29" Label="Source1" />
                         <Edge From="29" To="30" Label="Source1" />
                         <Edge From="29" To="37" Label="Source2" />
-                        <Edge From="30" To="44" Label="Source3" />
+                        <Edge From="30" To="46" Label="Source3" />
                         <Edge From="31" To="32" Label="Source1" />
                         <Edge From="32" To="36" Label="Source1" />
                         <Edge From="33" To="35" Label="Source1" />
@@ -8005,21 +8051,23 @@ Item4 as ExposureTime)</scr:Expression>
                         <Edge From="37" To="39" Label="Source1" />
                         <Edge From="38" To="39" Label="Source2" />
                         <Edge From="39" To="40" Label="Source1" />
-                        <Edge From="40" To="44" Label="Source4" />
+                        <Edge From="40" To="46" Label="Source4" />
                         <Edge From="41" To="42" Label="Source1" />
                         <Edge From="42" To="43" Label="Source1" />
-                        <Edge From="43" To="44" Label="Source5" />
+                        <Edge From="43" To="46" Label="Source5" />
                         <Edge From="44" To="45" Label="Source1" />
-                        <Edge From="45" To="51" Label="Source2" />
-                        <Edge From="46" To="47" Label="Source2" />
-                        <Edge From="47" To="49" Label="Source1" />
+                        <Edge From="45" To="46" Label="Source6" />
+                        <Edge From="46" To="47" Label="Source1" />
+                        <Edge From="47" To="53" Label="Source2" />
                         <Edge From="48" To="49" Label="Source2" />
-                        <Edge From="49" To="50" Label="Source1" />
-                        <Edge From="50" To="51" Label="Source3" />
+                        <Edge From="49" To="51" Label="Source1" />
+                        <Edge From="50" To="51" Label="Source2" />
                         <Edge From="51" To="52" Label="Source1" />
+                        <Edge From="52" To="53" Label="Source3" />
                         <Edge From="53" To="54" Label="Source1" />
-                        <Edge From="54" To="56" Label="Source1" />
-                        <Edge From="55" To="56" Label="Source2" />
+                        <Edge From="55" To="56" Label="Source1" />
+                        <Edge From="56" To="58" Label="Source1" />
+                        <Edge From="57" To="58" Label="Source2" />
                       </Edges>
                     </Workflow>
                   </Expression>
@@ -8058,28 +8106,6 @@ Item4 as ExposureTime)</scr:Expression>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="Extensions\HarpDelay.bonsai">
               <DueSeconds>0.5</DueSeconds>
-            </Expression>
-            <Expression xsi:type="Disable">
-              <Builder xsi:type="rx:SelectMany">
-                <Name>PlayGoCue</Name>
-                <Workflow>
-                  <Nodes>
-                    <Expression xsi:type="Combinator">
-                      <Combinator xsi:type="BooleanProperty">
-                        <Value>true</Value>
-                      </Combinator>
-                    </Expression>
-                    <Expression xsi:type="MulticastSubject">
-                      <Name>StartAuditoryGoCue</Name>
-                    </Expression>
-                    <Expression xsi:type="WorkflowOutput" />
-                  </Nodes>
-                  <Edges>
-                    <Edge From="0" To="1" Label="Source1" />
-                    <Edge From="1" To="2" Label="Source1" />
-                  </Edges>
-                </Workflow>
-              </Builder>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>trial</Name>
@@ -8387,6 +8413,81 @@ Item4 as ExposureTime)</scr:Expression>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="SubscribeSubject">
+                    <Name>LickStateLeft</Name>
+                  </Expression>
+                  <Expression xsi:type="rx:Condition">
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="IntProperty">
+                      <Value>1</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>LickStateRight</Name>
+                  </Expression>
+                  <Expression xsi:type="rx:Condition">
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="IntProperty">
+                      <Value>-1</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Merge" />
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>DecisionVariable</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:WithLatestFrom" />
+                  </Expression>
+                  <Expression xsi:type="Add" />
+                  <Expression xsi:type="MulticastSubject">
+                    <Name>DecisionVariable</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>TaskConfig</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>TaskParameters.Response.DegreesPerLick</Selector>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:WithLatestFrom" />
+                  </Expression>
+                  <Expression xsi:type="Multiply" />
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>visualAzimuthStart</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:WithLatestFrom" />
+                  </Expression>
+                  <Expression xsi:type="Add" />
+                  <Expression xsi:type="MulticastSubject">
+                    <Name>visualAzimuth</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
                     <Name>trial</Name>
                   </Expression>
                   <Expression xsi:type="ExternalizedMapping">
@@ -8406,41 +8507,34 @@ Item4 as ExposureTime)</scr:Expression>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>LickStateLeft</Name>
+                    <Name>TaskConfig</Name>
                   </Expression>
-                  <Expression xsi:type="rx:Condition">
-                    <Workflow>
-                      <Nodes>
-                        <Expression xsi:type="WorkflowInput">
-                          <Name>Source1</Name>
-                        </Expression>
-                        <Expression xsi:type="WorkflowOutput" />
-                      </Nodes>
-                      <Edges>
-                        <Edge From="0" To="1" Label="Source1" />
-                      </Edges>
-                    </Workflow>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>TaskParameters.Response.ThresholdLicks</Selector>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:WithLatestFrom" />
+                  </Expression>
+                  <Expression xsi:type="scr:ExpressionCondition">
+                    <scr:Expression>Item1 &gt;= Item2</scr:Expression>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Take">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="StringProperty">
                       <Value>Left</Value>
                     </Combinator>
                   </Expression>
-                  <Expression xsi:type="SubscribeSubject">
-                    <Name>LickStateRight</Name>
+                  <Expression xsi:type="scr:ExpressionCondition">
+                    <scr:Expression>Item1 &lt;= -Item2</scr:Expression>
                   </Expression>
-                  <Expression xsi:type="rx:Condition">
-                    <Workflow>
-                      <Nodes>
-                        <Expression xsi:type="WorkflowInput">
-                          <Name>Source1</Name>
-                        </Expression>
-                        <Expression xsi:type="WorkflowOutput" />
-                      </Nodes>
-                      <Edges>
-                        <Edge From="0" To="1" Label="Source1" />
-                      </Edges>
-                    </Workflow>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Take">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="StringProperty">
@@ -8461,20 +8555,43 @@ Item4 as ExposureTime)</scr:Expression>
                   <Expression xsi:type="WorkflowOutput" />
                 </Nodes>
                 <Edges>
-                  <Edge From="0" To="2" Label="Source1" />
-                  <Edge From="1" To="2" Label="Source2" />
-                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="6" Label="Source1" />
                   <Edge From="3" To="4" Label="Source1" />
-                  <Edge From="4" To="12" Label="Source1" />
-                  <Edge From="5" To="6" Label="Source1" />
-                  <Edge From="6" To="7" Label="Source1" />
-                  <Edge From="7" To="11" Label="Source1" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source2" />
+                  <Edge From="6" To="8" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source2" />
                   <Edge From="8" To="9" Label="Source1" />
                   <Edge From="9" To="10" Label="Source1" />
-                  <Edge From="10" To="11" Label="Source2" />
-                  <Edge From="11" To="12" Label="Source2" />
-                  <Edge From="12" To="13" Label="Source1" />
+                  <Edge From="10" To="13" Label="Source1" />
+                  <Edge From="10" To="26" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="12" To="13" Label="Source2" />
                   <Edge From="13" To="14" Label="Source1" />
+                  <Edge From="14" To="16" Label="Source1" />
+                  <Edge From="15" To="16" Label="Source2" />
+                  <Edge From="16" To="17" Label="Source1" />
+                  <Edge From="17" To="18" Label="Source1" />
+                  <Edge From="19" To="21" Label="Source1" />
+                  <Edge From="20" To="21" Label="Source2" />
+                  <Edge From="21" To="22" Label="Source1" />
+                  <Edge From="22" To="23" Label="Source1" />
+                  <Edge From="23" To="34" Label="Source1" />
+                  <Edge From="24" To="25" Label="Source1" />
+                  <Edge From="25" To="26" Label="Source2" />
+                  <Edge From="26" To="27" Label="Source1" />
+                  <Edge From="26" To="30" Label="Source1" />
+                  <Edge From="27" To="28" Label="Source1" />
+                  <Edge From="28" To="29" Label="Source1" />
+                  <Edge From="29" To="33" Label="Source1" />
+                  <Edge From="30" To="31" Label="Source1" />
+                  <Edge From="31" To="32" Label="Source1" />
+                  <Edge From="32" To="33" Label="Source2" />
+                  <Edge From="33" To="34" Label="Source2" />
+                  <Edge From="34" To="35" Label="Source1" />
+                  <Edge From="35" To="36" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -9100,6 +9217,34 @@ Item2.Item2 as autoReward) </scr:Expression>
                     </Workflow>
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="Extensions\WithdrawSpouts.bonsai" />
+                  <Expression xsi:type="rx:SelectMany">
+                    <Name>PlayErrorSound</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>TaskConfig</Name>
+                        </Expression>
+                        <Expression xsi:type="MemberSelector">
+                          <Selector>TaskParameters.ErrorSound.Enabled</Selector>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Take">
+                            <rx:Count>1</rx:Count>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="MulticastSubject">
+                          <Name>StartAuditoryErrorSound</Name>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
+                        <Edge From="2" To="3" Label="Source1" />
+                        <Edge From="3" To="4" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="StringProperty">
                       <Value>Incorrect</Value>
@@ -9144,34 +9289,6 @@ Item2.Item2 as autoReward) </scr:Expression>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="WorkflowOutput" />
-                  <Expression xsi:type="rx:SelectMany">
-                    <Name>PlayErrorSound</Name>
-                    <Workflow>
-                      <Nodes>
-                        <Expression xsi:type="SubscribeSubject">
-                          <Name>TaskConfig</Name>
-                        </Expression>
-                        <Expression xsi:type="MemberSelector">
-                          <Selector>TaskParameters.ErrorSound.Enabled</Selector>
-                        </Expression>
-                        <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="rx:Take">
-                            <rx:Count>1</rx:Count>
-                          </Combinator>
-                        </Expression>
-                        <Expression xsi:type="MulticastSubject">
-                          <Name>StartAuditoryErrorSound</Name>
-                        </Expression>
-                        <Expression xsi:type="WorkflowOutput" />
-                      </Nodes>
-                      <Edges>
-                        <Edge From="0" To="1" Label="Source1" />
-                        <Edge From="1" To="2" Label="Source1" />
-                        <Edge From="2" To="3" Label="Source1" />
-                        <Edge From="3" To="4" Label="Source1" />
-                      </Edges>
-                    </Workflow>
-                  </Expression>
                 </Nodes>
                 <Edges>
                   <Edge From="0" To="3" Label="Source1" />
@@ -9180,7 +9297,7 @@ Item2.Item2 as autoReward) </scr:Expression>
                   <Edge From="3" To="4" Label="Source1" />
                   <Edge From="4" To="5" Label="Source1" />
                   <Edge From="4" To="8" Label="Source1" />
-                  <Edge From="4" To="19" Label="Source1" />
+                  <Edge From="4" To="20" Label="Source1" />
                   <Edge From="5" To="6" Label="Source1" />
                   <Edge From="6" To="7" Label="Source1" />
                   <Edge From="7" To="12" Label="Source1" />
@@ -9192,16 +9309,16 @@ Item2.Item2 as autoReward) </scr:Expression>
                   <Edge From="12" To="14" Label="Source1" />
                   <Edge From="13" To="14" Label="Source2" />
                   <Edge From="14" To="15" Label="Source1" />
-                  <Edge From="15" To="22" Label="Source1" />
+                  <Edge From="15" To="23" Label="Source1" />
                   <Edge From="16" To="17" Label="Source1" />
-                  <Edge From="17" To="25" Label="Source1" />
-                  <Edge From="25" To="18" Label="Source1" />
-                  <Edge From="18" To="22" Label="Source2" />
-                  <Edge From="19" To="20" Label="Source1" />
+                  <Edge From="17" To="18" Label="Source1" />
+                  <Edge From="18" To="19" Label="Source1" />
+                  <Edge From="19" To="23" Label="Source2" />
                   <Edge From="20" To="21" Label="Source1" />
-                  <Edge From="21" To="22" Label="Source3" />
-                  <Edge From="22" To="23" Label="Source1" />
+                  <Edge From="21" To="22" Label="Source1" />
+                  <Edge From="22" To="23" Label="Source3" />
                   <Edge From="23" To="24" Label="Source1" />
+                  <Edge From="24" To="25" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -9708,27 +9825,26 @@ Item2.Item2 as autoReward) </scr:Expression>
             <Edge From="8" To="9" Label="Source1" />
             <Edge From="9" To="10" Label="Source1" />
             <Edge From="10" To="11" Label="Source2" />
-            <Edge From="11" To="12" Label="Source1" />
-            <Edge From="12" To="18" Label="Source1" />
-            <Edge From="13" To="15" Label="Source1" />
-            <Edge From="14" To="15" Label="Source2" />
+            <Edge From="11" To="17" Label="Source1" />
+            <Edge From="12" To="14" Label="Source1" />
+            <Edge From="13" To="14" Label="Source2" />
+            <Edge From="14" To="15" Label="Source1" />
             <Edge From="15" To="16" Label="Source1" />
-            <Edge From="16" To="17" Label="Source1" />
-            <Edge From="17" To="18" Label="Source2" />
+            <Edge From="16" To="17" Label="Source2" />
+            <Edge From="17" To="18" Label="Source1" />
             <Edge From="18" To="19" Label="Source1" />
+            <Edge From="18" To="28" Label="Source2" />
             <Edge From="19" To="20" Label="Source1" />
-            <Edge From="19" To="29" Label="Source2" />
-            <Edge From="20" To="21" Label="Source1" />
-            <Edge From="21" To="23" Label="Source1" />
-            <Edge From="22" To="23" Label="Source2" />
-            <Edge From="23" To="24" Label="Source1" />
-            <Edge From="24" To="29" Label="Source1" />
+            <Edge From="20" To="22" Label="Source1" />
+            <Edge From="21" To="22" Label="Source2" />
+            <Edge From="22" To="23" Label="Source1" />
+            <Edge From="23" To="28" Label="Source1" />
+            <Edge From="24" To="25" Label="Source1" />
             <Edge From="25" To="26" Label="Source1" />
             <Edge From="26" To="27" Label="Source1" />
-            <Edge From="27" To="28" Label="Source1" />
-            <Edge From="28" To="29" Label="Source3" />
+            <Edge From="27" To="28" Label="Source3" />
+            <Edge From="28" To="29" Label="Source1" />
             <Edge From="29" To="30" Label="Source1" />
-            <Edge From="30" To="31" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -9819,10 +9935,36 @@ Things we want to do with this:
               <Selector>Seconds,Value</Selector>
               <Extension>csv</Extension>
             </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>DecisionVariable</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
+              <Name>Timestamp</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+              <LogName>DecisionVariable</LogName>
+              <Selector>Seconds,Value</Selector>
+              <Extension>csv</Extension>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>visualAzimuth</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
+              <Name>Timestamp</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+              <LogName>VisualAzimuth</LogName>
+              <Selector>Seconds,Value</Selector>
+              <Extension>csv</Extension>
+            </Expression>
           </Nodes>
           <Edges>
             <Edge From="0" To="1" Label="Source1" />
             <Edge From="1" To="2" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="5" Label="Source1" />
+            <Edge From="6" To="7" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -9832,18 +9974,19 @@ Things we want to do with this:
       <Edge From="7" To="8" Label="Source1" />
       <Edge From="8" To="9" Label="Source1" />
       <Edge From="10" To="11" Label="Source1" />
-      <Edge From="11" To="12" Label="Source1" />
       <Edge From="12" To="13" Label="Source1" />
-      <Edge From="13" To="15" Label="Source1" />
-      <Edge From="14" To="15" Label="Source2" />
-      <Edge From="15" To="20" Label="Source1" />
-      <Edge From="16" To="17" Label="Source1" />
-      <Edge From="17" To="18" Label="Source1" />
+      <Edge From="13" To="14" Label="Source1" />
+      <Edge From="14" To="15" Label="Source1" />
+      <Edge From="15" To="17" Label="Source1" />
+      <Edge From="16" To="17" Label="Source2" />
+      <Edge From="17" To="22" Label="Source1" />
       <Edge From="18" To="19" Label="Source1" />
-      <Edge From="19" To="20" Label="Source2" />
+      <Edge From="19" To="20" Label="Source1" />
       <Edge From="20" To="21" Label="Source1" />
-      <Edge From="21" To="22" Label="Source1" />
+      <Edge From="21" To="22" Label="Source2" />
       <Edge From="22" To="23" Label="Source1" />
+      <Edge From="23" To="24" Label="Source1" />
+      <Edge From="24" To="25" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
