@@ -3,16 +3,19 @@
   <packageSources>
     <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
     <!--
+      This file is a TEMPLATE. Setup.cmd copies it to NuGet.config (git-ignored) on
+      first run; edit that copy, never this one.
+
       GitHub Packages hosts the UclOpen.* CI prereleases that Bonsai.config pins
       (ucl-open/ucl-open CI publishes them on every push). GitHub Packages requires
-      authentication even for public packages: set GITHUB_PACKAGES_TOKEN to a token
-      with the read:packages scope before running Setup.cmd, e.g. in PowerShell
+      authentication even for public packages. Pick ONE in your local NuGet.config:
 
-        $env:GITHUB_PACKAGES_TOKEN = "<pat>"
+        a) replace %GITHUB_PACKAGES_TOKEN% below with a personal access token that
+           has the read:packages scope (the file is git-ignored, so this is safe), or
+        b) leave it and set the environment variable instead:
+           $env:GITHUB_PACKAGES_TOKEN = "<pat>"
 
-      or mint one with the GitHub CLI: gh auth refresh -s read:packages; gh auth token
-
-      Keep tokens out of this file - it is tracked by git.
+      Mint a token with the GitHub CLI: gh auth refresh -s read:packages; gh auth token
     -->
     <add key="github-ucl-open" value="https://nuget.pkg.github.com/ucl-open/index.json" protocolVersion="3" />
   </packageSources>

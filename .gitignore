@@ -12,7 +12,7 @@ obj
 *.editor
 .bonsai/**
 !.bonsai/Bonsai.config
-!.bonsai/NuGet.config
+!.bonsai/NuGet.config.example
 
 .venv
 
