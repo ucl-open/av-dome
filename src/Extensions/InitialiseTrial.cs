@@ -177,8 +177,9 @@ public class InitialiseTrial
         trialData.visualOrientation = parameters.VisualStimulus.Orientation;
         trialData.visualSpatialFrequency = parameters.VisualStimulus.SpatialFrequency;
         trialData.visualTemporalFrequency = parameters.VisualStimulus.TemporalFrequency;
-        trialData.visualFlickerFrequency = parameters.VisualStimulus.FlickerFrequency;
-        trialData.audioFlickerFrequency = parameters.AudioStimulus.FlickerFrequency;
+        // One task-level pulse rate: the grating gates at it and the audio wav is generated to match
+        trialData.visualFlickerFrequency = parameters.FlickerFrequency;
+        trialData.audioFlickerFrequency = parameters.FlickerFrequency;
 
         // define random phase of grating:
         trialData.visualPhase = 2 * Math.PI * trialRand.NextDouble();

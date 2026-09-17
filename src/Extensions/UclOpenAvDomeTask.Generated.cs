@@ -135,18 +135,18 @@ namespace UclOpenAvDomeTask
     
         private System.Collections.Generic.List<SphericalPosition> _speakerLocations;
     
-        private double _flickerFrequency;
+        private string _stimulusPath;
     
         public AudioStimulus()
         {
             _speakerLocations = new System.Collections.Generic.List<SphericalPosition>();
-            _flickerFrequency = 8D;
+            _stimulusPath = "LocalFiles\\filtered_pink_pulse_train.wav";
         }
     
         protected AudioStimulus(AudioStimulus other)
         {
             _speakerLocations = other._speakerLocations;
-            _flickerFrequency = other._flickerFrequency;
+            _stimulusPath = other._stimulusPath;
         }
     
         /// <summary>
@@ -170,20 +170,21 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Auditory stimulus flicker frequency, in Hz
+        /// Wav file of the amplitude-modulated pulse train; the experimenter must generate it to pulse at the task flickerFrequency
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("flickerFrequency")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="flickerFrequency")]
-        [System.ComponentModel.DescriptionAttribute("Auditory stimulus flicker frequency, in Hz")]
-        public double FlickerFrequency
+        [Newtonsoft.Json.JsonPropertyAttribute("stimulusPath")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="stimulusPath")]
+        [System.ComponentModel.DescriptionAttribute("Wav file of the amplitude-modulated pulse train; the experimenter must generate i" +
+            "t to pulse at the task flickerFrequency")]
+        public string StimulusPath
         {
             get
             {
-                return _flickerFrequency;
+                return _stimulusPath;
             }
             set
             {
-                _flickerFrequency = value;
+                _stimulusPath = value;
             }
         }
     
@@ -200,7 +201,147 @@ namespace UclOpenAvDomeTask
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("SpeakerLocations = " + _speakerLocations + ", ");
-            stringBuilder.Append("FlickerFrequency = " + _flickerFrequency);
+            stringBuilder.Append("StimulusPath = " + _stimulusPath);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    /// <summary>
+    /// Auditory error feedback played on incorrect responses.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute("Auditory error feedback played on incorrect responses.")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class ErrorSound
+    {
+    
+        private bool _enabled;
+    
+        private string _path;
+    
+        private int _channel;
+    
+        private double _gain;
+    
+        public ErrorSound()
+        {
+            _enabled = false;
+            _path = "LocalFiles\\error_tone.wav";
+            _channel = 2;
+            _gain = 1D;
+        }
+    
+        protected ErrorSound(ErrorSound other)
+        {
+            _enabled = other._enabled;
+            _path = other._path;
+            _channel = other._channel;
+            _gain = other._gain;
+        }
+    
+        /// <summary>
+        /// Whether an error tone plays on incorrect responses
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("enabled")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="enabled")]
+        [System.ComponentModel.DescriptionAttribute("Whether an error tone plays on incorrect responses")]
+        public bool Enabled
+        {
+            get
+            {
+                return _enabled;
+            }
+            set
+            {
+                _enabled = value;
+            }
+        }
+    
+        /// <summary>
+        /// Wav file of the error tone
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("path")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="path")]
+        [System.ComponentModel.DescriptionAttribute("Wav file of the error tone")]
+        public string Path
+        {
+            get
+            {
+                return _path;
+            }
+            set
+            {
+                _path = value;
+            }
+        }
+    
+        /// <summary>
+        /// Mixer output channel the error tone plays on
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("channel")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="channel")]
+        [System.ComponentModel.DescriptionAttribute("Mixer output channel the error tone plays on")]
+        public int Channel
+        {
+            get
+            {
+                return _channel;
+            }
+            set
+            {
+                _channel = value;
+            }
+        }
+    
+        /// <summary>
+        /// Playback gain of the error tone
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("gain")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="gain")]
+        [System.ComponentModel.DescriptionAttribute("Playback gain of the error tone")]
+        public double Gain
+        {
+            get
+            {
+                return _gain;
+            }
+            set
+            {
+                _gain = value;
+            }
+        }
+    
+        public System.IObservable<ErrorSound> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new ErrorSound(this)));
+        }
+    
+        public System.IObservable<ErrorSound> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new ErrorSound(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("Enabled = " + _enabled + ", ");
+            stringBuilder.Append("Path = " + _path + ", ");
+            stringBuilder.Append("Channel = " + _channel + ", ");
+            stringBuilder.Append("Gain = " + _gain);
             return true;
         }
     
@@ -527,6 +668,103 @@ namespace UclOpenAvDomeTask
         {
             stringBuilder.Append("MaxRepeats = " + _maxRepeats + ", ");
             stringBuilder.Append("RulesPerType = " + _rulesPerType);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    /// <summary>
+    /// Lick-accumulation response rule; thresholdLicks 1 with degreesPerLick 0 is classic first-lick 2AFC.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute("Lick-accumulation response rule; thresholdLicks 1 with degreesPerLick 0 is classi" +
+        "c first-lick 2AFC.")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class ResponseSettings
+    {
+    
+        private int _thresholdLicks;
+    
+        private double _degreesPerLick;
+    
+        public ResponseSettings()
+        {
+            _thresholdLicks = 1;
+            _degreesPerLick = 0D;
+        }
+    
+        protected ResponseSettings(ResponseSettings other)
+        {
+            _thresholdLicks = other._thresholdLicks;
+            _degreesPerLick = other._degreesPerLick;
+        }
+    
+        /// <summary>
+        /// Net lick difference (left minus right, absolute) that terminates the response window
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("thresholdLicks")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="thresholdLicks")]
+        [System.ComponentModel.DescriptionAttribute("Net lick difference (left minus right, absolute) that terminates the response win" +
+            "dow")]
+        public int ThresholdLicks
+        {
+            get
+            {
+                return _thresholdLicks;
+            }
+            set
+            {
+                _thresholdLicks = value;
+            }
+        }
+    
+        /// <summary>
+        /// Degrees the grating azimuth moves per net lick difference; 0 keeps the stimulus fixed
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("degreesPerLick")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="degreesPerLick")]
+        [System.ComponentModel.DescriptionAttribute("Degrees the grating azimuth moves per net lick difference; 0 keeps the stimulus f" +
+            "ixed")]
+        public double DegreesPerLick
+        {
+            get
+            {
+                return _degreesPerLick;
+            }
+            set
+            {
+                _degreesPerLick = value;
+            }
+        }
+    
+        public System.IObservable<ResponseSettings> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new ResponseSettings(this)));
+        }
+    
+        public System.IObservable<ResponseSettings> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new ResponseSettings(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("ThresholdLicks = " + _thresholdLicks + ", ");
+            stringBuilder.Append("DegreesPerLick = " + _degreesPerLick);
             return true;
         }
     
@@ -1229,11 +1467,19 @@ namespace UclOpenAvDomeTask
     
         private double? _rngSeed;
     
+        private string _datasetName;
+    
+        private double _flickerFrequency;
+    
         private TrialStructure _trialStructure;
     
         private VisualStimulus _visualStimulus;
     
         private AudioStimulus _audioStimulus;
+    
+        private ResponseSettings _response;
+    
+        private ErrorSound _errorSound;
     
         private RewardSettings _reward;
     
@@ -1245,9 +1491,13 @@ namespace UclOpenAvDomeTask
     
         public UclOpenAvDomeTaskParameters()
         {
+            _datasetName = "AV_Dome";
+            _flickerFrequency = 8D;
             _trialStructure = new TrialStructure();
             _visualStimulus = new VisualStimulus();
             _audioStimulus = new AudioStimulus();
+            _response = new ResponseSettings();
+            _errorSound = new ErrorSound();
             _reward = new RewardSettings();
             _repeats = new RepeatSettings();
             _optogenetics = new OptogeneticsSettings();
@@ -1257,9 +1507,13 @@ namespace UclOpenAvDomeTask
         protected UclOpenAvDomeTaskParameters(UclOpenAvDomeTaskParameters other)
         {
             _rngSeed = other._rngSeed;
+            _datasetName = other._datasetName;
+            _flickerFrequency = other._flickerFrequency;
             _trialStructure = other._trialStructure;
             _visualStimulus = other._visualStimulus;
             _audioStimulus = other._audioStimulus;
+            _response = other._response;
+            _errorSound = other._errorSound;
             _reward = other._reward;
             _repeats = other._repeats;
             _optogenetics = other._optogenetics;
@@ -1281,6 +1535,43 @@ namespace UclOpenAvDomeTask
             set
             {
                 _rngSeed = value;
+            }
+        }
+    
+        /// <summary>
+        /// Subfolder under the rig rootPath where this task's sessions are saved
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("datasetName")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="datasetName")]
+        [System.ComponentModel.DescriptionAttribute("Subfolder under the rig rootPath where this task\'s sessions are saved")]
+        public string DatasetName
+        {
+            get
+            {
+                return _datasetName;
+            }
+            set
+            {
+                _datasetName = value;
+            }
+        }
+    
+        /// <summary>
+        /// Pulse rate shared by both modalities, in Hz: the grating gates on and off at this rate and the audio pulse-train wav must match it
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("flickerFrequency")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="flickerFrequency")]
+        [System.ComponentModel.DescriptionAttribute("Pulse rate shared by both modalities, in Hz: the grating gates on and off at this" +
+            " rate and the audio pulse-train wav must match it")]
+        public double FlickerFrequency
+        {
+            get
+            {
+                return _flickerFrequency;
+            }
+            set
+            {
+                _flickerFrequency = value;
             }
         }
     
@@ -1338,6 +1629,44 @@ namespace UclOpenAvDomeTask
             set
             {
                 _audioStimulus = value;
+            }
+        }
+    
+        /// <summary>
+        /// Lick-accumulation response rule
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("response", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="response")]
+        [System.ComponentModel.DescriptionAttribute("Lick-accumulation response rule")]
+        public ResponseSettings Response
+        {
+            get
+            {
+                return _response;
+            }
+            set
+            {
+                _response = value;
+            }
+        }
+    
+        /// <summary>
+        /// Auditory error feedback on incorrect responses
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("errorSound", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="errorSound")]
+        [System.ComponentModel.DescriptionAttribute("Auditory error feedback on incorrect responses")]
+        public ErrorSound ErrorSound
+        {
+            get
+            {
+                return _errorSound;
+            }
+            set
+            {
+                _errorSound = value;
             }
         }
     
@@ -1430,9 +1759,13 @@ namespace UclOpenAvDomeTask
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("RngSeed = " + _rngSeed + ", ");
+            stringBuilder.Append("DatasetName = " + _datasetName + ", ");
+            stringBuilder.Append("FlickerFrequency = " + _flickerFrequency + ", ");
             stringBuilder.Append("TrialStructure = " + _trialStructure + ", ");
             stringBuilder.Append("VisualStimulus = " + _visualStimulus + ", ");
             stringBuilder.Append("AudioStimulus = " + _audioStimulus + ", ");
+            stringBuilder.Append("Response = " + _response + ", ");
+            stringBuilder.Append("ErrorSound = " + _errorSound + ", ");
             stringBuilder.Append("Reward = " + _reward + ", ");
             stringBuilder.Append("Repeats = " + _repeats + ", ");
             stringBuilder.Append("Optogenetics = " + _optogenetics + ", ");
@@ -1484,8 +1817,6 @@ namespace UclOpenAvDomeTask
     
         private double _temporalFrequency;
     
-        private double _flickerFrequency;
-    
         public VisualStimulus()
         {
             _azimuthMin = -60D;
@@ -1497,7 +1828,6 @@ namespace UclOpenAvDomeTask
             _orientation = 0D;
             _spatialFrequency = 0.066666667D;
             _temporalFrequency = 0D;
-            _flickerFrequency = 8D;
         }
     
         protected VisualStimulus(VisualStimulus other)
@@ -1511,7 +1841,6 @@ namespace UclOpenAvDomeTask
             _orientation = other._orientation;
             _spatialFrequency = other._spatialFrequency;
             _temporalFrequency = other._temporalFrequency;
-            _flickerFrequency = other._flickerFrequency;
         }
     
         /// <summary>
@@ -1624,11 +1953,12 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Grating orientation, in degrees
+        /// Grating stripe orientation, in degrees; drift direction is orthogonal to it (orientation + 90 degrees)
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("orientation")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="orientation")]
-        [System.ComponentModel.DescriptionAttribute("Grating orientation, in degrees")]
+        [System.ComponentModel.DescriptionAttribute("Grating stripe orientation, in degrees; drift direction is orthogonal to it (orie" +
+            "ntation + 90 degrees)")]
         public double Orientation
         {
             get
@@ -1660,11 +1990,12 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Grating drift temporal frequency, in Hz
+        /// Unsigned grating drift rate, in Hz, drifting orthogonal to orientation (orientation + 90 degrees); 0 is static
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("temporalFrequency")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="temporalFrequency")]
-        [System.ComponentModel.DescriptionAttribute("Grating drift temporal frequency, in Hz")]
+        [System.ComponentModel.DescriptionAttribute("Unsigned grating drift rate, in Hz, drifting orthogonal to orientation (orientati" +
+            "on + 90 degrees); 0 is static")]
         public double TemporalFrequency
         {
             get
@@ -1674,24 +2005,6 @@ namespace UclOpenAvDomeTask
             set
             {
                 _temporalFrequency = value;
-            }
-        }
-    
-        /// <summary>
-        /// Grating contrast flicker frequency, in Hz
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("flickerFrequency")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="flickerFrequency")]
-        [System.ComponentModel.DescriptionAttribute("Grating contrast flicker frequency, in Hz")]
-        public double FlickerFrequency
-        {
-            get
-            {
-                return _flickerFrequency;
-            }
-            set
-            {
-                _flickerFrequency = value;
             }
         }
     
@@ -1715,8 +2028,7 @@ namespace UclOpenAvDomeTask
             stringBuilder.Append("GaussianWindowSigma = " + _gaussianWindowSigma + ", ");
             stringBuilder.Append("Orientation = " + _orientation + ", ");
             stringBuilder.Append("SpatialFrequency = " + _spatialFrequency + ", ");
-            stringBuilder.Append("TemporalFrequency = " + _temporalFrequency + ", ");
-            stringBuilder.Append("FlickerFrequency = " + _flickerFrequency);
+            stringBuilder.Append("TemporalFrequency = " + _temporalFrequency);
             return true;
         }
     
@@ -1763,6 +2075,11 @@ namespace UclOpenAvDomeTask
             return Process<AudioStimulus>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<ErrorSound> source)
+        {
+            return Process<ErrorSound>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<OptogeneticsSettings> source)
         {
             return Process<OptogeneticsSettings>(source);
@@ -1771,6 +2088,11 @@ namespace UclOpenAvDomeTask
         public System.IObservable<string> Process(System.IObservable<RepeatSettings> source)
         {
             return Process<RepeatSettings>(source);
+        }
+
+        public System.IObservable<string> Process(System.IObservable<ResponseSettings> source)
+        {
+            return Process<ResponseSettings>(source);
         }
 
         public System.IObservable<string> Process(System.IObservable<RewardSettings> source)
@@ -1814,8 +2136,10 @@ namespace UclOpenAvDomeTask
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<UclOpenAvDomeTaskLogic>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<AudioStimulus>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ErrorSound>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<OptogeneticsSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RepeatSettings>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ResponseSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RewardSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SphericalPosition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<TrainingStage>))]
@@ -1881,6 +2205,11 @@ namespace UclOpenAvDomeTask
             return Process<AudioStimulus>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<ErrorSound> source)
+        {
+            return Process<ErrorSound>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<OptogeneticsSettings> source)
         {
             return Process<OptogeneticsSettings>(source);
@@ -1889,6 +2218,11 @@ namespace UclOpenAvDomeTask
         public System.IObservable<string> Process(System.IObservable<RepeatSettings> source)
         {
             return Process<RepeatSettings>(source);
+        }
+
+        public System.IObservable<string> Process(System.IObservable<ResponseSettings> source)
+        {
+            return Process<ResponseSettings>(source);
         }
 
         public System.IObservable<string> Process(System.IObservable<RewardSettings> source)
@@ -1932,8 +2266,10 @@ namespace UclOpenAvDomeTask
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<UclOpenAvDomeTaskLogic>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<AudioStimulus>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ErrorSound>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<OptogeneticsSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RepeatSettings>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ResponseSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RewardSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SphericalPosition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<TrainingStage>))]

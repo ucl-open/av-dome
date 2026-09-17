@@ -36,10 +36,9 @@ class VisualStimulus(BaseSchema):
     elevation_max: Double = Field(default=15.0, ge=-90, le=90, description="Upper bound of the uniformly drawn grating elevation, in degrees")
     coherent_azimuth_cap: Double = Field(default=80.0, ge=0, le=180, description="On coherent trials the grating azimuth magnitude is kept below this cap, in degrees")
     gaussian_window_sigma: Double = Field(default=20.0, description="Sigma of the Gaussian aperture window, in degrees")
-    orientation: Double = Field(default=0.0, description="Grating orientation, in degrees")
+    orientation: Double = Field(default=0.0, description="Grating stripe orientation, in degrees; drift direction is orthogonal to it (orientation + 90 degrees)")
     spatial_frequency: Double = Field(default=0.066666667, description="Grating spatial frequency, in cycles per degree")
-    temporal_frequency: Double = Field(default=0.0, description="Grating drift temporal frequency, in Hz")
-    flicker_frequency: Double = Field(default=8.0, description="Grating contrast flicker frequency, in Hz")
+    temporal_frequency: Double = Field(default=0.0, ge=0, description="Unsigned grating drift rate, in Hz, drifting orthogonal to orientation (orientation + 90 degrees); 0 is static")
 
     @model_validator(mode="after")
     def _bounds_ordered(self) -> "VisualStimulus":
@@ -56,7 +55,10 @@ class AudioStimulus(BaseSchema):
     speaker_locations: List[SphericalPosition] = Field(
         description="Candidate sound positions, one drawn per trial; keep an azimuth-0 entry for trials that place the sound at the centre"
     )
-    flicker_frequency: Double = Field(default=8.0, description="Auditory stimulus flicker frequency, in Hz")
+    stimulus_path: String = Field(
+        default="LocalFiles\\filtered_pink_pulse_train.wav",
+        description="Wav file of the amplitude-modulated pulse train; the experimenter must generate it to pulse at the task flickerFrequency",
+    )
 
     @field_validator("speaker_locations")
     @classmethod
@@ -72,6 +74,22 @@ class RewardSettings(BaseSchema):
     reward_probability: Double = Field(default=1.0, ge=0, le=1, description="Probability that a correct response is rewarded")
     large_reward_multiplier: Double = Field(default=1.0, ge=0, description="Reward size multiplier applied on large-reward trials")
     large_reward_probability: Double = Field(default=0.0, ge=0, le=1, description="Probability that a trial is a large-reward trial")
+
+
+class ResponseSettings(BaseSchema):
+    """Lick-accumulation response rule; thresholdLicks 1 with degreesPerLick 0 is classic first-lick 2AFC."""
+
+    threshold_licks: Int = Field(default=1, ge=1, description="Net lick difference (left minus right, absolute) that terminates the response window")
+    degrees_per_lick: Double = Field(default=0.0, description="Degrees the grating azimuth moves per net lick difference; 0 keeps the stimulus fixed")
+
+
+class ErrorSound(BaseSchema):
+    """Auditory error feedback played on incorrect responses."""
+
+    enabled: Bool = Field(default=False, description="Whether an error tone plays on incorrect responses")
+    path: String = Field(default="LocalFiles\\error_tone.wav", description="Wav file of the error tone")
+    channel: Int = Field(default=2, ge=0, description="Mixer output channel the error tone plays on")
+    gain: Double = Field(default=1.0, ge=0, description="Playback gain of the error tone")
 
 
 class RepeatRule(StrEnum):
@@ -139,9 +157,19 @@ class TrainingStage(BaseSchema):
 class UclOpenAvDomeTaskParameters(TaskParameters):
     """Task parameters for the av-dome audiovisual localisation task."""
 
+    dataset_name: String = Field(
+        default="AV_Dome", description="Subfolder under the rig rootPath where this task's sessions are saved"
+    )
+    flicker_frequency: Double = Field(
+        default=8.0,
+        ge=0,
+        description="Pulse rate shared by both modalities, in Hz: the grating gates on and off at this rate and the audio pulse-train wav must match it",
+    )
     trial_structure: TrialStructure = Field(description="Timing parameters of the trial state machine")
     visual_stimulus: VisualStimulus = Field(description="Grating stimulus parameters")
     audio_stimulus: AudioStimulus = Field(description="Auditory stimulus parameters")
+    response: ResponseSettings = Field(description="Lick-accumulation response rule")
+    error_sound: ErrorSound = Field(description="Auditory error feedback on incorrect responses")
     reward: RewardSettings = Field(description="Reward delivery parameters")
     repeats: RepeatSettings = Field(description="Trial repetition policy")
     optogenetics: OptogeneticsSettings = Field(description="Zapit optogenetic stimulation parameters")

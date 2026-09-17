@@ -11,8 +11,6 @@
 #      to a checked-out src/DataSchemas/ucl_open_av_dome.json (or a raw GitHub URL)
 #      to keep editor validation working.
 #
-# version must match the ucl-open-av-dome python package semver that generated the schema.
-version: 0.0.0-rc1
 rootPath: C:\Data
 
 behaviorBoard:

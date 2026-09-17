@@ -2,10 +2,10 @@
 # Task parameters for the av-dome audiovisual localisation task.
 # Loaded by src/main.bonsai at startup and published as the TaskConfig subject.
 # The effective config is snapshotted to the session folder as TaskSchema.json.
-version: 0.0.0-rc1
-name: UclOpenAvDome
 taskParameters:
   rngSeed: null            # null = draw a random seed; the seed used is logged per trial
+  datasetName: AV_Dome     # save subfolder under the rig rootPath
+  flickerFrequency: 8      # Hz, pulse rate shared by both modalities; the audio wav must be generated to match
   trialStructure:
     itiMin: 4.0            # s
     itiMax: 5.0            # s
@@ -24,14 +24,21 @@ taskParameters:
     gaussianWindowSigma: 20   # deg
     orientation: 0         # deg
     spatialFrequency: 0.066666667   # cycles/deg
-    temporalFrequency: 0   # Hz
-    flickerFrequency: 8    # Hz
+    temporalFrequency: 0   # Hz, unsigned drift rate; direction is orthogonal to orientation
   audioStimulus:
     speakerLocations:      # one position drawn per trial; playback uses the nearest wired speaker
       - { azimuth: -60, elevation: 15 }
       - { azimuth: 0, elevation: 15 }   # keep a centre entry: centre-audio trials draw from it
       - { azimuth: 60, elevation: 15 }
-    flickerFrequency: 8    # Hz
+    stimulusPath: LocalFiles\filtered_pink_pulse_train.wav   # pulse rate baked in; must match the task flickerFrequency
+  response:
+    thresholdLicks: 1      # net lick difference ending the response window; 1 = first-lick 2AFC
+    degreesPerLick: 0      # deg the grating moves per net lick; 0 = stimulus fixed
+  errorSound:
+    enabled: false
+    path: LocalFiles\error_tone.wav
+    channel: 2
+    gain: 1.0
   reward:
     rewardProbability: 1.0
     largeRewardMultiplier: 1

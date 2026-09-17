@@ -11,17 +11,51 @@
           "title": "SpeakerLocations",
           "type": "array"
         },
-        "flickerFrequency": {
-          "default": 8.0,
-          "description": "Auditory stimulus flicker frequency, in Hz",
-          "title": "FlickerFrequency",
-          "type": "number"
+        "stimulusPath": {
+          "default": "LocalFiles\\filtered_pink_pulse_train.wav",
+          "description": "Wav file of the amplitude-modulated pulse train; the experimenter must generate it to pulse at the task flickerFrequency",
+          "title": "StimulusPath",
+          "type": "string"
         }
       },
       "required": [
         "speakerLocations"
       ],
       "title": "AudioStimulus",
+      "type": "object"
+    },
+    "ErrorSound": {
+      "description": "Auditory error feedback played on incorrect responses.",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "description": "Whether an error tone plays on incorrect responses",
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "path": {
+          "default": "LocalFiles\\error_tone.wav",
+          "description": "Wav file of the error tone",
+          "title": "Path",
+          "type": "string"
+        },
+        "channel": {
+          "default": 2,
+          "description": "Mixer output channel the error tone plays on",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "title": "Channel",
+          "type": "integer"
+        },
+        "gain": {
+          "default": 1.0,
+          "description": "Playback gain of the error tone",
+          "minimum": 0,
+          "title": "Gain",
+          "type": "number"
+        }
+      },
+      "title": "ErrorSound",
       "type": "object"
     },
     "OptogeneticsSettings": {
@@ -115,6 +149,27 @@
         }
       },
       "title": "RepeatSettings",
+      "type": "object"
+    },
+    "ResponseSettings": {
+      "description": "Lick-accumulation response rule; thresholdLicks 1 with degreesPerLick 0 is classic first-lick 2AFC.",
+      "properties": {
+        "thresholdLicks": {
+          "default": 1,
+          "description": "Net lick difference (left minus right, absolute) that terminates the response window",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "title": "ThresholdLicks",
+          "type": "integer"
+        },
+        "degreesPerLick": {
+          "default": 0.0,
+          "description": "Degrees the grating azimuth moves per net lick difference; 0 keeps the stimulus fixed",
+          "title": "DegreesPerLick",
+          "type": "number"
+        }
+      },
+      "title": "ResponseSettings",
       "type": "object"
     },
     "RewardSettings": {
@@ -346,6 +401,19 @@
             "null"
           ]
         },
+        "datasetName": {
+          "default": "AV_Dome",
+          "description": "Subfolder under the rig rootPath where this task's sessions are saved",
+          "title": "DatasetName",
+          "type": "string"
+        },
+        "flickerFrequency": {
+          "default": 8.0,
+          "description": "Pulse rate shared by both modalities, in Hz: the grating gates on and off at this rate and the audio pulse-train wav must match it",
+          "minimum": 0,
+          "title": "FlickerFrequency",
+          "type": "number"
+        },
         "trialStructure": {
           "$ref": "#/$defs/TrialStructure",
           "description": "Timing parameters of the trial state machine"
@@ -357,6 +425,15 @@
         "audioStimulus": {
           "$ref": "#/$defs/AudioStimulus",
           "description": "Auditory stimulus parameters"
+        },
+        "response": {
+          "$ref": "#/$defs/ResponseSettings",
+          "description": "Lick-accumulation response rule",
+          "title": "Response"
+        },
+        "errorSound": {
+          "$ref": "#/$defs/ErrorSound",
+          "description": "Auditory error feedback on incorrect responses"
         },
         "reward": {
           "$ref": "#/$defs/RewardSettings",
@@ -386,6 +463,8 @@
         "trialStructure",
         "visualStimulus",
         "audioStimulus",
+        "response",
+        "errorSound",
         "reward",
         "repeats",
         "optogenetics",
@@ -445,7 +524,7 @@
         },
         "orientation": {
           "default": 0.0,
-          "description": "Grating orientation, in degrees",
+          "description": "Grating stripe orientation, in degrees; drift direction is orthogonal to it (orientation + 90 degrees)",
           "title": "Orientation",
           "type": "number"
         },
@@ -457,14 +536,9 @@
         },
         "temporalFrequency": {
           "default": 0.0,
-          "description": "Grating drift temporal frequency, in Hz",
+          "description": "Unsigned grating drift rate, in Hz, drifting orthogonal to orientation (orientation + 90 degrees); 0 is static",
+          "minimum": 0,
           "title": "TemporalFrequency",
-          "type": "number"
-        },
-        "flickerFrequency": {
-          "default": 8.0,
-          "description": "Grating contrast flicker frequency, in Hz",
-          "title": "FlickerFrequency",
           "type": "number"
         }
       },
