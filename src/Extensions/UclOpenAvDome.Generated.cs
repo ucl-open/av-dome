@@ -45,6 +45,8 @@ namespace UclOpenAvDome
     
         private StepperPositions _lickSpoutDefaultPosition;
     
+        private ZapitServer _zapit;
+    
         private int _interPulseInterval;
     
         public UclOpenAvDomeRig()
@@ -61,6 +63,7 @@ namespace UclOpenAvDome
             _projectionCalibration = new ProjectionCalibration();
             _speakerArray = new SpeakerArray();
             _lickSpoutDefaultPosition = new StepperPositions();
+            _zapit = new ZapitServer();
             _interPulseInterval = 50;
         }
     
@@ -79,6 +82,7 @@ namespace UclOpenAvDome
             _projectionCalibration = other._projectionCalibration;
             _speakerArray = other._speakerArray;
             _lickSpoutDefaultPosition = other._lickSpoutDefaultPosition;
+            _zapit = other._zapit;
             _interPulseInterval = other._interPulseInterval;
         }
     
@@ -324,6 +328,26 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
+        /// Zapit optogenetics server endpoint; only contacted when the task enables optogenetics
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("zapit", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="zapit")]
+        [System.ComponentModel.DescriptionAttribute("Zapit optogenetics server endpoint; only contacted when the task enables optogene" +
+            "tics")]
+        public ZapitServer Zapit
+        {
+            get
+            {
+                return _zapit;
+            }
+            set
+            {
+                _zapit = value;
+            }
+        }
+    
+        /// <summary>
         /// Gap between consecutive reward pulses, in milliseconds. Must be long enough for the valve to seat before the next trigger; 0 re-triggers the instant the board closes the valve and risks merged or dropped pulses.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("interPulseInterval")]
@@ -368,6 +392,7 @@ namespace UclOpenAvDome
             stringBuilder.Append("ProjectionCalibration = " + _projectionCalibration + ", ");
             stringBuilder.Append("SpeakerArray = " + _speakerArray + ", ");
             stringBuilder.Append("LickSpoutDefaultPosition = " + _lickSpoutDefaultPosition + ", ");
+            stringBuilder.Append("Zapit = " + _zapit + ", ");
             stringBuilder.Append("InterPulseInterval = " + _interPulseInterval);
             return true;
         }
@@ -2660,6 +2685,152 @@ namespace UclOpenAvDome
     }
 
 
+    /// <summary>
+    /// TCP endpoint of the Zapit optogenetics server (tcpServer section of the Zapit settings file).
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute("TCP endpoint of the Zapit optogenetics server (tcpServer section of the Zapit set" +
+        "tings file).")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class ZapitServer
+    {
+    
+        private string _host;
+    
+        private int _port;
+    
+        private bool _hardwareTriggered;
+    
+        private int _triggerLine;
+    
+        public ZapitServer()
+        {
+            _host = "127.0.0.1";
+            _port = 1488;
+            _hardwareTriggered = false;
+            _triggerLine = 3;
+        }
+    
+        protected ZapitServer(ZapitServer other)
+        {
+            _host = other._host;
+            _port = other._port;
+            _hardwareTriggered = other._hardwareTriggered;
+            _triggerLine = other._triggerLine;
+        }
+    
+        /// <summary>
+        /// Host name or IP address of the PC running Zapit; 127.0.0.1 when Zapit runs on this rig PC
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("host")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="host")]
+        [System.ComponentModel.DescriptionAttribute("Host name or IP address of the PC running Zapit; 127.0.0.1 when Zapit runs on thi" +
+            "s rig PC")]
+        public string Host
+        {
+            get
+            {
+                return _host;
+            }
+            set
+            {
+                _host = value;
+            }
+        }
+    
+        /// <summary>
+        /// TCP port the Zapit server listens on
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("port")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="port")]
+        [System.ComponentModel.DescriptionAttribute("TCP port the Zapit server listens on")]
+        public int Port
+        {
+            get
+            {
+                return _port;
+            }
+            set
+            {
+                _port = value;
+            }
+        }
+    
+        /// <summary>
+        /// True: Zapit arms the DAQ on the TCP command and the behavior board fires a TTL on triggerLine when Zapit confirms it is armed. False: Zapit starts the stimulus on receipt of the command.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("hardwareTriggered")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="hardwareTriggered")]
+        [System.ComponentModel.DescriptionAttribute("True: Zapit arms the DAQ on the TCP command and the behavior board fires a TTL on" +
+            " triggerLine when Zapit confirms it is armed. False: Zapit starts the stimulus o" +
+            "n receipt of the command.")]
+        public bool HardwareTriggered
+        {
+            get
+            {
+                return _hardwareTriggered;
+            }
+            set
+            {
+                _hardwareTriggered = value;
+            }
+        }
+    
+        /// <summary>
+        /// Behavior board digital output (0 to 3) wired to the Zapit DAQ trigger input; pulsed with the width set in behaviorBoard.pulseController.pulseWidths for that line. Only used when hardwareTriggered is true.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("triggerLine")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="triggerLine")]
+        [System.ComponentModel.DescriptionAttribute("Behavior board digital output (0 to 3) wired to the Zapit DAQ trigger input; puls" +
+            "ed with the width set in behaviorBoard.pulseController.pulseWidths for that line" +
+            ". Only used when hardwareTriggered is true.")]
+        public int TriggerLine
+        {
+            get
+            {
+                return _triggerLine;
+            }
+            set
+            {
+                _triggerLine = value;
+            }
+        }
+    
+        public System.IObservable<ZapitServer> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new ZapitServer(this)));
+        }
+    
+        public System.IObservable<ZapitServer> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new ZapitServer(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("Host = " + _host + ", ");
+            stringBuilder.Append("Port = " + _port + ", ");
+            stringBuilder.Append("HardwareTriggered = " + _hardwareTriggered + ", ");
+            stringBuilder.Append("TriggerLine = " + _triggerLine);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
     [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
     public enum HarpStepperDriverMicrostepResolution
@@ -2818,6 +2989,11 @@ namespace UclOpenAvDome
         {
             return Process<StepperPositions>(source);
         }
+
+        public System.IObservable<string> Process(System.IObservable<ZapitServer> source)
+        {
+            return Process<ZapitServer>(source);
+        }
     }
 
 
@@ -2847,6 +3023,7 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpinnakerCamera>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StageAxisMapping>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperPositions>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ZapitServer>))]
     public partial class DeserializeFromJson : Bonsai.Expressions.SingleArgumentExpressionBuilder
     {
     
@@ -2990,6 +3167,11 @@ namespace UclOpenAvDome
         {
             return Process<StepperPositions>(source);
         }
+
+        public System.IObservable<string> Process(System.IObservable<ZapitServer> source)
+        {
+            return Process<ZapitServer>(source);
+        }
     }
 
 
@@ -3019,6 +3201,7 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpinnakerCamera>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StageAxisMapping>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperPositions>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ZapitServer>))]
     public partial class DeserializeFromYaml : Bonsai.Expressions.SingleArgumentExpressionBuilder
     {
     

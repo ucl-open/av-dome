@@ -786,6 +786,11 @@
           "description": "Default absolute stage position at session start",
           "title": "LickSpoutDefaultPosition"
         },
+        "zapit": {
+          "$ref": "#/$defs/ZapitServer",
+          "description": "Zapit optogenetics server endpoint; only contacted when the task enables optogenetics",
+          "title": "Zapit"
+        },
         "interPulseInterval": {
           "default": 50,
           "description": "Gap between consecutive reward pulses, in milliseconds. Must be long enough for the valve to seat before the next trigger; 0 re-triggers the instant the board closes the valve and risks merged or dropped pulses.",
@@ -806,9 +811,45 @@
         "cameraBody",
         "projectionCalibration",
         "speakerArray",
-        "lickSpoutDefaultPosition"
+        "lickSpoutDefaultPosition",
+        "zapit"
       ],
       "title": "UclOpenAvDomeRig",
+      "type": "object"
+    },
+    "ZapitServer": {
+      "description": "TCP endpoint of the Zapit optogenetics server (tcpServer section of the Zapit settings file).",
+      "properties": {
+        "host": {
+          "default": "127.0.0.1",
+          "description": "Host name or IP address of the PC running Zapit; 127.0.0.1 when Zapit runs on this rig PC",
+          "title": "Host",
+          "type": "string"
+        },
+        "port": {
+          "default": 1488,
+          "description": "TCP port the Zapit server listens on",
+          "maximum": 65535,
+          "minimum": 1,
+          "title": "Port",
+          "type": "integer"
+        },
+        "hardwareTriggered": {
+          "default": false,
+          "description": "True: Zapit arms the DAQ on the TCP command and the behavior board fires a TTL on triggerLine when Zapit confirms it is armed. False: Zapit starts the stimulus on receipt of the command.",
+          "title": "HardwareTriggered",
+          "type": "boolean"
+        },
+        "triggerLine": {
+          "default": 3,
+          "description": "Behavior board digital output (0 to 3) wired to the Zapit DAQ trigger input; pulsed with the width set in behaviorBoard.pulseController.pulseWidths for that line. Only used when hardwareTriggered is true.",
+          "maximum": 3,
+          "minimum": 0,
+          "title": "TriggerLine",
+          "type": "integer"
+        }
+      },
+      "title": "ZapitServer",
       "type": "object"
     }
   },

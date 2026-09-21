@@ -20,6 +20,7 @@ behaviorBoard:
     pulseWidths:
       PulseDO1: 40    # ms, left reward valve open time
       PulseDO2: 40    # ms, right reward valve open time
+      PulseDO3: 5     # ms, Zapit TTL trigger pulse (only used when zapit.hardwareTriggered is true)
   cameraTriggerController:
     trigger0Frequency: 50     # Hz, cameras on DO0
     trigger1Frequency: 50     # Hz, cameras on DO1
@@ -126,6 +127,14 @@ speakerArray:
   #   layer4_-120:   { position: { azimuth: -120,   elevation: -15 }, channel: 25 }
 
 interPulseInterval: 50   # ms between consecutive reward pulses; must let the valve seat
+
+# Zapit optogenetics server (tcpServer section of the Zapit settings file). Only contacted
+# when the task YAML sets optogenetics.enabled: true, so non-opto rigs can leave the defaults.
+zapit:
+  host: 127.0.0.1         # PC running Zapit; 127.0.0.1 when Zapit runs on this rig PC
+  port: 1488
+  hardwareTriggered: false  # true once DO<triggerLine> is cabled to the Zapit DAQ trigger input
+  triggerLine: 3            # behavior board DO line for the TTL; width from pulseWidths.PulseDO3
 # Default absolute stage position at session start (steps)
 lickSpoutDefaultPosition:
   leftElevation: 0        # motor 1
