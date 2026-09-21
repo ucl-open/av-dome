@@ -121,7 +121,7 @@
                           <PulseDO2>1</PulseDO2>
                           <PulseDO3>1</PulseDO3>
                           <BehaviorEventsSubjectName>BehaviorEvents</BehaviorEventsSubjectName>
-                          <TriggerPulseSubjectName>TriggerValve</TriggerPulseSubjectName>
+                          <TriggerPulseSubjectName>TriggerPulse</TriggerPulseSubjectName>
                         </Expression>
                         <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Tuple(sys:Int32,sys:Double)">
                           <rx:Name>DeliverRewardCommand</rx:Name>
@@ -152,7 +152,7 @@
                                 <Text><![CDATA[Int determines which valve opens]]></Text>
                               </Expression>
                               <Expression xsi:type="MulticastSubject">
-                                <Name>TriggerValve</Name>
+                                <Name>TriggerPulse</Name>
                               </Expression>
                               <Expression xsi:type="SubscribeSubject">
                                 <Name>RigConfigs</Name>
@@ -1341,7 +1341,7 @@
                                 <Selector>Item2.Zapit.TriggerLine</Selector>
                               </Expression>
                               <Expression xsi:type="MulticastSubject">
-                                <Name>TriggerValve</Name>
+                                <Name>TriggerPulse</Name>
                               </Expression>
                             </Nodes>
                             <Edges>
@@ -1479,7 +1479,7 @@
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>TriggerValve</Name>
+                    <Name>TriggerPulse</Name>
                   </Expression>
                   <Expression xsi:type="rx:SelectMany">
                     <Name>IncrementRewardCounter</Name>
@@ -4458,7 +4458,7 @@
                     <Combinator xsi:type="rx:Merge" />
                   </Expression>
                   <Expression xsi:type="MulticastSubject">
-                    <Name>TriggerValve</Name>
+                    <Name>TriggerPulse</Name>
                   </Expression>
                   <Expression xsi:type="WorkflowOutput" />
                 </Nodes>
@@ -9886,7 +9886,7 @@ Item2.Item2 as autoReward) </scr:Expression>
                             <Text><![CDATA[Int determines which valve opens]]></Text>
                           </Expression>
                           <Expression xsi:type="MulticastSubject">
-                            <Name>TriggerValve</Name>
+                            <Name>TriggerPulse</Name>
                           </Expression>
                           <Expression xsi:type="SubscribeSubject">
                             <Name>RigConfigs</Name>
