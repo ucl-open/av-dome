@@ -150,7 +150,7 @@ public class RigConfigs
         currentRigConfigs.SerialNumberCamera3 = "25366318";  // Body
 
         // Valve Calibration
-        currentRigConfigs.ValveOpenTimeLeft = 60;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeLeft = 70;  // in ms. ~10ms min.
         currentRigConfigs.ValveOpenTimeRight = 60;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
