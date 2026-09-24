@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WorkflowBuilder Version="2.9.0"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xmlns:p1="clr-namespace:;assembly=Extensions"
+                 xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
+                 xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
+                 xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
+                 xmlns="https://bonsai-rx.org/2018/workflow">
+  <Workflow>
+    <Nodes>
+      <Expression xsi:type="Annotation">
+        <Name>Zapit connectivity check</Name>
+        <Text><![CDATA[Standalone check of the Zapit TCP link, no rig hardware needed.
+
+Start Zapit first (simulated mode is fine: start_zapit('simulated',true), then hZP.applyUnityStereotaxicCalib and load a stimulus config). Set Host/Port on the Zapit include to match the tcpServer settings, then start this workflow.
+
+Timeline: t=0 connect and query the stim config; t=1 s start condition 3 for 1.5 s after a 0.2 s delay; t=3 s ask the state; t=4 s stop. Every reply is printed and written to zapit-demo.csv next to this file. Expect value=3 laserOn=1 for the start command and isError=False throughout.]]></Text>
+      </Expression>
+      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:ZapitCommand">
+        <rx:Name>ZapitCommands</rx:Name>
+      </Expression>
+      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:ZapitReply">
+        <rx:Name>ZapitReplies</rx:Name>
+      </Expression>
+      <Expression xsi:type="IncludeWorkflow" Path="Extensions\Zapit.bonsai">
+        <Host>127.0.0.1</Host>
+        <Port>1488</Port>
+        <ReceiveTimeout>5000</ReceiveTimeout>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Timer">
+          <rx:DueTime>PT1S</rx:DueTime>
+          <rx:Period>PT0S</rx:Period>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="p1:CreateStartStimulus">
+          <p1:ConditionNumber>3</p1:ConditionNumber>
+          <p1:LaserOn>true</p1:LaserOn>
+          <p1:HardwareTriggered>false</p1:HardwareTriggered>
+          <p1:Logging>true</p1:Logging>
+          <p1:StimDuration>1.5</p1:StimDuration>
+          <p1:LaserPower>0</p1:LaserPower>
+          <p1:StartDelay>0.2</p1:StartDelay>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="MulticastSubject">
+        <Name>ZapitCommands</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Timer">
+          <rx:DueTime>PT3S</rx:DueTime>
+          <rx:Period>PT0S</rx:Period>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="p1:CreateZapitQuery">
+          <p1:Query>GetState</p1:Query>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="MulticastSubject">
+        <Name>ZapitCommands</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Timer">
+          <rx:DueTime>PT4S</rx:DueTime>
+          <rx:Period>PT0S</rx:Period>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="p1:CreateStopStimulus" />
+      </Expression>
+      <Expression xsi:type="MulticastSubject">
+        <Name>ZapitCommands</Name>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>ZapitReplies</Name>
+      </Expression>
+      <Expression xsi:type="scr:ExpressionTransform">
+        <scr:Expression>new(
+    CommandCode as command,
+    Value as value,
+    LaserOn as laserOn,
+    IsError as isError,
+    ServerDatenum as serverDatenum)</scr:Expression>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="io:CsvWriter">
+          <io:FileName>zapit-demo.csv</io:FileName>
+          <io:Append>false</io:Append>
+          <io:Overwrite>true</io:Overwrite>
+          <io:Suffix>None</io:Suffix>
+          <io:IncludeHeader>true</io:IncludeHeader>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>ZapitReplies</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="io:WriteLine" />
+      </Expression>
+    </Nodes>
+    <Edges>
+      <Edge From="4" To="5" Label="Source1" />
+      <Edge From="5" To="6" Label="Source1" />
+      <Edge From="7" To="8" Label="Source1" />
+      <Edge From="8" To="9" Label="Source1" />
+      <Edge From="10" To="11" Label="Source1" />
+      <Edge From="11" To="12" Label="Source1" />
+      <Edge From="13" To="14" Label="Source1" />
+      <Edge From="14" To="15" Label="Source1" />
+      <Edge From="16" To="17" Label="Source1" />
+    </Edges>
+  </Workflow>
+</WorkflowBuilder>
