@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WorkflowBuilder Version="2.9.0"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xmlns:p1="clr-namespace:;assembly=Extensions"
+                 xmlns:p2="clr-namespace:UclOpenAvDome;assembly=Extensions"
+                 xmlns:p6="clr-namespace:UclOpenAvDomeTask;assembly=Extensions"
+                 xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
+                 xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
+                 xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
+                 xmlns:sys="clr-namespace:System;assembly=mscorlib"
+                 xmlns="https://bonsai-rx.org/2018/workflow">
+  <Workflow>
+    <Nodes>
+      <Expression xsi:type="Annotation">
+        <Name>Zapit trial test</Name>
+        <Text><![CDATA[Drives Zapit from the real trial machinery with no rig hardware.
+
+Reads C:\RigConfigs\<MachineName>.yml (zapit host/port/hardwareTriggered, like main.bonsai) and ..\config	ask-zapit-test.yml (optogenetics enabled). Connects to Zapit, checks a stim config is loaded, then draws 10 trials with InitialiseTrial, one every 2 s, and sends StartStimulus for each trial whose OptogeneticEnabled was drawn true, exactly as main.bonsai does. In hardware-triggered mode the TriggerPulse subject receives the DO line on every armed reply.
+
+Visualise: ZapitReplies (what Zapit presented), the Trial group output (what was drawn), TriggerPulse. See docs/zapit-testing.md.]]></Text>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="io:ReadAllText">
+          <io:Path>..\config\task-zapit-test.yml</io:Path>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="p6:DeserializeFromYaml">
+        <p6:Type xsi:type="TypeMapping" TypeArguments="p6:UclOpenAvDomeTaskLogic" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Take">
+          <rx:Count>1</rx:Count>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="rx:AsyncSubject">
+        <Name>TaskConfig</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="p1:ReadRigConfig">
+          <p1:ConfigDirectory>C:\RigConfigs</p1:ConfigDirectory>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="p2:DeserializeFromYaml">
+        <p2:Type xsi:type="TypeMapping" TypeArguments="p2:UclOpenAvDomeRig" />
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Take">
+          <rx:Count>1</rx:Count>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="rx:AsyncSubject">
+        <Name>RigConfigs</Name>
+      </Expression>
+      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:ZapitCommand">
+        <rx:Name>ZapitCommands</rx:Name>
+      </Expression>
+      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:ZapitReply">
+        <rx:Name>ZapitReplies</rx:Name>
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>Zapit</Name>
+        <Description>Connects to the Zapit optogenetics server only when the task YAML enables optogenetics. Commands arrive on ZapitCommands, replies leave on ZapitReplies.</Description>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>TaskConfig</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>TaskParameters.Optogenetics.Enabled</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Take">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:Condition">
+              <Name>OptogeneticsEnabled?</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="rx:SelectMany">
+              <Name>ConnectZapit</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>RigConfigs</Name>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="Host" Selector="Zapit.Host" />
+                      <Property Name="Port" Selector="Zapit.Port" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="IncludeWorkflow" Path="Extensions\Zapit.bonsai">
+                    <Host>unmapped</Host>
+                    <Port>0</Port>
+                    <ReceiveTimeout>5000</ReceiveTimeout>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>ZapitReplies</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>RigConfigs</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:WithLatestFrom" />
+                  </Expression>
+                  <Expression xsi:type="rx:Condition">
+                    <Name>ArmedForTtl?</Name>
+                    <Description>Passes a StartStimulus reply only when Zapit reported success and this rig uses the hardware trigger.</Description>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="scr:ExpressionTransform">
+                          <scr:Expression>Item1.CommandCode == 1 &amp;&amp; !Item1.IsError &amp;&amp; Item2.Zapit.HardwareTriggered</scr:Expression>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Item2.Zapit.TriggerLine</Selector>
+                  </Expression>
+                  <Expression xsi:type="MulticastSubject">
+                    <Name>TriggerPulse</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source1" />
+                  <Edge From="5" To="7" Label="Source1" />
+                  <Edge From="6" To="7" Label="Source2" />
+                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source1" />
+                  <Edge From="9" To="10" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Timer">
+          <rx:DueTime>PT3S</rx:DueTime>
+          <rx:Period>PT2S</rx:Period>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Take">
+          <rx:Count>10</rx:Count>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="rx:SelectMany">
+        <Name>Trial</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>TaskConfig</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Take">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p1:InitialiseTrial">
+                <p1:trainingStageId>1</p1:trainingStageId>
+                <p1:TrialType>-1</p1:TrialType>
+                <p1:WasCorrect>true</p1:WasCorrect>
+                <p1:WasTimeout>false</p1:WasTimeout>
+                <p1:SeedOffset>0</p1:SeedOffset>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:AsyncSubject">
+              <Name>settings</Name>
+            </Expression>
+            <Expression xsi:type="Annotation">
+              <Name>Optogenetics</Name>
+              <Text><![CDATA[Optogenetics]]></Text>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>settings</Name>
+            </Expression>
+            <Expression xsi:type="rx:Condition">
+              <Name>OptoTrial?</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>OptogeneticEnabled</Selector>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>settings</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="ConditionNumber" Selector="OptogeneticCondition" />
+                <Property Name="StimDuration" Selector="OptogeneticDuration" />
+                <Property Name="StartDelay" Selector="OptogeneticDelay" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p1:CreateStartStimulus">
+                <p1:ConditionNumber>0</p1:ConditionNumber>
+                <p1:LaserOn>true</p1:LaserOn>
+                <p1:HardwareTriggered>false</p1:HardwareTriggered>
+                <p1:Logging>true</p1:Logging>
+                <p1:StimDuration>0</p1:StimDuration>
+                <p1:LaserPower>0</p1:LaserPower>
+                <p1:StartDelay>0</p1:StartDelay>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>ZapitCommands</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>settings</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>trialType,IsRepeat,OptogeneticEnabled,OptogeneticCondition,OptogeneticDuration,OptogeneticDelay</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="io:WriteLine" />
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+            <Expression xsi:type="SubscribeSubject">
+              <Name>RigConfigs</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="HardwareTriggered" Selector="Zapit.HardwareTriggered" />
+              </PropertyMappings>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="6" To="7" Label="Source1" />
+            <Edge From="7" To="10" Label="Source1" />
+            <Edge From="8" To="9" Label="Source1" />
+            <Edge From="9" To="10" Label="Source2" />
+            <Edge From="10" To="11" Label="Source1" />
+            <Edge From="12" To="13" Label="Source1" />
+            <Edge From="13" To="14" Label="Source1" />
+            <Edge From="14" To="15" Label="Source1" />
+            <Edge From="16" To="17" Label="Source1" />
+            <Edge From="17" To="10" Label="Source3" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>ZapitReplies</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="io:WriteLine" />
+      </Expression>
+      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Int32">
+        <rx:Name>TriggerPulse</rx:Name>
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>TriggerPulse</Name>
+      </Expression>
+      <Expression xsi:type="Format">
+        <Format>TTL on DO{0}</Format>
+        <Selector>it</Selector>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="io:WriteLine" />
+      </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>RigConfigs</Name>
+      </Expression>
+      <Expression xsi:type="PropertyMapping">
+        <PropertyMappings>
+          <Property Name="PortName" Selector="BehaviorBoard.PortName" />
+          <Property Name="PulseDO3" Selector="BehaviorBoard.PulseController.PulseWidths.PulseDO3" />
+        </PropertyMappings>
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>BehaviorBoard</Name>
+        <Description>The behavior board, so the TriggerPulse subject drives a real TTL on the DO line named in the rig YAML (zapit.triggerLine, usually DO3). Needs the board on the rig YAML port; on a PC without it the workflow fails at startup.</Description>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="PortName" />
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.BehaviorBoard.bonsai">
+              <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
+              <PortName>COMx</PortName>
+              <DumpRegisters>true</DumpRegisters>
+              <Heartbeat>Enabled</Heartbeat>
+              <EventsSubjectName>BehaviorEvents</EventsSubjectName>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="PulseDO3" />
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.PulseController.bonsai">
+              <BehaviorCommandsSubjectName>BehaviorCommands</BehaviorCommandsSubjectName>
+              <OutputPulseEnable>DO3</OutputPulseEnable>
+              <PulseDO1>1</PulseDO1>
+              <PulseDO2>1</PulseDO2>
+              <PulseDO3>5</PulseDO3>
+              <BehaviorEventsSubjectName>BehaviorEvents</BehaviorEventsSubjectName>
+              <TriggerPulseSubjectName>TriggerPulse</TriggerPulseSubjectName>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+    </Nodes>
+    <Edges>
+      <Edge From="1" To="2" Label="Source1" />
+      <Edge From="2" To="3" Label="Source1" />
+      <Edge From="3" To="4" Label="Source1" />
+      <Edge From="5" To="6" Label="Source1" />
+      <Edge From="6" To="7" Label="Source1" />
+      <Edge From="7" To="8" Label="Source1" />
+      <Edge From="12" To="13" Label="Source1" />
+      <Edge From="13" To="14" Label="Source1" />
+      <Edge From="15" To="16" Label="Source1" />
+      <Edge From="18" To="19" Label="Source1" />
+      <Edge From="19" To="20" Label="Source1" />
+      <Edge From="21" To="22" Label="Source1" />
+      <Edge From="22" To="23" Label="Source1" />
+    </Edges>
+  </Workflow>
+</WorkflowBuilder>

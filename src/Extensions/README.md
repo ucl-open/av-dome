@@ -47,6 +47,8 @@ server code in `zapit/+zapit/+interfaces/@TCPserver`.
   Every reply is logged to `Zapit.csv` alongside `TrialSettings.csv` on the same Harp clock.
 - `../ZapitDemo.bonsai`: standalone connectivity check against a running Zapit, no rig hardware
   needed. Prints and logs every reply.
+- `../ZapitTrialTest.bonsai`: the trial draw and Zapit wiring of `main.bonsai` driven by timers, for
+  testing against Zapit without the rig. Step-by-step lab guide in `../../docs/zapit-testing.md`.
 
 ### Timing model
 
