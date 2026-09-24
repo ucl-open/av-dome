@@ -26,7 +26,6 @@ AudioSpecifications:
   duration: 1.5
   azimuth:
     - -60
-    - 0
     - 60
   elevation: 0
   goCue: 0.1
