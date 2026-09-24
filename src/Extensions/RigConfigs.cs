@@ -46,13 +46,13 @@ public class RigConfigs
         currentRigConfigs.COMPortStepperDriver1 = "COM4";  // Motors 1,2,3
         currentRigConfigs.COMPortStepperDriver2 = "COM5";  // Motors 4,5
         currentRigConfigs.COMPortTimestampGenerator = "COM3";
-        currentRigConfigs.COMPortLicketySplitLeft = "COM";
-        currentRigConfigs.COMPortLicketySplitRight = "COM";
+        currentRigConfigs.COMPortLicketySplitLeft = "COM8";
+        currentRigConfigs.COMPortLicketySplitRight = "COM7";
         
         // Cameras
-        currentRigConfigs.SerialNumberCamera1 = "23201540";  // Face
-        currentRigConfigs.SerialNumberCamera2 = "23199185";  // Pupil
-        currentRigConfigs.SerialNumberCamera3 = "25366329";  // Body
+        currentRigConfigs.SerialNumberCamera1 = "23201536";  // Face
+        currentRigConfigs.SerialNumberCamera2 = "23199184";  // Pupil
+        currentRigConfigs.SerialNumberCamera3 = "23100954";  // Body
 
         // Valve Calibration
         currentRigConfigs.ValveOpenTimeLeft = 40;  // in ms. ~10ms min.
@@ -150,8 +150,8 @@ public class RigConfigs
         currentRigConfigs.SerialNumberCamera3 = "25366318";  // Body
 
         // Valve Calibration
-        currentRigConfigs.ValveOpenTimeLeft = 70;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 60;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeLeft = 60;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 72;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
