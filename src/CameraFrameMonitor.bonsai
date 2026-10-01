@@ -3,6 +3,7 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xmlns:p1="clr-namespace:;assembly=Extensions"
                  xmlns:p2="clr-namespace:UclOpenAvDome;assembly=Extensions"
+                 xmlns:uoc="clr-namespace:UclOpen.Core;assembly=UclOpen.Core"
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
                  xmlns:sys="clr-namespace:System;assembly=mscorlib"
                  xmlns:beh="clr-namespace:Harp.Behavior;assembly=Harp.Behavior"
@@ -13,10 +14,30 @@
                  xmlns="https://bonsai-rx.org/2018/workflow">
   <Workflow>
     <Nodes>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="p1:ReadRigConfig">
-          <p1:ConfigDirectory>C:\RigConfigs</p1:ConfigDirectory>
-        </Combinator>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>ReadRigConfig</Name>
+        <Description>Resolves this machine's rig configuration directory (ConfigRoot\MachineName), publishes it as RigConfigDirectory, and reads rig.yml from it. Fails at startup if either is missing.</Description>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="uoc:ResolveRigConfigDirectory">
+                <uoc:ConfigRoot>C:\RigConfigs</uoc:ConfigRoot>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:AsyncSubject">
+              <Name>RigConfigDirectory</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Core:ReadRigConfig.bonsai">
+              <FileName>rig.yml</FileName>
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
+          </Edges>
+        </Workflow>
       </Expression>
       <Expression xsi:type="p2:DeserializeFromYaml">
         <p2:Type xsi:type="TypeMapping" TypeArguments="p2:UclOpenAvDomeRig" />

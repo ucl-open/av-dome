@@ -3,10 +3,11 @@
 # av-dome rig configuration TEMPLATE
 #
 # Per-rig configuration files are NOT committed to this repo. To deploy a rig:
-#   1. Copy this file to the rig config location (default: C:\RigConfigs\) and
-#      rename it to the rig PC's machine name, e.g. C:\RigConfigs\GREEN-DOME-2.yml
-#      (the workflow resolves the file by hostname and fails at startup if missing).
-#   2. Fill in the values for that rig.
+#   1. Copy this file to <ConfigRoot>\<MACHINE-NAME>\rig.yml, where ConfigRoot defaults to
+#      C:\RigConfigs, e.g. C:\RigConfigs\GREEN-DOME-2\rig.yml. The workflow resolves the
+#      directory by hostname and fails at startup if it or rig.yml is missing.
+#   2. Fill in the values for that rig. Calibration artefacts (valve curves and the like) go in
+#      calibration\ beside rig.yml and are referenced by paths relative to that directory.
 #   3. Off-repo copies should replace the $schema path above with an absolute path
 #      to a checked-out src/DataSchemas/ucl_open_av_dome.json (or a raw GitHub URL)
 #      to keep editor validation working.
