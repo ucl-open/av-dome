@@ -451,7 +451,7 @@ wheels = [
 [[package]]
 name = "ucl-open"
 version = "0.0.0"
-source = { git = "https://github.com/ucl-open/ucl-open?branch=tr-dev#c6c41a1cbfe7bf516320d56d146a1644211389dd" }
+source = { git = "https://github.com/ucl-open/ucl-open?branch=rig-config-resolver#1e360da56969a0fe00f2aac9cd28ed20c34a1fb5" }
 dependencies = [
     { name = "pydantic" },
     { name = "pydantic-yaml" },
@@ -472,5 +472,5 @@ dependencies = [
 requires-dist = [
     { name = "pydantic-settings" },
     { name = "swc-aeon", git = "https://github.com/SainsburyWellcomeCentre/aeon_api.git?branch=main" },
-    { name = "ucl-open", git = "https://github.com/ucl-open/ucl-open?branch=tr-dev" },
+    { name = "ucl-open", git = "https://github.com/ucl-open/ucl-open?branch=rig-config-resolver" },
 ]
