@@ -16,5 +16,9 @@ if (!(Test-Path "./Bonsai.exe")) {
     Move-Item -Path "temp.config" "NuGet.config" -Force -ErrorAction SilentlyContinue
     Remove-Item -Path "temp.zip"
 }
+if (-not $env:GITHUB_PACKAGES_TOKEN) {
+    Write-Warning ("GITHUB_PACKAGES_TOKEN is not set. Restoring UclOpen.* packages from " +
+        "GitHub Packages will fail with 401 Unauthorized - see .bonsai/NuGet.config for instructions.")
+}
 & .\Bonsai.exe --no-editor
 Pop-Location

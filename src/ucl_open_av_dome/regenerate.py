@@ -1,33 +1,35 @@
+import json
+import subprocess
 from pathlib import Path
-from typing import Union
 
 import pydantic
-from ucl_open.rigs.experiment import Experiment
-from aind_behavior_services.utils import BonsaiSgenSerializers, convert_pydantic_to_bonsai
 
 import ucl_open_av_dome.rig
-import ucl_open_av_dome.task
 
 SCHEMA_ROOT = Path("./src/DataSchemas/")
 EXTENSIONS_ROOT = Path("./src/Extensions/")
-NAMESPACE_PREFIX = "UclOpenAvDomeDataSchema"
+SCHEMA_FILE = SCHEMA_ROOT / "ucl_open_av_dome.json"
 
 
 def main():
-    models = [
-        ucl_open_av_dome.task.UclOpenAvDomeTaskLogic,
-        ucl_open_av_dome.rig.UclOpenAvDomeRig,
-    ]
-    model = pydantic.RootModel[Union[tuple(models)]]
-
-    convert_pydantic_to_bonsai(
-        model, # type: ignore
-        model_name="ucl_open_av_dome",
-        root_element="Root",
-        cs_namespace=NAMESPACE_PREFIX,
-        json_schema_output_dir=SCHEMA_ROOT,
-        cs_output_dir=EXTENSIONS_ROOT,
-        cs_serializer=[BonsaiSgenSerializers.JSON],
+    """Regenerate the JSON schema and Bonsai.Sgen C# classes from the pydantic models."""
+    model = pydantic.RootModel[ucl_open_av_dome.rig.UclOpenAvDomeRig]
+    schema = model.model_json_schema(by_alias=True, mode="serialization", union_format="primitive_type_array")
+    SCHEMA_ROOT.mkdir(parents=True, exist_ok=True)
+    SCHEMA_FILE.write_text(json.dumps(schema, indent=2))
+    subprocess.run(
+        [
+            "dotnet",
+            "bonsai.sgen",
+            str(SCHEMA_FILE),
+            "--output",
+            str(EXTENSIONS_ROOT),
+            "--serializer",
+            "json",
+            "--serializer",
+            "yaml",
+        ],
+        check=True,
     )
 
 

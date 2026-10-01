@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<WorkflowBuilder Version="2.9.1"
+<WorkflowBuilder Version="2.9.0"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xmlns:p1="clr-namespace:;assembly=Extensions"
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
@@ -7083,6 +7083,50 @@
                   <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
                     <Name>Timestamp</Name>
                   </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="scr:ExpressionTransform">
+                      <scr:Expression>new(
+    Seconds as Seconds,
+    Value.Item1.CorrectResponse as correctResponse,
+    Value.Item1.Response as response,
+    Value.Item1.TrialCnt as TrialCnt,
+    Value.Item2.trialType as trialType,
+    Value.Item2.RewardProbability as RewardProbability,
+    Value.Item2.IsRewarded as IsRewarded,
+    Value.Item2.IsRepeat as IsRepeat,
+    Value.Item2.RepeatCount as RepeatCount,
+    Value.Item2.targetSide as targetSide,
+    Value.Item2.ITI as ITI,
+    Value.Item2.autoRewardProbability as autoRewardProbability,
+    Value.Item2.autoReward as autoReward,
+    Value.Item2.largeReward as largeReward,
+    Value.Item2.RewardSizeInUl as RewardSizeInUl,
+    Value.Item2.BothSpouts as BothSpouts,
+    Value.Item2.visualAzimuth as visualAzimuth,
+    Value.Item2.visualContrast as visualContrast,
+    Value.Item2.visualPhase as visualPhase,
+    Value.Item2.audioAzimuth as audioAzimuth,
+    Value.Item2.OptogeneticEnabled as OptogeneticEnabled,
+    Value.Item2.OptogeneticCondition as OptogeneticCondition,
+    Value.Item2.OptogeneticDelay as OptogeneticDelay,
+    Value.Item2.OptogeneticDuration as OptogeneticDuration,
+    Value.Item2.OptogeneticPower as OptogeneticPower,
+    Value.Item2.IncorrectTimeoutDuration as IncorrectTimeoutDuration,
+    Value.Item2.LargeRewardMultiplier as LargeRewardMultiplier,
+    Value.Item2.LargeRewardProbability as LargeRewardProbability,
+    Value.Item2.BothSpoutsProbability as BothSpoutsProbability,
+    Value.Item2.openLoopDuration as openLoopDuration,
+    Value.Item2.closedLoopDuration as closedLoopDuration,
+    Value.Item2.visualElevation as visualElevation,
+    Value.Item2.visualGaussianWindowSigma as visualGaussianWindowSigma,
+    Value.Item2.visualOrientation as visualOrientation,
+    Value.Item2.visualSpatialFrequency as visualSpatialFrequency,
+    Value.Item2.visualTemporalFrequency as visualTemporalFrequency,
+    Value.Item2.visualFlickerFrequency as visualFlickerFrequency,
+    Value.Item2.audioElevation as audioElevation,
+    Value.Item2.audioFlickerFrequency as audioFlickerFrequency)</scr:Expression>
+                    </Builder>
+                  </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
                     <LogName>TrialSettings</LogName>
                     <Selector />
@@ -7096,6 +7140,7 @@
                   <Edge From="2" To="3" Label="Source1" />
                   <Edge From="3" To="4" Label="Source1" />
                   <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -10432,7 +10477,7 @@ Item4 as ExposureTime)</scr:Expression>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Amb" />
+                    <Combinator xsi:type="rx:Merge" />
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:Take">
@@ -11684,6 +11729,34 @@ Things we want to do with this:
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="rx:Repeat" />
+      </Expression>
+      <Expression xsi:type="IncludeWorkflow" Path="Extensions\StallDiagnostics.bonsai">
+        <HarpClockSubjectName>Timestamp</HarpClockSubjectName>
+        <ResponseSubjectName>ResponseData</ResponseSubjectName>
+        <TrialStartSubjectName>thisTrialData</TrialStartSubjectName>
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>StimulusTriggerLogs</Name>
+        <Description>Harp-timestamped CSV log of the auditory/stimulus-presentation trigger (StartAuditoryStimulus).</Description>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>StartAuditoryStimulus</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
+              <Name>Timestamp</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+              <LogName>StimulusStartEvents</LogName>
+              <Selector>Seconds,Value</Selector>
+              <Extension>csv</Extension>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+          </Edges>
+        </Workflow>
       </Expression>
     </Nodes>
     <Edges>

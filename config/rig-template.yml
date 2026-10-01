@@ -1,0 +1,137 @@
+# yaml-language-server: $schema=../src/DataSchemas/ucl_open_av_dome.json
+#
+# av-dome rig configuration TEMPLATE
+#
+# Per-rig configuration files are NOT committed to this repo. To deploy a rig:
+#   1. Copy this file to the rig config location (default: C:\RigConfigs\) and
+#      rename it to the rig PC's machine name, e.g. C:\RigConfigs\GREEN-DOME-2.yml
+#      (the workflow resolves the file by hostname and fails at startup if missing).
+#   2. Fill in the values for that rig.
+#   3. Off-repo copies should replace the $schema path above with an absolute path
+#      to a checked-out src/DataSchemas/ucl_open_av_dome.json (or a raw GitHub URL)
+#      to keep editor validation working.
+#
+# version must match the ucl-open-av-dome python package semver that generated the schema.
+version: 0.0.0-rc1
+rootPath: C:\Data
+
+behaviorBoard:
+  portName: COM1
+  pulseController:
+    outputPulseEnable: "DO1, DO2, DO3"
+    pulseWidths:
+      PulseDO1: 40    # ms, left reward valve open time
+      PulseDO2: 40    # ms, right reward valve open time
+  cameraTriggerController:
+    trigger0Frequency: 50     # Hz, cameras on DO0
+    trigger1Frequency: 50     # Hz, cameras on DO1
+  runningWheel:
+    wheelDiameterMm: 170
+    countsPerRev: 4096
+
+timestampGenerator:
+  portName: COM2
+  timerFrequency: Timer1000Hz
+
+lickSpoutStage:
+  driverA:
+    portName: COM3        # motors 1,2,3
+  driverB:
+    portName: COM4        # motors 4,5
+  axisMapping:
+    leftElevation: { board: a, motor: 0 }     # motor 1
+    rightElevation: { board: a, motor: 1 }    # motor 2
+    rightRadial: { board: a, motor: 2 }       # motor 3
+    leftRadial: { board: b, motor: 0 }        # motor 4
+    baseTransverse: { board: b, motor: 1 }    # motor 5
+
+licketySplitLeft:
+  portName: COM5
+  channel0TriggerThreshold: 0     # ADC counts above which a lick registers
+  channel0UntriggerThreshold: 0   # ADC counts below which the lick ends
+licketySplitRight:
+  portName: COM6
+  channel0TriggerThreshold: 0
+  channel0UntriggerThreshold: 0
+
+cameraFace:
+  serialNumber: "00000000"
+  exposureTime: 19000    # microseconds
+  gain: 0
+  binning: 1
+cameraPupil:
+  serialNumber: "00000000"
+  exposureTime: 19000    # microseconds
+  gain: 20
+  binning: 1
+cameraBody:
+  serialNumber: "00000000"
+  exposureTime: 19000    # microseconds
+  gain: 0
+  binning: 1
+
+
+projectionCalibration:
+  meshMapPath: C:\RigConfigs\MeshMap.csv
+  gammaLutPath: C:\RigConfigs\gammalut.bmp
+
+speakerArray:
+  device:
+    deviceName: Speakers (XMOS xCORE-200 MC (UAC2.0))
+    hostApi: Windows WDM-KS
+    sampleRate: 48000       # Hz
+    channelCount: 32
+    suggestedLatency: 0.002 # s
+    bootDelay: 3.0          # s; guards a driver fault if the workflow stops during mixer init
+  syncChannel: 31           # carries a copy of each stimulus for alignment with acquisition
+  syncGain: 0.2
+  unusedChannels: [30]      # not connected
+  # Speakers currently wired on this rig. Position is relative to the subject:
+  # azimuth 0 = straight ahead, positive to the right; elevation 0 = horizontal.
+  speakers:
+    left:
+      position: { azimuth: -90, elevation: 15 }
+      channel: 0
+    right:
+      position: { azimuth: 90, elevation: 15 }
+      channel: 1
+    centre:
+      position: { azimuth: 0, elevation: 15 }
+      channel: 2
+  # Full 25-speaker dome layout, transcribed from the legacy SpeakerCalibration map in
+  # TrialTypeInitialise.cs. Channel numbers below are the legacy 1-based speaker IDs and MUST be
+  # re-checked against the actual mixer wiring before use. Enable per rig once the speakers are wired.
+  #   layer1_0:      { position: { azimuth: 0,      elevation: 75 },  channel: 1 }
+  #   layer1_90:     { position: { azimuth: 90,     elevation: 75 },  channel: 2 }
+  #   layer1_-90:    { position: { azimuth: -90,    elevation: 75 },  channel: 3 }
+  #   layer2_22:     { position: { azimuth: 22.5,   elevation: 45 },  channel: 4 }
+  #   layer2_67:     { position: { azimuth: 67.5,   elevation: 45 },  channel: 5 }
+  #   layer2_112:    { position: { azimuth: 112.5,  elevation: 45 },  channel: 6 }
+  #   layer2_-22:    { position: { azimuth: -22.5,  elevation: 45 },  channel: 7 }
+  #   layer2_-67:    { position: { azimuth: -67.5,  elevation: 45 },  channel: 8 }
+  #   layer2_-112:   { position: { azimuth: -112.5, elevation: 45 },  channel: 9 }
+  #   layer3_30:     { position: { azimuth: 30,     elevation: 15 },  channel: 10 }
+  #   layer3_60:     { position: { azimuth: 60,     elevation: 15 },  channel: 11 }
+  #   layer3_90:     { position: { azimuth: 90,     elevation: 15 },  channel: 12 }
+  #   layer3_120:    { position: { azimuth: 120,    elevation: 15 },  channel: 13 }
+  #   layer3_-30:    { position: { azimuth: -30,    elevation: 15 },  channel: 14 }
+  #   layer3_-60:    { position: { azimuth: -60,    elevation: 15 },  channel: 15 }
+  #   layer3_-90:    { position: { azimuth: -90,    elevation: 15 },  channel: 16 }
+  #   layer3_-120:   { position: { azimuth: -120,   elevation: 15 },  channel: 17 }
+  #   layer4_30:     { position: { azimuth: 30,     elevation: -15 }, channel: 18 }
+  #   layer4_60:     { position: { azimuth: 60,     elevation: -15 }, channel: 19 }
+  #   layer4_90:     { position: { azimuth: 90,     elevation: -15 }, channel: 20 }
+  #   layer4_120:    { position: { azimuth: 120,    elevation: -15 }, channel: 21 }
+  #   layer4_-30:    { position: { azimuth: -30,    elevation: -15 }, channel: 22 }
+  #   layer4_-60:    { position: { azimuth: -60,    elevation: -15 }, channel: 23 }
+  #   layer4_-90:    { position: { azimuth: -90,    elevation: -15 }, channel: 24 }
+  #   layer4_-120:   { position: { azimuth: -120,   elevation: -15 }, channel: 25 }
+
+interPulseInterval: 50   # ms between consecutive reward pulses; must let the valve seat
+# Default absolute stage position at session start (steps)
+lickSpoutDefaultPosition:
+  leftElevation: 0        # motor 1
+  rightElevation: 0       # motor 2
+  rightRadial: 0          # motor 3
+  leftRadial: 0           # motor 4
+  baseTransverse: 0       # motor 5

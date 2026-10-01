@@ -1,0 +1,817 @@
+{
+  "$defs": {
+    "AudioDevice": {
+      "description": "A multi-channel audio output device driven through the mixer.",
+      "properties": {
+        "deviceName": {
+          "description": "The name of the audio output device.",
+          "examples": [
+            "Speakers (XMOS xCORE-200 MC (UAC2.0))"
+          ],
+          "title": "DeviceName",
+          "type": "string"
+        },
+        "hostApi": {
+          "default": "Windows WDM-KS",
+          "description": "The audio host API used to open the device.",
+          "title": "HostApi",
+          "type": "string"
+        },
+        "sampleRate": {
+          "default": 48000,
+          "description": "Output sampling rate, in Hz.",
+          "exclusiveMinimum": 0,
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "title": "SampleRate",
+          "type": "integer"
+        },
+        "channelCount": {
+          "default": 32,
+          "description": "Number of output channels.",
+          "exclusiveMinimum": 0,
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "title": "ChannelCount",
+          "type": "integer"
+        },
+        "suggestedLatency": {
+          "default": 0.002,
+          "description": "Suggested output latency, in seconds.",
+          "exclusiveMinimum": 0,
+          "title": "SuggestedLatency",
+          "type": "number"
+        },
+        "bootDelay": {
+          "default": 3.0,
+          "description": "Delay before starting the mixer, in seconds. Guards against a driver fault on startup.",
+          "minimum": 0,
+          "title": "BootDelay",
+          "type": "number"
+        }
+      },
+      "required": [
+        "deviceName"
+      ],
+      "title": "AudioDevice",
+      "type": "object"
+    },
+    "BehaviorBoard": {
+      "description": "Represents a Harp Behavior Board device.",
+      "properties": {
+        "portName": {
+          "description": "The name of the device serial port.",
+          "examples": [
+            "COM"
+          ],
+          "title": "PortName",
+          "type": "string"
+        },
+        "pulseController": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PulseController"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional PulseController module for generating digital output pulses.",
+          "title": "PulseController"
+        },
+        "cameraTriggerController": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CameraTriggerController"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional CameraTriggerController module for emitting camera trigger pulses.",
+          "title": "CameraTriggerController"
+        },
+        "runningWheel": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/RunningWheel"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Optional RunningWheelModule module to define wheel geometry.",
+          "title": "RunningWheel"
+        }
+      },
+      "required": [
+        "portName"
+      ],
+      "title": "BehaviorBoard",
+      "type": "object"
+    },
+    "CameraTriggerController": {
+      "description": "Represents a CameraTriggerController module on a BehaviorBoard device.",
+      "properties": {
+        "trigger0Frequency": {
+          "description": "The frequency, in Hz, at which to emit camera triggers on Trigger0 (DO0, CameraOutput0)",
+          "examples": [
+            "50"
+          ],
+          "title": "Trigger0Frequency",
+          "type": "integer"
+        },
+        "trigger1Frequency": {
+          "description": "The frequency, in Hz, at which to emit camera triggers on Trigger1 (DO1, CameraOutput1)",
+          "examples": [
+            "50"
+          ],
+          "title": "Trigger1Frequency",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "trigger0Frequency",
+        "trigger1Frequency"
+      ],
+      "title": "CameraTriggerController",
+      "type": "object"
+    },
+    "DigitalOutputs": {
+      "allOf": [
+        {
+          "type": "string"
+        }
+      ],
+      "description": "A set of behavior board digital output lines, written comma separated.",
+      "title": "DigitalOutputs",
+      "x-sgen-typename": "Harp.Behavior.DigitalOutputs"
+    },
+    "HarpLickSpoutStage": {
+      "description": "Harp-based lick spout stage: two StepperDriver boards driving a 5-axis rig.\nCalibration (named positions) is stored separately in a SpoutRigPosition YAML file.",
+      "properties": {
+        "driverA": {
+          "$ref": "#/$defs/HarpStepperDriver",
+          "description": "Primary StepperDriver board.",
+          "title": "DriverA"
+        },
+        "driverB": {
+          "$ref": "#/$defs/HarpStepperDriver",
+          "description": "Secondary StepperDriver board.",
+          "title": "DriverB"
+        },
+        "axisMapping": {
+          "$ref": "#/$defs/StageAxisMapping",
+          "default": {
+            "leftElevation": {
+              "board": "a",
+              "motor": 0
+            },
+            "rightElevation": {
+              "board": "a",
+              "motor": 1
+            },
+            "rightRadial": {
+              "board": "a",
+              "motor": 2
+            },
+            "leftRadial": {
+              "board": "a",
+              "motor": 3
+            },
+            "baseTransverse": {
+              "board": "b",
+              "motor": 0
+            }
+          },
+          "description": "Maps each stage axis to its board and motor index.",
+          "title": "AxisMapping"
+        }
+      },
+      "required": [
+        "driverA",
+        "driverB"
+      ],
+      "title": "HarpLickSpoutStage",
+      "type": "object"
+    },
+    "HarpStepperDriver": {
+      "description": "Single Harp StepperDriver board (who_am_i=1130). Controls up to 4 motors (0-3).",
+      "properties": {
+        "portName": {
+          "description": "The name of the device serial port.",
+          "examples": [
+            "COM"
+          ],
+          "title": "PortName",
+          "type": "string"
+        },
+        "stepInterval": {
+          "default": 250,
+          "description": "Step interval in \u00b5s (100-20000). Lower = faster.",
+          "title": "StepInterval",
+          "type": "integer"
+        },
+        "microstepResolution": {
+          "default": "Microstep8",
+          "description": "Microstep resolution. Affects how many steps equal one physical unit.",
+          "enum": [
+            "Full",
+            "Half",
+            "Microstep4",
+            "Microstep8",
+            "Microstep16",
+            "Microstep32"
+          ],
+          "title": "MicrostepResolution",
+          "type": "string"
+        },
+        "maximumRunCurrent": {
+          "default": 0.5,
+          "description": "Maximum run current in amps (0.0-2.0).",
+          "maximum": 2.0,
+          "minimum": 0.0,
+          "title": "MaximumRunCurrent",
+          "type": "number"
+        }
+      },
+      "required": [
+        "portName"
+      ],
+      "title": "HarpStepperDriver",
+      "type": "object"
+    },
+    "HarpTimestampGeneratorGen3": {
+      "description": "Harp Timestamp Generator Gen3 (who_am_i=1158). Provides hardware clock synchronisation.",
+      "properties": {
+        "portName": {
+          "description": "The name of the device serial port.",
+          "examples": [
+            "COM"
+          ],
+          "title": "PortName",
+          "type": "string"
+        },
+        "timerFrequency": {
+          "$ref": "#/$defs/TimerFrequency",
+          "default": "Timer1000Hz",
+          "description": "Frequency of the timer output signal."
+        }
+      },
+      "required": [
+        "portName"
+      ],
+      "title": "HarpTimestampGeneratorGen3",
+      "type": "object"
+    },
+    "LicketySplit": {
+      "description": "Represents a Harp LicketySplit device.",
+      "properties": {
+        "portName": {
+          "description": "The name of the device serial port.",
+          "examples": [
+            "COM"
+          ],
+          "title": "PortName",
+          "type": "string"
+        },
+        "channel0TriggerThreshold": {
+          "default": 0,
+          "description": "ADC threshold above which Channel 0 triggers a lick",
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "Channel0TriggerThreshold",
+          "type": "integer"
+        },
+        "channel0UntriggerThreshold": {
+          "default": 0,
+          "description": "ADC threshold below which Channel 0 untriggers a lick",
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "Channel0UntriggerThreshold",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "portName"
+      ],
+      "title": "LicketySplit",
+      "type": "object"
+    },
+    "MotorAddress": {
+      "description": "Identifies a specific motor on a specific stepper driver board.",
+      "properties": {
+        "board": {
+          "description": "Which board drives this axis: \"a\" or \"b\".",
+          "enum": [
+            "a",
+            "b"
+          ],
+          "title": "Board",
+          "type": "string"
+        },
+        "motor": {
+          "description": "Motor index on the board (0-3).",
+          "maximum": 3,
+          "minimum": 0,
+          "title": "Motor",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "board",
+        "motor"
+      ],
+      "title": "MotorAddress",
+      "type": "object"
+    },
+    "ProjectionCalibration": {
+      "description": "File-based calibration assets for mesh-mapped projection displays.",
+      "properties": {
+        "meshMapPath": {
+          "description": "Path to the mesh-mapping interpolation file (CSV)",
+          "examples": [
+            "C:\\RigConfigs\\MeshMap.csv"
+          ],
+          "title": "MeshMapPath",
+          "type": "string"
+        },
+        "gammaLutPath": {
+          "description": "Path to the gamma lookup-table image (BMP)",
+          "examples": [
+            "C:\\RigConfigs\\gammalut.bmp"
+          ],
+          "title": "GammaLutPath",
+          "type": "string"
+        }
+      },
+      "required": [
+        "meshMapPath",
+        "gammaLutPath"
+      ],
+      "title": "ProjectionCalibration",
+      "type": "object"
+    },
+    "PulseController": {
+      "description": "Represents the PulseController module on the BehaviorBoard.",
+      "properties": {
+        "outputPulseEnable": {
+          "$ref": "#/$defs/DigitalOutputs",
+          "default": "DO1, DO2, DO3",
+          "description": "Digital output lines enabled for pulse generation, comma separated.",
+          "title": "OutputPulseEnable"
+        },
+        "pulseWidths": {
+          "$ref": "#/$defs/PulseWidths",
+          "description": "Pulse width configuration for DO1, DO2, and DO3 lines."
+        }
+      },
+      "required": [
+        "pulseWidths"
+      ],
+      "title": "PulseController",
+      "type": "object"
+    },
+    "PulseWidths": {
+      "description": "Pulse durations for the behavior board digital outputs, in milliseconds.\n\nA line that is not used on a rig may be omitted.",
+      "properties": {
+        "PulseDO1": {
+          "description": "Pulse duration on DO1, in milliseconds.",
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "PulseDo1",
+          "type": "integer"
+        },
+        "PulseDO2": {
+          "description": "Pulse duration on DO2, in milliseconds.",
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "PulseDo2",
+          "type": "integer"
+        },
+        "PulseDO3": {
+          "default": 0,
+          "description": "Pulse duration on DO3, in milliseconds.",
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "PulseDo3",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "PulseDO1",
+        "PulseDO2"
+      ],
+      "title": "PulseWidths",
+      "type": "object"
+    },
+    "RunningWheel": {
+      "description": "Represents configuration parameters of the RunningWheel module.\nExposes wheel geometry parameters used to compute speed and distance from encoder counts.",
+      "properties": {
+        "countsPerRev": {
+          "description": "Number of encoder counts per full revolution of the running wheel.",
+          "title": "CountsPerRev",
+          "type": "integer"
+        },
+        "wheelDiameterMm": {
+          "description": "The diameter of the running wheel, in millimetres.",
+          "title": "WheelDiameterMm",
+          "type": "number"
+        }
+      },
+      "required": [
+        "countsPerRev",
+        "wheelDiameterMm"
+      ],
+      "title": "RunningWheel",
+      "type": "object"
+    },
+    "Speaker": {
+      "description": "A single speaker in a spatial audio array.",
+      "properties": {
+        "position": {
+          "$ref": "#/$defs/SphericalPosition",
+          "description": "Position of the speaker relative to the subject.",
+          "title": "Position"
+        },
+        "channel": {
+          "description": "Mixer output channel driving this speaker.",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "title": "Channel",
+          "type": "integer"
+        },
+        "gain": {
+          "default": 1.0,
+          "description": "Gain correction applied to this speaker's channel.",
+          "minimum": 0,
+          "title": "Gain",
+          "type": "number"
+        }
+      },
+      "required": [
+        "position",
+        "channel"
+      ],
+      "title": "Speaker",
+      "type": "object"
+    },
+    "SpeakerArray": {
+      "description": "A spatial speaker array driven by a single audio device.",
+      "properties": {
+        "device": {
+          "$ref": "#/$defs/AudioDevice",
+          "description": "The audio device driving the array.",
+          "title": "Device"
+        },
+        "speakers": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Speaker"
+          },
+          "description": "Speakers in the array, keyed by name.",
+          "examples": [
+            {
+              "centre": {
+                "channel": 2,
+                "position": {
+                  "azimuth": 0,
+                  "elevation": 15
+                }
+              },
+              "left": {
+                "channel": 0,
+                "position": {
+                  "azimuth": -90,
+                  "elevation": 15
+                }
+              },
+              "right": {
+                "channel": 1,
+                "position": {
+                  "azimuth": 90,
+                  "elevation": 15
+                }
+              }
+            }
+          ],
+          "title": "Speakers",
+          "type": "object"
+        },
+        "syncChannel": {
+          "anyOf": [
+            {
+              "maximum": 2147483647,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Channel carrying a sync copy of each stimulus, for alignment with acquisition.",
+          "title": "SyncChannel"
+        },
+        "syncGain": {
+          "default": 0.2,
+          "description": "Gain applied to the sync channel.",
+          "minimum": 0,
+          "title": "SyncGain",
+          "type": "number"
+        },
+        "unusedChannels": {
+          "description": "Output channels with nothing connected.",
+          "items": {
+            "maximum": 2147483647,
+            "minimum": -2147483648,
+            "type": "integer"
+          },
+          "title": "UnusedChannels",
+          "type": "array"
+        }
+      },
+      "required": [
+        "device",
+        "speakers"
+      ],
+      "title": "SpeakerArray",
+      "type": "object"
+    },
+    "SphericalPosition": {
+      "description": "A position on a sphere centred on the subject.",
+      "properties": {
+        "azimuth": {
+          "description": "Azimuth, in degrees. Zero is straight ahead, positive to the right.",
+          "maximum": 180,
+          "minimum": -180,
+          "title": "Azimuth",
+          "type": "number"
+        },
+        "elevation": {
+          "description": "Elevation, in degrees. Zero is the horizontal plane.",
+          "maximum": 90,
+          "minimum": -90,
+          "title": "Elevation",
+          "type": "number"
+        },
+        "radius": {
+          "default": 1.0,
+          "description": "Distance from the subject, in metres.",
+          "exclusiveMinimum": 0,
+          "title": "Radius",
+          "type": "number"
+        }
+      },
+      "required": [
+        "azimuth",
+        "elevation"
+      ],
+      "title": "SphericalPosition",
+      "type": "object"
+    },
+    "SpinnakerCamera": {
+      "properties": {
+        "triggerFrequency": {
+          "default": 50,
+          "description": "The frequency at which the camera is triggered (in Hz).",
+          "minimum": 1,
+          "title": "TriggerFrequency",
+          "type": "number"
+        },
+        "exposureTime": {
+          "default": 15000,
+          "description": "The exposure time for the camera (in microseconds).",
+          "minimum": 0,
+          "title": "ExposureTime",
+          "type": "number"
+        },
+        "serialNumber": {
+          "default": "00000",
+          "description": "The serial number of the camera.",
+          "title": "SerialNumber",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "gain": {
+          "default": 1,
+          "description": "The camera gain.",
+          "minimum": 0,
+          "title": "Gain",
+          "type": "number"
+        },
+        "binning": {
+          "default": 1,
+          "description": "The binning setting for the camera.",
+          "minimum": 1,
+          "title": "Binning",
+          "type": "integer"
+        },
+        "discriminatorType": {
+          "const": "SpinnakerCamera",
+          "default": "SpinnakerCamera",
+          "title": "DiscriminatorType",
+          "type": "string"
+        }
+      },
+      "title": "SpinnakerCamera",
+      "type": "object"
+    },
+    "StageAxisMapping": {
+      "description": "Maps each of the 5 stage axes to a (board, motor) address.\nEditing only the YAML re-routes axes across boards without touching the Bonsai workflow.\n\nDefault layout:\n    Board A: left_elevation(0), right_elevation(1), right_radial(2), left_radial(3)\n    Board B: base_transverse(0)",
+      "properties": {
+        "leftElevation": {
+          "$ref": "#/$defs/MotorAddress",
+          "default": {
+            "board": "a",
+            "motor": 0
+          },
+          "title": "LeftElevation"
+        },
+        "rightElevation": {
+          "$ref": "#/$defs/MotorAddress",
+          "default": {
+            "board": "a",
+            "motor": 1
+          },
+          "title": "RightElevation"
+        },
+        "rightRadial": {
+          "$ref": "#/$defs/MotorAddress",
+          "default": {
+            "board": "a",
+            "motor": 2
+          },
+          "title": "RightRadial"
+        },
+        "leftRadial": {
+          "$ref": "#/$defs/MotorAddress",
+          "default": {
+            "board": "a",
+            "motor": 3
+          },
+          "title": "LeftRadial"
+        },
+        "baseTransverse": {
+          "$ref": "#/$defs/MotorAddress",
+          "default": {
+            "board": "b",
+            "motor": 0
+          },
+          "title": "BaseTransverse"
+        }
+      },
+      "title": "StageAxisMapping",
+      "type": "object"
+    },
+    "StepperPositions": {
+      "description": "Absolute target position for the 5-axis spout rig, expressed in task-relative axes.",
+      "properties": {
+        "leftElevation": {
+          "description": "Left spout elevation axis absolute position (steps). Maps to motor 1",
+          "title": "LeftElevation",
+          "type": "integer"
+        },
+        "rightElevation": {
+          "description": "Right spout elevation axis absolute position (steps). Maps to motor 2",
+          "title": "RightElevation",
+          "type": "integer"
+        },
+        "rightRadial": {
+          "description": "Right spout radial axis (in/out) absolute position (steps). Maps to motor 3",
+          "title": "RightRadial",
+          "type": "integer"
+        },
+        "leftRadial": {
+          "description": "Left spout radial axis (in/out) absolute position (steps). Maps to motor 4",
+          "title": "LeftRadial",
+          "type": "integer"
+        },
+        "baseTransverse": {
+          "description": "Base transverse axis absolute position (steps). Maps to motor 5",
+          "title": "BaseTransverse",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "leftElevation",
+        "rightElevation",
+        "rightRadial",
+        "leftRadial",
+        "baseTransverse"
+      ],
+      "title": "StepperPositions",
+      "type": "object"
+    },
+    "TimerFrequency": {
+      "enum": [
+        "Disabled",
+        "Timer50Hz",
+        "Timer100Hz",
+        "Timer200Hz",
+        "Timer500Hz",
+        "Timer1000Hz"
+      ],
+      "title": "TimerFrequency",
+      "type": "string",
+      "x-sgen-typename": "Harp.TimestampGeneratorGen3.TimerRate"
+    },
+    "UclOpenAvDomeRig": {
+      "description": "Rig configuration for the av-dome experiment.",
+      "properties": {
+        "rootPath": {
+          "description": "The root path on which to log all data.",
+          "title": "RootPath",
+          "type": "string"
+        },
+        "version": {
+          "const": "0.0.0-rc1",
+          "default": "0.0.0-rc1",
+          "title": "Version",
+          "type": "string"
+        },
+        "behaviorBoard": {
+          "$ref": "#/$defs/BehaviorBoard",
+          "description": "Main Harp behavior board (valve outputs, wheel encoder)"
+        },
+        "timestampGenerator": {
+          "$ref": "#/$defs/HarpTimestampGeneratorGen3",
+          "description": "Harp timestamp generator (clock sync)",
+          "title": "TimestampGenerator"
+        },
+        "lickSpoutStage": {
+          "$ref": "#/$defs/HarpLickSpoutStage",
+          "description": "Two Harp StepperDriver boards driving the 5-axis lick spout stage",
+          "title": "LickSpoutStage"
+        },
+        "licketySplitLeft": {
+          "$ref": "#/$defs/LicketySplit",
+          "description": "Left lick detector",
+          "title": "LicketySplitLeft"
+        },
+        "licketySplitRight": {
+          "$ref": "#/$defs/LicketySplit",
+          "description": "Right lick detector",
+          "title": "LicketySplitRight"
+        },
+        "cameraFace": {
+          "$ref": "#/$defs/SpinnakerCamera",
+          "description": "Face camera",
+          "title": "CameraFace"
+        },
+        "cameraPupil": {
+          "$ref": "#/$defs/SpinnakerCamera",
+          "description": "Pupil camera",
+          "title": "CameraPupil"
+        },
+        "cameraBody": {
+          "$ref": "#/$defs/SpinnakerCamera",
+          "description": "Body camera",
+          "title": "CameraBody"
+        },
+        "projectionCalibration": {
+          "$ref": "#/$defs/ProjectionCalibration",
+          "description": "Mesh-map and gamma-LUT file paths for the dome projection"
+        },
+        "speakerArray": {
+          "$ref": "#/$defs/SpeakerArray",
+          "description": "Dome speaker array and audio output device"
+        },
+        "lickSpoutDefaultPosition": {
+          "$ref": "#/$defs/StepperPositions",
+          "description": "Default absolute stage position at session start",
+          "title": "LickSpoutDefaultPosition"
+        },
+        "interPulseInterval": {
+          "default": 50,
+          "description": "Gap between consecutive reward pulses, in milliseconds. Must be long enough for the valve to seat before the next trigger; 0 re-triggers the instant the board closes the valve and risks merged or dropped pulses.",
+          "minimum": 0,
+          "title": "InterPulseInterval",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "rootPath",
+        "behaviorBoard",
+        "timestampGenerator",
+        "lickSpoutStage",
+        "licketySplitLeft",
+        "licketySplitRight",
+        "cameraFace",
+        "cameraPupil",
+        "cameraBody",
+        "projectionCalibration",
+        "speakerArray",
+        "lickSpoutDefaultPosition"
+      ],
+      "title": "UclOpenAvDomeRig",
+      "type": "object"
+    }
+  },
+  "$ref": "#/$defs/UclOpenAvDomeRig",
+  "title": "RootModel[UclOpenAvDomeRig]"
+}
