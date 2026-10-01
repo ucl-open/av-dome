@@ -1,0 +1,85 @@
+# yaml-language-server: $schema=../src/DataSchemas/ucl_open_av_dome_task.json
+# Task parameters for the av-dome audiovisual localisation task.
+# Loaded by src/main.bonsai at startup and published as the TaskConfig subject.
+# The effective config is snapshotted to the session folder as TaskSchema.json.
+version: 0.0.0-rc1
+name: UclOpenAvDome
+taskParameters:
+  rngSeed: null            # null = draw a random seed; the seed used is logged per trial
+  trialStructure:
+    itiMin: 4.0            # s
+    itiMax: 5.0            # s
+    quiescentMin: 0.1      # s
+    quiescentMax: 0.25     # s
+    openLoopDuration: 0.0  # s
+    closedLoopDuration: 1.5   # s
+    incorrectTimeoutDuration: 4.0   # s
+    spoutInDelay: 0.5      # s, from stimulus onset to spouts in
+  visualStimulus:
+    azimuthMin: -60        # deg, grating azimuth drawn uniformly in [min, max]
+    azimuthMax: 60         # deg
+    elevationMin: 15       # deg, grating elevation drawn uniformly in [min, max]
+    elevationMax: 15       # deg
+    coherentAzimuthCap: 80 # deg, |azimuth| kept below this on coherent trials
+    gaussianWindowSigma: 20   # deg
+    orientation: 0         # deg
+    spatialFrequency: 0.066666667   # cycles/deg
+    temporalFrequency: 0   # Hz
+    flickerFrequency: 8    # Hz
+  audioStimulus:
+    speakerLocations:      # one position drawn per trial; playback uses the nearest wired speaker
+      - { azimuth: -60, elevation: 15 }
+      - { azimuth: 0, elevation: 15 }   # keep a centre entry: centre-audio trials draw from it
+      - { azimuth: 60, elevation: 15 }
+    flickerFrequency: 8    # Hz
+  reward:
+    rewardProbability: 1.0
+    largeRewardMultiplier: 1
+    largeRewardProbability: 0.0
+  repeats:
+    maxRepeats: 5
+    rulesPerType: [onFailure, onFailure, onFailure, onTimeout, onTimeout]
+  optogenetics:
+    enabled: false
+    zapitConfigPath: ""
+    stimProbability: 0.75
+    stimDelay: 0.0         # s
+    stimDuration: 1.5      # s
+    excludeRepeats: true
+    pseudorandomSelection: true
+  trainingStages:          # row index = stage id selected in the GUI; ids past the end use the last row
+    - label: Stage 0       # habituation, coherent only, single spout half the time, no repeats
+      trialWeights: [0, 0, 10, 0, 0]
+      autoRewardProbability: 0.0
+      bothSpoutsProbability: 0.5
+      rewardSizeUl: 4      # delivered as ceil(size/2) valve pulses
+      contrasts: [3.0]
+      allowRepeats: false
+    - label: Stage 1       # coherent trials only
+      trialWeights: [0, 0, 10, 0, 0]
+      autoRewardProbability: 0.0
+      bothSpoutsProbability: 1.0
+      rewardSizeUl: 4
+      contrasts: [3.0]
+      allowRepeats: true
+    - label: Stage 2       # unisensory auditory added
+      trialWeights: [0, 10, 10, 0, 0]
+      autoRewardProbability: 0.0
+      bothSpoutsProbability: 1.0
+      rewardSizeUl: 4
+      contrasts: [0, 0.25, 0.5, 1.0]
+      allowRepeats: true
+    - label: Stage 3       # unisensory visual added
+      trialWeights: [10, 10, 10, 0, 0]
+      autoRewardProbability: 0.0
+      bothSpoutsProbability: 1.0
+      rewardSizeUl: 4
+      contrasts: [0, 0.25, 0.5, 1.0]
+      allowRepeats: true
+    - label: Stage 4       # conflict and neutral trials added
+      trialWeights: [10, 10, 5, 5, 1]
+      autoRewardProbability: 0.0
+      bothSpoutsProbability: 1.0
+      rewardSizeUl: 4
+      contrasts: [0, 0.25, 0.5, 1.0]
+      allowRepeats: true
