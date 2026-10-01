@@ -1481,6 +1481,25 @@
                   <Expression xsi:type="SubscribeSubject">
                     <Name>TriggerPulse</Name>
                   </Expression>
+                  <Expression xsi:type="rx:Condition">
+                    <Name>RewardValve?</Name>
+                    <Description>Counts only pulses on DO1 and DO2, the reward valves. TriggerPulse also carries the Zapit TTL line, which delivers no water.</Description>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="scr:ExpressionTransform">
+                          <scr:Expression>it == 1 || it == 2</scr:Expression>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
                   <Expression xsi:type="rx:SelectMany">
                     <Name>IncrementRewardCounter</Name>
                     <Workflow>
@@ -1537,6 +1556,7 @@
                 <Edges>
                   <Edge From="0" To="1" Label="Source1" />
                   <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>

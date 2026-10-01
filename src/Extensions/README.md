@@ -43,7 +43,10 @@ server code in `zapit/+zapit/+interfaces/@TCPserver`.
   has `optogenetics.enabled: true`, with `Host`/`Port` mapped from the rig YAML `zapit` block. In
   `StimuliPresentation`, trials whose `OptogeneticEnabled` flag was drawn true send one
   `StartStimulus` with the trial's `OptogeneticCondition`, `OptogeneticDuration` and
-  `OptogeneticDelay` (Zapit times the delay and duration itself; `HardwareTriggered` is false).
+  `OptogeneticDelay` (Zapit times the delay and duration itself; `HardwareTriggered` comes from
+  the rig YAML `zapit` block, see the timing model below). Repeat trials copy the original trial's
+  draw, so with `optogenetics.excludeRepeats: false` a repeat presents the same condition again;
+  with `true` (the default) repeats are never stimulated.
   Every reply is logged to `Zapit.csv` alongside `TrialSettings.csv` on the same Harp clock.
 - `../ZapitDemo.bonsai`: standalone connectivity check against a running Zapit, no rig hardware
   needed. Prints and logs every reply.
@@ -60,8 +63,9 @@ Two modes, selected per rig by `zapit.hardwareTriggered` in the rig YAML.
   from Zapit's reply time.
 - **TTL triggered** (`hardwareTriggered: true`): the same command carries the `hardwareTriggered`
   flag, so Zapit loads the waveforms and waits for its DAQ trigger input. When Zapit's reply
-  confirms it is armed, the workflow writes `zapit.triggerLine` to the behavior board `TriggerValve`
+  confirms it is armed, the workflow writes `zapit.triggerLine` to the behavior board `TriggerPulse`
   subject, which pulses that DO line with the width in `pulseWidths` (DO3, 5 ms in the template).
+  `RewardCounter` counts only DO1 and DO2 pulses, so the trigger never registers as water.
   Laser onset is then the TTL edge, recorded on the Harp clock in the behavior board log, so the
   exact onset is known per trial. The arming still happens at stimulus onset, so the laser lags the
   visual and auditory onset by the same round trip as above; arming earlier in the trial is the next
