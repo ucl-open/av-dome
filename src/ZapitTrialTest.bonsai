@@ -1,31 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <WorkflowBuilder Version="2.9.0"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xmlns:p1="clr-namespace:;assembly=Extensions"
-                 xmlns:p2="clr-namespace:UclOpenAvDome;assembly=Extensions"
-                 xmlns:p6="clr-namespace:UclOpenAvDomeTask;assembly=Extensions"
-                 xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
                  xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
+                 xmlns:p1="clr-namespace:UclOpenAvDomeTask;assembly=Extensions"
+                 xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
+                 xmlns:p2="clr-namespace:;assembly=Extensions"
+                 xmlns:p3="clr-namespace:UclOpenAvDome;assembly=Extensions"
                  xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
-                 xmlns:sys="clr-namespace:System;assembly=mscorlib"
                  xmlns="https://bonsai-rx.org/2018/workflow">
   <Workflow>
     <Nodes>
-      <Expression xsi:type="Annotation">
-        <Name>Zapit trial test</Name>
-        <Text><![CDATA[Drives Zapit from the real trial machinery with no rig hardware.
-
-Reads C:\RigConfigs\<MachineName>.yml (zapit host/port/hardwareTriggered, like main.bonsai) and ..\config	ask-zapit-test.yml (optogenetics enabled). Connects to Zapit, checks a stim config is loaded, then draws 10 trials with InitialiseTrial, one every 2 s, and sends StartStimulus for each trial whose OptogeneticEnabled was drawn true, exactly as main.bonsai does. In hardware-triggered mode the TriggerPulse subject receives the DO line on every armed reply.
-
-Visualise: ZapitReplies (what Zapit presented), the Trial group output (what was drawn), TriggerPulse. See docs/zapit-testing.md.]]></Text>
-      </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="io:ReadAllText">
           <io:Path>..\config\task-zapit-test.yml</io:Path>
         </Combinator>
       </Expression>
-      <Expression xsi:type="p6:DeserializeFromYaml">
-        <p6:Type xsi:type="TypeMapping" TypeArguments="p6:UclOpenAvDomeTaskLogic" />
+      <Expression xsi:type="p1:DeserializeFromYaml">
+        <p1:Type xsi:type="TypeMapping" TypeArguments="p1:UclOpenAvDomeTaskLogic" />
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="rx:Take">
@@ -36,12 +27,12 @@ Visualise: ZapitReplies (what Zapit presented), the Trial group output (what was
         <Name>TaskConfig</Name>
       </Expression>
       <Expression xsi:type="Combinator">
-        <Combinator xsi:type="p1:ReadRigConfig">
-          <p1:ConfigDirectory>C:\RigConfigs</p1:ConfigDirectory>
+        <Combinator xsi:type="p2:ReadRigConfig">
+          <p2:ConfigDirectory>C:\RigConfigs</p2:ConfigDirectory>
         </Combinator>
       </Expression>
-      <Expression xsi:type="p2:DeserializeFromYaml">
-        <p2:Type xsi:type="TypeMapping" TypeArguments="p2:UclOpenAvDomeRig" />
+      <Expression xsi:type="p3:DeserializeFromYaml">
+        <p3:Type xsi:type="TypeMapping" TypeArguments="p3:UclOpenAvDomeRig" />
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="rx:Take">
@@ -51,10 +42,10 @@ Visualise: ZapitReplies (what Zapit presented), the Trial group output (what was
       <Expression xsi:type="rx:AsyncSubject">
         <Name>RigConfigs</Name>
       </Expression>
-      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:ZapitCommand">
+      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p2:ZapitCommand">
         <rx:Name>ZapitCommands</rx:Name>
       </Expression>
-      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:ZapitReply">
+      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p2:ZapitReply">
         <rx:Name>ZapitReplies</rx:Name>
       </Expression>
       <Expression xsi:type="GroupWorkflow">
@@ -192,12 +183,12 @@ Visualise: ZapitReplies (what Zapit presented), the Trial group output (what was
               </Combinator>
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p1:InitialiseTrial">
-                <p1:trainingStageId>1</p1:trainingStageId>
-                <p1:TrialType>-1</p1:TrialType>
-                <p1:WasCorrect>true</p1:WasCorrect>
-                <p1:WasTimeout>false</p1:WasTimeout>
-                <p1:SeedOffset>0</p1:SeedOffset>
+              <Combinator xsi:type="p2:InitialiseTrial">
+                <p2:trainingStageId>1</p2:trainingStageId>
+                <p2:TrialType>-1</p2:TrialType>
+                <p2:WasCorrect>true</p2:WasCorrect>
+                <p2:WasTimeout>false</p2:WasTimeout>
+                <p2:SeedOffset>0</p2:SeedOffset>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:AsyncSubject">
@@ -238,15 +229,23 @@ Visualise: ZapitReplies (what Zapit presented), the Trial group output (what was
                 <Property Name="StartDelay" Selector="OptogeneticDelay" />
               </PropertyMappings>
             </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>RigConfigs</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="HardwareTriggered" Selector="Zapit.HardwareTriggered" />
+              </PropertyMappings>
+            </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p1:CreateStartStimulus">
-                <p1:ConditionNumber>0</p1:ConditionNumber>
-                <p1:LaserOn>true</p1:LaserOn>
-                <p1:HardwareTriggered>false</p1:HardwareTriggered>
-                <p1:Logging>true</p1:Logging>
-                <p1:StimDuration>0</p1:StimDuration>
-                <p1:LaserPower>0</p1:LaserPower>
-                <p1:StartDelay>0</p1:StartDelay>
+              <Combinator xsi:type="p2:CreateStartStimulus">
+                <p2:ConditionNumber>0</p2:ConditionNumber>
+                <p2:LaserOn>true</p2:LaserOn>
+                <p2:HardwareTriggered>false</p2:HardwareTriggered>
+                <p2:Logging>true</p2:Logging>
+                <p2:StimDuration>0</p2:StimDuration>
+                <p2:LaserPower>0</p2:LaserPower>
+                <p2:StartDelay>0</p2:StartDelay>
               </Combinator>
             </Expression>
             <Expression xsi:type="MulticastSubject">
@@ -262,29 +261,21 @@ Visualise: ZapitReplies (what Zapit presented), the Trial group output (what was
               <Combinator xsi:type="io:WriteLine" />
             </Expression>
             <Expression xsi:type="WorkflowOutput" />
-            <Expression xsi:type="SubscribeSubject">
-              <Name>RigConfigs</Name>
-            </Expression>
-            <Expression xsi:type="PropertyMapping">
-              <PropertyMappings>
-                <Property Name="HardwareTriggered" Selector="Zapit.HardwareTriggered" />
-              </PropertyMappings>
-            </Expression>
           </Nodes>
           <Edges>
             <Edge From="1" To="2" Label="Source1" />
             <Edge From="2" To="3" Label="Source1" />
             <Edge From="3" To="4" Label="Source1" />
             <Edge From="6" To="7" Label="Source1" />
-            <Edge From="7" To="10" Label="Source1" />
+            <Edge From="7" To="12" Label="Source1" />
             <Edge From="8" To="9" Label="Source1" />
-            <Edge From="9" To="10" Label="Source2" />
+            <Edge From="9" To="12" Label="Source2" />
             <Edge From="10" To="11" Label="Source1" />
+            <Edge From="11" To="12" Label="Source3" />
             <Edge From="12" To="13" Label="Source1" />
-            <Edge From="13" To="14" Label="Source1" />
             <Edge From="14" To="15" Label="Source1" />
+            <Edge From="15" To="16" Label="Source1" />
             <Edge From="16" To="17" Label="Source1" />
-            <Edge From="17" To="10" Label="Source3" />
           </Edges>
         </Workflow>
       </Expression>
@@ -293,9 +284,6 @@ Visualise: ZapitReplies (what Zapit presented), the Trial group output (what was
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="io:WriteLine" />
-      </Expression>
-      <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Int32">
-        <rx:Name>TriggerPulse</rx:Name>
       </Expression>
       <Expression xsi:type="SubscribeSubject">
         <Name>TriggerPulse</Name>
@@ -350,21 +338,43 @@ Visualise: ZapitReplies (what Zapit presented), the Trial group output (what was
           </Edges>
         </Workflow>
       </Expression>
+      <Expression xsi:type="SubscribeSubject">
+        <Name>ZapitReplies</Name>
+      </Expression>
+      <Expression xsi:type="scr:ExpressionTransform">
+        <scr:Expression>new(
+    CommandCode as command,
+    Value as value,
+    LaserOn as laserOn,
+    IsError as isError,
+    ServerDatenum as serverDatenum)</scr:Expression>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="io:CsvWriter">
+          <io:FileName>zapit-demo.csv</io:FileName>
+          <io:Append>false</io:Append>
+          <io:Overwrite>true</io:Overwrite>
+          <io:Suffix>None</io:Suffix>
+          <io:IncludeHeader>true</io:IncludeHeader>
+        </Combinator>
+      </Expression>
     </Nodes>
     <Edges>
+      <Edge From="0" To="1" Label="Source1" />
       <Edge From="1" To="2" Label="Source1" />
       <Edge From="2" To="3" Label="Source1" />
-      <Edge From="3" To="4" Label="Source1" />
+      <Edge From="4" To="5" Label="Source1" />
       <Edge From="5" To="6" Label="Source1" />
       <Edge From="6" To="7" Label="Source1" />
-      <Edge From="7" To="8" Label="Source1" />
+      <Edge From="11" To="12" Label="Source1" />
       <Edge From="12" To="13" Label="Source1" />
-      <Edge From="13" To="14" Label="Source1" />
-      <Edge From="15" To="16" Label="Source1" />
-      <Edge From="18" To="19" Label="Source1" />
+      <Edge From="14" To="15" Label="Source1" />
+      <Edge From="16" To="17" Label="Source1" />
+      <Edge From="17" To="18" Label="Source1" />
       <Edge From="19" To="20" Label="Source1" />
-      <Edge From="21" To="22" Label="Source1" />
+      <Edge From="20" To="21" Label="Source1" />
       <Edge From="22" To="23" Label="Source1" />
+      <Edge From="23" To="24" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>
