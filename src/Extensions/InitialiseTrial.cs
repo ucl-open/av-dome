@@ -66,7 +66,13 @@ public class InitialiseTrial
                 var repeatTrial = lastTrial.Clone();
                 repeatTrial.IsRepeat = true;
                 repeatTrial.RepeatCount = currentRepeatCount;
-                return repeatTrial;  // Note no optogenetics in repeat trials!
+                // The copy carries the original trial's optogenetic draw; clear it unless
+                // repeats may be stimulated, in which case the same condition is presented again.
+                if (parameters.Optogenetics.ExcludeRepeats)
+                {
+                    ClearOptogeneticParameters(repeatTrial);
+                }
+                return repeatTrial;
             }
 
             if (parameters.Optogenetics.Enabled)
@@ -307,11 +313,7 @@ public class InitialiseTrial
     private void SetupOptogeneticParameters(Trial trialData, UclOpenAvDomeTaskParameters parameters, Random rand)
     {
         // Default: no optogenetic stimulation
-        trialData.OptogeneticEnabled = false;
-        trialData.OptogeneticCondition = 0;
-        trialData.OptogeneticDelay = 0;
-        trialData.OptogeneticDuration = 0;
-        trialData.OptogeneticPower = 0;
+        ClearOptogeneticParameters(trialData);
 
         // Check if optogenetics is enabled
         var optogenetics = parameters.Optogenetics;
@@ -324,10 +326,6 @@ public class InitialiseTrial
             Console.WriteLine("Warning: Optogenetics enabled but no Zapit conditions available");
             return;
         }
-
-        // Exclude stimulation on repeat trials if configured
-        if (optogenetics.ExcludeRepeats && trialData.IsRepeat)
-            return;
 
         // Roll for stimulation
         if (rand.NextDouble() < optogenetics.StimProbability)
@@ -349,6 +347,15 @@ public class InitialiseTrial
             trialData.OptogeneticDuration = optogenetics.StimDuration;
             trialData.OptogeneticPower = 0; // Will be set by Zapit config
         }
+    }
+
+    private static void ClearOptogeneticParameters(Trial trialData)
+    {
+        trialData.OptogeneticEnabled = false;
+        trialData.OptogeneticCondition = 0;
+        trialData.OptogeneticDelay = 0;
+        trialData.OptogeneticDuration = 0;
+        trialData.OptogeneticPower = 0;
     }
 
     private int GetPseudorandomCondition(Random rand)
