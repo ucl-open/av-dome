@@ -3,6 +3,7 @@ import subprocess
 from pathlib import Path
 
 import pydantic
+from ucl_open.core.calibration import CalibrationCurve
 
 import ucl_open_av_dome.rig
 import ucl_open_av_dome.task
@@ -37,6 +38,8 @@ def main():
     SCHEMA_ROOT.mkdir(parents=True, exist_ok=True)
     regenerate(ucl_open_av_dome.rig.UclOpenAvDomeRig, SCHEMA_ROOT / "ucl_open_av_dome.json")
     regenerate(ucl_open_av_dome.task.UclOpenAvDomeTaskLogic, SCHEMA_ROOT / "ucl_open_av_dome_task.json")
+    # Valve calibration artefacts, read at startup for each calibrated reward line.
+    regenerate(CalibrationCurve, SCHEMA_ROOT / "ucl_open_av_dome_calibration.json")
 
 
 if __name__ == "__main__":

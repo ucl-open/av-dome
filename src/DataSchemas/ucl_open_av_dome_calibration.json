@@ -1,0 +1,121 @@
+{
+  "$defs": {
+    "CalibrationCurve": {
+      "description": "A calibration measured as pairs, such as valve opening time against delivered volume.",
+      "properties": {
+        "calibratedAt": {
+          "description": "When the calibration was measured, in UTC.",
+          "format": "date-time",
+          "title": "CalibratedAt",
+          "type": "string"
+        },
+        "calibratedBy": {
+          "description": "Who ran the calibration.",
+          "title": "CalibratedBy",
+          "type": "string"
+        },
+        "machineName": {
+          "description": "Name of the machine the calibration was measured on.",
+          "title": "MachineName",
+          "type": "string"
+        },
+        "notes": {
+          "default": "",
+          "description": "Free-text notes about the calibration.",
+          "title": "Notes",
+          "type": "string"
+        },
+        "xName": {
+          "description": "Name of the quantity the rig controls.",
+          "examples": [
+            "pulse_width"
+          ],
+          "title": "XName",
+          "type": "string"
+        },
+        "xUnit": {
+          "description": "Unit of the x values.",
+          "examples": [
+            "ms"
+          ],
+          "title": "XUnit",
+          "type": "string"
+        },
+        "yName": {
+          "description": "Name of the measured quantity.",
+          "examples": [
+            "volume"
+          ],
+          "title": "YName",
+          "type": "string"
+        },
+        "yUnit": {
+          "description": "Unit of the y values.",
+          "examples": [
+            "ul"
+          ],
+          "title": "YUnit",
+          "type": "string"
+        },
+        "points": {
+          "description": "Measured pairs; the fit is done at load, not stored.",
+          "items": {
+            "$ref": "#/$defs/CalibrationPoint"
+          },
+          "minItems": 2,
+          "title": "Points",
+          "type": "array"
+        },
+        "payloadPath": {
+          "anyOf": [
+            {
+              "type": "string",
+              "x-rig-artefact": true
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Relative path of a file a consumer still needs alongside the points, such as a gamma LUT bitmap.",
+          "title": "PayloadPath"
+        }
+      },
+      "required": [
+        "calibratedAt",
+        "calibratedBy",
+        "machineName",
+        "xName",
+        "xUnit",
+        "yName",
+        "yUnit",
+        "points"
+      ],
+      "title": "CalibrationCurve",
+      "type": "object"
+    },
+    "CalibrationPoint": {
+      "description": "One measured pair of a calibration curve.",
+      "properties": {
+        "x": {
+          "description": "The value the rig controls, in the unit of the x axis.",
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "description": "The measured value, in the unit of the y axis.",
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "title": "CalibrationPoint",
+      "type": "object"
+    }
+  },
+  "$ref": "#/$defs/CalibrationCurve",
+  "title": "RootModel[CalibrationCurve]"
+}

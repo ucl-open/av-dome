@@ -99,9 +99,6 @@
                       <Property Name="WheelDiameterMm" Selector="BehaviorBoard.RunningWheel.WheelDiameterMm" />
                       <Property Name="Trigger0Frequency" Selector="BehaviorBoard.CameraTriggerController.Trigger0Frequency" />
                       <Property Name="Trigger1Frequency" Selector="BehaviorBoard.CameraTriggerController.Trigger1Frequency" />
-                      <Property Name="PulseDO1" Selector="BehaviorBoard.PulseController.PulseWidths.PulseDO1" />
-                      <Property Name="PulseDO2" Selector="BehaviorBoard.PulseController.PulseWidths.PulseDO2" />
-                      <Property Name="PulseDO3" Selector="BehaviorBoard.PulseController.PulseWidths.PulseDO3" />
                       <Property Name="OutputPulseEnable" Selector="BehaviorBoard.PulseController.OutputPulseEnable" />
                     </PropertyMappings>
                   </Expression>
@@ -144,147 +141,12 @@
                           <PulseDO3>1</PulseDO3>
                           <BehaviorEventsSubjectName>BehaviorEvents</BehaviorEventsSubjectName>
                           <TriggerPulseSubjectName>TriggerPulse</TriggerPulseSubjectName>
+                          <TriggerCalibratedPulseSubjectName>TriggerCalibratedPulse</TriggerCalibratedPulseSubjectName>
                         </Expression>
                         <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Tuple(sys:Int32,sys:Double)">
                           <rx:Name>DeliverRewardCommand</rx:Name>
                         </Expression>
-                        <Expression xsi:type="rx:SelectMany">
-                          <Name>DeliverReward</Name>
-                          <Workflow>
-                            <Nodes>
-                              <Expression xsi:type="WorkflowInput">
-                                <Name>Source1</Name>
-                              </Expression>
-                              <Expression xsi:type="Combinator">
-                                <Combinator xsi:type="rx:Take">
-                                  <rx:Count>1</rx:Count>
-                                </Combinator>
-                              </Expression>
-                              <Expression xsi:type="rx:AsyncSubject">
-                                <Name>input</Name>
-                              </Expression>
-                              <Expression xsi:type="SubscribeSubject">
-                                <Name>input</Name>
-                              </Expression>
-                              <Expression xsi:type="MemberSelector">
-                                <Selector>Item1</Selector>
-                              </Expression>
-                              <Expression xsi:type="Annotation">
-                                <Name>Int determines which valve opens</Name>
-                                <Text><![CDATA[Int determines which valve opens]]></Text>
-                              </Expression>
-                              <Expression xsi:type="MulticastSubject">
-                                <Name>TriggerPulse</Name>
-                              </Expression>
-                              <Expression xsi:type="SubscribeSubject">
-                                <Name>RigConfigs</Name>
-                              </Expression>
-                              <Expression xsi:type="MemberSelector">
-                                <Selector>BehaviorBoard.PulseController.PulseWidths.PulseDO1,InterPulseInterval</Selector>
-                              </Expression>
-                              <Expression xsi:type="rx:Condition">
-                                <Name>LeftValve?</Name>
-                                <Workflow>
-                                  <Nodes>
-                                    <Expression xsi:type="SubscribeSubject">
-                                      <Name>input</Name>
-                                    </Expression>
-                                    <Expression xsi:type="MemberSelector">
-                                      <Selector>Item1</Selector>
-                                    </Expression>
-                                    <Expression xsi:type="Equal">
-                                      <Operand xsi:type="IntProperty">
-                                        <Value>1</Value>
-                                      </Operand>
-                                    </Expression>
-                                    <Expression xsi:type="WorkflowOutput" />
-                                  </Nodes>
-                                  <Edges>
-                                    <Edge From="0" To="1" Label="Source1" />
-                                    <Edge From="1" To="2" Label="Source1" />
-                                    <Edge From="2" To="3" Label="Source1" />
-                                  </Edges>
-                                </Workflow>
-                              </Expression>
-                              <Expression xsi:type="MemberSelector">
-                                <Selector>BehaviorBoard.PulseController.PulseWidths.PulseDO2,InterPulseInterval</Selector>
-                              </Expression>
-                              <Expression xsi:type="rx:Condition">
-                                <Name>RightValve?</Name>
-                                <Workflow>
-                                  <Nodes>
-                                    <Expression xsi:type="SubscribeSubject">
-                                      <Name>input</Name>
-                                    </Expression>
-                                    <Expression xsi:type="MemberSelector">
-                                      <Selector>Item1</Selector>
-                                    </Expression>
-                                    <Expression xsi:type="Equal">
-                                      <Operand xsi:type="IntProperty">
-                                        <Value>2</Value>
-                                      </Operand>
-                                    </Expression>
-                                    <Expression xsi:type="WorkflowOutput" />
-                                  </Nodes>
-                                  <Edges>
-                                    <Edge From="0" To="1" Label="Source1" />
-                                    <Edge From="1" To="2" Label="Source1" />
-                                    <Edge From="2" To="3" Label="Source1" />
-                                  </Edges>
-                                </Workflow>
-                              </Expression>
-                              <Expression xsi:type="Combinator">
-                                <Combinator xsi:type="rx:Merge" />
-                              </Expression>
-                              <Expression xsi:type="Combinator">
-                                <Combinator xsi:type="rx:WithLatestFrom" />
-                              </Expression>
-                              <Expression xsi:type="scr:ExpressionTransform">
-                                <scr:Expression>0.001 * (Item2.Item1 + Item2.Item2)</scr:Expression>
-                              </Expression>
-                              <Expression xsi:type="IncludeWorkflow" Path="Extensions\HarpDelayByInput.bonsai" />
-                              <Expression xsi:type="SubscribeSubject">
-                                <Name>input</Name>
-                              </Expression>
-                              <Expression xsi:type="MemberSelector">
-                                <Selector>Item2</Selector>
-                              </Expression>
-                              <Expression xsi:type="PropertyMapping">
-                                <PropertyMappings>
-                                  <Property Name="Count" />
-                                </PropertyMappings>
-                              </Expression>
-                              <Expression xsi:type="Combinator">
-                                <Combinator xsi:type="rx:RepeatCount">
-                                  <rx:Count>2</rx:Count>
-                                </Combinator>
-                              </Expression>
-                              <Expression xsi:type="WorkflowOutput" />
-                            </Nodes>
-                            <Edges>
-                              <Edge From="0" To="1" Label="Source1" />
-                              <Edge From="1" To="2" Label="Source1" />
-                              <Edge From="3" To="4" Label="Source1" />
-                              <Edge From="4" To="6" Label="Source1" />
-                              <Edge From="5" To="6" Label="Source2" />
-                              <Edge From="6" To="13" Label="Source1" />
-                              <Edge From="7" To="8" Label="Source1" />
-                              <Edge From="7" To="10" Label="Source1" />
-                              <Edge From="8" To="9" Label="Source1" />
-                              <Edge From="9" To="12" Label="Source1" />
-                              <Edge From="10" To="11" Label="Source1" />
-                              <Edge From="11" To="12" Label="Source2" />
-                              <Edge From="12" To="13" Label="Source2" />
-                              <Edge From="13" To="14" Label="Source1" />
-                              <Edge From="14" To="15" Label="Source1" />
-                              <Edge From="15" To="19" Label="Source1" />
-                              <Edge From="16" To="17" Label="Source1" />
-                              <Edge From="17" To="18" Label="Source1" />
-                              <Edge From="18" To="19" Label="Source2" />
-                              <Edge From="19" To="20" Label="Source1" />
-                            </Edges>
-                          </Workflow>
-                        </Expression>
+                        <Expression xsi:type="IncludeWorkflow" Path="Extensions\DeliverReward.bonsai" />
                         <Expression xsi:type="ExternalizedMapping">
                           <Property Name="Trigger0Frequency" />
                           <Property Name="Trigger1Frequency" />
@@ -1387,12 +1249,30 @@
                       </Edges>
                     </Workflow>
                   </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>RigConfigs</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>BehaviorBoard.PulseController.Outputs.DO3</Selector>
+                  </Expression>
+                  <Expression xsi:type="p2:MatchPulseOutput">
+                    <p2:Type xsi:type="TypeMapping" TypeArguments="p2:FixedPulse" />
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="PulseDO3" Selector="PulseWidthMs" />
+                    </PropertyMappings>
+                  </Expression>
                 </Nodes>
                 <Edges>
                   <Edge From="0" To="1" Label="Source1" />
                   <Edge From="1" To="2" Label="Source1" />
                   <Edge From="3" To="4" Label="Source1" />
                   <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="10" To="11" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="12" To="13" Label="Source1" />
+                  <Edge From="13" To="5" Label="Source2" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -1501,52 +1381,21 @@
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>TriggerPulse</Name>
+                    <Name>RewardDelivered</Name>
                   </Expression>
-                  <Expression xsi:type="rx:Condition">
-                    <Name>RewardValve?</Name>
-                    <Description>Counts only pulses on DO1 and DO2, the reward valves. TriggerPulse also carries the Zapit TTL line, which delivers no water.</Description>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>DeliveredUl</Selector>
+                  </Expression>
+                  <Expression xsi:type="rx:SelectMany">
+                    <Name>IncrementWaterDelivered</Name>
+                    <Description>Adds each reward's delivered volume (nominal 2 ul per pulse on a fixed line) to WaterDelivered.</Description>
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="WorkflowInput">
                           <Name>Source1</Name>
                         </Expression>
-                        <Expression xsi:type="scr:ExpressionTransform">
-                          <scr:Expression>it == 1 || it == 2</scr:Expression>
-                        </Expression>
-                        <Expression xsi:type="WorkflowOutput" />
-                      </Nodes>
-                      <Edges>
-                        <Edge From="0" To="1" Label="Source1" />
-                        <Edge From="1" To="2" Label="Source1" />
-                      </Edges>
-                    </Workflow>
-                  </Expression>
-                  <Expression xsi:type="rx:SelectMany">
-                    <Name>IncrementRewardCounter</Name>
-                    <Workflow>
-                      <Nodes>
                         <Expression xsi:type="SubscribeSubject">
                           <Name>WaterDelivered</Name>
-                        </Expression>
-                        <Expression xsi:type="Disable">
-                          <Builder xsi:type="SubscribeSubject">
-                            <Name>thisTrialData</Name>
-                          </Builder>
-                        </Expression>
-                        <Expression xsi:type="Disable">
-                          <Builder xsi:type="MemberSelector">
-                            <Selector>RewardSizeInUl</Selector>
-                          </Builder>
-                        </Expression>
-                        <Expression xsi:type="Annotation">
-                          <Name>Hardcoded for now!!!</Name>
-                          <Text><![CDATA[Hardcoded for now!!!]]></Text>
-                        </Expression>
-                        <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="FloatProperty">
-                            <Value>2</Value>
-                          </Combinator>
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="rx:Zip" />
@@ -1560,14 +1409,11 @@
                         <Expression xsi:type="WorkflowOutput" />
                       </Nodes>
                       <Edges>
-                        <Edge From="0" To="5" Label="Source1" />
+                        <Edge From="0" To="2" Label="Source2" />
                         <Edge From="1" To="2" Label="Source1" />
-                        <Edge From="2" To="4" Label="Source1" />
-                        <Edge From="3" To="4" Label="Source2" />
-                        <Edge From="4" To="5" Label="Source2" />
-                        <Edge From="5" To="6" Label="Source1" />
-                        <Edge From="6" To="7" Label="Source1" />
-                        <Edge From="7" To="8" Label="Source1" />
+                        <Edge From="2" To="3" Label="Source1" />
+                        <Edge From="3" To="4" Label="Source1" />
+                        <Edge From="4" To="5" Label="Source1" />
                       </Edges>
                     </Workflow>
                   </Expression>
@@ -2171,6 +2017,80 @@
                   <Edge From="10" To="11" Label="Source1" />
                   <Edge From="12" To="13" Label="Source1" />
                   <Edge From="13" To="14" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="GroupWorkflow">
+              <Name>RewardLines</Name>
+              <Description>Builds the left (DO1) and right (DO2) reward lines from the rig configuration: a calibrated line reads and fits its valve calibration from the rig configuration directory, a fixed line keeps its width. The Logging group snapshots each calibration read into the session folder.</Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>RigConfigs</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>BehaviorBoard.PulseController.Outputs.DO1</Selector>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>RigConfigDirectory</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="p1:LoadRewardLine">
+                      <p1:Line>1</p1:Line>
+                      <p1:Model>LinearFit</p1:Model>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Take">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="rx:AsyncSubject">
+                    <Name>RewardLineLeft</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>RigConfigs</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>BehaviorBoard.PulseController.Outputs.DO2</Selector>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>RigConfigDirectory</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="p1:LoadRewardLine">
+                      <p1:Line>2</p1:Line>
+                      <p1:Model>LinearFit</p1:Model>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Take">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="rx:AsyncSubject">
+                    <Name>RewardLineRight</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="3" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source2" />
+                  <Edge From="3" To="4" Label="Source1" />
+                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="8" To="10" Label="Source1" />
+                  <Edge From="9" To="10" Label="Source2" />
+                  <Edge From="10" To="11" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="12" To="13" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -4499,8 +4419,17 @@
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:Merge" />
                   </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>thisTrialData</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>RewardSizeInUl</Selector>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:WithLatestFrom" />
+                  </Expression>
                   <Expression xsi:type="MulticastSubject">
-                    <Name>TriggerPulse</Name>
+                    <Name>DeliverRewardCommand</Name>
                   </Expression>
                   <Expression xsi:type="WorkflowOutput" />
                 </Nodes>
@@ -4509,8 +4438,11 @@
                   <Edge From="1" To="4" Label="Source1" />
                   <Edge From="2" To="3" Label="Source1" />
                   <Edge From="3" To="4" Label="Source2" />
-                  <Edge From="4" To="5" Label="Source1" />
+                  <Edge From="4" To="7" Label="Source1" />
                   <Edge From="5" To="6" Label="Source1" />
+                  <Edge From="6" To="7" Label="Source2" />
+                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -7109,6 +7041,74 @@ Item4 as ExposureTime)</scr:Expression>
                 </Edges>
               </Workflow>
             </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>RewardLineLeft</Name>
+            </Expression>
+            <Expression xsi:type="rx:Condition">
+              <Name>Calibrated?</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Calibrated</Selector>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>ArtefactJson</Selector>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogDataSchema.bonsai">
+              <Name>ValveCalibrationDO1</Name>
+              <Extension>json</Extension>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>RewardLineRight</Name>
+            </Expression>
+            <Expression xsi:type="rx:Condition">
+              <Name>Calibrated?</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Calibrated</Selector>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>ArtefactJson</Selector>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogDataSchema.bonsai">
+              <Name>ValveCalibrationDO2</Name>
+              <Extension>json</Extension>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>RewardDelivered</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="Extensions\LoggingPrefixCondition.bonsai" />
+            <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
+              <Name>Timestamp</Name>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+              <LogName>RewardDelivery</LogName>
+              <Selector>Seconds,Value.Line,Value.RequestedUl,Value.DeliveredUl,Value.Count,Value.VolumePerPulseUl,Value.Calibrated,Value.Clamped</Selector>
+              <Extension>csv</Extension>
+            </Expression>
           </Nodes>
           <Edges>
             <Edge From="6" To="7" Label="Source1" />
@@ -7120,6 +7120,15 @@ Item4 as ExposureTime)</scr:Expression>
             <Edge From="14" To="15" Label="Source1" />
             <Edge From="16" To="17" Label="Source1" />
             <Edge From="17" To="18" Label="Source1" />
+            <Edge From="20" To="21" Label="Source1" />
+            <Edge From="21" To="22" Label="Source1" />
+            <Edge From="22" To="23" Label="Source1" />
+            <Edge From="24" To="25" Label="Source1" />
+            <Edge From="25" To="26" Label="Source1" />
+            <Edge From="26" To="27" Label="Source1" />
+            <Edge From="28" To="29" Label="Source1" />
+            <Edge From="29" To="30" Label="Source1" />
+            <Edge From="30" To="31" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -9790,7 +9799,7 @@ Item2.Item2 as autoReward) </scr:Expression>
                     <Selector>RewardSizeInUl</Selector>
                   </Expression>
                   <Expression xsi:type="scr:ExpressionTransform">
-                    <scr:Expression>Convert.ToDouble(Math.Ceiling(it / 2))</scr:Expression>
+                    <scr:Expression>Convert.ToDouble(it)</scr:Expression>
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:WithLatestFrom" />

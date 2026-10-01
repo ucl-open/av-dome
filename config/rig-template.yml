@@ -18,10 +18,15 @@ behaviorBoard:
   portName: COM1
   pulseController:
     outputPulseEnable: "DO1, DO2, DO3"
-    pulseWidths:
-      PulseDO1: 40    # ms, left reward valve open time
-      PulseDO2: 40    # ms, right reward valve open time
-      PulseDO3: 5     # ms, Zapit TTL trigger pulse (only used when zapit.hardwareTriggered is true)
+    # Each line is a FixedPulse (width set here) or a CalibratedPulse (width looked up per reward
+    # on a valve calibration curve in calibration\). A fixed reward line delivers ceil(ul / 2)
+    # pulses of its width, assuming 2 ul per pulse; a calibrated one delivers the requested volume.
+    outputs:
+      DO1: { discriminatorType: FixedPulse, pulseWidthMs: 40 }   # left reward valve, ms
+      DO2: { discriminatorType: FixedPulse, pulseWidthMs: 40 }   # right reward valve, ms
+      DO3: { discriminatorType: FixedPulse, pulseWidthMs: 5 }    # Zapit TTL (used when zapit.hardwareTriggered is true)
+      # Calibrated reward line:
+      # DO1: { discriminatorType: CalibratedPulse, artefact: calibration/valve-DO1.json }
   cameraTriggerController:
     trigger0Frequency: 50     # Hz, cameras on DO0
     trigger1Frequency: 50     # Hz, cameras on DO1
@@ -135,7 +140,7 @@ zapit:
   host: 127.0.0.1         # PC running Zapit; 127.0.0.1 when Zapit runs on this rig PC
   port: 1488
   hardwareTriggered: false  # true once DO<triggerLine> is cabled to the Zapit DAQ trigger input
-  triggerLine: 3            # behavior board DO line for the TTL; width from pulseWidths.PulseDO3
+  triggerLine: 3            # behavior board DO line for the TTL; width from outputs.DO3
 # Default absolute stage position at session start (steps)
 lickSpoutDefaultPosition:
   leftElevation: 0        # motor 1
