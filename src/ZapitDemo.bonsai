@@ -3,7 +3,6 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
                  xmlns:p1="clr-namespace:;assembly=Extensions"
-                 xmlns:wie="clr-namespace:Bonsai.Windows.Input;assembly=Bonsai.Windows.Input"
                  xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
                  xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
                  xmlns="https://bonsai-rx.org/2018/workflow">
@@ -21,23 +20,8 @@
         <ReceiveTimeout>5000</ReceiveTimeout>
       </Expression>
       <Expression xsi:type="Combinator">
-        <Combinator xsi:type="wie:KeyDown">
-          <wie:Filter>LButton A Shift Control</wie:Filter>
-          <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="p1:CreateZapitQuery">
-          <p1:Query>GetState</p1:Query>
-        </Combinator>
-      </Expression>
-      <Expression xsi:type="MulticastSubject">
-        <Name>ZapitCommands</Name>
-      </Expression>
-      <Expression xsi:type="Combinator">
-        <Combinator xsi:type="wie:KeyDown">
-          <wie:Filter>LButton RButton Cancel ShiftKey ControlKey Menu Pause A B C P Q R S Shift Control</wie:Filter>
-          <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
+        <Combinator xsi:type="rx:Timer">
+          <rx:DueTime>PT1S</rx:DueTime>
         </Combinator>
       </Expression>
       <Expression xsi:type="Combinator">
@@ -55,9 +39,21 @@
         <Name>ZapitCommands</Name>
       </Expression>
       <Expression xsi:type="Combinator">
-        <Combinator xsi:type="wie:KeyDown">
-          <wie:Filter>MButton D Shift Control</wie:Filter>
-          <wie:SuppressRepetitions>false</wie:SuppressRepetitions>
+        <Combinator xsi:type="rx:Timer">
+          <rx:DueTime>PT3S</rx:DueTime>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="p1:CreateZapitQuery">
+          <p1:Query>GetState</p1:Query>
+        </Combinator>
+      </Expression>
+      <Expression xsi:type="MulticastSubject">
+        <Name>ZapitCommands</Name>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Timer">
+          <rx:DueTime>PT4S</rx:DueTime>
         </Combinator>
       </Expression>
       <Expression xsi:type="Combinator">
