@@ -6050,7 +6050,6 @@
                   <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
                     <LogName>TrialSettings</LogName>
                     <Selector />
-                    <Extension>csv</Extension>
                   </Expression>
                   <Expression xsi:type="WorkflowOutput" />
                 </Nodes>
@@ -6923,7 +6922,6 @@ Item4 as ExposureTime)</scr:Expression>
                     <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
                       <LogName />
                       <Selector>Seconds</Selector>
-                      <Extension>csv</Extension>
                     </Expression>
                     <Expression xsi:type="WorkflowOutput" />
                   </Nodes>
@@ -6980,7 +6978,6 @@ Item4 as ExposureTime)</scr:Expression>
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
               <LogName>SessionState</LogName>
               <Selector>Seconds,Value</Selector>
-              <Extension>csv</Extension>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>RigConfigs</Name>
@@ -6992,7 +6989,6 @@ Item4 as ExposureTime)</scr:Expression>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogDataSchema.bonsai">
               <Name>RigSchema</Name>
-              <Extension>json</Extension>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>TaskConfig</Name>
@@ -7004,7 +7000,6 @@ Item4 as ExposureTime)</scr:Expression>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogDataSchema.bonsai">
               <Name>TaskSchema</Name>
-              <Extension>json</Extension>
             </Expression>
             <Expression xsi:type="GroupWorkflow">
               <Name>ZapitReplies</Name>
@@ -7029,7 +7024,6 @@ Item4 as ExposureTime)</scr:Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
                     <LogName>Zapit</LogName>
                     <Selector />
-                    <Extension>csv</Extension>
                   </Expression>
                   <Expression xsi:type="WorkflowOutput" />
                 </Nodes>
@@ -7067,7 +7061,6 @@ Item4 as ExposureTime)</scr:Expression>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogDataSchema.bonsai">
               <Name>ValveCalibrationDO1</Name>
-              <Extension>json</Extension>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>RewardLineRight</Name>
@@ -7095,7 +7088,6 @@ Item4 as ExposureTime)</scr:Expression>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogDataSchema.bonsai">
               <Name>ValveCalibrationDO2</Name>
-              <Extension>json</Extension>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>RewardDelivered</Name>
@@ -7107,7 +7099,6 @@ Item4 as ExposureTime)</scr:Expression>
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
               <LogName>RewardDelivery</LogName>
               <Selector>Seconds,Value.Line,Value.RequestedUl,Value.DeliveredUl,Value.Count,Value.VolumePerPulseUl,Value.Calibrated,Value.Clamped</Selector>
-              <Extension>csv</Extension>
             </Expression>
           </Nodes>
           <Edges>
@@ -10251,7 +10242,6 @@ Things we want to do with this:
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
               <LogName>StimulusStartEvents</LogName>
               <Selector>Seconds,Value</Selector>
-              <Extension>csv</Extension>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>DecisionVariable</Name>
@@ -10262,7 +10252,6 @@ Things we want to do with this:
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
               <LogName>DecisionVariable</LogName>
               <Selector>Seconds,Value</Selector>
-              <Extension>csv</Extension>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>visualAzimuth</Name>
@@ -10273,7 +10262,6 @@ Things we want to do with this:
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
               <LogName>VisualAzimuth</LogName>
               <Selector>Seconds,Value</Selector>
-              <Extension>csv</Extension>
             </Expression>
           </Nodes>
           <Edges>
