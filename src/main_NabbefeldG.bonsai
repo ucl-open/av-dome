@@ -7086,7 +7086,6 @@
                   <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
                     <LogName>TrialSettings</LogName>
                     <Selector />
-                    <Extension>csv</Extension>
                   </Expression>
                   <Expression xsi:type="WorkflowOutput" />
                 </Nodes>
@@ -7958,7 +7957,6 @@ Item4 as ExposureTime)</scr:Expression>
                     <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
                       <LogName />
                       <Selector>Seconds</Selector>
-                      <Extension>csv</Extension>
                     </Expression>
                     <Expression xsi:type="WorkflowOutput" />
                   </Nodes>
@@ -8828,7 +8826,6 @@ Item4 as ExposureTime)</scr:Expression>
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
               <LogName>SessionState</LogName>
               <Selector>Seconds,Value</Selector>
-              <Extension>csv</Extension>
             </Expression>
           </Nodes>
           <Edges>
