@@ -62,7 +62,7 @@
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:TimestampGeneratorGen3.bonsai">
                     <CommandsSubjectName>TimestampGeneratorCommands</CommandsSubjectName>
-                    <PortName>COMx</PortName>
+                    <PortName>COM16</PortName>
                     <DumpRegisters>true</DumpRegisters>
                     <Heartbeat>Enabled</Heartbeat>
                     <EventsSubjectName>ClockSynchronizerEvents</EventsSubjectName>
@@ -93,7 +93,7 @@
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.BehaviorBoard.bonsai">
                           <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
-                          <PortName>COMx</PortName>
+                          <PortName>COM11</PortName>
                           <DumpRegisters>true</DumpRegisters>
                           <Heartbeat>Enabled</Heartbeat>
                           <EventsSubjectName>BehaviorEvents</EventsSubjectName>
@@ -118,9 +118,9 @@
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.PulseController.bonsai">
                           <BehaviorCommandsSubjectName>BehaviorCommands</BehaviorCommandsSubjectName>
                           <OutputPulseEnable>DO1 DO2 DO3</OutputPulseEnable>
-                          <PulseDO1>1</PulseDO1>
-                          <PulseDO2>1</PulseDO2>
-                          <PulseDO3>1</PulseDO3>
+                          <PulseDO1>40</PulseDO1>
+                          <PulseDO2>40</PulseDO2>
+                          <PulseDO3>20</PulseDO3>
                           <BehaviorEventsSubjectName>BehaviorEvents</BehaviorEventsSubjectName>
                           <TriggerPulseSubjectName>TriggerPulse</TriggerPulseSubjectName>
                         </Expression>
@@ -317,7 +317,7 @@
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:LicketySplit.bonsai">
                           <CommandsSubjectName>LickCommandsRight</CommandsSubjectName>
-                          <PortName>COMx</PortName>
+                          <PortName>COM13</PortName>
                           <DumpRegisters>true</DumpRegisters>
                           <Heartbeat>Disabled</Heartbeat>
                           <EventsSubjectName>LickEventsRight</EventsSubjectName>
@@ -337,7 +337,7 @@
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:LicketySplit.bonsai">
                           <CommandsSubjectName>LickCommandsLeft</CommandsSubjectName>
-                          <PortName>COMx</PortName>
+                          <PortName>COM15</PortName>
                           <DumpRegisters>true</DumpRegisters>
                           <Heartbeat>Disabled</Heartbeat>
                           <EventsSubjectName>LickEventsLeft</EventsSubjectName>
@@ -376,7 +376,7 @@
                           <ExposureTime>19000</ExposureTime>
                           <Gain>0</Gain>
                           <Binning>1</Binning>
-                          <SerialNumber xsi:nil="true" />
+                          <SerialNumber>23201536</SerialNumber>
                           <ColorProcessing>Default</ColorProcessing>
                           <CameraTriggerEventsSubjectName>Camera0TriggerEvents</CameraTriggerEventsSubjectName>
                           <FrameEventsSubjectName>FrameEvents1</FrameEventsSubjectName>
@@ -399,7 +399,7 @@
                           <ExposureTime>19000</ExposureTime>
                           <Gain>0</Gain>
                           <Binning>1</Binning>
-                          <SerialNumber xsi:nil="true" />
+                          <SerialNumber>23100954</SerialNumber>
                           <ColorProcessing>Default</ColorProcessing>
                           <CameraTriggerEventsSubjectName>Camera0TriggerEvents</CameraTriggerEventsSubjectName>
                           <FrameEventsSubjectName>FrameEvents3</FrameEventsSubjectName>
@@ -420,9 +420,9 @@
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:TriggeredSpinnaker.bonsai">
                           <ExposureTime>19000</ExposureTime>
-                          <Gain>0</Gain>
+                          <Gain>20</Gain>
                           <Binning>1</Binning>
-                          <SerialNumber xsi:nil="true" />
+                          <SerialNumber>23199184</SerialNumber>
                           <ColorProcessing>Default</ColorProcessing>
                           <CameraTriggerEventsSubjectName>Camera0TriggerEvents</CameraTriggerEventsSubjectName>
                           <FrameEventsSubjectName>FrameEvents2</FrameEventsSubjectName>
@@ -472,7 +472,7 @@
                                   <harp:VisualIndicators>On</harp:VisualIndicators>
                                   <harp:Heartbeat>Enabled</harp:Heartbeat>
                                   <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                                  <harp:PortName>COM7</harp:PortName>
+                                  <harp:PortName>COM14</harp:PortName>
                                 </Combinator>
                               </Expression>
                               <Expression xsi:type="rx:BehaviorSubject">
@@ -492,7 +492,7 @@
                                   <harp:VisualIndicators>On</harp:VisualIndicators>
                                   <harp:Heartbeat>Enabled</harp:Heartbeat>
                                   <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                                  <harp:PortName>COM8</harp:PortName>
+                                  <harp:PortName>COM12</harp:PortName>
                                 </Combinator>
                               </Expression>
                               <Expression xsi:type="rx:BehaviorSubject">
@@ -2588,7 +2588,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>21.0438840841148</gui:Text>
+              <gui:Text>17.149567742436</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">

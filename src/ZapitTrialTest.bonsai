@@ -95,8 +95,8 @@
                     </PropertyMappings>
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="Extensions\Zapit.bonsai">
-                    <Host>unmapped</Host>
-                    <Port>0</Port>
+                    <Host>127.0.0.1</Host>
+                    <Port>1488</Port>
                     <ReceiveTimeout>5000</ReceiveTimeout>
                   </Expression>
                   <Expression xsi:type="WorkflowOutput" />
@@ -314,7 +314,7 @@
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.BehaviorBoard.bonsai">
               <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
-              <PortName>COMx</PortName>
+              <PortName>COM11</PortName>
               <DumpRegisters>true</DumpRegisters>
               <Heartbeat>Enabled</Heartbeat>
               <EventsSubjectName>BehaviorEvents</EventsSubjectName>
@@ -327,7 +327,7 @@
               <OutputPulseEnable>DO3</OutputPulseEnable>
               <PulseDO1>1</PulseDO1>
               <PulseDO2>1</PulseDO2>
-              <PulseDO3>5</PulseDO3>
+              <PulseDO3>0</PulseDO3>
               <BehaviorEventsSubjectName>BehaviorEvents</BehaviorEventsSubjectName>
               <TriggerPulseSubjectName>TriggerPulse</TriggerPulseSubjectName>
             </Expression>
@@ -337,6 +337,11 @@
             <Edge From="2" To="3" Label="Source1" />
           </Edges>
         </Workflow>
+      </Expression>
+      <Expression xsi:type="Disable">
+        <Builder xsi:type="MemberSelector">
+          <Selector>BehaviorBoard.PulseController.PulseWidths.PulseDO3</Selector>
+        </Builder>
       </Expression>
       <Expression xsi:type="SubscribeSubject">
         <Name>ZapitReplies</Name>
@@ -372,9 +377,10 @@
       <Edge From="16" To="17" Label="Source1" />
       <Edge From="17" To="18" Label="Source1" />
       <Edge From="19" To="20" Label="Source1" />
+      <Edge From="19" To="22" Label="Source1" />
       <Edge From="20" To="21" Label="Source1" />
-      <Edge From="22" To="23" Label="Source1" />
       <Edge From="23" To="24" Label="Source1" />
+      <Edge From="24" To="25" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>

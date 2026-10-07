@@ -50,7 +50,7 @@ taskParameters:
     rulesPerType: [onFailure, onFailure, onFailure, onTimeout, onTimeout]
   optogenetics:
     enabled: true
-    zapitConfigPath: C:\zapit\examples\example_stimulus_config_files\uniAndBilateral_5_conditions.yml  # EDIT: the stim config file loaded in Zapit
+    zapitConfigPath: C:\Users\CoenLabUsers\zapit\examples\example_stimulus_config_files\left_right_pair.yml # EDIT: the stim config file loaded in Zapit
     stimProbability: 0.75
     stimDelay: 0.0         # s
     stimDuration: 1.5      # s
