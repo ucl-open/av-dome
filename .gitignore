@@ -15,7 +15,8 @@ obj
 !.bonsai/NuGet.config
 
 .venv
-
+*.png
+*.wav
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
