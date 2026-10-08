@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WorkflowBuilder Version="2.9.0"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
+                 xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
+                 xmlns:uoc="clr-namespace:UclOpen.Core;assembly=UclOpen.Core"
+                 xmlns:cal="clr-namespace:UclOpen.Core.Calibration;assembly=UclOpen.Core"
+                 xmlns="https://bonsai-rx.org/2018/workflow">
+  <Description>Calibrates one reward valve of this rig with the ucl-open platform's dispense calibration. Set Channel (1 for DO1, 2 for DO2), FileName to match (valve-DO1 or valve-DO2), CalibratedBy, and the two COM ports, then start. The behavior board fires the pulses through its PulseController, the serial balance weighs them, and the artefact lands in this machine's rig configuration directory with the rig.yml line to paste printed at the end. Settings live in config\valve-calibration.yml.</Description>
+  <Workflow>
+    <Nodes>
+      <Expression xsi:type="ExternalizedMapping">
+        <Property Name="SettingsPath" Description="The committed calibration settings, a DispenseCalibration YAML." />
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>Setup</Name>
+        <Description>Resolves this machine's rig configuration directory, where the artefact is written, and loads the calibration settings. Nothing is read from rig.yml: the ports are chosen on this workflow.</Description>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="uoc:ResolveRigConfigDirectory">
+                <uoc:ConfigRoot>C:\RigConfigs</uoc:ConfigRoot>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:AsyncSubject">
+              <Name>RigConfigDirectory</Name>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Path" DisplayName="SettingsPath" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="io:ReadAllText">
+                <io:Path>..\config\valve-calibration.yml</io:Path>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="cal:DeserializeFromYaml">
+              <cal:Type xsi:type="TypeMapping" TypeArguments="cal:DispenseCalibration" />
+            </Expression>
+            <Expression xsi:type="rx:AsyncSubject">
+              <Name>Settings</Name>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="5" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="ExternalizedMapping">
+        <Property Name="BoardPortName" Description="The behavior board's COM port. Chosen here rather than read from rig.yml, since a rig may have more than one board." />
+        <Property Name="BalancePortName" Description="The balance's COM port; it is plugged in only to calibrate." />
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>Devices</Name>
+        <Description>The behavior board on BoardPortName with its pulse controller (TriggerCalibratedPulse fires one pulse of a given width on a line), and the serial balance on BalancePortName configured from the balance block of the settings.</Description>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="PortName" DisplayName="BoardPortName" />
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.BehaviorBoard.bonsai">
+              <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
+              <PortName>COMx</PortName>
+              <DumpRegisters>true</DumpRegisters>
+              <Heartbeat>Enabled</Heartbeat>
+              <EventsSubjectName>BehaviorEvents</EventsSubjectName>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.PulseController.bonsai">
+              <BehaviorCommandsSubjectName>BehaviorCommands</BehaviorCommandsSubjectName>
+              <OutputPulseEnable>DO1 DO2 DO3</OutputPulseEnable>
+              <PulseDO1>1</PulseDO1>
+              <PulseDO2>1</PulseDO2>
+              <PulseDO3>1</PulseDO3>
+              <BehaviorEventsSubjectName>BehaviorEvents</BehaviorEventsSubjectName>
+              <TriggerPulseSubjectName>TriggerPulse</TriggerPulseSubjectName>
+              <TriggerCalibratedPulseSubjectName>TriggerCalibratedPulse</TriggerCalibratedPulseSubjectName>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Settings</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Balance</Selector>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Settings</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="BaudRate" Selector="Balance.BaudRate" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="PortName" DisplayName="BalancePortName" />
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:SerialBalance.bonsai">
+              <PortName>COMx</PortName>
+              <BaudRate>9600</BaudRate>
+              <ReadingsSubjectName>BalanceReading</ReadingsSubjectName>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="8" Label="Source1" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="6" To="8" Label="Source2" />
+            <Edge From="7" To="8" Label="Source3" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="ExternalizedMapping">
+        <Property Name="Channel" Description="The valve to calibrate: 1 for DO1 (left), 2 for DO2 (right)." />
+        <Property Name="FileName" Description="The artefact's file name, matching the channel: valve-DO1 or valve-DO2. The rig.yml entry for the line points at calibration/&lt;FileName&gt;.json." />
+        <Property Name="CalibratedBy" Description="Who is running the calibration; written into the artefact." />
+      </Expression>
+      <Expression xsi:type="GroupWorkflow">
+        <Name>Calibration</Name>
+        <Description>Runs the platform's dispense calibration on the chosen channel, firing through TriggerCalibratedPulse and weighing on BalanceReading, and writes the artefact into the rig configuration directory. Progress and the rig.yml line to paste print to the console.</Description>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>Settings</Name>
+            </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Channel" />
+              <Property Name="FileName" />
+              <Property Name="CalibratedBy" />
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Core:DispenseCalibration.bonsai">
+              <ReadingsSubjectName>BalanceReading</ReadingsSubjectName>
+              <Channel>1</Channel>
+              <RequestSubjectName>TriggerCalibratedPulse</RequestSubjectName>
+              <CalibratedBy />
+              <DirectorySubjectName>RigConfigDirectory</DirectorySubjectName>
+              <FileName>valve-DO1</FileName>
+            </Expression>
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="2" Label="Source1" />
+            <Edge From="1" To="2" Label="Source2" />
+          </Edges>
+        </Workflow>
+      </Expression>
+    </Nodes>
+    <Edges>
+      <Edge From="0" To="1" Label="Source1" />
+      <Edge From="2" To="3" Label="Source1" />
+      <Edge From="4" To="5" Label="Source1" />
+    </Edges>
+  </Workflow>
+</WorkflowBuilder>
