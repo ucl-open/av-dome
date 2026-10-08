@@ -17,7 +17,9 @@ except NameError:  # __file__ is not defined when the script is loaded by Bonsai
 MIC_CAL_PATH = _script_dir / "Calibration_File_8109526.txt"
 
 
-def compute_FIR_filter(speakerId, recording_path=None, save_path=None, mic_cal_path=MIC_CAL_PATH):
+def compute_FIR_filter(speakerId, recording_path=None, save_path=None, mic_cal_path=MIC_CAL_PATH, target_mag=None):
+    # target_mag: optional fixed magnitude to flatten to, instead of the mean of the reference band. Same units as the
+    # peak magnitude spectrum (see the printed reference band level / the _peak_magnitude.png plot)
     rootFolder = Path(r"C:\RigConfigs")
 
     # format speaker id with 3 digits, e.g. 001, 002, 003, etc.
@@ -175,12 +177,25 @@ def compute_FIR_filter(speakerId, recording_path=None, save_path=None, mic_cal_p
 
 
     # ## Normalizing magnitudes
-    print(f"Normalizing magnitudes to specified reference band ({ref_band_hz[0]} - {ref_band_hz[1]}Hz) and inverting...")
     ref_mask = (freqs_hz > ref_band_hz[0]) & (freqs_hz < ref_band_hz[1]) # Mask for the specified frequency band
-    mag_norm = mag / np.mean(mag[ref_mask])
+    ref_level = np.mean(mag[ref_mask])
+    print(f"Mean magnitude in reference band ({ref_band_hz[0]} - {ref_band_hz[1]}Hz): {ref_level:.6g}")
+    if target_mag is None:
+        print(f"Normalizing magnitudes to specified reference band and inverting...")
+        norm_level = ref_level
+        norm_label = f"{ref_band_hz[0]:.0f} - {ref_band_hz[1]:.0f}Hz"
+    else:
+        print(f"Normalizing magnitudes to fixed target magnitude {target_mag:.6g} ({20 * np.log10(target_mag / ref_level):+.1f} dB re. reference band) and inverting...")
+        norm_level = target_mag
+        norm_label = f"target {target_mag:.3g}"
+    mag_norm = mag / norm_level
     inv_mag = 1.0 / np.maximum(mag_norm, 1e-12) # Invert with a safety floor. mag is an amplitude, so 1/mag is already the amplitude gain (no sqrt)
 
     print(f"Limiting boost to {max_boost}x...")
+    capped = (inv_mag > max_boost) & (freqs_hz >= clamp_band_hz[0]) & (freqs_hz <= clamp_band_hz[1])
+    if np.any(capped):
+        print(f"WARNING: boost limited to {max_boost}x for {100 * np.mean(capped[(freqs_hz >= clamp_band_hz[0]) & (freqs_hz <= clamp_band_hz[1])]):.0f}% of "
+              f"{clamp_band_hz[0]} - {clamp_band_hz[1]}Hz, so the response there will stay below the target. Lower target_mag or raise the playback level.")
     inv_mag = np.minimum(inv_mag, max_boost)
     plt.plot(freqs_hz, inv_mag)
     plt.xlabel("Frequency (Hz)")
@@ -452,7 +467,8 @@ def design_fir_from_mag(freqs_hz: np.ndarray, gain: np.ndarray, spk_fs: float, n
 
 ## #### ##############################
 
-def check_filtered_response(speakerId, mic_cal_path=MIC_CAL_PATH):
+def check_filtered_response(speakerId, mic_cal_path=MIC_CAL_PATH, target_mag=None):
+    # target_mag: use the same value as in compute_FIR_filter, so the response is reported relative to the same level
     rootFolder = Path(r"C:\RigConfigs")
 
     # format speaker id with 3 digits, e.g. 001, 002, 003, etc.
@@ -559,21 +575,30 @@ def check_filtered_response(speakerId, mic_cal_path=MIC_CAL_PATH):
 
 
     # ## Normalizing magnitudes
-    print(f"Normalizing magnitudes to specified reference band ({ref_band_hz[0]} - {ref_band_hz[1]}Hz)...")
     ref_mask = (freqs_hz > ref_band_hz[0]) & (freqs_hz < ref_band_hz[1]) # Mask for the specified frequency band
-    mag_norm = mag / np.mean(mag[ref_mask])
+    ref_level = np.mean(mag[ref_mask])
+    print(f"Mean magnitude in reference band ({ref_band_hz[0]} - {ref_band_hz[1]}Hz): {ref_level:.6g}")
+    if target_mag is None:
+        print(f"Normalizing magnitudes to specified reference band...")
+        norm_level = ref_level
+        norm_label = f"{ref_band_hz[0]:.0f} - {ref_band_hz[1]:.0f}Hz"
+    else:
+        print(f"Normalizing magnitudes to fixed target magnitude {target_mag:.6g} ({20 * np.log10(target_mag / ref_level):+.1f} dB re. reference band)...")
+        norm_level = target_mag
+        norm_label = f"target {target_mag:.3g}"
+    mag_norm = mag / norm_level
 
     # ## Flatness of the filtered response
     # A perfectly flattened speaker gives 0 dB across the sweep band
     band_mask = (freqs_hz >= clamp_band_hz[0]) & (freqs_hz <= clamp_band_hz[1])
     mag_db = 20 * np.log10(np.maximum(mag_norm, 1e-12))
     print(f"Filtered response {clamp_band_hz[0]} - {clamp_band_hz[1]}Hz: min {mag_db[band_mask].min():.1f} dB, max {mag_db[band_mask].max():.1f} dB, "
-          f"std {mag_db[band_mask].std():.1f} dB (re. {ref_band_hz[0]} - {ref_band_hz[1]}Hz)")
+          f"std {mag_db[band_mask].std():.1f} dB (re. {norm_label})")
     plt.figure()
     plt.plot(freqs_hz[band_mask], mag_db[band_mask])
     plt.axhline(0, color="k", linewidth=0.8)
     plt.xlabel("Frequency (Hz)")
-    plt.ylabel(f"Magnitude (dB re. {ref_band_hz[0]:.0f} - {ref_band_hz[1]:.0f}Hz)")
+    plt.ylabel(f"Magnitude (dB re. {norm_label})")
     plt.title(f"Filtered Response of {speaker_id_str}")
     plt.savefig(rootFolder / f"{speaker_id_str}_with_FIR_response_dB.png")
     plt.close()
