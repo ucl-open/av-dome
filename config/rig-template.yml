@@ -28,8 +28,10 @@ behaviorBoard:
       # Calibrated reward line:
       # DO1: { discriminatorType: CalibratedPulse, artefact: calibration/valve-DO1.json }
   cameraTriggerController:
-    trigger0Frequency: 50     # Hz, cameras on DO0
-    trigger1Frequency: 50     # Hz, cameras on DO1
+    trigger0Enabled: true     # camera trigger 0 shares the DO0 pin
+    trigger0Frequency: 50     # Hz
+    trigger1Enabled: false    # camera trigger 1 shares the DO1 pin, which drives the left valve; off means nothing is written to it
+    trigger1Frequency: 50     # Hz, used only if trigger 1 is enabled
   runningWheel:
     wheelDiameterMm: 170
     countsPerRev: 4096

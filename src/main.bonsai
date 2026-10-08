@@ -97,6 +97,8 @@
                       <Property Name="PortName" Selector="BehaviorBoard.PortName" />
                       <Property Name="CountsPerRev" Selector="BehaviorBoard.RunningWheel.CountsPerRev" />
                       <Property Name="WheelDiameterMm" Selector="BehaviorBoard.RunningWheel.WheelDiameterMm" />
+                      <Property Name="EnableTrigger0" Selector="BehaviorBoard.CameraTriggerController.Trigger0Enabled" />
+                      <Property Name="EnableTrigger1" Selector="BehaviorBoard.CameraTriggerController.Trigger1Enabled" />
                       <Property Name="Trigger0Frequency" Selector="BehaviorBoard.CameraTriggerController.Trigger0Frequency" />
                       <Property Name="Trigger1Frequency" Selector="BehaviorBoard.CameraTriggerController.Trigger1Frequency" />
                       <Property Name="OutputPulseEnable" Selector="BehaviorBoard.PulseController.OutputPulseEnable" />
@@ -148,10 +150,14 @@
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="Extensions\DeliverReward.bonsai" />
                         <Expression xsi:type="ExternalizedMapping">
+                          <Property Name="EnableTrigger0" />
+                          <Property Name="EnableTrigger1" />
                           <Property Name="Trigger0Frequency" />
                           <Property Name="Trigger1Frequency" />
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.CameraTriggerController.bonsai">
+                          <EnableTrigger0>true</EnableTrigger0>
+                          <EnableTrigger1>false</EnableTrigger1>
                           <Trigger0Frequency>50</Trigger0Frequency>
                           <Trigger1Frequency>50</Trigger1Frequency>
                           <BehaviorCommandsSubjectName>BehaviorCommands</BehaviorCommandsSubjectName>

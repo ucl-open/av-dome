@@ -803,26 +803,61 @@ namespace UclOpenAvDome
 
     /// <summary>
     /// Represents a CameraTriggerController module on a BehaviorBoard device.
+    ///
+    ///The two camera trigger outputs share pins with digital outputs: Trigger0 is DO0 and Trigger1
+    ///is DO1. A trigger that is not enabled is never started, so its pin stays free for a pulse
+    ///output such as a reward valve.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.ComponentModel.DescriptionAttribute("Represents a CameraTriggerController module on a BehaviorBoard device.")]
+    [System.ComponentModel.DescriptionAttribute(@"Represents a CameraTriggerController module on a BehaviorBoard device.
+
+    The two camera trigger outputs share pins with digital outputs: Trigger0 is DO0 and Trigger1
+    is DO1. A trigger that is not enabled is never started, so its pin stays free for a pulse
+    output such as a reward valve.")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
     public partial class CameraTriggerController
     {
     
+        private bool _trigger0Enabled;
+    
         private int _trigger0Frequency;
+    
+        private bool _trigger1Enabled;
     
         private int _trigger1Frequency;
     
         public CameraTriggerController()
         {
+            _trigger0Enabled = true;
+            _trigger1Enabled = false;
+            _trigger1Frequency = 50;
         }
     
         protected CameraTriggerController(CameraTriggerController other)
         {
+            _trigger0Enabled = other._trigger0Enabled;
             _trigger0Frequency = other._trigger0Frequency;
+            _trigger1Enabled = other._trigger1Enabled;
             _trigger1Frequency = other._trigger1Frequency;
+        }
+    
+        /// <summary>
+        /// Start camera trigger 0 (CameraOutput0, the DO0 pin) when the rig starts.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("trigger0Enabled")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="trigger0Enabled")]
+        [System.ComponentModel.DescriptionAttribute("Start camera trigger 0 (CameraOutput0, the DO0 pin) when the rig starts.")]
+        public bool Trigger0Enabled
+        {
+            get
+            {
+                return _trigger0Enabled;
+            }
+            set
+            {
+                _trigger0Enabled = value;
+            }
         }
     
         /// <summary>
@@ -845,12 +880,31 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
-        /// The frequency, in Hz, at which to emit camera triggers on Trigger1 (DO1, CameraOutput1)
+        /// Start camera trigger 1 (CameraOutput1, the DO1 pin) when the rig starts. Leave off when DO1 drives a pulse output.
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("trigger1Frequency", Required=Newtonsoft.Json.Required.Always)]
+        [Newtonsoft.Json.JsonPropertyAttribute("trigger1Enabled")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="trigger1Enabled")]
+        [System.ComponentModel.DescriptionAttribute("Start camera trigger 1 (CameraOutput1, the DO1 pin) when the rig starts. Leave of" +
+            "f when DO1 drives a pulse output.")]
+        public bool Trigger1Enabled
+        {
+            get
+            {
+                return _trigger1Enabled;
+            }
+            set
+            {
+                _trigger1Enabled = value;
+            }
+        }
+    
+        /// <summary>
+        /// The frequency, in Hz, at which to emit camera triggers on Trigger1 (DO1, CameraOutput1); only matters when trigger 1 is enabled.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("trigger1Frequency")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="trigger1Frequency")]
         [System.ComponentModel.DescriptionAttribute("The frequency, in Hz, at which to emit camera triggers on Trigger1 (DO1, CameraOu" +
-            "tput1)")]
+            "tput1); only matters when trigger 1 is enabled.")]
         public int Trigger1Frequency
         {
             get
@@ -875,7 +929,9 @@ namespace UclOpenAvDome
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
+            stringBuilder.Append("Trigger0Enabled = " + _trigger0Enabled + ", ");
             stringBuilder.Append("Trigger0Frequency = " + _trigger0Frequency + ", ");
+            stringBuilder.Append("Trigger1Enabled = " + _trigger1Enabled + ", ");
             stringBuilder.Append("Trigger1Frequency = " + _trigger1Frequency);
             return true;
         }

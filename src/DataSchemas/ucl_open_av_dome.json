@@ -139,8 +139,14 @@
       "type": "object"
     },
     "CameraTriggerController": {
-      "description": "Represents a CameraTriggerController module on a BehaviorBoard device.",
+      "description": "Represents a CameraTriggerController module on a BehaviorBoard device.\n\nThe two camera trigger outputs share pins with digital outputs: Trigger0 is DO0 and Trigger1\nis DO1. A trigger that is not enabled is never started, so its pin stays free for a pulse\noutput such as a reward valve.",
       "properties": {
+        "trigger0Enabled": {
+          "default": true,
+          "description": "Start camera trigger 0 (CameraOutput0, the DO0 pin) when the rig starts.",
+          "title": "Trigger0Enabled",
+          "type": "boolean"
+        },
         "trigger0Frequency": {
           "description": "The frequency, in Hz, at which to emit camera triggers on Trigger0 (DO0, CameraOutput0)",
           "examples": [
@@ -149,8 +155,15 @@
           "title": "Trigger0Frequency",
           "type": "integer"
         },
+        "trigger1Enabled": {
+          "default": false,
+          "description": "Start camera trigger 1 (CameraOutput1, the DO1 pin) when the rig starts. Leave off when DO1 drives a pulse output.",
+          "title": "Trigger1Enabled",
+          "type": "boolean"
+        },
         "trigger1Frequency": {
-          "description": "The frequency, in Hz, at which to emit camera triggers on Trigger1 (DO1, CameraOutput1)",
+          "default": 50,
+          "description": "The frequency, in Hz, at which to emit camera triggers on Trigger1 (DO1, CameraOutput1); only matters when trigger 1 is enabled.",
           "examples": [
             "50"
           ],
@@ -159,8 +172,7 @@
         }
       },
       "required": [
-        "trigger0Frequency",
-        "trigger1Frequency"
+        "trigger0Frequency"
       ],
       "title": "CameraTriggerController",
       "type": "object"
