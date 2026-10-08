@@ -6,8 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using UclOpen.Core;
+using UclOpen.Core.Calibration;
 using UclOpenAvDome;
-using UclOpenAvDomeCalibration;
 
 /// <summary>
 /// One reward valve line (DO1 left, DO2 right) and how a requested volume becomes pulses on it.
@@ -151,17 +151,18 @@ public class RewardDelivery
 
 /// <summary>
 /// Builds a reward line from its entry in the rig configuration. A CalibratedPulse entry reads its
-/// valve calibration artefact from the rig configuration directory and fits it; a FixedPulse entry
-/// keeps its width. Fails at startup if the artefact is missing, malformed or not monotone.
+/// valve calibration artefact, a platform CalibrationCurve, from the rig configuration directory
+/// and fits it with the model named in the entry; a FixedPulse entry keeps its width. Fails at
+/// startup if the artefact is missing, malformed or not monotone, and warns on the console if it
+/// was measured on another machine or is older than the entry's maxAgeDays.
 /// </summary>
 [Combinator]
 [DefaultProperty("Line")]
-[Description("Builds a reward line from its pulse output entry in the rig configuration and the rig configuration directory. A calibrated entry reads and fits its valve calibration artefact; a fixed entry keeps its width. Input is a Zip of the line's output entry and the RigConfigDirectory subject.")]
+[Description("Builds a reward line from its pulse output entry in the rig configuration and the rig configuration directory. A calibrated entry reads its valve calibration artefact (a CalibrationCurve written by the platform's DispenseCalibration procedure, see CalibrateValve.bonsai) and fits it with the entry's fit model; a fixed entry keeps its width. Warns when the artefact was measured on another machine or is older than the entry's maxAgeDays. Input is a Zip of the line's output entry and the RigConfigDirectory subject.")]
 [WorkflowElementCategory(ElementCategory.Transform)]
 public class LoadRewardLine
 {
     int line = 1;
-    CalibrationModel model = CalibrationModel.LinearFit;
 
     /// <summary>Gets or sets the behavior board DO line this entry drives, 1 (left) or 2 (right).</summary>
     [Description("The behavior board DO line this entry drives: 1 for the left valve, 2 for the right.")]
@@ -171,24 +172,17 @@ public class LoadRewardLine
         set { line = value; }
     }
 
-    /// <summary>Gets or sets how the calibration curve is fitted to the measured points.</summary>
-    [Description("How the valve calibration curve is fitted to its measured points. LinearFit suits repeated weighings.")]
-    public CalibrationModel Model
-    {
-        get { return model; }
-        set { model = value; }
-    }
-
     /// <summary>Builds the reward line for each (pulse output, rig configuration directory) pair.</summary>
     public IObservable<RewardLine> Process(IObservable<Tuple<PulseOutput, string>> source)
     {
         return source.Select(delegate (Tuple<PulseOutput, string> input)
         {
-            return Load(input.Item1, input.Item2);
+            return Load(input.Item1, input.Item2, line, DateTimeOffset.UtcNow);
         });
     }
 
-    RewardLine Load(PulseOutput output, string directory)
+    /// <summary>Builds the reward line for one entry; public so the check can run without a workflow.</summary>
+    public static RewardLine Load(PulseOutput output, string directory, int line, DateTimeOffset now)
     {
         FixedPulse fixedPulse = output as FixedPulse;
         if (fixedPulse != null)
@@ -212,7 +206,9 @@ public class LoadRewardLine
         path = Path.GetFullPath(path);
         if (!File.Exists(path))
         {
-            throw new InvalidOperationException("No valve calibration for reward line DO" + line + ". Expected: " + path);
+            throw new InvalidOperationException(
+                "No valve calibration for reward line DO" + line + ". Expected: " + path +
+                ". Run src\\CalibrateValve.bonsai on this machine with Channel " + line + " to create it, or point the line at a FixedPulse.");
         }
 
         string json = File.ReadAllText(path);
@@ -222,14 +218,35 @@ public class LoadRewardLine
             throw new InvalidOperationException("The valve calibration for reward line DO" + line + " needs at least two points: " + path);
         }
 
+        if (!string.IsNullOrEmpty(artefact.MachineName) &&
+            !string.Equals(artefact.MachineName, Environment.MachineName, StringComparison.OrdinalIgnoreCase))
+        {
+            Console.WriteLine(
+                "WARNING: the valve calibration for reward line DO" + line + " was measured on " + artefact.MachineName +
+                ", not on this machine (" + Environment.MachineName + "): " + path + ". Recalibrate here before trusting the volumes.");
+        }
+        if (calibratedPulse.MaxAgeDays > 0)
+        {
+            double ageDays = (now - artefact.CalibratedAt).TotalDays;
+            if (ageDays > calibratedPulse.MaxAgeDays)
+            {
+                Console.WriteLine(
+                    "WARNING: the valve calibration for reward line DO" + line + " is " + Math.Floor(ageDays) + " days old (measured " +
+                    artefact.CalibratedAt.ToString("yyyy-MM-dd") + "), older than the " + calibratedPulse.MaxAgeDays +
+                    " days allowed by maxAgeDays in rig.yml: " + path + ". Recalibrate, or raise maxAgeDays if that is intended.");
+            }
+        }
+
         CalibrationCurveFit fit = new CalibrationCurveFit(
             artefact.Points.Select(delegate (CalibrationPoint point) { return point.X; }),
             artefact.Points.Select(delegate (CalibrationPoint point) { return point.Y; }),
-            model,
+            calibratedPulse.Fit,
             2);
         if (!fit.IsMonotone)
         {
-            throw new InvalidOperationException("The valve calibration for reward line DO" + line + " is not monotone, so a volume cannot be turned into a pulse width: " + path);
+            throw new InvalidOperationException(
+                "The valve calibration for reward line DO" + line + " is not monotone with the " + calibratedPulse.Fit +
+                " fit, so a volume cannot be turned into a pulse width: " + path + ". Recalibrate with CalibrateValve.bonsai.");
         }
         return new RewardLine(line, fit, path, json);
     }

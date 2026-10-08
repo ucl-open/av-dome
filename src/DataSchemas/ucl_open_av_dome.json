@@ -117,13 +117,26 @@
       "description": "A pulsed output whose width comes from a calibration curve at run time, such as a reward valve.",
       "properties": {
         "artefact": {
-          "description": "Relative path of the CalibrationCurve that converts the requested quantity to a pulse width.",
+          "description": "Relative path of the CalibrationCurve that converts the requested quantity to a pulse width: a file written by the platform's DispenseCalibration procedure into this machine's calibration folder.",
           "examples": [
             "calibration/valve-DO1.json"
           ],
           "title": "Artefact",
           "type": "string",
           "x-rig-artefact": true
+        },
+        "fit": {
+          "$ref": "#/$defs/CalibrationModel",
+          "default": "LinearFit",
+          "description": "How the rig fits the artefact's points at startup. LinearFit suits repeated weighings.",
+          "title": "Fit"
+        },
+        "maxAgeDays": {
+          "default": 90,
+          "description": "Warn at startup when the artefact is older than this many days; 0 disables the check.",
+          "minimum": 0,
+          "title": "MaxAgeDays",
+          "type": "integer"
         },
         "discriminatorType": {
           "const": "CalibratedPulse",
@@ -137,6 +150,19 @@
       ],
       "title": "CalibratedPulse",
       "type": "object"
+    },
+    "CalibrationModel": {
+      "description": "How a calibration curve is derived from its points; the `UclOpen.Core.CalibrationModel` operators' enum.",
+      "enum": [
+        "LinearFit",
+        "PolynomialFit",
+        "Linear",
+        "CubicSpline",
+        "Step"
+      ],
+      "title": "CalibrationModel",
+      "type": "string",
+      "x-sgen-typename": "UclOpen.Core.CalibrationModel"
     },
     "CameraTriggerController": {
       "description": "Represents a CameraTriggerController module on a BehaviorBoard device.\n\nThe two camera trigger outputs share pins with digital outputs: Trigger0 is DO0 and Trigger1\nis DO1. A trigger that is not enabled is never started, so its pin stays free for a pulse\noutput such as a reward valve.",

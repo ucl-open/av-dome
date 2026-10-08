@@ -750,23 +750,32 @@ namespace UclOpenAvDome
     
         private string _artefact;
     
+        private UclOpen.Core.CalibrationModel _fit;
+    
+        private int _maxAgeDays;
+    
         public CalibratedPulse()
         {
+            _fit = UclOpen.Core.CalibrationModel.LinearFit;
+            _maxAgeDays = 90;
         }
     
         protected CalibratedPulse(CalibratedPulse other) : 
                 base(other)
         {
             _artefact = other._artefact;
+            _fit = other._fit;
+            _maxAgeDays = other._maxAgeDays;
         }
     
         /// <summary>
-        /// Relative path of the CalibrationCurve that converts the requested quantity to a pulse width.
+        /// Relative path of the CalibrationCurve that converts the requested quantity to a pulse width: a file written by the platform's DispenseCalibration procedure into this machine's calibration folder.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("artefact", Required=Newtonsoft.Json.Required.Always)]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="artefact")]
         [System.ComponentModel.DescriptionAttribute("Relative path of the CalibrationCurve that converts the requested quantity to a p" +
-            "ulse width.")]
+            "ulse width: a file written by the platform\'s DispenseCalibration procedure into " +
+            "this machine\'s calibration folder.")]
         public string Artefact
         {
             get
@@ -776,6 +785,44 @@ namespace UclOpenAvDome
             set
             {
                 _artefact = value;
+            }
+        }
+    
+        /// <summary>
+        /// How the rig fits the artefact's points at startup. LinearFit suits repeated weighings.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("fit")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="fit")]
+        [System.ComponentModel.DescriptionAttribute("How the rig fits the artefact\'s points at startup. LinearFit suits repeated weigh" +
+            "ings.")]
+        public UclOpen.Core.CalibrationModel Fit
+        {
+            get
+            {
+                return _fit;
+            }
+            set
+            {
+                _fit = value;
+            }
+        }
+    
+        /// <summary>
+        /// Warn at startup when the artefact is older than this many days; 0 disables the check.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("maxAgeDays")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="maxAgeDays")]
+        [System.ComponentModel.DescriptionAttribute("Warn at startup when the artefact is older than this many days; 0 disables the ch" +
+            "eck.")]
+        public int MaxAgeDays
+        {
+            get
+            {
+                return _maxAgeDays;
+            }
+            set
+            {
+                _maxAgeDays = value;
             }
         }
     
@@ -795,7 +842,9 @@ namespace UclOpenAvDome
             {
                 stringBuilder.Append(", ");
             }
-            stringBuilder.Append("Artefact = " + _artefact);
+            stringBuilder.Append("Artefact = " + _artefact + ", ");
+            stringBuilder.Append("Fit = " + _fit + ", ");
+            stringBuilder.Append("MaxAgeDays = " + _maxAgeDays);
             return true;
         }
     }

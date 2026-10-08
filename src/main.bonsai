@@ -2046,7 +2046,6 @@
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="p1:LoadRewardLine">
                       <p1:Line>1</p1:Line>
-                      <p1:Model>LinearFit</p1:Model>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
@@ -2072,7 +2071,6 @@
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="p1:LoadRewardLine">
                       <p1:Line>2</p1:Line>
-                      <p1:Model>LinearFit</p1:Model>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
