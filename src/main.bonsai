@@ -7069,17 +7069,16 @@ Item4 as ExposureTime)</scr:Expression>
                         <Expression xsi:type="SubscribeSubject">
                           <Name>ZapitReplies</Name>
                         </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
-                          <Name>Timestamp</Name>
-                        </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
                           <scr:Expression>new(
-                Seconds as Seconds,
-                Value.CommandCode as command,
-                Value.Value as value,
-                Value.LaserOn as laserOn,
-                Value.IsError as isError,
-                Value.ServerDatenum as serverDatenum)</scr:Expression>
+                CommandCode as command,
+                Value as value,
+                LaserOn as laserOn,
+                IsError as isError,
+                ServerDatenum as serverDatenum)</scr:Expression>
+                        </Expression>
+                        <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
+                          <Name>Timestamp</Name>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
                           <LogName>Zapit</LogName>
