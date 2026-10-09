@@ -55,8 +55,8 @@ TrialStructure:
   timeout: 2               # unused (response timeout is a workflow literal)
 Optogenetics:              # USED: all seven fields drive Zapit stimulation
   enabled: true
-  zapitConfigPath: 'C:\Users\CoenLabUsers\zapit\examples\example_stimulus_config_files\left_right_pair.yml'
-  stimProbability: 0.2
+  zapitConfigPath: "C:/path/to/your/zapit_config.yml"
+  stimProbability: 0.75
   stimDelay: 0.0
   stimDuration: 1.5
   excludeRepeats: true

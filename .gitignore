@@ -13,6 +13,8 @@ obj
 .bonsai/**
 !.bonsai/Bonsai.config
 !.bonsai/NuGet.config.example
+# Scratch output of the Zapit demo workflows
+zapit-demo.csv
 
 .venv
 
