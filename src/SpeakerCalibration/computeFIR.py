@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 from scipy import signal
 from scipy.io import wavfile, loadmat
-# import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use("Agg")   # must be called before importing pyplot
 import matplotlib.pyplot as plt
@@ -20,7 +19,7 @@ MIC_CAL_PATH = _script_dir / "Calibration_File_8109526.txt"
 def compute_FIR_filter(speakerId, recording_path=None, save_path=None, mic_cal_path=MIC_CAL_PATH, target_mag=None):
     # target_mag: optional fixed magnitude to flatten to, instead of the mean of the reference band. Same units as the
     # peak magnitude spectrum (see the printed reference band level / the _peak_magnitude.png plot)
-    rootFolder = Path(r"C:\RigConfigs")
+    rootFolder = Path(r"C:\RigConfigs\SpeakerCalibration")
 
     # format speaker id with 3 digits, e.g. 001, 002, 003, etc.
     speaker_id_str = f"Speaker_{speakerId:03d}"
@@ -469,7 +468,7 @@ def design_fir_from_mag(freqs_hz: np.ndarray, gain: np.ndarray, spk_fs: float, n
 
 def check_filtered_response(speakerId, mic_cal_path=MIC_CAL_PATH, target_mag=None):
     # target_mag: use the same value as in compute_FIR_filter, so the response is reported relative to the same level
-    rootFolder = Path(r"C:\RigConfigs")
+    rootFolder = Path(r"C:\RigConfigs\SpeakerCalibration")
 
     # format speaker id with 3 digits, e.g. 001, 002, 003, etc.
     speaker_id_str = f"Speaker_{speakerId:03d}"

@@ -405,8 +405,8 @@ wheels = [
 
 [[package]]
 name = "swc-aeon"
-version = "0.1.1.dev88+g1af9fc250"
-source = { git = "https://github.com/SainsburyWellcomeCentre/aeon_api.git?branch=pydantic-schema#1af9fc25064b7f73f536c032ad8c524d245a2f25" }
+version = "0.2.1.dev7+g7cd561d38"
+source = { git = "https://github.com/SainsburyWellcomeCentre/aeon_api.git?branch=main#7cd561d382011b9fbdcafe827cd92a2804b6799f" }
 dependencies = [
     { name = "dotmap" },
     { name = "harp-python" },
@@ -414,15 +414,6 @@ dependencies = [
     { name = "numpy" },
     { name = "opencv-python" },
     { name = "pandas" },
-    { name = "pydantic" },
-    { name = "pydantic-yaml" },
-]
-
-[[package]]
-name = "swc-aeon-rigs"
-version = "0.1.0"
-source = { git = "https://github.com/SainsburyWellcomeCentre/aeon_swc_rigs.git#fa6f4cf83aac773c947989869ed530058640a0a8" }
-dependencies = [
     { name = "pydantic" },
     { name = "pydantic-yaml" },
 ]
@@ -458,28 +449,28 @@ wheels = [
 ]
 
 [[package]]
+name = "ucl-open"
+version = "0.0.0"
+source = { git = "https://github.com/ucl-open/ucl-open?branch=main#c3dc68bf2fa752a75f25591c55c640138f6afd4f" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "pydantic-yaml" },
+    { name = "swc-aeon" },
+]
+
+[[package]]
 name = "ucl-open-av-dome"
 version = "0.0.0rc1"
 source = { editable = "." }
 dependencies = [
     { name = "pydantic-settings" },
     { name = "swc-aeon" },
-    { name = "ucl-open-rigs" },
+    { name = "ucl-open" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "pydantic-settings" },
-    { name = "swc-aeon", git = "https://github.com/SainsburyWellcomeCentre/aeon_api.git?branch=pydantic-schema" },
-    { name = "ucl-open-rigs", git = "https://github.com/ucl-open/ucl_open_rigs/?branch=test_build" },
-]
-
-[[package]]
-name = "ucl-open-rigs"
-version = "0.1.0"
-source = { git = "https://github.com/ucl-open/ucl_open_rigs/?branch=test_build#5cabc5b4d596747a60cf74431f5b76c4bdbfe019" }
-dependencies = [
-    { name = "pydantic" },
-    { name = "pydantic-yaml" },
-    { name = "swc-aeon-rigs" },
+    { name = "swc-aeon", git = "https://github.com/SainsburyWellcomeCentre/aeon_api.git?branch=main" },
+    { name = "ucl-open", git = "https://github.com/ucl-open/ucl-open?branch=main" },
 ]

@@ -2799,11 +2799,59 @@
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="SubscribeSubject">
+                          <Name>ActiveSoundChannels</Name>
+                        </Expression>
+                        <Expression xsi:type="Format">
+                          <Format>C:\RigConfigs\SpeakerCalibration\Speaker_{0:D3}_FIR_filter.csv</Format>
+                          <Selector>it</Selector>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="FileName" Selector="it" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="io:CsvReader">
+                          <io:FileName>C:\RigConfigs\SpeakerCalibration\Speaker_002_FIR_filter.csv</io:FileName>
+                          <io:ScanPattern>%f</io:ScanPattern>
+                          <io:SkipRows>1</io:SkipRows>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:ToArray" />
+                        </Expression>
+                        <Expression xsi:type="rx:AsyncSubject">
+                          <Name>FIR_Filter</Name>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
                           <Name>waveformPinkNoise</Name>
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="rx:Take">
                             <rx:Count>1</rx:Count>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>FIR_Filter</Name>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="Kernel" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="MemberSelector">
+                          <Selector>Length</Selector>
+                        </Expression>
+                        <Expression xsi:type="scr:ExpressionTransform">
+                          <scr:Expression>int32(Math.Floor(single(it) / 2))</scr:Expression>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="Anchor" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="dsp:FirFilter">
+                            <dsp:Anchor>128</dsp:Anchor>
+                            <dsp:Kernel>0,-1.36E-07,-3.37E-07,-1.08E-07,-1.89E-07,5.065E-06,7.376E-06,-7.57E-07,-1.177E-05,-1.8473E-05,-1.264E-06,1.5643E-05,9.379E-06,-4.39E-07,3.6342E-05,1.8949E-05,-9.9912E-05,-4.5718E-05,6.6667E-05,6.9131E-05,9.238E-06,-7.6379E-05,4.0976E-05,3.657E-06,-0.00017001,-7.99E-07,0.000230875,0.000183539,-0.000108699,-0.00015136,-0.000235476,-0.000292678,0.000320442,0.000601378,0.000179129,-0.000408907,-0.000442713,6.9601E-05,0.000266883,-0.000218107,-0.000633393,0.00092913,0.000599063,-0.001186341,0.001309873,0.000711906,-0.002539347,-0.000954633,0.000428081,0.001569681,0.002072222,-0.00040469,-0.001324259,-0.001367712,-0.001119049,0.001217565,0.00204705,-0.000222627,-0.001470617,-0.000220031,0.00108786,3.7281E-05,-0.000417031,0.00188847,-0.001313099,-0.003727528,0.001396711,0.001793161,0.00046268,0.000697762,0.000523254,0.000783799,-0.0017698,-0.002803865,-0.003398083,0.002659498,0.006924046,-0.00336246,-0.001613983,0.004565317,0.001337448,-0.002476292,-0.008718901,-0.002533492,0.001970163,0.004349419,0.01564217,0.002802464,-0.01408997,-0.01194645,-0.003932427,0.009863163,0.009169235,-0.003014962,-0.000651998,0.00508762,-0.001431792,-0.005944098,-0.005794993,-0.003275499,0.009952893,0.009038511,-0.005856681,-0.011225,0.001670679,0.01696133,-0.002029775,-0.008673759,-0.002540187,-0.007578103,0.01159265,-0.007141871,-0.00910576,0.03060134,-0.002469984,-0.005635545,0.0103214,-0.03193246,-0.01637087,0.01615958,0.007785107,0.007746451,0.02098331,0.02283235,-0.004984386,-0.02901064,-0.09020652,-0.2192184,0.8473704,-0.2192184,-0.09020652,-0.02901064,-0.004984386,0.02283235,0.02098331,0.007746451,0.007785107,0.01615958,-0.01637087,-0.03193246,0.0103214,-0.005635545,-0.002469984,0.03060134,-0.00910576,-0.007141871,0.01159265,-0.007578103,-0.002540187,-0.008673759,-0.002029775,0.01696133,0.001670679,-0.011225,-0.005856681,0.009038511,0.009952893,-0.003275499,-0.005794993,-0.005944098,-0.001431792,0.00508762,-0.000651998,-0.003014962,0.009169235,0.009863163,-0.003932427,-0.01194645,-0.01408997,0.002802464,0.01564217,0.004349419,0.001970163,-0.002533492,-0.008718901,-0.002476292,0.001337448,0.004565317,-0.001613983,-0.00336246,0.006924046,0.002659498,-0.003398083,-0.002803865,-0.0017698,0.000783799,0.000523254,0.000697762,0.00046268,0.001793161,0.001396711,-0.003727528,-0.001313099,0.00188847,-0.000417031,3.7281E-05,0.00108786,-0.000220031,-0.001470617,-0.000222627,0.00204705,0.001217565,-0.001119049,-0.001367712,-0.001324259,-0.00040469,0.002072222,0.001569681,0.000428081,-0.000954633,-0.002539347,0.000711906,0.001309873,-0.001186341,0.000599063,0.00092913,-0.000633393,-0.000218107,0.000266883,6.9601E-05,-0.000442713,-0.000408907,0.000179129,0.000601378,0.000320442,-0.000292678,-0.000235476,-0.00015136,-0.000108699,0.000183539,0.000230875,-7.99E-07,-0.00017001,3.657E-06,4.0976E-05,-7.6379E-05,9.238E-06,6.9131E-05,6.6667E-05,-4.5718E-05,-9.9912E-05,1.8949E-05,3.6342E-05,-4.39E-07,9.379E-06,1.5643E-05,-1.264E-06,-1.8473E-05,-1.177E-05,-7.57E-07,7.376E-06,5.065E-06,-1.89E-07,-1.08E-07,-3.37E-07,-1.36E-07,0</dsp:Kernel>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
@@ -2873,20 +2921,32 @@
                       </Nodes>
                       <Edges>
                         <Edge From="0" To="1" Label="Source1" />
-                        <Edge From="1" To="4" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
                         <Edge From="2" To="3" Label="Source1" />
-                        <Edge From="3" To="4" Label="Source2" />
-                        <Edge From="4" To="9" Label="Source1" />
-                        <Edge From="5" To="6" Label="Source1" />
+                        <Edge From="3" To="4" Label="Source1" />
+                        <Edge From="4" To="5" Label="Source1" />
                         <Edge From="6" To="7" Label="Source1" />
-                        <Edge From="7" To="8" Label="Source1" />
-                        <Edge From="8" To="9" Label="Source2" />
-                        <Edge From="9" To="13" Label="Source1" />
+                        <Edge From="7" To="13" Label="Source1" />
+                        <Edge From="8" To="9" Label="Source1" />
+                        <Edge From="8" To="10" Label="Source1" />
+                        <Edge From="9" To="13" Label="Source2" />
                         <Edge From="10" To="11" Label="Source1" />
                         <Edge From="11" To="12" Label="Source1" />
-                        <Edge From="12" To="13" Label="Source2" />
-                        <Edge From="13" To="14" Label="Source1" />
+                        <Edge From="12" To="13" Label="Source3" />
+                        <Edge From="13" To="16" Label="Source1" />
                         <Edge From="14" To="15" Label="Source1" />
+                        <Edge From="15" To="16" Label="Source2" />
+                        <Edge From="16" To="21" Label="Source1" />
+                        <Edge From="17" To="18" Label="Source1" />
+                        <Edge From="18" To="19" Label="Source1" />
+                        <Edge From="19" To="20" Label="Source1" />
+                        <Edge From="20" To="21" Label="Source2" />
+                        <Edge From="21" To="25" Label="Source1" />
+                        <Edge From="22" To="23" Label="Source1" />
+                        <Edge From="23" To="24" Label="Source1" />
+                        <Edge From="24" To="25" Label="Source2" />
+                        <Edge From="25" To="26" Label="Source1" />
+                        <Edge From="26" To="27" Label="Source1" />
                       </Edges>
                     </Workflow>
                   </Expression>
@@ -3043,12 +3103,62 @@
                     <Name>PlayErrorSound</Name>
                     <Workflow>
                       <Nodes>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="IntProperty">
+                            <Value>2</Value>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="Format">
+                          <Format>C:\RigConfigs\SpeakerCalibration\Speaker_{0:D3}_FIR_filter.csv</Format>
+                          <Selector>it</Selector>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="FileName" Selector="it" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="io:CsvReader">
+                          <io:FileName>C:\RigConfigs\SpeakerCalibration\Speaker_002_FIR_filter.csv</io:FileName>
+                          <io:ScanPattern>%f</io:ScanPattern>
+                          <io:SkipRows>1</io:SkipRows>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:ToArray" />
+                        </Expression>
+                        <Expression xsi:type="rx:AsyncSubject">
+                          <Name>FIR_Filter</Name>
+                        </Expression>
                         <Expression xsi:type="SubscribeSubject">
                           <Name>waveformErrorSound</Name>
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="rx:Take">
                             <rx:Count>1</rx:Count>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>FIR_Filter</Name>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="Kernel" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="MemberSelector">
+                          <Selector>Length</Selector>
+                        </Expression>
+                        <Expression xsi:type="scr:ExpressionTransform">
+                          <scr:Expression>int32(Math.Floor(single(it) / 2))</scr:Expression>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="Anchor" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="dsp:FirFilter">
+                            <dsp:Anchor>128</dsp:Anchor>
+                            <dsp:Kernel>0,-1.36E-07,-3.37E-07,-1.08E-07,-1.89E-07,5.065E-06,7.376E-06,-7.57E-07,-1.177E-05,-1.8473E-05,-1.264E-06,1.5643E-05,9.379E-06,-4.39E-07,3.6342E-05,1.8949E-05,-9.9912E-05,-4.5718E-05,6.6667E-05,6.9131E-05,9.238E-06,-7.6379E-05,4.0976E-05,3.657E-06,-0.00017001,-7.99E-07,0.000230875,0.000183539,-0.000108699,-0.00015136,-0.000235476,-0.000292678,0.000320442,0.000601378,0.000179129,-0.000408907,-0.000442713,6.9601E-05,0.000266883,-0.000218107,-0.000633393,0.00092913,0.000599063,-0.001186341,0.001309873,0.000711906,-0.002539347,-0.000954633,0.000428081,0.001569681,0.002072222,-0.00040469,-0.001324259,-0.001367712,-0.001119049,0.001217565,0.00204705,-0.000222627,-0.001470617,-0.000220031,0.00108786,3.7281E-05,-0.000417031,0.00188847,-0.001313099,-0.003727528,0.001396711,0.001793161,0.00046268,0.000697762,0.000523254,0.000783799,-0.0017698,-0.002803865,-0.003398083,0.002659498,0.006924046,-0.00336246,-0.001613983,0.004565317,0.001337448,-0.002476292,-0.008718901,-0.002533492,0.001970163,0.004349419,0.01564217,0.002802464,-0.01408997,-0.01194645,-0.003932427,0.009863163,0.009169235,-0.003014962,-0.000651998,0.00508762,-0.001431792,-0.005944098,-0.005794993,-0.003275499,0.009952893,0.009038511,-0.005856681,-0.011225,0.001670679,0.01696133,-0.002029775,-0.008673759,-0.002540187,-0.007578103,0.01159265,-0.007141871,-0.00910576,0.03060134,-0.002469984,-0.005635545,0.0103214,-0.03193246,-0.01637087,0.01615958,0.007785107,0.007746451,0.02098331,0.02283235,-0.004984386,-0.02901064,-0.09020652,-0.2192184,0.8473704,-0.2192184,-0.09020652,-0.02901064,-0.004984386,0.02283235,0.02098331,0.007746451,0.007785107,0.01615958,-0.01637087,-0.03193246,0.0103214,-0.005635545,-0.002469984,0.03060134,-0.00910576,-0.007141871,0.01159265,-0.007578103,-0.002540187,-0.008673759,-0.002029775,0.01696133,0.001670679,-0.011225,-0.005856681,0.009038511,0.009952893,-0.003275499,-0.005794993,-0.005944098,-0.001431792,0.00508762,-0.000651998,-0.003014962,0.009169235,0.009863163,-0.003932427,-0.01194645,-0.01408997,0.002802464,0.01564217,0.004349419,0.001970163,-0.002533492,-0.008718901,-0.002476292,0.001337448,0.004565317,-0.001613983,-0.00336246,0.006924046,0.002659498,-0.003398083,-0.002803865,-0.0017698,0.000783799,0.000523254,0.000697762,0.00046268,0.001793161,0.001396711,-0.003727528,-0.001313099,0.00188847,-0.000417031,3.7281E-05,0.00108786,-0.000220031,-0.001470617,-0.000222627,0.00204705,0.001217565,-0.001119049,-0.001367712,-0.001324259,-0.00040469,0.002072222,0.001569681,0.000428081,-0.000954633,-0.002539347,0.000711906,0.001309873,-0.001186341,0.000599063,0.00092913,-0.000633393,-0.000218107,0.000266883,6.9601E-05,-0.000442713,-0.000408907,0.000179129,0.000601378,0.000320442,-0.000292678,-0.000235476,-0.00015136,-0.000108699,0.000183539,0.000230875,-7.99E-07,-0.00017001,3.657E-06,4.0976E-05,-7.6379E-05,9.238E-06,6.9131E-05,6.6667E-05,-4.5718E-05,-9.9912E-05,1.8949E-05,3.6342E-05,-4.39E-07,9.379E-06,1.5643E-05,-1.264E-06,-1.8473E-05,-1.177E-05,-7.57E-07,7.376E-06,5.065E-06,-1.89E-07,-1.08E-07,-3.37E-07,-1.36E-07,0</dsp:Kernel>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
@@ -3098,15 +3208,27 @@
                       </Nodes>
                       <Edges>
                         <Edge From="0" To="1" Label="Source1" />
-                        <Edge From="1" To="4" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
                         <Edge From="2" To="3" Label="Source1" />
-                        <Edge From="3" To="4" Label="Source2" />
-                        <Edge From="4" To="9" Label="Source1" />
-                        <Edge From="5" To="6" Label="Source1" />
+                        <Edge From="3" To="4" Label="Source1" />
+                        <Edge From="4" To="5" Label="Source1" />
                         <Edge From="6" To="7" Label="Source1" />
-                        <Edge From="7" To="8" Label="Source1" />
-                        <Edge From="8" To="9" Label="Source2" />
-                        <Edge From="9" To="10" Label="Source1" />
+                        <Edge From="7" To="13" Label="Source1" />
+                        <Edge From="8" To="9" Label="Source1" />
+                        <Edge From="8" To="10" Label="Source1" />
+                        <Edge From="9" To="13" Label="Source2" />
+                        <Edge From="10" To="11" Label="Source1" />
+                        <Edge From="11" To="12" Label="Source1" />
+                        <Edge From="12" To="13" Label="Source3" />
+                        <Edge From="13" To="16" Label="Source1" />
+                        <Edge From="14" To="15" Label="Source1" />
+                        <Edge From="15" To="16" Label="Source2" />
+                        <Edge From="16" To="21" Label="Source1" />
+                        <Edge From="17" To="18" Label="Source1" />
+                        <Edge From="18" To="19" Label="Source1" />
+                        <Edge From="19" To="20" Label="Source1" />
+                        <Edge From="20" To="21" Label="Source2" />
+                        <Edge From="21" To="22" Label="Source1" />
                       </Edges>
                     </Workflow>
                   </Expression>
