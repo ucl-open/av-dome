@@ -40,7 +40,7 @@ public class RigConfigs
     {
         RigSpecificConfigs currentRigConfigs = new RigSpecificConfigs();
 
-        // // GreenDome2 // //
+        // // GreenDome1 // //
         // COM ports
         currentRigConfigs.COMPortBehaviourBoard = "COM6";
         currentRigConfigs.COMPortStepperDriver1 = "COM4";  // Motors 1,2,3
@@ -55,7 +55,7 @@ public class RigConfigs
         currentRigConfigs.SerialNumberCamera3 = "23199184";  // Body
 
         // Valve Calibration
-        currentRigConfigs.ValveOpenTimeLeft = 76;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeLeft = 55;  // in ms. ~10ms min.
         currentRigConfigs.ValveOpenTimeRight = 80;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
