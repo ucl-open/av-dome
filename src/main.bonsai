@@ -62,7 +62,7 @@
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:TimestampGeneratorGen3.bonsai">
                     <CommandsSubjectName>TimestampGeneratorCommands</CommandsSubjectName>
-                    <PortName>COMx</PortName>
+                    <PortName>COM16</PortName>
                     <DumpRegisters>true</DumpRegisters>
                     <Heartbeat>Enabled</Heartbeat>
                     <EventsSubjectName>ClockSynchronizerEvents</EventsSubjectName>
@@ -93,7 +93,7 @@
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.BehaviorBoard.bonsai">
                           <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
-                          <PortName>COMx</PortName>
+                          <PortName>COM11</PortName>
                           <DumpRegisters>true</DumpRegisters>
                           <Heartbeat>Enabled</Heartbeat>
                           <EventsSubjectName>BehaviorEvents</EventsSubjectName>
@@ -115,12 +115,12 @@
                           <Property Name="PulseDO3" />
                           <Property Name="OutputPulseEnable" />
                         </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.PulseController.bonsai">
+                        <Expression xsi:type="IncludeWorkflow" Path="Extensions\PulseController.bonsai">
                           <BehaviorCommandsSubjectName>BehaviorCommands</BehaviorCommandsSubjectName>
                           <OutputPulseEnable>DO1 DO2 DO3</OutputPulseEnable>
-                          <PulseDO1>1</PulseDO1>
-                          <PulseDO2>1</PulseDO2>
-                          <PulseDO3>1</PulseDO3>
+                          <PulseDO1>40</PulseDO1>
+                          <PulseDO2>40</PulseDO2>
+                          <PulseDO3>20</PulseDO3>
                           <BehaviorEventsSubjectName>BehaviorEvents</BehaviorEventsSubjectName>
                           <TriggerPulseSubjectName>TriggerPulse</TriggerPulseSubjectName>
                         </Expression>
@@ -317,7 +317,7 @@
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:LicketySplit.bonsai">
                           <CommandsSubjectName>LickCommandsRight</CommandsSubjectName>
-                          <PortName>COMx</PortName>
+                          <PortName>COM13</PortName>
                           <DumpRegisters>true</DumpRegisters>
                           <Heartbeat>Disabled</Heartbeat>
                           <EventsSubjectName>LickEventsRight</EventsSubjectName>
@@ -337,7 +337,7 @@
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:LicketySplit.bonsai">
                           <CommandsSubjectName>LickCommandsLeft</CommandsSubjectName>
-                          <PortName>COMx</PortName>
+                          <PortName>COM15</PortName>
                           <DumpRegisters>true</DumpRegisters>
                           <Heartbeat>Disabled</Heartbeat>
                           <EventsSubjectName>LickEventsLeft</EventsSubjectName>
@@ -376,7 +376,7 @@
                           <ExposureTime>19000</ExposureTime>
                           <Gain>0</Gain>
                           <Binning>1</Binning>
-                          <SerialNumber xsi:nil="true" />
+                          <SerialNumber>25366326</SerialNumber>
                           <ColorProcessing>Default</ColorProcessing>
                           <CameraTriggerEventsSubjectName>Camera0TriggerEvents</CameraTriggerEventsSubjectName>
                           <FrameEventsSubjectName>FrameEvents1</FrameEventsSubjectName>
@@ -399,7 +399,7 @@
                           <ExposureTime>19000</ExposureTime>
                           <Gain>0</Gain>
                           <Binning>1</Binning>
-                          <SerialNumber xsi:nil="true" />
+                          <SerialNumber>25366318</SerialNumber>
                           <ColorProcessing>Default</ColorProcessing>
                           <CameraTriggerEventsSubjectName>Camera0TriggerEvents</CameraTriggerEventsSubjectName>
                           <FrameEventsSubjectName>FrameEvents3</FrameEventsSubjectName>
@@ -420,9 +420,9 @@
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:TriggeredSpinnaker.bonsai">
                           <ExposureTime>19000</ExposureTime>
-                          <Gain>0</Gain>
+                          <Gain>20</Gain>
                           <Binning>1</Binning>
-                          <SerialNumber xsi:nil="true" />
+                          <SerialNumber>25366328</SerialNumber>
                           <ColorProcessing>Default</ColorProcessing>
                           <CameraTriggerEventsSubjectName>Camera0TriggerEvents</CameraTriggerEventsSubjectName>
                           <FrameEventsSubjectName>FrameEvents2</FrameEventsSubjectName>
@@ -472,7 +472,7 @@
                                   <harp:VisualIndicators>On</harp:VisualIndicators>
                                   <harp:Heartbeat>Enabled</harp:Heartbeat>
                                   <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                                  <harp:PortName>COM7</harp:PortName>
+                                  <harp:PortName>COM14</harp:PortName>
                                 </Combinator>
                               </Expression>
                               <Expression xsi:type="rx:BehaviorSubject">
@@ -492,7 +492,7 @@
                                   <harp:VisualIndicators>On</harp:VisualIndicators>
                                   <harp:Heartbeat>Enabled</harp:Heartbeat>
                                   <harp:IgnoreErrors>false</harp:IgnoreErrors>
-                                  <harp:PortName>COM8</harp:PortName>
+                                  <harp:PortName>COM12</harp:PortName>
                                 </Combinator>
                               </Expression>
                               <Expression xsi:type="rx:BehaviorSubject">
@@ -1305,8 +1305,8 @@
                                 </PropertyMappings>
                               </Expression>
                               <Expression xsi:type="IncludeWorkflow" Path="Extensions\Zapit.bonsai">
-                                <Host>unmapped</Host>
-                                <Port>0</Port>
+                                <Host>127.0.0.1</Host>
+                                <Port>1488</Port>
                                 <ReceiveTimeout>5000</ReceiveTimeout>
                               </Expression>
                               <Expression xsi:type="WorkflowOutput" />
@@ -1974,7 +1974,7 @@
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p1:ChannelActivation">
                             <p1:Channels>
-                              <p1:int>1</p1:int>
+                              <p1:int>0</p1:int>
                             </p1:Channels>
                             <p1:Gain>
                               <p1:double>1</p1:double>
@@ -2234,6 +2234,9 @@
             <Expression xsi:type="rx:AsyncSubject">
               <Name>TaskConfig</Name>
             </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>TaskParameters.Optogenetics.StimProbability</Selector>
+            </Expression>
             <Expression xsi:type="Annotation">
               <Name>Initialized first trial</Name>
               <Text><![CDATA[Initialized first trial]]></Text>
@@ -2258,9 +2261,10 @@
             <Edge From="0" To="1" Label="Source1" />
             <Edge From="1" To="2" Label="Source1" />
             <Edge From="2" To="3" Label="Source1" />
-            <Edge From="4" To="5" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
             <Edge From="5" To="6" Label="Source1" />
             <Edge From="6" To="7" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -2408,7 +2412,7 @@
                 <gui:string>GN014</gui:string>
                 <gui:string>GN015</gui:string>
               </gui:Items>
-              <gui:SelectedItem>GN013</gui:SelectedItem>
+              <gui:SelectedItem>Dummy</gui:SelectedItem>
             </Expression>
             <Expression xsi:type="rx:BehaviorSubject">
               <Name>MouseID</Name>
@@ -2464,7 +2468,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>00:13:50</gui:Text>
+              <gui:Text>00:00:11</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -2489,7 +2493,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>169</gui:Text>
+              <gui:Text>2</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -2513,7 +2517,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>Right</gui:Text>
+              <gui:Text>Left</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -2588,7 +2592,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>60</gui:Text>
+              <gui:Text>-30.3569911934235</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -2613,7 +2617,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>60</gui:Text>
+              <gui:Text>-60</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -2663,7 +2667,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>318</gui:Text>
+              <gui:Text>0</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -2747,7 +2751,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>39.61</gui:Text>
+              <gui:Text>0.00</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -2976,7 +2980,7 @@
               <gui:Name>BLANK</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>6050,6790,4760,4200,4950;</gui:Text>
+              <gui:Text>0,0,0,0,0;</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:ButtonBuilder">
@@ -5714,7 +5718,7 @@
                     <Property Name="FileName" />
                   </Expression>
                   <Expression xsi:type="io:CsvWriter">
-                    <io:FileName>C:\RigConfigs\LickSpoutPositions\GN013.csv</io:FileName>
+                    <io:FileName>C:\RigConfigs\LickSpoutPositions\Dummy.csv</io:FileName>
                     <io:Delimiter>,</io:Delimiter>
                     <io:ListSeparator>;</io:ListSeparator>
                     <io:Append>false</io:Append>
@@ -5801,7 +5805,7 @@
                           <Property Name="FileName" />
                         </Expression>
                         <Expression xsi:type="io:CsvReader">
-                          <io:FileName>C:\RigConfigs\LickSpoutPositions\GN013.csv</io:FileName>
+                          <io:FileName>C:\RigConfigs\LickSpoutPositions\Dummy.csv</io:FileName>
                           <io:ScanPattern>%i,%i,%i,%i,%i</io:ScanPattern>
                           <io:SkipRows>0</io:SkipRows>
                         </Expression>
@@ -5994,9 +5998,9 @@
                     </PropertyMappings>
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogController.bonsai">
-                    <SubjectId>GN013</SubjectId>
+                    <SubjectId>Dummy</SubjectId>
                     <SessionId>Stage 1</SessionId>
-                    <Path>C:\Data\AV_Dome</Path>
+                    <Path>C:\data\AV_Dome</Path>
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:DelaySubscription">
@@ -6346,7 +6350,7 @@ Item4 as ExposureTime)</scr:Expression>
                                             <Property Name="FileName" />
                                           </Expression>
                                           <Expression xsi:type="io:CsvWriter">
-                                            <io:FileName>C:\Data\AV_Dome\sub-GN013\ses-Stage 1_date-2026-08-18T13-00-57\Cameras\VideoData_Camera1.csv</io:FileName>
+                                            <io:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-13T16-04-58\Cameras\VideoData_Camera1.csv</io:FileName>
                                             <io:Append>false</io:Append>
                                             <io:Overwrite>true</io:Overwrite>
                                             <io:Suffix>None</io:Suffix>
@@ -6440,7 +6444,7 @@ Item4 as ExposureTime)</scr:Expression>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
-                                        <cv:FileName>C:\Data\AV_Dome\sub-GN013\ses-Stage 1_date-2026-08-18T13-00-57\Cameras\VideoData_Camera1.avi</cv:FileName>
+                                        <cv:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-13T16-04-58\Cameras\VideoData_Camera1.avi</cv:FileName>
                                         <cv:Suffix>None</cv:Suffix>
                                         <cv:Buffered>true</cv:Buffered>
                                         <cv:Overwrite>false</cv:Overwrite>
@@ -6582,7 +6586,7 @@ Item4 as ExposureTime)</scr:Expression>
                                             <Property Name="FileName" />
                                           </Expression>
                                           <Expression xsi:type="io:CsvWriter">
-                                            <io:FileName>C:\Data\AV_Dome\sub-GN013\ses-Stage 1_date-2026-08-18T13-00-57\Cameras\VideoData_Camera2.csv</io:FileName>
+                                            <io:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-13T16-04-58\Cameras\VideoData_Camera2.csv</io:FileName>
                                             <io:Append>false</io:Append>
                                             <io:Overwrite>true</io:Overwrite>
                                             <io:Suffix>None</io:Suffix>
@@ -6676,7 +6680,7 @@ Item4 as ExposureTime)</scr:Expression>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
-                                        <cv:FileName>C:\Data\AV_Dome\sub-GN013\ses-Stage 1_date-2026-08-18T13-00-57\Cameras\VideoData_Camera2.avi</cv:FileName>
+                                        <cv:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-13T16-04-58\Cameras\VideoData_Camera2.avi</cv:FileName>
                                         <cv:Suffix>None</cv:Suffix>
                                         <cv:Buffered>true</cv:Buffered>
                                         <cv:Overwrite>true</cv:Overwrite>
@@ -6818,7 +6822,7 @@ Item4 as ExposureTime)</scr:Expression>
                                             <Property Name="FileName" />
                                           </Expression>
                                           <Expression xsi:type="io:CsvWriter">
-                                            <io:FileName>C:\Data\AV_Dome\sub-GN013\ses-Stage 1_date-2026-08-18T13-00-57\Cameras\VideoData_Camera3.csv</io:FileName>
+                                            <io:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-13T16-04-58\Cameras\VideoData_Camera3.csv</io:FileName>
                                             <io:Append>false</io:Append>
                                             <io:Overwrite>true</io:Overwrite>
                                             <io:Suffix>None</io:Suffix>
@@ -6912,7 +6916,7 @@ Item4 as ExposureTime)</scr:Expression>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
-                                        <cv:FileName>C:\Data\AV_Dome\sub-GN013\ses-Stage 1_date-2026-08-18T13-00-57\Cameras\VideoData_Camera3.avi</cv:FileName>
+                                        <cv:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-13T16-04-58\Cameras\VideoData_Camera3.avi</cv:FileName>
                                         <cv:Suffix>None</cv:Suffix>
                                         <cv:Buffered>true</cv:Buffered>
                                         <cv:Overwrite>true</cv:Overwrite>
@@ -7867,7 +7871,7 @@ Item4 as ExposureTime)</scr:Expression>
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="gl:CreateVector3">
-                            <gl:X>60</gl:X>
+                            <gl:X>-60</gl:X>
                             <gl:Y>15</gl:Y>
                             <gl:Z>0</gl:Z>
                           </Combinator>
@@ -8157,20 +8161,20 @@ Item4 as ExposureTime)</scr:Expression>
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="BonVision:Primitives.DrawGratings.bonsai">
-                          <LocationX>60</LocationX>
+                          <LocationX>-30.35699</LocationX>
                           <LocationY>15</LocationY>
                           <Layer>0</Layer>
                           <ExtentX>100</ExtentX>
                           <ExtentY>100</ExtentY>
                           <SpatialFrequency>0.06666667</SpatialFrequency>
                           <TemporalFrequency>0</TemporalFrequency>
-                          <Phase>94.79859</Phase>
+                          <Phase>160.113464</Phase>
                           <Angle>0</Angle>
                           <SquareWave>false</SquareWave>
-                          <Contrast>1</Contrast>
+                          <Contrast>3</Contrast>
                           <DutyCycle xsi:nil="true" />
                           <Radius>1</Radius>
-                          <Aperture>0.3</Aperture>
+                          <Aperture>0.4</Aperture>
                           <Opacity>1</Opacity>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -8351,7 +8355,7 @@ Item4 as ExposureTime)</scr:Expression>
                     <Combinator xsi:type="p1:CreateStartStimulus">
                       <p1:ConditionNumber>0</p1:ConditionNumber>
                       <p1:LaserOn>true</p1:LaserOn>
-                      <p1:HardwareTriggered>false</p1:HardwareTriggered>
+                      <p1:HardwareTriggered>true</p1:HardwareTriggered>
                       <p1:Logging>true</p1:Logging>
                       <p1:StimDuration>0</p1:StimDuration>
                       <p1:LaserPower>0</p1:LaserPower>
@@ -8402,7 +8406,7 @@ Item4 as ExposureTime)</scr:Expression>
               </PropertyMappings>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="Extensions\HarpDelay.bonsai">
-              <DueSeconds>0.5</DueSeconds>
+              <DueSeconds>0</DueSeconds>
             </Expression>
             <Expression xsi:type="Disable">
               <Builder xsi:type="rx:SelectMany">
@@ -8791,7 +8795,7 @@ Item4 as ExposureTime)</scr:Expression>
                     <Property Name="DueSeconds" />
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="Extensions\HarpDelay.bonsai">
-                    <DueSeconds>2</DueSeconds>
+                    <DueSeconds>1.5</DueSeconds>
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:Take">
@@ -9619,7 +9623,7 @@ Item2.Item2 as autoReward) </scr:Expression>
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="Extensions\HarpDelay.bonsai">
-                          <DueSeconds>0</DueSeconds>
+                          <DueSeconds>4.2723241542802768</DueSeconds>
                         </Expression>
                         <Expression xsi:type="WorkflowOutput" />
                       </Nodes>
