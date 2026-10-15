@@ -55,8 +55,8 @@ public class RigConfigs
         currentRigConfigs.SerialNumberCamera3 = "23199184";  // Body
 
         // Valve Calibration
-        currentRigConfigs.ValveOpenTimeLeft = 55;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 80;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeLeft = 65;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 82;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
