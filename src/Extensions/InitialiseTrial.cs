@@ -121,6 +121,10 @@ public class InitialiseTrial
         if (azimuths != null && azimuths.Count > 0)
         {
             double cap = visual.CoherentAzimuthCap;
+            if (azimuths.Any(azimuth => azimuth < -180 || azimuth > 180))
+            {
+                throw new InvalidOperationException("overwriteAzimuths values must be within [-180, 180].");
+            }
             if (!azimuths.Any(azimuth => azimuth > 0 && azimuth <= cap) ||
                 !azimuths.Any(azimuth => azimuth < 0 && azimuth >= -cap))
             {
