@@ -1311,6 +1311,9 @@
                               </Expression>
                               <Expression xsi:type="WorkflowOutput" />
                               <Expression xsi:type="SubscribeSubject">
+                                <Name>Trigger1Frequency</Name>
+                              </Expression>
+                              <Expression xsi:type="SubscribeSubject">
                                 <Name>ZapitReplies</Name>
                               </Expression>
                               <Expression xsi:type="SubscribeSubject">
@@ -1349,11 +1352,11 @@
                               <Edge From="1" To="2" Label="Source1" />
                               <Edge From="2" To="3" Label="Source1" />
                               <Edge From="3" To="4" Label="Source1" />
-                              <Edge From="5" To="7" Label="Source1" />
-                              <Edge From="6" To="7" Label="Source2" />
-                              <Edge From="7" To="8" Label="Source1" />
+                              <Edge From="6" To="8" Label="Source1" />
+                              <Edge From="7" To="8" Label="Source2" />
                               <Edge From="8" To="9" Label="Source1" />
                               <Edge From="9" To="10" Label="Source1" />
+                              <Edge From="10" To="11" Label="Source1" />
                             </Edges>
                           </Workflow>
                         </Expression>
@@ -1974,7 +1977,7 @@
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p1:ChannelActivation">
                             <p1:Channels>
-                              <p1:int>0</p1:int>
+                              <p1:int>1</p1:int>
                             </p1:Channels>
                             <p1:Gain>
                               <p1:double>1</p1:double>
@@ -2468,7 +2471,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>00:00:11</gui:Text>
+              <gui:Text>00:01:02</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -2493,7 +2496,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>2</gui:Text>
+              <gui:Text>0</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -2517,7 +2520,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>Left</gui:Text>
+              <gui:Text>Right</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -2592,7 +2595,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>-30.3569911934235</gui:Text>
+              <gui:Text>28.088378975209</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -2617,7 +2620,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>-60</gui:Text>
+              <gui:Text>60</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -6350,7 +6353,7 @@ Item4 as ExposureTime)</scr:Expression>
                                             <Property Name="FileName" />
                                           </Expression>
                                           <Expression xsi:type="io:CsvWriter">
-                                            <io:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-13T16-04-58\Cameras\VideoData_Camera1.csv</io:FileName>
+                                            <io:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-16T14-14-37\Cameras\VideoData_Camera1.csv</io:FileName>
                                             <io:Append>false</io:Append>
                                             <io:Overwrite>true</io:Overwrite>
                                             <io:Suffix>None</io:Suffix>
@@ -6444,7 +6447,7 @@ Item4 as ExposureTime)</scr:Expression>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
-                                        <cv:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-13T16-04-58\Cameras\VideoData_Camera1.avi</cv:FileName>
+                                        <cv:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-16T14-14-37\Cameras\VideoData_Camera1.avi</cv:FileName>
                                         <cv:Suffix>None</cv:Suffix>
                                         <cv:Buffered>true</cv:Buffered>
                                         <cv:Overwrite>false</cv:Overwrite>
@@ -6586,7 +6589,7 @@ Item4 as ExposureTime)</scr:Expression>
                                             <Property Name="FileName" />
                                           </Expression>
                                           <Expression xsi:type="io:CsvWriter">
-                                            <io:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-13T16-04-58\Cameras\VideoData_Camera2.csv</io:FileName>
+                                            <io:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-16T14-14-37\Cameras\VideoData_Camera2.csv</io:FileName>
                                             <io:Append>false</io:Append>
                                             <io:Overwrite>true</io:Overwrite>
                                             <io:Suffix>None</io:Suffix>
@@ -6680,7 +6683,7 @@ Item4 as ExposureTime)</scr:Expression>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
-                                        <cv:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-13T16-04-58\Cameras\VideoData_Camera2.avi</cv:FileName>
+                                        <cv:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-16T14-14-37\Cameras\VideoData_Camera2.avi</cv:FileName>
                                         <cv:Suffix>None</cv:Suffix>
                                         <cv:Buffered>true</cv:Buffered>
                                         <cv:Overwrite>true</cv:Overwrite>
@@ -6822,7 +6825,7 @@ Item4 as ExposureTime)</scr:Expression>
                                             <Property Name="FileName" />
                                           </Expression>
                                           <Expression xsi:type="io:CsvWriter">
-                                            <io:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-13T16-04-58\Cameras\VideoData_Camera3.csv</io:FileName>
+                                            <io:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-16T14-14-37\Cameras\VideoData_Camera3.csv</io:FileName>
                                             <io:Append>false</io:Append>
                                             <io:Overwrite>true</io:Overwrite>
                                             <io:Suffix>None</io:Suffix>
@@ -6916,7 +6919,7 @@ Item4 as ExposureTime)</scr:Expression>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
-                                        <cv:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-13T16-04-58\Cameras\VideoData_Camera3.avi</cv:FileName>
+                                        <cv:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 1_date-2026-10-16T14-14-37\Cameras\VideoData_Camera3.avi</cv:FileName>
                                         <cv:Suffix>None</cv:Suffix>
                                         <cv:Buffered>true</cv:Buffered>
                                         <cv:Overwrite>true</cv:Overwrite>
@@ -7817,6 +7820,145 @@ Item4 as ExposureTime)</scr:Expression>
         <DueSeconds>0.5</DueSeconds>
       </Expression>
       <Expression xsi:type="rx:SelectMany">
+        <Name>ArmZapit</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi:type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Take">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:AsyncSubject">
+              <Name>settings</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>settings</Name>
+            </Expression>
+            <Expression xsi:type="rx:Condition">
+              <Name>OptoTrial?</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>OptogeneticEnabled</Selector>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>settings</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="ConditionNumber" Selector="OptogeneticCondition" />
+                <Property Name="StimDuration" Selector="OptogeneticDuration" />
+                <Property Name="StartDelay" Selector="OptogeneticDelay" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>RigConfigs</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="HardwareTriggered" Selector="Zapit.HardwareTriggered" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p1:CreateStartStimulus">
+                <p1:ConditionNumber>0</p1:ConditionNumber>
+                <p1:LaserOn>true</p1:LaserOn>
+                <p1:HardwareTriggered>true</p1:HardwareTriggered>
+                <p1:Logging>true</p1:Logging>
+                <p1:StimDuration>0</p1:StimDuration>
+                <p1:LaserPower>0</p1:LaserPower>
+                <p1:StartDelay>0</p1:StartDelay>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="MulticastSubject">
+              <Name>ZapitCommands</Name>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>ZapitReplies</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Skip">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionCondition">
+              <scr:Expression>CommandCode == 1</scr:Expression>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Take">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>settings</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:WithLatestFrom" />
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Item2</Selector>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>settings</Name>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionCondition">
+              <scr:Expression>!OptogeneticEnabled</scr:Expression>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Merge" />
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Take">
+                <rx:Count>1</rx:Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="WorkflowOutput" />
+          </Nodes>
+          <Edges>
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="1" To="2" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="9" Label="Source1" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="6" To="9" Label="Source2" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="8" To="9" Label="Source3" />
+            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="11" To="12" Label="Source1" />
+            <Edge From="12" To="13" Label="Source1" />
+            <Edge From="13" To="14" Label="Source1" />
+            <Edge From="14" To="16" Label="Source1" />
+            <Edge From="15" To="16" Label="Source2" />
+            <Edge From="16" To="17" Label="Source1" />
+            <Edge From="17" To="20" Label="Source1" />
+            <Edge From="18" To="19" Label="Source1" />
+            <Edge From="19" To="20" Label="Source2" />
+            <Edge From="20" To="21" Label="Source1" />
+            <Edge From="21" To="22" Label="Source1" />
+          </Edges>
+        </Workflow>
+      </Expression>
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="rx:Zip" />
+      </Expression>
+      <Expression xsi:type="MemberSelector">
+        <Selector>Item1</Selector>
+      </Expression>
+      <Expression xsi:type="rx:SelectMany">
         <Name>ExecuteTrial</Name>
         <Workflow>
           <Nodes>
@@ -7871,7 +8013,7 @@ Item4 as ExposureTime)</scr:Expression>
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="gl:CreateVector3">
-                            <gl:X>-60</gl:X>
+                            <gl:X>60</gl:X>
                             <gl:Y>15</gl:Y>
                             <gl:Z>0</gl:Z>
                           </Combinator>
@@ -8161,14 +8303,14 @@ Item4 as ExposureTime)</scr:Expression>
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="BonVision:Primitives.DrawGratings.bonsai">
-                          <LocationX>-30.35699</LocationX>
+                          <LocationX>0.0451867841</LocationX>
                           <LocationY>15</LocationY>
                           <Layer>0</Layer>
                           <ExtentX>100</ExtentX>
                           <ExtentY>100</ExtentY>
                           <SpatialFrequency>0.06666667</SpatialFrequency>
                           <TemporalFrequency>0</TemporalFrequency>
-                          <Phase>160.113464</Phase>
+                          <Phase>320.2659</Phase>
                           <Angle>0</Angle>
                           <SquareWave>false</SquareWave>
                           <Contrast>3</Contrast>
@@ -8333,37 +8475,57 @@ Item4 as ExposureTime)</scr:Expression>
                       </Edges>
                     </Workflow>
                   </Expression>
-                  <Expression xsi:type="SubscribeSubject">
-                    <Name>settings</Name>
-                  </Expression>
-                  <Expression xsi:type="PropertyMapping">
-                    <PropertyMappings>
-                      <Property Name="ConditionNumber" Selector="OptogeneticCondition" />
-                      <Property Name="StimDuration" Selector="OptogeneticDuration" />
-                      <Property Name="StartDelay" Selector="OptogeneticDelay" />
-                    </PropertyMappings>
-                  </Expression>
-                  <Expression xsi:type="SubscribeSubject">
-                    <Name>RigConfigs</Name>
-                  </Expression>
-                  <Expression xsi:type="PropertyMapping">
-                    <PropertyMappings>
-                      <Property Name="HardwareTriggered" Selector="Zapit.HardwareTriggered" />
-                    </PropertyMappings>
-                  </Expression>
                   <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="p1:CreateStartStimulus">
-                      <p1:ConditionNumber>0</p1:ConditionNumber>
-                      <p1:LaserOn>true</p1:LaserOn>
-                      <p1:HardwareTriggered>true</p1:HardwareTriggered>
-                      <p1:Logging>true</p1:Logging>
-                      <p1:StimDuration>0</p1:StimDuration>
-                      <p1:LaserPower>0</p1:LaserPower>
-                      <p1:StartDelay>0</p1:StartDelay>
+                    <Combinator xsi:type="IntProperty">
+                      <Value>3</Value>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="MulticastSubject">
-                    <Name>ZapitCommands</Name>
+                    <Name>TriggerPulse</Name>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="SubscribeSubject">
+                      <Name>settings</Name>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="PropertyMapping">
+                      <PropertyMappings>
+                        <Property Name="ConditionNumber" Selector="OptogeneticCondition" />
+                        <Property Name="StimDuration" Selector="OptogeneticDuration" />
+                        <Property Name="StartDelay" Selector="OptogeneticDelay" />
+                      </PropertyMappings>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="SubscribeSubject">
+                      <Name>RigConfigs</Name>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="PropertyMapping">
+                      <PropertyMappings>
+                        <Property Name="HardwareTriggered" Selector="Zapit.HardwareTriggered" />
+                      </PropertyMappings>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="Combinator">
+                      <Combinator xsi:type="p1:CreateStartStimulus">
+                        <p1:ConditionNumber>0</p1:ConditionNumber>
+                        <p1:LaserOn>true</p1:LaserOn>
+                        <p1:HardwareTriggered>true</p1:HardwareTriggered>
+                        <p1:Logging>true</p1:Logging>
+                        <p1:StimDuration>0</p1:StimDuration>
+                        <p1:LaserPower>0</p1:LaserPower>
+                        <p1:StartDelay>0</p1:StartDelay>
+                      </Combinator>
+                    </Builder>
+                  </Expression>
+                  <Expression xsi:type="Disable">
+                    <Builder xsi:type="MulticastSubject">
+                      <Name>ZapitCommands</Name>
+                    </Builder>
                   </Expression>
                 </Nodes>
                 <Edges>
@@ -8376,12 +8538,14 @@ Item4 as ExposureTime)</scr:Expression>
                   <Edge From="8" To="9" Label="Source1" />
                   <Edge From="9" To="10" Label="Source1" />
                   <Edge From="11" To="12" Label="Source1" />
-                  <Edge From="12" To="17" Label="Source1" />
+                  <Edge From="12" To="13" Label="Source1" />
                   <Edge From="13" To="14" Label="Source1" />
-                  <Edge From="14" To="17" Label="Source2" />
+                  <Edge From="14" To="19" Label="Source1" />
                   <Edge From="15" To="16" Label="Source1" />
-                  <Edge From="16" To="17" Label="Source3" />
+                  <Edge From="16" To="19" Label="Source2" />
                   <Edge From="17" To="18" Label="Source1" />
+                  <Edge From="18" To="19" Label="Source3" />
+                  <Edge From="19" To="20" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -9623,7 +9787,7 @@ Item2.Item2 as autoReward) </scr:Expression>
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="Extensions\HarpDelay.bonsai">
-                          <DueSeconds>4.2723241542802768</DueSeconds>
+                          <DueSeconds>4.0108505180156095</DueSeconds>
                         </Expression>
                         <Expression xsi:type="WorkflowOutput" />
                       </Nodes>
@@ -10281,17 +10445,21 @@ Things we want to do with this:
       <Edge From="10" To="11" Label="Source1" />
       <Edge From="12" To="13" Label="Source1" />
       <Edge From="13" To="14" Label="Source1" />
-      <Edge From="14" To="15" Label="Source1" />
-      <Edge From="15" To="17" Label="Source1" />
-      <Edge From="16" To="17" Label="Source2" />
-      <Edge From="17" To="22" Label="Source1" />
-      <Edge From="18" To="19" Label="Source1" />
-      <Edge From="19" To="20" Label="Source1" />
-      <Edge From="20" To="21" Label="Source1" />
-      <Edge From="21" To="22" Label="Source2" />
+      <Edge From="13" To="15" Label="Source1" />
+      <Edge From="14" To="16" Label="Source1" />
+      <Edge From="15" To="16" Label="Source2" />
+      <Edge From="16" To="17" Label="Source1" />
+      <Edge From="17" To="18" Label="Source1" />
+      <Edge From="18" To="20" Label="Source1" />
+      <Edge From="19" To="20" Label="Source2" />
+      <Edge From="20" To="25" Label="Source1" />
+      <Edge From="21" To="22" Label="Source1" />
       <Edge From="22" To="23" Label="Source1" />
       <Edge From="23" To="24" Label="Source1" />
-      <Edge From="24" To="25" Label="Source1" />
+      <Edge From="24" To="25" Label="Source2" />
+      <Edge From="25" To="26" Label="Source1" />
+      <Edge From="26" To="27" Label="Source1" />
+      <Edge From="27" To="28" Label="Source1" />
     </Edges>
   </Workflow>
 </WorkflowBuilder>

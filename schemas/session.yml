@@ -56,7 +56,7 @@ TrialStructure:
 Optogenetics:              # USED: all seven fields drive Zapit stimulation
   enabled: true
   zapitConfigPath: C:\Users\CoenLabUsers\zapit\examples\example_stimulus_config_files\left_right_pair.yml
-  stimProbability: 0.2
+  stimProbability: 1 
   stimDelay: 0.0
   stimDuration: 1.5
   excludeRepeats: true
