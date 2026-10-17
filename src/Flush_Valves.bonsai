@@ -1470,6 +1470,61 @@
               <gui:Text>Rinse Flushes</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Timer">
+                <rx:DueTime>PT0S</rx:DueTime>
+                <rx:Period>PT0.001S</rx:Period>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>BehaviorEvents</Name>
+            </Expression>
+            <Expression xsi:type="beh:Parse">
+              <harp:Register xsi:type="beh:DigitalInputState" />
+            </Expression>
+            <Expression xsi:type="BitwiseAnd">
+              <Operand xsi:type="WorkflowProperty" TypeArguments="beh:DigitalInputs">
+                <Value>DIPort0</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="scr:ExpressionTransform">
+              <scr:Expression>Convert.ToSingle(it)</scr:Expression>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:WithLatestFrom" />
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Item2</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:WindowTime">
+                <rx:TimeSpan>PT0.2S</rx:TimeSpan>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:SelectMany">
+              <Name>AverageWindow</Name>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Average" />
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="GreaterThan">
+              <Operand xsi:type="FloatProperty">
+                <Value>0</Value>
+              </Operand>
+            </Expression>
+            <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:TableLayoutPanelBuilder">
               <gui:Name>Flush Valves</gui:Name>
               <gui:Enabled>true</gui:Enabled>
@@ -1487,6 +1542,24 @@
             </Expression>
             <Expression xsi:type="MulticastSubject">
               <Name>StepperStepSize</Name>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="SubscribeSubject">
+                <Name>PhotodiodeIndicatorState</Name>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="Combinator">
+                <Combinator xsi:type="rx:WithLatestFrom" />
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="MemberSelector">
+                <Selector>Item2</Selector>
+              </Builder>
+            </Expression>
+            <Expression xsi:type="Disable">
+              <Builder xsi:type="VisualizerMapping" />
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="IntProperty">
@@ -1569,12 +1642,12 @@
             <Edge From="68" To="69" Label="Source1" />
             <Edge From="69" To="70" Label="Source1" />
             <Edge From="70" To="71" Label="Source1" />
-            <Edge From="70" To="127" Label="Source1" />
+            <Edge From="70" To="138" Label="Source1" />
             <Edge From="71" To="72" Label="Source25" />
             <Edge From="72" To="73" Label="Source1" />
             <Edge From="73" To="74" Label="Source1" />
             <Edge From="74" To="75" Label="Source1" />
-            <Edge From="75" To="126" Label="Source1" />
+            <Edge From="75" To="137" Label="Source1" />
             <Edge From="76" To="77" Label="Source1" />
             <Edge From="77" To="78" Label="Source1" />
             <Edge From="78" To="79" Label="Source1" />
@@ -1588,7 +1661,7 @@
             <Edge From="86" To="87" Label="Source1" />
             <Edge From="87" To="88" Label="Source1" />
             <Edge From="88" To="89" Label="Source1" />
-            <Edge From="89" To="126" Label="Source2" />
+            <Edge From="89" To="137" Label="Source2" />
             <Edge From="90" To="91" Label="Source1" />
             <Edge From="91" To="92" Label="Source1" />
             <Edge From="92" To="108" Label="Source1" />
@@ -1610,7 +1683,7 @@
             <Edge From="108" To="109" Label="Source1" />
             <Edge From="109" To="110" Label="Source1" />
             <Edge From="110" To="111" Label="Source1" />
-            <Edge From="111" To="126" Label="Source3" />
+            <Edge From="111" To="137" Label="Source3" />
             <Edge From="112" To="113" Label="Source1" />
             <Edge From="113" To="114" Label="Source1" />
             <Edge From="114" To="115" Label="Source1" />
@@ -1624,9 +1697,23 @@
             <Edge From="122" To="123" Label="Source1" />
             <Edge From="123" To="124" Label="Source1" />
             <Edge From="124" To="125" Label="Source1" />
-            <Edge From="125" To="126" Label="Source4" />
+            <Edge From="125" To="137" Label="Source4" />
+            <Edge From="126" To="131" Label="Source1" />
             <Edge From="127" To="128" Label="Source1" />
+            <Edge From="128" To="129" Label="Source1" />
             <Edge From="129" To="130" Label="Source1" />
+            <Edge From="130" To="131" Label="Source2" />
+            <Edge From="131" To="132" Label="Source1" />
+            <Edge From="132" To="133" Label="Source1" />
+            <Edge From="133" To="134" Label="Source1" />
+            <Edge From="134" To="135" Label="Source1" />
+            <Edge From="135" To="136" Label="Source1" />
+            <Edge From="136" To="137" Label="Source5" />
+            <Edge From="138" To="139" Label="Source1" />
+            <Edge From="140" To="141" Label="Source2" />
+            <Edge From="141" To="142" Label="Source1" />
+            <Edge From="142" To="143" Label="Source1" />
+            <Edge From="144" To="145" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -1686,7 +1773,7 @@
                               <Expression xsi:type="beh:CreateMessage">
                                 <harp:MessageType>Write</harp:MessageType>
                                 <harp:Payload xsi:type="beh:CreatePulseDO1Payload">
-                                  <beh:PulseDO1>40</beh:PulseDO1>
+                                  <beh:PulseDO1>65</beh:PulseDO1>
                                 </harp:Payload>
                               </Expression>
                               <Expression xsi:type="ExternalizedMapping">
@@ -1701,7 +1788,7 @@
                               <Expression xsi:type="beh:CreateMessage">
                                 <harp:MessageType>Write</harp:MessageType>
                                 <harp:Payload xsi:type="beh:CreatePulseDO2Payload">
-                                  <beh:PulseDO2>21</beh:PulseDO2>
+                                  <beh:PulseDO2>85</beh:PulseDO2>
                                 </harp:Payload>
                               </Expression>
                               <Expression xsi:type="MulticastSubject">
@@ -3252,6 +3339,165 @@
               <Phase>0</Phase>
             </Expression>
             <Expression xsi:type="WorkflowOutput" />
+            <Expression xsi:type="GroupWorkflow">
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>DrawStimuli</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="gl:Timer">
+                      <gl:DueTime>PT0S</gl:DueTime>
+                      <gl:Period>PT1S</gl:Period>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Mod">
+                    <Operand xsi:type="WorkflowProperty" TypeArguments="sys:Int64">
+                      <Value>2</Value>
+                    </Operand>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="Brightness" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="Annotation">
+                    <Name>PhotodiodeIndicatorLeft</Name>
+                    <Text><![CDATA[PhotodiodeIndicatorLeft]]></Text>
+                  </Expression>
+                  <Expression xsi:type="rx:SelectMany">
+                    <Name>Photoindicator</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedMapping">
+                          <Property Name="Value" DisplayName="Brightness" />
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="FloatProperty">
+                            <Value>0</Value>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="ColorR" Selector="it" />
+                            <Property Name="ColorG" Selector="it" />
+                            <Property Name="ColorB" Selector="it" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedMapping">
+                          <Property Name="LocationX" DisplayName="LocationX" />
+                        </Expression>
+                        <Expression xsi:type="ExternalizedMapping">
+                          <Property Name="LocationY" DisplayName="LocationY" />
+                        </Expression>
+                        <Expression xsi:type="IncludeWorkflow" Path="BonVision:Primitives.DrawQuad.bonsai">
+                          <ExtentX>30</ExtentX>
+                          <ExtentY>30</ExtentY>
+                          <LocationX>-130</LocationX>
+                          <LocationY>-22.5</LocationY>
+                          <Layer>0</Layer>
+                          <Angle>0</Angle>
+                          <ColorR>0</ColorR>
+                          <ColorG>0</ColorG>
+                          <ColorB>0</ColorB>
+                          <ColorA>1</ColorA>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="6" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
+                        <Edge From="2" To="3" Label="Source1" />
+                        <Edge From="3" To="6" Label="Source2" />
+                        <Edge From="4" To="6" Label="Source3" />
+                        <Edge From="5" To="6" Label="Source4" />
+                        <Edge From="6" To="7" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="Brightness" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="Annotation">
+                    <Name>PhotodiodeIndicatorRight</Name>
+                    <Text><![CDATA[PhotodiodeIndicatorRight]]></Text>
+                  </Expression>
+                  <Expression xsi:type="rx:SelectMany">
+                    <Name>Photoindicator</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedMapping">
+                          <Property Name="Value" DisplayName="Brightness" />
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="FloatProperty">
+                            <Value>0</Value>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="ColorR" Selector="it" />
+                            <Property Name="ColorG" Selector="it" />
+                            <Property Name="ColorB" Selector="it" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="ExternalizedMapping">
+                          <Property Name="LocationX" DisplayName="LocationX" />
+                        </Expression>
+                        <Expression xsi:type="ExternalizedMapping">
+                          <Property Name="LocationY" DisplayName="LocationY" />
+                        </Expression>
+                        <Expression xsi:type="IncludeWorkflow" Path="BonVision:Primitives.DrawQuad.bonsai">
+                          <ExtentX>30</ExtentX>
+                          <ExtentY>30</ExtentY>
+                          <LocationX>130</LocationX>
+                          <LocationY>-22.5</LocationY>
+                          <Layer>0</Layer>
+                          <Angle>0</Angle>
+                          <ColorR>0</ColorR>
+                          <ColorG>0</ColorG>
+                          <ColorB>0</ColorB>
+                          <ColorA>1</ColorA>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="6" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
+                        <Edge From="2" To="3" Label="Source1" />
+                        <Edge From="3" To="6" Label="Source2" />
+                        <Edge From="4" To="6" Label="Source3" />
+                        <Edge From="5" To="6" Label="Source4" />
+                        <Edge From="6" To="7" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="rx:BehaviorSubject">
+                    <Name>PhotodiodeIndicatorState</Name>
+                  </Expression>
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="5" Label="Source1" />
+                  <Edge From="0" To="8" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="2" To="3" Label="Source1" />
+                  <Edge From="2" To="6" Label="Source1" />
+                  <Edge From="2" To="9" Label="Source1" />
+                  <Edge From="3" To="5" Label="Source2" />
+                  <Edge From="4" To="5" Label="Source3" />
+                  <Edge From="6" To="8" Label="Source2" />
+                  <Edge From="7" To="8" Label="Source3" />
+                </Edges>
+              </Workflow>
+            </Expression>
           </Nodes>
           <Edges>
             <Edge From="0" To="1" Label="Source1" />
