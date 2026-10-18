@@ -239,11 +239,11 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="p2:CreateStartStimulus">
-                <p2:ConditionNumber>0</p2:ConditionNumber>
+                <p2:ConditionNumber>2</p2:ConditionNumber>
                 <p2:LaserOn>true</p2:LaserOn>
-                <p2:HardwareTriggered>false</p2:HardwareTriggered>
+                <p2:HardwareTriggered>true</p2:HardwareTriggered>
                 <p2:Logging>true</p2:Logging>
-                <p2:StimDuration>0</p2:StimDuration>
+                <p2:StimDuration>1.5</p2:StimDuration>
                 <p2:LaserPower>0</p2:LaserPower>
                 <p2:StartDelay>0</p2:StartDelay>
               </Combinator>
@@ -327,7 +327,7 @@
               <OutputPulseEnable>DO3</OutputPulseEnable>
               <PulseDO1>1</PulseDO1>
               <PulseDO2>1</PulseDO2>
-              <PulseDO3>0</PulseDO3>
+              <PulseDO3>20</PulseDO3>
               <BehaviorEventsSubjectName>BehaviorEvents</BehaviorEventsSubjectName>
               <TriggerPulseSubjectName>TriggerPulse</TriggerPulseSubjectName>
             </Expression>
