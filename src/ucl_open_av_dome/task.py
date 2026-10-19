@@ -133,7 +133,7 @@ class OptogeneticsSettings(BaseSchema):
     stim_duration: Double = Field(default=1.5, ge=0, description="Stimulation duration, in seconds")
     exclude_repeats: Bool = Field(default=True, description="Whether repeat trials are excluded from stimulation")
     pseudorandom_selection: Bool = Field(default=True, description="Draw conditions from a shuffled queue rather than independently")
-
+    warmup_trials: Int = Field(default=0, ge=0, description="Trials at session start with no stimulation (counted by TrialCount, repeats included)")
 
 class TrainingStage(BaseSchema):
     """One complete row of the training stage table; stages are selected by index at runtime."""

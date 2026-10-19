@@ -54,6 +54,7 @@ taskParameters:
     stimDuration: 1.5      # s
     excludeRepeats: true
     pseudorandomSelection: true
+    warmupTrials: 20
   trainingStages:          # row index = stage id selected in the GUI; ids past the end use the last row
     - label: Stage 0       # habituation, coherent only, single spout half the time, no repeats
       trialWeights: [0, 0, 10, 0, 0]

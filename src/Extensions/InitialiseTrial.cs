@@ -320,6 +320,13 @@ public class InitialiseTrial
         if (!optogenetics.Enabled)
             return;
 
+        if (TrialNumber < optogenetics.WarmupTrials)
+    
+        {
+            Console.WriteLine($"Optogenetics warmup: trial {TrialNumber + 1}/{optogenetics.WarmupTrials} - no stimulation");
+            return;
+        }
+
         // Check if Zapit conditions are available
         if (_zapitConditions.Count == 0)
         {
