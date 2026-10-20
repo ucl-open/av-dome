@@ -29,6 +29,9 @@ public class InitialiseTrial
     [Description("Offset added to the configured rngSeed so multiple operator instances draw distinct deterministic streams.")]
     public int SeedOffset { get; set; }
 
+    [Description("Trials completed so far this session (map from the TrialCount subject). Trials with TrialNumber < optogenetics.warmupTrials are never stimulated.")]
+    public int TrialNumber { get; set; }
+
     // One RNG per operator instance, seeded once from the config on the first trial so a session
     // is reproducible from its task YAML. Instance state persists across re-subscriptions
     // (e.g. inside a SelectMany), matching the shuffle-block and repeat bookkeeping below.
@@ -320,13 +323,11 @@ public class InitialiseTrial
         if (!optogenetics.Enabled)
             return;
 
-        if (currentTrialIndex < optogenetics.WarmupTrials)
-    
+        if (TrialNumber < optogenetics.WarmupTrials)
         {
-            Console.WriteLine("Optogenetics warmup: trial {currentTrialIndex + 1}/{optogenetics.WarmupTrials} - no stimulation");
+            Console.WriteLine("Optogenetics warmup: trial " + (TrialNumber + 1) + "/" + optogenetics.WarmupTrials + " - no stimulation");
             return;
         }
-
         // Check if Zapit conditions are available
         if (_zapitConditions.Count == 0)
         {
