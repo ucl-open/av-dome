@@ -320,10 +320,10 @@ public class InitialiseTrial
         if (!optogenetics.Enabled)
             return;
 
-        if (TrialNumber < optogenetics.WarmupTrials)
+        if (currentTrialIndex < optogenetics.WarmupTrials)
     
         {
-            Console.WriteLine($"Optogenetics warmup: trial {TrialNumber + 1}/{optogenetics.WarmupTrials} - no stimulation");
+            Console.WriteLine($"Optogenetics warmup: trial {currentTrialIndex + 1}/{optogenetics.WarmupTrials} - no stimulation");
             return;
         }
 
