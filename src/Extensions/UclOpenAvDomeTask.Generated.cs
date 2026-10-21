@@ -150,13 +150,13 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Candidate sound positions, one drawn per trial; keep an azimuth-0 entry for trials that place the sound at the centre
+        /// Candidate lateral sound positions, one drawn per audio trial; no azimuth-0 entry, the centre sound of visual-only and neutral trials is fixed in code
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [Newtonsoft.Json.JsonPropertyAttribute("speakerLocations", Required=Newtonsoft.Json.Required.Always)]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="speakerLocations")]
-        [System.ComponentModel.DescriptionAttribute("Candidate sound positions, one drawn per trial; keep an azimuth-0 entry for trial" +
-            "s that place the sound at the centre")]
+        [System.ComponentModel.DescriptionAttribute("Candidate lateral sound positions, one drawn per audio trial; no azimuth-0 entry," +
+            " the centre sound of visual-only and neutral trials is fixed in code")]
         public System.Collections.Generic.List<SphericalPosition> SpeakerLocations
         {
             get
@@ -1803,6 +1803,8 @@ namespace UclOpenAvDomeTask
     
         private double _azimuthMax;
     
+        private System.Collections.Generic.List<double> _overwriteAzimuths;
+    
         private double _elevationMin;
     
         private double _elevationMax;
@@ -1834,6 +1836,7 @@ namespace UclOpenAvDomeTask
         {
             _azimuthMin = other._azimuthMin;
             _azimuthMax = other._azimuthMax;
+            _overwriteAzimuths = other._overwriteAzimuths;
             _elevationMin = other._elevationMin;
             _elevationMax = other._elevationMax;
             _coherentAzimuthCap = other._coherentAzimuthCap;
@@ -1876,6 +1879,27 @@ namespace UclOpenAvDomeTask
             set
             {
                 _azimuthMax = value;
+            }
+        }
+    
+        /// <summary>
+        /// Discrete grating azimuths, in degrees; when set and non-empty, every trial draws from this list (filtered to the trial's side, capped on coherent trials) instead of [azimuthMin, azimuthMax]
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("overwriteAzimuths")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="overwriteAzimuths")]
+        [System.ComponentModel.DescriptionAttribute("Discrete grating azimuths, in degrees; when set and non-empty, every trial draws " +
+            "from this list (filtered to the trial\'s side, capped on coherent trials) instead" +
+            " of [azimuthMin, azimuthMax]")]
+        public System.Collections.Generic.List<double> OverwriteAzimuths
+        {
+            get
+            {
+                return _overwriteAzimuths;
+            }
+            set
+            {
+                _overwriteAzimuths = value;
             }
         }
     
@@ -2022,6 +2046,7 @@ namespace UclOpenAvDomeTask
         {
             stringBuilder.Append("AzimuthMin = " + _azimuthMin + ", ");
             stringBuilder.Append("AzimuthMax = " + _azimuthMax + ", ");
+            stringBuilder.Append("OverwriteAzimuths = " + _overwriteAzimuths + ", ");
             stringBuilder.Append("ElevationMin = " + _elevationMin + ", ");
             stringBuilder.Append("ElevationMax = " + _elevationMax + ", ");
             stringBuilder.Append("CoherentAzimuthCap = " + _coherentAzimuthCap + ", ");

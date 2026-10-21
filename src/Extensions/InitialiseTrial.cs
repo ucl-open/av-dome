@@ -57,6 +57,7 @@ public class InitialiseTrial
             TrainingStage stage = GetTrainingStage(parameters);
 
             EnsureRandomInitialised(parameters);
+            EnsureConfigChecked(parameters);
 
             // Check if we need to repeat the last trial
             if (ShouldRepeatTrial(parameters, stage))
@@ -106,6 +107,37 @@ public class InitialiseTrial
         }
         rngSeedUsed = seed;
         trialRand = new Random(seed);
+    }
+
+    // Bonsai deserializes the task YAML into the generated types without running the pydantic
+    // validators, so the rules the draws depend on are checked here, once, before the first trial.
+    private bool configChecked;
+
+    private void EnsureConfigChecked(UclOpenAvDomeTaskParameters parameters)
+    {
+        if (configChecked) return;
+        var visual = parameters.VisualStimulus;
+        var azimuths = visual.OverwriteAzimuths;
+        if (azimuths != null && azimuths.Count > 0)
+        {
+            double cap = visual.CoherentAzimuthCap;
+            if (azimuths.Any(azimuth => azimuth < -180 || azimuth > 180))
+            {
+                throw new InvalidOperationException("overwriteAzimuths values must be within [-180, 180].");
+            }
+            if (!azimuths.Any(azimuth => azimuth > 0 && azimuth <= cap) ||
+                !azimuths.Any(azimuth => azimuth < 0 && azimuth >= -cap))
+            {
+                throw new InvalidOperationException(
+                    "overwriteAzimuths needs a value on each side within coherentAzimuthCap (" + cap + ").");
+            }
+        }
+        if (parameters.AudioStimulus.SpeakerLocations.Any(location => location.Azimuth == 0))
+        {
+            throw new InvalidOperationException(
+                "speakerLocations must not have an azimuth-0 entry; the centre sound is fixed in code.");
+        }
+        configChecked = true;
     }
 
     private TrainingStage GetTrainingStage(UclOpenAvDomeTaskParameters parameters)
@@ -178,7 +210,8 @@ public class InitialiseTrial
         trialData.closedLoopDuration = parameters.TrialStructure.ClosedLoopDuration;
 
         // Stimulus parameters common to all trial types; positions are drawn per trial in the
-        // setup methods (visual continuous from the configured region, audio from speakerLocations)
+        // setup methods (visual from overwriteAzimuths or the configured region, audio from
+        // speakerLocations or the fixed centre)
         trialData.visualGaussianWindowSigma = parameters.VisualStimulus.GaussianWindowSigma;
         trialData.visualOrientation = parameters.VisualStimulus.Orientation;
         trialData.visualSpatialFrequency = parameters.VisualStimulus.SpatialFrequency;
@@ -413,11 +446,20 @@ public class InitialiseTrial
         return 0.2; // Default value if no non-zero contrasts
     }
 
-    // Draws a visual position uniformly from the configured dome region and writes it to the trial.
-    // When side restriction is requested, the azimuth is drawn from the side's subrange, capped at
-    // coherentAzimuthCap; an empty subrange falls back to +-60 with a console warning.
+    // Draws a visual position from the configured dome region and writes it to the trial.
+    // With overwriteAzimuths set, the azimuth is drawn from that list instead (see
+    // DrawOverwriteAzimuth). Otherwise it is drawn uniformly; when side restriction is requested,
+    // from the side's subrange, capped at coherentAzimuthCap, and an empty subrange falls back
+    // to +-60 with a console warning.
     private void DrawVisualPosition(Trial trial, VisualStimulus visual, Random rand, bool restrictSide, bool isRightSide, bool applyCap)
     {
+        if (visual.OverwriteAzimuths != null && visual.OverwriteAzimuths.Count > 0)
+        {
+            trial.visualAzimuth = DrawOverwriteAzimuth(visual, rand, restrictSide, isRightSide, applyCap);
+            trial.visualElevation = drawRandomUniformFromRange(visual.ElevationMin, visual.ElevationMax, rand);
+            return;
+        }
+
         double azimuthMin = visual.AzimuthMin;
         double azimuthMax = visual.AzimuthMax;
         if (restrictSide)
@@ -445,6 +487,31 @@ public class InitialiseTrial
         trial.visualElevation = drawRandomUniformFromRange(visual.ElevationMin, visual.ElevationMax, rand);
     }
 
+    // Draws one azimuth from overwriteAzimuths, filtered to the requested side (strictly positive or
+    // negative) and, with applyCap, to |azimuth| <= coherentAzimuthCap. EnsureConfigChecked refuses
+    // a list without a usable value on each side, so the throw is a backstop.
+    private double DrawOverwriteAzimuth(VisualStimulus visual, Random rand, bool restrictSide, bool isRightSide, bool applyCap)
+    {
+        var candidates = new List<double>();
+        foreach (var azimuth in visual.OverwriteAzimuths)
+        {
+            if (restrictSide)
+            {
+                if (isRightSide ? azimuth <= 0 : azimuth >= 0) continue;
+                if (applyCap && Math.Abs(azimuth) > visual.CoherentAzimuthCap) continue;
+            }
+            candidates.Add(azimuth);
+        }
+        if (candidates.Count == 0)
+        {
+            throw new InvalidOperationException(string.Format(
+                "overwriteAzimuths has no value on the {0} side{1}.",
+                isRightSide ? "right" : "left",
+                applyCap ? " within coherentAzimuthCap" : string.Empty));
+        }
+        return candidates[rand.Next(candidates.Count)];
+    }
+
     // Picks one speaker location on the requested side and writes it to the trial.
     // No matching side falls back to +-60 at elevation 15 with a console warning.
     private void PickAudioLocationOnSide(Trial trial, AudioStimulus audio, Random rand, bool isRightSide)
@@ -469,26 +536,16 @@ public class InitialiseTrial
         trial.audioElevation = picked.Elevation;
     }
 
-    // Picks a centre speaker location (minimal |azimuth|, ties drawn at random) and writes it to the trial.
-    private void PickCentreAudioLocation(Trial trial, AudioStimulus audio, Random rand)
+    // The centre sound of visual-only and neutral trials, fixed in code as in ActiveExperiments:
+    // speakerLocations holds lateral positions only, so unisensory audio trials never play from
+    // the centre. Playback maps the azimuth to the nearest wired speaker, the dome's centre one.
+    private const double CentreAudioAzimuth = 0.0;
+    private const double CentreAudioElevation = 15.0;
+
+    private static void SetCentreAudioLocation(Trial trial)
     {
-        double minMagnitude = double.MaxValue;
-        foreach (var location in audio.SpeakerLocations)
-        {
-            double magnitude = Math.Abs(location.Azimuth);
-            if (magnitude < minMagnitude) minMagnitude = magnitude;
-        }
-        var candidates = new List<SphericalPosition>();
-        foreach (var location in audio.SpeakerLocations)
-        {
-            if (Math.Abs(location.Azimuth) == minMagnitude)
-            {
-                candidates.Add(location);
-            }
-        }
-        var picked = candidates[rand.Next(candidates.Count)];
-        trial.audioAzimuth = picked.Azimuth;
-        trial.audioElevation = picked.Elevation;
+        trial.audioAzimuth = CentreAudioAzimuth;
+        trial.audioElevation = CentreAudioElevation;
     }
 
     private void SetupUnisensoryVisualTrial(Trial trial, UclOpenAvDomeTaskParameters parameters, TrainingStage stage, Random rand)
@@ -515,7 +572,7 @@ public class InitialiseTrial
         }
 
         // Set auditory stimulus to the centre speaker location
-        PickCentreAudioLocation(trial, parameters.AudioStimulus, rand);
+        SetCentreAudioLocation(trial);
 
         trial.RewardProbability = parameters.Reward.RewardProbability;
         trial.IsRewarded = drawRandomBasedOnProbability(trial.RewardProbability, rand);
@@ -608,7 +665,7 @@ public class InitialiseTrial
         trial.visualContrast = 0;
 
         // Set auditory stimulus to the centre speaker location
-        PickCentreAudioLocation(trial, parameters.AudioStimulus, rand);
+        SetCentreAudioLocation(trial);
 
         // Check this again, but the 50% should come from the random targetSide, no additional random, right?!
         trial.RewardProbability = parameters.Reward.RewardProbability;

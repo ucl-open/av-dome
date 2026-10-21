@@ -4,7 +4,7 @@
       "description": "Auditory stimulus parameters common to all trials.",
       "properties": {
         "speakerLocations": {
-          "description": "Candidate sound positions, one drawn per trial; keep an azimuth-0 entry for trials that place the sound at the centre",
+          "description": "Candidate lateral sound positions, one drawn per audio trial; no azimuth-0 entry, the centre sound of visual-only and neutral trials is fixed in code",
           "items": {
             "$ref": "#/$defs/SphericalPosition"
           },
@@ -491,6 +491,22 @@
           "minimum": -180,
           "title": "AzimuthMax",
           "type": "number"
+        },
+        "overwriteAzimuths": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Discrete grating azimuths, in degrees; when set and non-empty, every trial draws from this list (filtered to the trial's side, capped on coherent trials) instead of [azimuthMin, azimuthMax]",
+          "title": "OverwriteAzimuths"
         },
         "elevationMin": {
           "default": 15.0,
