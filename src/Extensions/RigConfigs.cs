@@ -40,7 +40,7 @@ public class RigConfigs
     {
         RigSpecificConfigs currentRigConfigs = new RigSpecificConfigs();
 
-        // // GreenDome2 // //
+        // // GreenDome1 // //
         // COM ports
         currentRigConfigs.COMPortBehaviourBoard = "COM6";
         currentRigConfigs.COMPortStepperDriver1 = "COM4";  // Motors 1,2,3
@@ -55,8 +55,8 @@ public class RigConfigs
         currentRigConfigs.SerialNumberCamera3 = "23199184";  // Body
 
         // Valve Calibration
-        currentRigConfigs.ValveOpenTimeLeft = 76;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 80;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeLeft = 65;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 70;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
@@ -88,15 +88,15 @@ public class RigConfigs
         currentRigConfigs.SerialNumberCamera3 = "25366329";  // Body
 
         // Valve Calibration
-        currentRigConfigs.ValveOpenTimeLeft = 70;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 72;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeLeft = 145;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 150;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
         currentRigConfigs.GammaLUTFilePath = @"C:\RigConfigs\gammalut.bmp";  // path to Gamma Lookup Table file
 
         // StepperMotor Default Position
-        currentRigConfigs.StepperMotorDefaultPosition = new int[] { 5900, 6040, 4610, 1500, 0 };  // 5 Motors
+        currentRigConfigs.StepperMotorDefaultPosition = new int[] {3650, 9640, 10010, 12300, 13200 };  // 5 Motors
 
         return currentRigConfigs;
     }
@@ -119,8 +119,8 @@ public class RigConfigs
         currentRigConfigs.SerialNumberCamera3 = "23199186";  // Body
 
         // Valve Calibration
-        currentRigConfigs.ValveOpenTimeLeft = 48;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 35;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeLeft = 65;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 42;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
