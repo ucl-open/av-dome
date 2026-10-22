@@ -48,7 +48,7 @@ taskParameters:
     rulesPerType: [onFailure, onFailure, onFailure, onTimeout, onTimeout]
   optogenetics:
     enabled: true
-    zapitConfigPath: C:\Users\CoenLabUsers\zapit\examples\example_stimulus_config_files\left_right_pair.yml
+    zapitConfigPath: C:\Users\CoenLabUsers\zapit\experimental_configs\avdome_main_initialstim.yml
     stimProbability: 1
     stimDelay: 0.0         # s
     stimDuration: 1.5      # s
@@ -60,34 +60,34 @@ taskParameters:
       trialWeights: [0, 0, 10, 0, 0]
       autoRewardProbability: 0.0
       bothSpoutsProbability: 0.5
-      rewardSizeUl: 4      # delivered as ceil(size/2) valve pulses
+      rewardSizeUl: 3      # delivered as ceil(size/2) valve pulses
       contrasts: [3.0]
       allowRepeats: false
     - label: Stage 1       # coherent trials only
       trialWeights: [0, 0, 10, 0, 0]
       autoRewardProbability: 0.0
       bothSpoutsProbability: 1.0
-      rewardSizeUl: 4
+      rewardSizeUl: 3
       contrasts: [3.0]
       allowRepeats: true
     - label: Stage 2       # unisensory auditory added
       trialWeights: [0, 10, 10, 0, 0]
       autoRewardProbability: 0.0
       bothSpoutsProbability: 1.0
-      rewardSizeUl: 4
+      rewardSizeUl: 3
       contrasts: [0, 0.25, 0.5, 1.0]
       allowRepeats: true
     - label: Stage 3       # unisensory visual added
       trialWeights: [10, 10, 10, 0, 0]
       autoRewardProbability: 0.0
       bothSpoutsProbability: 1.0
-      rewardSizeUl: 4
+      rewardSizeUl: 3
       contrasts: [0, 0.25, 0.5, 1.0]
       allowRepeats: true
     - label: Stage 4       # conflict and neutral trials added
       trialWeights: [10, 10, 5, 5, 1]
       autoRewardProbability: 0.0
       bothSpoutsProbability: 1.0
-      rewardSizeUl: 4
+      rewardSizeUl: 3
       contrasts: [0, 0.25, 0.5, 1.0]
       allowRepeats: true

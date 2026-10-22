@@ -449,8 +449,11 @@ public class InitialiseTrial
                 return;
             }
         }
-        trial.visualAzimuth = drawRandomUniformFromRange(azimuthMin, azimuthMax, rand);
-        trial.visualElevation = drawRandomUniformFromRange(visual.ElevationMin, visual.ElevationMax, rand);
+        // GERION EDIT: HACKY FIX FOR BROKEN VISUAL STIMULI
+        // trial.visualAzimuth = drawRandomUniformFromRange(azimuthMin, azimuthMax, rand);
+        // trial.visualElevation = drawRandomUniformFromRange(visual.ElevationMin, visual.ElevationMax, rand);
+        trial.visualAzimuth = isRightSide ? 60.0 : -60.0;
+        trial.visualElevation = 15.0;
     }
 
     // Picks one speaker location on the requested side and writes it to the trial.
