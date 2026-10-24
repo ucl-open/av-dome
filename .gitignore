@@ -5,6 +5,7 @@ bin
 obj
 *.bin
 *.avi
+*.wav
 *.dll
 *.exe
 *.exe.settings
