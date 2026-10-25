@@ -253,6 +253,7 @@ public class TrialTypeInitialise
         trialData.largeReward = drawRandomBasedOnProbability(trialData.LargeRewardProbability, trialRand);  // This defines whether the current trial is a largeReward Trial.
         trialData.RewardSizeInUl = trialData.largeReward ? RewardSizeInUl * trialData.LargeRewardMultiplier : RewardSizeInUl;
 
+        trialData.audioWaveformIdx = (int)Math.Round(99 * trialRand.NextDouble());
         trialData.ITI = drawRandomUniformFromRange(value.TrialStructure.Iti, trialRand);
         // trialData.Quiescent = drawRandomUniformFromRange(value.TrialStructure.Quiescent, trialRand);
 
@@ -956,6 +957,7 @@ public class TrialData
     public double audioFlickerFrequency { get { return 8; } }  // in Hz
     // public int audioSpeakerID;
     // public bool isAudioActive;
+    public int audioWaveformIdx;  // index of 0:100 waveforms pre-generated
     
     // Optogenetics
     public bool OptogeneticEnabled;
