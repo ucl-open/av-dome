@@ -55,8 +55,8 @@ public class RigConfigs
         currentRigConfigs.SerialNumberCamera3 = "23199184";  // Body
 
         // Valve Calibration
-        currentRigConfigs.ValveOpenTimeLeft = 65;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 70;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeLeft = 50;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 45;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
@@ -88,8 +88,8 @@ public class RigConfigs
         currentRigConfigs.SerialNumberCamera3 = "25366329";  // Body
 
         // Valve Calibration
-        currentRigConfigs.ValveOpenTimeLeft = 70;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 68;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeLeft = 65;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 70;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
@@ -119,8 +119,8 @@ public class RigConfigs
         currentRigConfigs.SerialNumberCamera3 = "23199186";  // Body
 
         // Valve Calibration
-        currentRigConfigs.ValveOpenTimeLeft = 65;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 42;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeLeft = 37;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 36;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
@@ -151,7 +151,7 @@ public class RigConfigs
 
         // Valve Calibration
         currentRigConfigs.ValveOpenTimeLeft = 42;  // in ms. ~10ms min.
-        currentRigConfigs.ValveOpenTimeRight = 42;  // in ms. ~10ms min.
+        currentRigConfigs.ValveOpenTimeRight = 50;  // in ms. ~10ms min.
 
         // MeshMapping and Gamma calibration for Visual Stimuli
         currentRigConfigs.MeshMapFilePath = @"C:\RigConfigs\MeshMap.csv";  // path to MeshMapping Interpolation file
