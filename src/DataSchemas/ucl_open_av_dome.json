@@ -415,7 +415,7 @@
       "type": "object"
     },
     "ProjectionCalibration": {
-      "description": "File-based calibration assets for mesh-mapped projection displays.\n\nSuperseded by vision.ProjectionCorrection, whose paths are relative to the rig configuration\ndirectory; kept until av-dome migrates (open-rigs/av-dome#20, #22).",
+      "description": "File-based calibration assets for mesh-mapped projection displays.\n\nSuperseded by vision.ProjectionCorrection, whose paths are relative to the rig configuration\ndirectory; kept until av-dome migrates (ucl-open/av-dome#20, #22).",
       "properties": {
         "meshMapPath": {
           "description": "Path to the mesh-mapping interpolation file (CSV)",

@@ -1629,12 +1629,12 @@ namespace UclOpenAvDome
     /// File-based calibration assets for mesh-mapped projection displays.
     ///
     ///Superseded by vision.ProjectionCorrection, whose paths are relative to the rig configuration
-    ///directory; kept until av-dome migrates (open-rigs/av-dome#20, #22).
+    ///directory; kept until av-dome migrates (ucl-open/av-dome#20, #22).
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute("File-based calibration assets for mesh-mapped projection displays.\n\nSuperseded by" +
         " vision.ProjectionCorrection, whose paths are relative to the rig configuration\n" +
-        "directory; kept until av-dome migrates (open-rigs/av-dome#20, #22).")]
+        "directory; kept until av-dome migrates (ucl-open/av-dome#20, #22).")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
     public partial class ProjectionCalibration

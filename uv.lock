@@ -175,7 +175,7 @@ wheels = [
 [[package]]
 name = "open-rigs"
 version = "0.0.0"
-source = { git = "https://github.com/open-rigs/open-rigs?branch=dispense-calibration#99527b1d664cd5b8cb00a23c1f34c0702ccfca4a" }
+source = { git = "https://github.com/open-rigs/open-rigs?branch=dispense-calibration#ae2bfaae73be2b3e6d1c0afccdf00a86f0a20286" }
 dependencies = [
     { name = "pydantic" },
     { name = "pydantic-yaml" },

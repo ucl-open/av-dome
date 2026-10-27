@@ -15,7 +15,7 @@
     <PackageReference Include="Harp.Behavior" Version="0.2.0" />
     <PackageReference Include="Harp.StepperDriver" Version="0.4.0" />
     <PackageReference Include="Harp.TimestampGeneratorGen3" Version="0.1.1" />
-    <PackageReference Include="OpenRigs.Core" Version="0.0.0-dispense-calibration-ci10" />
+    <PackageReference Include="OpenRigs.Core" Version="0.0.0-dispense-calibration-ci12" />
   </ItemGroup>
 
 </Project>
