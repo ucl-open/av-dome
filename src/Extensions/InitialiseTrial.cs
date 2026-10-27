@@ -452,6 +452,7 @@ public class InitialiseTrial
         // GERION EDIT: HACKY FIX FOR BROKEN VISUAL STIMULI
         // trial.visualAzimuth = drawRandomUniformFromRange(azimuthMin, azimuthMax, rand);
         // trial.visualElevation = drawRandomUniformFromRange(visual.ElevationMin, visual.ElevationMax, rand);
+        // TODO:
         trial.visualAzimuth = isRightSide ? 60.0 : -60.0;
         trial.visualElevation = 15.0;
     }

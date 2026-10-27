@@ -49,9 +49,9 @@ taskParameters:
   optogenetics:
     enabled: true
     zapitConfigPath: C:\Users\CoenLabUsers\zapit\experimental_configs\avdome_main_initialstim.yml
-    stimProbability: 1
+    stimProbability: 0.5
     stimDelay: 0.0         # s
-    stimDuration: 1.5      # s
+    stimDuration: 2.5      # s
     excludeRepeats: true
     pseudorandomSelection: true
     warmupTrials: 20
