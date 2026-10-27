@@ -3,8 +3,8 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
                  xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
-                 xmlns:uoc="clr-namespace:UclOpen.Core;assembly=UclOpen.Core"
-                 xmlns:cal="clr-namespace:UclOpen.Core.Calibration;assembly=UclOpen.Core"
+                 xmlns:uoc="clr-namespace:OpenRigs.Core;assembly=OpenRigs.Core"
+                 xmlns:cal="clr-namespace:OpenRigs.Core.Calibration;assembly=OpenRigs.Core"
                  xmlns="https://bonsai-rx.org/2018/workflow">
   <Description>Calibrates one reward valve of this rig with the ucl-open platform's dispense calibration. Set Channel (1 for DO1, 2 for DO2), FileName to match (valve-DO1 or valve-DO2), CalibratedBy, and the two COM ports, then start. The behavior board fires the pulses through its PulseController, the serial balance weighs them, and the artefact lands in this machine's rig configuration directory with the rig.yml line to paste printed at the end. Settings live in config\valve-calibration.yml.</Description>
   <Workflow>
@@ -60,14 +60,14 @@
             <Expression xsi:type="ExternalizedMapping">
               <Property Name="PortName" DisplayName="BoardPortName" />
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.BehaviorBoard.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:BehaviorBoard.BehaviorBoard.bonsai">
               <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
               <PortName>COMx</PortName>
               <DumpRegisters>true</DumpRegisters>
               <Heartbeat>Enabled</Heartbeat>
               <EventsSubjectName>BehaviorEvents</EventsSubjectName>
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.PulseController.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:BehaviorBoard.PulseController.bonsai">
               <BehaviorCommandsSubjectName>BehaviorCommands</BehaviorCommandsSubjectName>
               <OutputPulseEnable>DO1 DO2 DO3</OutputPulseEnable>
               <PulseDO1>1</PulseDO1>
@@ -94,7 +94,7 @@
             <Expression xsi:type="ExternalizedMapping">
               <Property Name="PortName" DisplayName="BalancePortName" />
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:SerialBalance.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:SerialBalance.bonsai">
               <PortName>COMx</PortName>
               <BaudRate>9600</BaudRate>
               <ReadingsSubjectName>BalanceReading</ReadingsSubjectName>
@@ -128,7 +128,7 @@
               <Property Name="FileName" />
               <Property Name="CalibratedBy" />
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Core:DispenseCalibration.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Core:DispenseCalibration.bonsai">
               <ReadingsSubjectName>BalanceReading</ReadingsSubjectName>
               <Channel>1</Channel>
               <RequestSubjectName>TriggerCalibratedPulse</RequestSubjectName>

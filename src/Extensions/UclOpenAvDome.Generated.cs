@@ -750,13 +750,13 @@ namespace UclOpenAvDome
     
         private string _artefact;
     
-        private UclOpen.Core.CalibrationModel _fit;
+        private OpenRigs.Core.CalibrationModel _fit;
     
         private int _maxAgeDays;
     
         public CalibratedPulse()
         {
-            _fit = UclOpen.Core.CalibrationModel.LinearFit;
+            _fit = OpenRigs.Core.CalibrationModel.LinearFit;
             _maxAgeDays = 90;
         }
     
@@ -795,7 +795,7 @@ namespace UclOpenAvDome
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="fit")]
         [System.ComponentModel.DescriptionAttribute("How the rig fits the artefact\'s points at startup. LinearFit suits repeated weigh" +
             "ings.")]
-        public UclOpen.Core.CalibrationModel Fit
+        public OpenRigs.Core.CalibrationModel Fit
         {
             get
             {
@@ -808,11 +808,11 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
-        /// Warn at startup when the artefact is older than this many days; 0 disables the check.
+        /// Warn at startup when the artefact is older than this many days. 0 disables the check.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("maxAgeDays")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="maxAgeDays")]
-        [System.ComponentModel.DescriptionAttribute("Warn at startup when the artefact is older than this many days; 0 disables the ch" +
+        [System.ComponentModel.DescriptionAttribute("Warn at startup when the artefact is older than this many days. 0 disables the ch" +
             "eck.")]
         public int MaxAgeDays
         {
@@ -854,14 +854,14 @@ namespace UclOpenAvDome
     /// Represents a CameraTriggerController module on a BehaviorBoard device.
     ///
     ///The two camera trigger outputs share pins with digital outputs: Trigger0 is DO0 and Trigger1
-    ///is DO1. A trigger that is not enabled is never started, so its pin stays free for a pulse
+    ///is DO1. A trigger that is not enabled is never started, which leaves its pin free for a pulse
     ///output such as a reward valve.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute(@"Represents a CameraTriggerController module on a BehaviorBoard device.
 
     The two camera trigger outputs share pins with digital outputs: Trigger0 is DO0 and Trigger1
-    is DO1. A trigger that is not enabled is never started, so its pin stays free for a pulse
+    is DO1. A trigger that is not enabled is never started, which leaves its pin free for a pulse
     output such as a reward valve.")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
@@ -880,7 +880,6 @@ namespace UclOpenAvDome
         {
             _trigger0Enabled = true;
             _trigger1Enabled = false;
-            _trigger1Frequency = 50;
         }
     
         protected CameraTriggerController(CameraTriggerController other)
@@ -948,12 +947,12 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
-        /// The frequency, in Hz, at which to emit camera triggers on Trigger1 (DO1, CameraOutput1); only matters when trigger 1 is enabled.
+        /// The frequency, in Hz, at which to emit camera triggers on Trigger1 (DO1, CameraOutput1). Only matters when trigger 1 is enabled.
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("trigger1Frequency")]
+        [Newtonsoft.Json.JsonPropertyAttribute("trigger1Frequency", Required=Newtonsoft.Json.Required.Always)]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="trigger1Frequency")]
         [System.ComponentModel.DescriptionAttribute("The frequency, in Hz, at which to emit camera triggers on Trigger1 (DO1, CameraOu" +
-            "tput1); only matters when trigger 1 is enabled.")]
+            "tput1). Only matters when trigger 1 is enabled.")]
         public int Trigger1Frequency
         {
             get
@@ -1630,12 +1629,12 @@ namespace UclOpenAvDome
     /// File-based calibration assets for mesh-mapped projection displays.
     ///
     ///Superseded by vision.ProjectionCorrection, whose paths are relative to the rig configuration
-    ///directory; kept until av-dome migrates (ucl-open/av-dome#20, #22).
+    ///directory; kept until av-dome migrates (open-rigs/av-dome#20, #22).
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
     [System.ComponentModel.DescriptionAttribute("File-based calibration assets for mesh-mapped projection displays.\n\nSuperseded by" +
         " vision.ProjectionCorrection, whose paths are relative to the rig configuration\n" +
-        "directory; kept until av-dome migrates (ucl-open/av-dome#20, #22).")]
+        "directory; kept until av-dome migrates (open-rigs/av-dome#20, #22).")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
     public partial class ProjectionCalibration

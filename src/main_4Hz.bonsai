@@ -10,7 +10,7 @@
                  xmlns:dsp="clr-namespace:Bonsai.Dsp;assembly=Bonsai.Dsp"
                  xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
                  xmlns:p3="clr-namespace:AllenNeuralDynamics.LicketySplit;assembly=AllenNeuralDynamics.LicketySplit"
-                 xmlns:p4="clr-namespace:UclOpen.Video;assembly=UclOpen.Video"
+                 xmlns:p4="clr-namespace:OpenRigs.Video;assembly=OpenRigs.Video"
                  xmlns:spk="clr-namespace:Bonsai.Spinnaker;assembly=Bonsai.Spinnaker"
                  xmlns:io="clr-namespace:Bonsai.IO;assembly=Bonsai.System"
                  xmlns:p5="clr-namespace:Harp.StepperDriver;assembly=Harp.StepperDriver"
@@ -24,7 +24,7 @@
                  xmlns:cv="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision"
                  xmlns:zg="clr-namespace:Bonsai.Gui.ZedGraph;assembly=Bonsai.Gui.ZedGraph"
                  xmlns:wie="clr-namespace:Bonsai.Windows.Input;assembly=Bonsai.Windows.Input"
-                 xmlns:p9="clr-namespace:UclOpen.Core;assembly=UclOpen.Core"
+                 xmlns:p9="clr-namespace:OpenRigs.Core;assembly=OpenRigs.Core"
                  xmlns="https://bonsai-rx.org/2018/workflow">
   <Workflow>
     <Nodes>
@@ -245,7 +245,7 @@
                         <Expression xsi:type="ExternalizedMapping">
                           <Property Name="PortName" />
                         </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.BehaviorBoard.bonsai">
+                        <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:BehaviorBoard.BehaviorBoard.bonsai">
                           <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
                           <PortName>COM10</PortName>
                           <DumpRegisters>true</DumpRegisters>
@@ -406,7 +406,7 @@
                           <Property Name="PulseDO1" />
                           <Property Name="PulseDO2" />
                         </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.PulseController.bonsai">
+                        <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:BehaviorBoard.PulseController.bonsai">
                           <BehaviorCommandsSubjectName>BehaviorCommands</BehaviorCommandsSubjectName>
                           <OutputPulseEnable>DO1 DO2 DO3</OutputPulseEnable>
                           <PulseDO1>55</PulseDO1>
@@ -7051,7 +7051,7 @@
                 <Property Name="Path" />
               </PropertyMappings>
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogController.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogController.bonsai">
               <SubjectId>Dummy</SubjectId>
               <SessionId>Stage 0</SessionId>
               <Path>C:\Data\AV_Dome_4Hz_movingStim</Path>
@@ -7127,7 +7127,7 @@
     Value.Item2.audioFlickerFrequency as audioFlickerFrequency)</scr:Expression>
                     </Builder>
                   </Expression>
-                  <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+                  <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
                     <LogName>TrialSettings</LogName>
                     <Selector />
                   </Expression>
@@ -7237,7 +7237,7 @@
                       </Edges>
                     </Workflow>
                   </Expression>
-                  <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogHarpDevice.bonsai">
+                  <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogHarpDevice.bonsai">
                     <LogName />
                   </Expression>
                 </Nodes>
@@ -7999,7 +7999,7 @@ Item4 as ExposureTime)</scr:Expression>
                     <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
                       <Name>Timestamp</Name>
                     </Expression>
-                    <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+                    <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
                       <LogName />
                       <Selector>Seconds</Selector>
                     </Expression>
@@ -8852,7 +8852,7 @@ Item4 as ExposureTime)</scr:Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>ClockSynchronizerEvents</Name>
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogHarpDevice.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogHarpDevice.bonsai">
               <LogName>TimestampGenerator</LogName>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
@@ -8868,7 +8868,7 @@ Item4 as ExposureTime)</scr:Expression>
             <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
               <Name>Timestamp</Name>
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
               <LogName>SessionState</LogName>
               <Selector>Seconds,Value</Selector>
             </Expression>
@@ -11743,7 +11743,7 @@ Things we want to do with this:
             <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
               <Name>Timestamp</Name>
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
               <LogName>StimulusStartEvents</LogName>
               <Selector>Seconds,Value</Selector>
             </Expression>

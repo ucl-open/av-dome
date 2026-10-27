@@ -3,9 +3,9 @@ from typing import List, Literal
 
 from pydantic import Field, field_validator, model_validator
 from swc.aeon.schema import BaseSchema
-from ucl_open.components import SphericalPosition
-from ucl_open.core.base import Bool, Double, Int, String
-from ucl_open.core.task import Task, TaskParameters
+from open_rigs.components import SphericalPosition
+from open_rigs.core.base import Bool, Double, Int, String
+from open_rigs.core.task import Task, TaskParameters
 
 from ucl_open_av_dome import __semver__
 

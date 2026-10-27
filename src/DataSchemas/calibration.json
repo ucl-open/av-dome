@@ -95,7 +95,7 @@
       "type": "object"
     },
     "CalibrationModel": {
-      "description": "How a calibration curve is derived from its points; the `UclOpen.Core.CalibrationModel` operators' enum.",
+      "description": "How a calibration curve is derived from its points; the `OpenRigs.Core.CalibrationModel` operators' enum.",
       "enum": [
         "LinearFit",
         "PolynomialFit",
@@ -105,7 +105,7 @@
       ],
       "title": "CalibrationModel",
       "type": "string",
-      "x-sgen-typename": "UclOpen.Core.CalibrationModel"
+      "x-sgen-typename": "OpenRigs.Core.CalibrationModel"
     },
     "CalibrationPoint": {
       "description": "One measured pair of a calibration curve.",
@@ -129,7 +129,7 @@
       "type": "object"
     },
     "DispenseCalibration": {
-      "description": "What an experiment repository commits as `config/<dispenser>-calibration.yml`.\n\n`UclOpen.Core:DispenseCalibration.bonsai` deserialises it with the Core `DeserializeFromYaml`\nand runs the procedure; the balance port is set on the workflow at run time.",
+      "description": "What an experiment repository commits as `config/<dispenser>-calibration.yml`.\n\n`OpenRigs.Core:DispenseCalibration.bonsai` deserialises it with the Core `DeserializeFromYaml`\nand runs the procedure; the balance port is set on the workflow at run time.",
       "properties": {
         "procedure": {
           "$ref": "#/$defs/DispenseProcedure",
@@ -164,7 +164,7 @@
       "type": "object"
     },
     "DispenseProcedure": {
-      "description": "Settings of the dispense calibration: fire known sizes, weigh the gain, write a CalibrationCurve.\n\nRun by `UclOpen.Core:DispenseCalibration.bonsai`. Subjects are declared to wire in a rig's own hardware",
+      "description": "Settings of the dispense calibration: fire known sizes, weigh the gain, write a CalibrationCurve.\n\nRun by `OpenRigs.Core:DispenseCalibration.bonsai`. Subjects are declared to wire in a rig's own hardware",
       "properties": {
         "samples": {
           "description": "Sizes to measure, each fired and weighed in turn.",
@@ -349,7 +349,7 @@
       "type": "object"
     },
     "SerialBalance": {
-      "description": "A serial balance read by the platform's dispense calibration through `UclOpen.Devices:SerialBalance.bonsai`.\n\nExtends `SerialDevice` with the balance's protocol.",
+      "description": "A serial balance read by the platform's dispense calibration through `OpenRigs.Devices:SerialBalance.bonsai`.\n\nExtends `SerialDevice` with the balance's protocol.",
       "properties": {
         "portName": {
           "default": "COMx",

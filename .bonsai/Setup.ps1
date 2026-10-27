@@ -23,7 +23,7 @@ if (!(Test-Path "./Bonsai.exe")) {
 }
 $nugetConfig = Get-Content "./NuGet.config" -Raw -ErrorAction SilentlyContinue
 if (-not $env:GITHUB_PACKAGES_TOKEN -and $nugetConfig -match '%GITHUB_PACKAGES_TOKEN%') {
-    Write-Warning ("No GitHub Packages credentials: restoring UclOpen.* packages will fail with " +
+    Write-Warning ("No GitHub Packages credentials: restoring OpenRigs.* packages will fail with " +
         "401 Unauthorized. Either edit .bonsai/NuGet.config (git-ignored) and replace " +
         "%GITHUB_PACKAGES_TOKEN% with a PAT that has read:packages, or set the " +
         "GITHUB_PACKAGES_TOKEN environment variable. See NuGet.config.example for details.")

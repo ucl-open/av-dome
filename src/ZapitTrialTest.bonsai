@@ -6,7 +6,7 @@
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
                  xmlns:p2="clr-namespace:;assembly=Extensions"
                  xmlns:p3="clr-namespace:UclOpenAvDome;assembly=Extensions"
-                 xmlns:uoc="clr-namespace:UclOpen.Core;assembly=UclOpen.Core"
+                 xmlns:uoc="clr-namespace:OpenRigs.Core;assembly=OpenRigs.Core"
                  xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
                  xmlns="https://bonsai-rx.org/2018/workflow">
   <Workflow>
@@ -40,7 +40,7 @@
             <Expression xsi:type="rx:AsyncSubject">
               <Name>RigConfigDirectory</Name>
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Core:ReadRigConfig.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Core:ReadRigConfig.bonsai">
               <FileName>rig.yml</FileName>
             </Expression>
             <Expression xsi:type="WorkflowOutput" />
@@ -332,7 +332,7 @@
             <Expression xsi:type="ExternalizedMapping">
               <Property Name="PortName" />
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.BehaviorBoard.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:BehaviorBoard.BehaviorBoard.bonsai">
               <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
               <PortName>COMx</PortName>
               <DumpRegisters>true</DumpRegisters>
@@ -342,7 +342,7 @@
             <Expression xsi:type="ExternalizedMapping">
               <Property Name="PulseDO3" />
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.PulseController.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:BehaviorBoard.PulseController.bonsai">
               <BehaviorCommandsSubjectName>BehaviorCommands</BehaviorCommandsSubjectName>
               <OutputPulseEnable>DO3</OutputPulseEnable>
               <PulseDO1>1</PulseDO1>

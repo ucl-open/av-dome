@@ -5,8 +5,8 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
-using UclOpen.Core;
-using UclOpen.Core.Calibration;
+using OpenRigs.Core;
+using OpenRigs.Core.Calibration;
 using UclOpenAvDome;
 
 /// <summary>

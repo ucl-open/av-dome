@@ -34,7 +34,7 @@
       <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
         <Name>Timestamp</Name>
       </Expression>
-      <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+      <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
         <LogName>RenderHeartbeat</LogName>
         <Selector>Seconds,Value</Selector>
       </Expression>
@@ -56,7 +56,7 @@
       <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
         <Name>Timestamp</Name>
       </Expression>
-      <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+      <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
         <LogName>ResponseEvents</LogName>
         <Selector>Seconds,Value</Selector>
       </Expression>
@@ -69,7 +69,7 @@
       <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
         <Name>Timestamp</Name>
       </Expression>
-      <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+      <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
         <LogName>TrialStartEvents</LogName>
         <Selector>Seconds,Value.trialType</Selector>
       </Expression>

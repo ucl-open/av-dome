@@ -76,7 +76,7 @@
             <Expression xsi:type="ExternalizedMapping">
               <Property Name="PortName" />
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.BehaviorBoard.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:BehaviorBoard.BehaviorBoard.bonsai">
               <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
               <PortName>COM10</PortName>
               <DumpRegisters>true</DumpRegisters>
@@ -88,7 +88,7 @@
               <Property Name="PulseDO2" />
               <Property Name="PulseDO3" />
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.PulseController.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:BehaviorBoard.PulseController.bonsai">
               <BehaviorCommandsSubjectName>BehaviorCommands</BehaviorCommandsSubjectName>
               <OutputPulseEnable>DO1 DO2 DO3</OutputPulseEnable>
               <PulseDO1>40</PulseDO1>

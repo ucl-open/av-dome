@@ -173,6 +173,16 @@ wheels = [
 ]
 
 [[package]]
+name = "open-rigs"
+version = "0.0.0"
+source = { git = "https://github.com/open-rigs/open-rigs?branch=dispense-calibration#99527b1d664cd5b8cb00a23c1f34c0702ccfca4a" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "pydantic-yaml" },
+    { name = "swc-aeon" },
+]
+
+[[package]]
 name = "opencv-python"
 version = "4.11.0.86"
 source = { registry = "https://pypi.org/simple" }
@@ -449,28 +459,18 @@ wheels = [
 ]
 
 [[package]]
-name = "ucl-open"
-version = "0.0.0"
-source = { git = "https://github.com/ucl-open/ucl-open?branch=rig-config-resolver#1e360da56969a0fe00f2aac9cd28ed20c34a1fb5" }
-dependencies = [
-    { name = "pydantic" },
-    { name = "pydantic-yaml" },
-    { name = "swc-aeon" },
-]
-
-[[package]]
 name = "ucl-open-av-dome"
 version = "0.0.0rc1"
 source = { editable = "." }
 dependencies = [
+    { name = "open-rigs" },
     { name = "pydantic-settings" },
     { name = "swc-aeon" },
-    { name = "ucl-open" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "open-rigs", git = "https://github.com/open-rigs/open-rigs?branch=dispense-calibration" },
     { name = "pydantic-settings" },
     { name = "swc-aeon", git = "https://github.com/SainsburyWellcomeCentre/aeon_api.git?branch=main" },
-    { name = "ucl-open", git = "https://github.com/ucl-open/ucl-open?branch=rig-config-resolver" },
 ]
