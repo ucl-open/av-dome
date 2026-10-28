@@ -47,46 +47,47 @@ taskParameters:
     maxRepeats: 5
     rulesPerType: [onFailure, onFailure, onFailure, onTimeout, onTimeout]
   optogenetics:
-    enabled: false
-    zapitConfigPath: ""
-    stimProbability: 0.75
+    enabled: true
+    zapitConfigPath: C:\Users\CoenLabUsers\zapit\experimental_configs\avdome_main_initialstim.yml
+    stimProbability: 0.5
     stimDelay: 0.0         # s
-    stimDuration: 1.5      # s
+    stimDuration: 2.5      # s
     excludeRepeats: true
     pseudorandomSelection: true
+    warmupTrials: 20
   trainingStages:          # row index = stage id selected in the GUI; ids past the end use the last row
     - label: Stage 0       # habituation, coherent only, single spout half the time, no repeats
       trialWeights: [0, 0, 10, 0, 0]
       autoRewardProbability: 0.0
       bothSpoutsProbability: 0.5
-      rewardSizeUl: 4      # delivered as ceil(size/2) valve pulses
+      rewardSizeUl: 3      # delivered as ceil(size/2) valve pulses
       contrasts: [3.0]
       allowRepeats: false
     - label: Stage 1       # coherent trials only
       trialWeights: [0, 0, 10, 0, 0]
       autoRewardProbability: 0.0
       bothSpoutsProbability: 1.0
-      rewardSizeUl: 4
+      rewardSizeUl: 3
       contrasts: [3.0]
       allowRepeats: true
     - label: Stage 2       # unisensory auditory added
       trialWeights: [0, 10, 10, 0, 0]
       autoRewardProbability: 0.0
       bothSpoutsProbability: 1.0
-      rewardSizeUl: 4
+      rewardSizeUl: 3
       contrasts: [0, 0.25, 0.5, 1.0]
       allowRepeats: true
     - label: Stage 3       # unisensory visual added
       trialWeights: [10, 10, 10, 0, 0]
       autoRewardProbability: 0.0
       bothSpoutsProbability: 1.0
-      rewardSizeUl: 4
+      rewardSizeUl: 3
       contrasts: [0, 0.25, 0.5, 1.0]
       allowRepeats: true
     - label: Stage 4       # conflict and neutral trials added
       trialWeights: [10, 10, 5, 5, 1]
       autoRewardProbability: 0.0
       bothSpoutsProbability: 1.0
-      rewardSizeUl: 4
+      rewardSizeUl: 3
       contrasts: [0, 0.25, 0.5, 1.0]
       allowRepeats: true

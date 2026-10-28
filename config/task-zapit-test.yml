@@ -51,7 +51,7 @@ taskParameters:
   optogenetics:
     enabled: true
     zapitConfigPath: C:\Users\CoenLabUsers\zapit\examples\example_stimulus_config_files\left_right_pair.yml # EDIT: the stim config file loaded in Zapit
-    stimProbability: 0.75
+    stimProbability: 1
     stimDelay: 0.0         # s
     stimDuration: 1.5      # s
     excludeRepeats: true
