@@ -1,34 +1,42 @@
+import json
+import subprocess
 from pathlib import Path
-from typing import Union
 
 import pydantic
-from ucl_open.rigs.experiment import Experiment
-from aind_behavior_services.utils import BonsaiSgenSerializers, convert_pydantic_to_bonsai
 
 import ucl_open_av_dome.rig
 import ucl_open_av_dome.task
 
 SCHEMA_ROOT = Path("./src/DataSchemas/")
 EXTENSIONS_ROOT = Path("./src/Extensions/")
-NAMESPACE_PREFIX = "UclOpenAvDomeDataSchema"
+
+
+def regenerate(model_type: type, schema_file: Path) -> None:
+    """Write the JSON schema for one root model and run Bonsai.Sgen on it."""
+    model = pydantic.RootModel[model_type]
+    schema = model.model_json_schema(by_alias=True, mode="serialization", union_format="primitive_type_array")
+    schema_file.write_text(json.dumps(schema, indent=2))
+    subprocess.run(
+        [
+            "dotnet",
+            "bonsai.sgen",
+            str(schema_file),
+            "--output",
+            str(EXTENSIONS_ROOT),
+            "--serializer",
+            "json",
+            "--serializer",
+            "yaml",
+        ],
+        check=True,
+    )
 
 
 def main():
-    models = [
-        ucl_open_av_dome.task.UclOpenAvDomeTaskLogic,
-        ucl_open_av_dome.rig.UclOpenAvDomeRig,
-    ]
-    model = pydantic.RootModel[Union[tuple(models)]]
-
-    convert_pydantic_to_bonsai(
-        model, # type: ignore
-        model_name="ucl_open_av_dome",
-        root_element="Root",
-        cs_namespace=NAMESPACE_PREFIX,
-        json_schema_output_dir=SCHEMA_ROOT,
-        cs_output_dir=EXTENSIONS_ROOT,
-        cs_serializer=[BonsaiSgenSerializers.JSON],
-    )
+    """Regenerate the JSON schemas and Bonsai.Sgen C# classes from the pydantic models."""
+    SCHEMA_ROOT.mkdir(parents=True, exist_ok=True)
+    regenerate(ucl_open_av_dome.rig.UclOpenAvDomeRig, SCHEMA_ROOT / "ucl_open_av_dome.json")
+    regenerate(ucl_open_av_dome.task.UclOpenAvDomeTaskLogic, SCHEMA_ROOT / "ucl_open_av_dome_task.json")
 
 
 if __name__ == "__main__":

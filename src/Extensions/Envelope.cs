@@ -6,12 +6,10 @@ using System.Reactive.Linq;
 using OpenCV.Net;
 
 [Combinator]
-[Description("Applies an exponential attack/release envelope to the input waveform.")]
+[Description("Applies a cosine-shaped attack/release envelope to the input waveform.")]
 [WorkflowElementCategory(ElementCategory.Transform)]
 public class Envelope
 {
-    static readonly double ExpScale = Math.Log(1 - 0.999);
-
     [Description("The duration of the envelope attack phase. Must be zero or less than the size of the buffer.")]
     public double AttackDuration { get; set; }
 
@@ -36,10 +34,16 @@ public class Envelope
 
                 using (var attackBuffer = envelope.GetCols(0, attackSampleCount))
                 {
-                    CV.Range(attackBuffer, 0, 1);
-                    CV.ConvertScale(attackBuffer, attackBuffer, ExpScale);
-                    CV.Exp(attackBuffer, attackBuffer);
-                    CV.ConvertScale(attackBuffer, attackBuffer, -1, 1);
+                    for (int i = 0; i < attackSampleCount; i++)
+                    {
+                        var value = attackSampleCount == 1
+                            ? 1.0
+                            : 0.5 - 0.5 * Math.Cos(Math.PI * i / (attackSampleCount - 1));
+                        using (var column = attackBuffer.GetCols(i, i + 1))
+                        {
+                            column.Set(Scalar.All(value));
+                        }
+                    }
                 }
             }
 
@@ -48,11 +52,18 @@ public class Envelope
                 if (releaseSampleCount > buffer.Cols || (releaseSampleCount + attackSampleCount) > buffer.Cols)
                     throw new InvalidOperationException("Release duration exceeds buffer length or overlaps attack duration.");
 
-                using (var releaseBuffer = envelope.GetCols(buffer.Cols - releaseSampleCount - 1, buffer.Cols))
+                using (var releaseBuffer = envelope.GetCols(buffer.Cols - releaseSampleCount, buffer.Cols))
                 {
-                    CV.Range(releaseBuffer, 0, 1);
-                    CV.ConvertScale(releaseBuffer, releaseBuffer, ExpScale);
-                    CV.Exp(releaseBuffer, releaseBuffer);
+                    for (int i = 0; i < releaseSampleCount; i++)
+                    {
+                        var value = releaseSampleCount == 1
+                            ? 0.0
+                            : 0.5 + 0.5 * Math.Cos(Math.PI * i / (releaseSampleCount - 1));
+                        using (var column = releaseBuffer.GetCols(i, i + 1))
+                        {
+                            column.Set(Scalar.All(value));
+                        }
+                    }
                 }
             }
 
