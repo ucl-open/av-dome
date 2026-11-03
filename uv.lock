@@ -175,7 +175,7 @@ wheels = [
 [[package]]
 name = "open-rigs"
 version = "0.0.0"
-source = { git = "https://github.com/open-rigs/open-rigs?branch=dispense-calibration#ae2bfaae73be2b3e6d1c0afccdf00a86f0a20286" }
+source = { git = "https://github.com/open-rigs/open-rigs?branch=calibration-loop#ae2bfaae73be2b3e6d1c0afccdf00a86f0a20286" }
 dependencies = [
     { name = "pydantic" },
     { name = "pydantic-yaml" },
@@ -470,7 +470,7 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
-    { name = "open-rigs", git = "https://github.com/open-rigs/open-rigs?branch=dispense-calibration" },
+    { name = "open-rigs", git = "https://github.com/open-rigs/open-rigs?branch=calibration-loop" },
     { name = "pydantic-settings" },
     { name = "swc-aeon", git = "https://github.com/SainsburyWellcomeCentre/aeon_api.git?branch=main" },
 ]

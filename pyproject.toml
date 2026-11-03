@@ -47,5 +47,5 @@ ignore-words-list = 'nd'
 required-version = '>=0.8.4'
 
 [tool.uv.sources]
-open-rigs = {git = "https://github.com/open-rigs/open-rigs", branch = "dispense-calibration"}
+open-rigs = {git = "https://github.com/open-rigs/open-rigs", branch = "calibration-loop"}
 swc-aeon = { git = "https://github.com/SainsburyWellcomeCentre/aeon_api.git", branch = "main" }
