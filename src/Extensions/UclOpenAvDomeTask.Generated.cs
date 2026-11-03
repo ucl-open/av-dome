@@ -384,6 +384,8 @@ namespace UclOpenAvDomeTask
     
         private bool _pseudorandomSelection;
     
+        private int _warmupTrials;
+    
         public OptogeneticsSettings()
         {
             _enabled = false;
@@ -393,6 +395,7 @@ namespace UclOpenAvDomeTask
             _stimDuration = 1.5D;
             _excludeRepeats = true;
             _pseudorandomSelection = true;
+            _warmupTrials = 0;
         }
     
         protected OptogeneticsSettings(OptogeneticsSettings other)
@@ -404,6 +407,7 @@ namespace UclOpenAvDomeTask
             _stimDuration = other._stimDuration;
             _excludeRepeats = other._excludeRepeats;
             _pseudorandomSelection = other._pseudorandomSelection;
+            _warmupTrials = other._warmupTrials;
         }
     
         /// <summary>
@@ -532,6 +536,25 @@ namespace UclOpenAvDomeTask
             }
         }
     
+        /// <summary>
+        /// Trials at session start with no stimulation (counted by TrialCount, repeats included)
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("warmupTrials")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="warmupTrials")]
+        [System.ComponentModel.DescriptionAttribute("Trials at session start with no stimulation (counted by TrialCount, repeats inclu" +
+            "ded)")]
+        public int WarmupTrials
+        {
+            get
+            {
+                return _warmupTrials;
+            }
+            set
+            {
+                _warmupTrials = value;
+            }
+        }
+    
         public System.IObservable<OptogeneticsSettings> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new OptogeneticsSettings(this)));
@@ -550,7 +573,8 @@ namespace UclOpenAvDomeTask
             stringBuilder.Append("StimDelay = " + _stimDelay + ", ");
             stringBuilder.Append("StimDuration = " + _stimDuration + ", ");
             stringBuilder.Append("ExcludeRepeats = " + _excludeRepeats + ", ");
-            stringBuilder.Append("PseudorandomSelection = " + _pseudorandomSelection);
+            stringBuilder.Append("PseudorandomSelection = " + _pseudorandomSelection + ", ");
+            stringBuilder.Append("WarmupTrials = " + _warmupTrials);
             return true;
         }
     

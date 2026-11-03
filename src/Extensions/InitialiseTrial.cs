@@ -29,6 +29,9 @@ public class InitialiseTrial
     [Description("Offset added to the configured rngSeed so multiple operator instances draw distinct deterministic streams.")]
     public int SeedOffset { get; set; }
 
+    [Description("Trials completed so far this session (map from the TrialCount subject). Trials with TrialNumber < optogenetics.warmupTrials are never stimulated.")]
+    public int TrialNumber { get; set; }
+
     // One RNG per operator instance, seeded once from the config on the first trial so a session
     // is reproducible from its task YAML. Instance state persists across re-subscriptions
     // (e.g. inside a SelectMany), matching the shuffle-block and repeat bookkeeping below.
@@ -353,6 +356,11 @@ public class InitialiseTrial
         if (!optogenetics.Enabled)
             return;
 
+        if (TrialNumber < optogenetics.WarmupTrials)
+        {
+            Console.WriteLine("Optogenetics warmup: trial " + (TrialNumber + 1) + "/" + optogenetics.WarmupTrials + " - no stimulation");
+            return;
+        }
         // Check if Zapit conditions are available
         if (_zapitConditions.Count == 0)
         {
@@ -483,8 +491,12 @@ public class InitialiseTrial
                 return;
             }
         }
-        trial.visualAzimuth = drawRandomUniformFromRange(azimuthMin, azimuthMax, rand);
-        trial.visualElevation = drawRandomUniformFromRange(visual.ElevationMin, visual.ElevationMax, rand);
+        // GERION EDIT: HACKY FIX FOR BROKEN VISUAL STIMULI
+        // trial.visualAzimuth = drawRandomUniformFromRange(azimuthMin, azimuthMax, rand);
+        // trial.visualElevation = drawRandomUniformFromRange(visual.ElevationMin, visual.ElevationMax, rand);
+        // TODO:
+        trial.visualAzimuth = isRightSide ? 60.0 : -60.0;
+        trial.visualElevation = 15.0;
     }
 
     // Draws one azimuth from overwriteAzimuths, filtered to the requested side (strictly positive or

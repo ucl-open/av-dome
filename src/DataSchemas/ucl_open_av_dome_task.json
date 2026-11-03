@@ -106,6 +106,14 @@
           "description": "Draw conditions from a shuffled queue rather than independently",
           "title": "PseudorandomSelection",
           "type": "boolean"
+        },
+        "warmupTrials": {
+          "default": 0,
+          "description": "Trials at session start with no stimulation (counted by TrialCount, repeats included)",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "title": "WarmupTrials",
+          "type": "integer"
         }
       },
       "title": "OptogeneticsSettings",
