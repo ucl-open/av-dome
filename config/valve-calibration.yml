@@ -1,0 +1,40 @@
+# yaml-language-server: $schema=../src/DataSchemas/calibration.json
+#
+# Settings of the valve calibration run by src/CalibrateValve.bonsai, a DispenseCalibration from the
+# ucl-open platform. Committed: these are the semi-permanent parameters of the procedure. The output
+# line, the operator's name and the two COM ports (behavior board, balance) are set on the workflow
+# when it starts.
+#
+# Per run: `primingPulses` pulses at the largest size fill the line (not measured), the balance is
+# weighed for a baseline, then each sample fires `repeats` pulses at `size` milliseconds and the gain
+# is weighed. Volume per pulse = gain / repeats / density. Pick repeats so the gain per sample is at
+# least fifty times the balance's last digit. Sizes should bracket the rig's working range; the rig
+# clamps requests outside it. The points are fitted with `fit` only to check that the curve is
+# monotone; the artefact stores the points and the rig fits them with the model in its rig.yml.
+procedure:
+  samples:
+    - { size: 20, repeats: 10 }
+    - { size: 30, repeats: 10 }
+    - { size: 40, repeats: 10 }
+    - { size: 50, repeats: 10 }
+    - { size: 60, repeats: 10 }
+    - { size: 80, repeats: 10 }
+    - { size: 100, repeats: 10 }
+  xName: pulse_width
+  xUnit: ms
+  primingPulses: 5
+  densityGPerMl: 1.0        # water
+  settleWindow: 10          # consecutive stable readings before a weight is taken
+  weighTimeoutS: 60         # fail if the balance has not settled by then
+  fit: LinearFit
+  requireMonotone: true
+balance:
+  baudRate: 9600
+  tareCommand: T            # tare before the baseline
+  printCommand: IP          # request one reading
+  printPeriodS: 0.5
+  bootDelayS: 0.5
+  tareDelayS: 1.5
+  unitSuffix: g             # readings look like "12.345 g"; "?" marks an unsettled reading
+  unstableMarker: "?"
+  ignore: ES                # comma-separated lines to drop

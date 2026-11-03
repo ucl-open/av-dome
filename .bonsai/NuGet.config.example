@@ -6,8 +6,8 @@
       This file is a TEMPLATE. Setup.cmd copies it to NuGet.config (git-ignored) on
       first run; edit that copy, never this one.
 
-      GitHub Packages hosts the UclOpen.* CI prereleases that Bonsai.config pins
-      (ucl-open/ucl-open CI publishes them on every push). GitHub Packages requires
+      GitHub Packages hosts the OpenRigs.* CI prereleases that Bonsai.config pins
+      (open-rigs/open-rigs CI publishes them on every push). GitHub Packages requires
       authentication even for public packages. Pick ONE in your local NuGet.config:
 
         a) replace %GITHUB_PACKAGES_TOKEN% below with a personal access token that
@@ -17,12 +17,12 @@
 
       Mint a token with the GitHub CLI: gh auth refresh -s read:packages; gh auth token
     -->
-    <add key="github-ucl-open" value="https://nuget.pkg.github.com/ucl-open/index.json" protocolVersion="3" />
+    <add key="github-open-rigs" value="https://nuget.pkg.github.com/open-rigs/index.json" protocolVersion="3" />
   </packageSources>
   <packageSourceCredentials>
-    <github-ucl-open>
-      <add key="Username" value="ucl-open" />
+    <github-open-rigs>
+      <add key="Username" value="open-rigs" />
       <add key="ClearTextPassword" value="%GITHUB_PACKAGES_TOKEN%" />
-    </github-ucl-open>
+    </github-open-rigs>
   </packageSourceCredentials>
 </configuration>

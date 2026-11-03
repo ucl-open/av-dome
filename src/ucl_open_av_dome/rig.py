@@ -2,16 +2,16 @@ from typing import Literal
 
 from pydantic import Field
 from swc.aeon.schema import BaseSchema
-from ucl_open.components import ProjectionCalibration, SpeakerArray
-from ucl_open.core.rig import Rig
-from ucl_open.devices import (
+from open_rigs.components import ProjectionCalibration, SpeakerArray
+from open_rigs.core.rig import Rig
+from open_rigs.devices import (
     BehaviorBoard,
     HarpLickSpoutStage,
     HarpTimestampGeneratorGen3,
     LicketySplit,
     StepperPositions,
 )
-from ucl_open.video.video import SpinnakerCamera
+from open_rigs.video.video import SpinnakerCamera
 
 from ucl_open_av_dome import __semver__
 

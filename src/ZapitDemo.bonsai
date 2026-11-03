@@ -43,7 +43,7 @@
       <Expression xsi:type="MulticastSubject">
         <Name>ZapitCommands</Name>
       </Expression>
-      <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Devices:BehaviorBoard.BehaviorBoard.bonsai">
+      <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:BehaviorBoard.BehaviorBoard.bonsai">
         <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
         <PortName>COM11</PortName>
         <DumpRegisters>true</DumpRegisters>
