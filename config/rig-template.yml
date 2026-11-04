@@ -18,8 +18,11 @@ rigId: XX                 # two capitals or a capital and a digit, such as D1: r
 
 # Each kind of device is a group of named entries: behaviorBoard: main: is BehaviorBoard-Main in the
 # data and in live view. The workflow takes each device it drives by that name and stops at startup,
-# naming what this file has, if one is missing. usbSerial is the board's FTDI serial (rig-setup's
-# hardware scan lists each port's); a Behavior board's is required and checked at Start.
+# naming what this file has, if one is missing. usbSerial is the board's USB serial, an FTDI chip's
+# or a Pico's flash id (rig-setup's hardware scan lists each port's): RecordHarpDevices checks at
+# Start that the board on each portName has it, for the Behavior board, the timestamp generator
+# and both Lickety Splits, and stops the workflow saying which board is where if not. The lick
+# spout stage's two drivers are nested under one entry and are not checked.
 behaviorBoard:
   main:
     portName: COM1
@@ -47,7 +50,7 @@ behaviorBoard:
 timestampGeneratorGen3:
   main:
     portName: COM2
-    usbSerial: null
+    usbSerial: CHANGE-ME
     timerFrequency: Timer1000Hz
 
 lickSpoutStage:
@@ -68,12 +71,12 @@ lickSpoutStage:
 licketySplit:
   left:
     portName: COM5
-    usbSerial: null
+    usbSerial: CHANGE-ME            # a Pico's flash id, such as E664C856C360B937
     channel0TriggerThreshold: 0     # ADC counts above which a lick registers
     channel0UntriggerThreshold: 0   # ADC counts below which the lick ends
   right:
     portName: COM6
-    usbSerial: null
+    usbSerial: CHANGE-ME
     channel0TriggerThreshold: 0
     channel0UntriggerThreshold: 0
 

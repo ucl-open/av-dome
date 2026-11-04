@@ -5,6 +5,9 @@
                  xmlns:p2="clr-namespace:UclOpenAvDome;assembly=Extensions"
                  xmlns:uoc="clr-namespace:OpenRigs.Core;assembly=OpenRigs.Core"
                  xmlns:orcl="clr-namespace:OpenRigs.Control;assembly=OpenRigs.Control"
+                 xmlns:hd="clr-namespace:OpenRigs.HarpDevices;assembly=OpenRigs.HarpDevices"
+                 xmlns:mf="clr-namespace:OpenRigs.Manifest;assembly=OpenRigs.Manifest"
+                 xmlns:lv="clr-namespace:OpenRigs.LiveView;assembly=OpenRigs.LiveView"
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
                  xmlns:sys="clr-namespace:System;assembly=mscorlib"
                  xmlns:scr="clr-namespace:Bonsai.Scripting.Expressions;assembly=Bonsai.Scripting.Expressions"
@@ -168,6 +171,21 @@
                     <TimerFrequency>Timer1000Hz</TimerFrequency>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
+                    <Name>ClockSynchronizerEvents</Name>
+                  </Expression>
+                  <Expression xsi:type="rx:PublishSubject">
+                    <Name>TimestampGeneratorGen3-Main.Data</Name>
+                  </Expression>
+                  <Expression xsi:type="rx:BehaviorSubject" TypeArguments="harp:HarpMessage">
+                    <rx:Name>TimestampGeneratorGen3-Main.Commands</rx:Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>TimestampGeneratorGen3-Main.Commands</Name>
+                  </Expression>
+                  <Expression xsi:type="MulticastSubject">
+                    <Name>TimestampGeneratorCommands</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
                     <Name>BehaviorBoard-Main</Name>
                   </Expression>
                   <Expression xsi:type="PropertyMapping">
@@ -190,19 +208,19 @@
                           <Property Name="PortName" />
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:BehaviorBoard.BehaviorBoard.bonsai">
-                          <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
+                          <CommandsSubjectName>BehaviorBoard-Main.Commands</CommandsSubjectName>
                           <PortName>COM11</PortName>
                           <DumpRegisters>true</DumpRegisters>
                           <Heartbeat>Enabled</Heartbeat>
-                          <EventsSubjectName>BehaviorEvents</EventsSubjectName>
+                          <EventsSubjectName>BehaviorBoard-Main.Data</EventsSubjectName>
                         </Expression>
                         <Expression xsi:type="ExternalizedMapping">
                           <Property Name="CountsPerRev" />
                           <Property Name="WheelDiameterMm" />
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:BehaviorBoard.RunningWheel.bonsai">
-                          <CommandsSubjectName>BehaviorCommands</CommandsSubjectName>
-                          <EventsSubjectName>BehaviorEvents</EventsSubjectName>
+                          <CommandsSubjectName>BehaviorBoard-Main.Commands</CommandsSubjectName>
+                          <EventsSubjectName>BehaviorBoard-Main.Data</EventsSubjectName>
                           <CountsPerRev>4096</CountsPerRev>
                           <WheelDiameterMm>170</WheelDiameterMm>
                           <WheelDistanceSubjectName>WheelDistanceCm</WheelDistanceSubjectName>
@@ -214,12 +232,12 @@
                           <Property Name="OutputPulseEnable" />
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:BehaviorBoard.PulseController.bonsai">
-                          <BehaviorCommandsSubjectName>BehaviorCommands</BehaviorCommandsSubjectName>
+                          <BehaviorCommandsSubjectName>BehaviorBoard-Main.Commands</BehaviorCommandsSubjectName>
                           <OutputPulseEnable>DO1 DO2 DO3</OutputPulseEnable>
                           <PulseDO1>40</PulseDO1>
                           <PulseDO2>50</PulseDO2>
                           <PulseDO3>3000</PulseDO3>
-                          <BehaviorEventsSubjectName>BehaviorEvents</BehaviorEventsSubjectName>
+                          <BehaviorEventsSubjectName>BehaviorBoard-Main.Data</BehaviorEventsSubjectName>
                           <TriggerPulseSubjectName>TriggerPulse</TriggerPulseSubjectName>
                           <TriggerCalibratedPulseSubjectName>TriggerCalibratedPulse</TriggerCalibratedPulseSubjectName>
                         </Expression>
@@ -238,8 +256,8 @@
                           <EnableTrigger1>false</EnableTrigger1>
                           <Trigger0Frequency>50</Trigger0Frequency>
                           <Trigger1Frequency>50</Trigger1Frequency>
-                          <BehaviorCommandsSubjectName>BehaviorCommands</BehaviorCommandsSubjectName>
-                          <BehaviorEventsSubjectName>BehaviorEvents</BehaviorEventsSubjectName>
+                          <BehaviorCommandsSubjectName>BehaviorBoard-Main.Commands</BehaviorCommandsSubjectName>
+                          <BehaviorEventsSubjectName>BehaviorBoard-Main.Data</BehaviorEventsSubjectName>
                           <Camera0TriggerEventsSubjectName>Camera0TriggerEvents</Camera0TriggerEventsSubjectName>
                           <Camera1TriggerEventsSubjectName>Camera1TriggerEvents</Camera1TriggerEventsSubjectName>
                         </Expression>
@@ -283,11 +301,11 @@
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:LicketySplit.bonsai">
-                          <CommandsSubjectName>LickCommandsRight</CommandsSubjectName>
+                          <CommandsSubjectName>LicketySplit-Right.Commands</CommandsSubjectName>
                           <PortName>COM13</PortName>
                           <DumpRegisters>true</DumpRegisters>
                           <Heartbeat>Enabled</Heartbeat>
-                          <EventsSubjectName>LickEventsRight</EventsSubjectName>
+                          <EventsSubjectName>LicketySplit-Right.Data</EventsSubjectName>
                           <Channel0TriggerThreshold>0</Channel0TriggerThreshold>
                           <Channel0UntriggerThreshold>0</Channel0UntriggerThreshold>
                           <LickStateSubjectName>LickStateRight</LickStateSubjectName>
@@ -303,11 +321,11 @@
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:LicketySplit.bonsai">
-                          <CommandsSubjectName>LickCommandsLeft</CommandsSubjectName>
+                          <CommandsSubjectName>LicketySplit-Left.Commands</CommandsSubjectName>
                           <PortName>COM15</PortName>
                           <DumpRegisters>true</DumpRegisters>
                           <Heartbeat>Enabled</Heartbeat>
-                          <EventsSubjectName>LickEventsLeft</EventsSubjectName>
+                          <EventsSubjectName>LicketySplit-Left.Data</EventsSubjectName>
                           <Channel0TriggerThreshold>0</Channel0TriggerThreshold>
                           <Channel0UntriggerThreshold>0</Channel0UntriggerThreshold>
                           <LickStateSubjectName>LickStateLeft</LickStateSubjectName>
@@ -346,7 +364,7 @@
                           <SerialNumber>25366326</SerialNumber>
                           <ColorProcessing>Default</ColorProcessing>
                           <CameraTriggerEventsSubjectName>Camera0TriggerEvents</CameraTriggerEventsSubjectName>
-                          <FrameEventsSubjectName>FrameEvents1</FrameEventsSubjectName>
+                          <FrameEventsSubjectName>Camera-Face.Data</FrameEventsSubjectName>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
                           <Name>Camera-Body</Name>
@@ -369,7 +387,7 @@
                           <SerialNumber>25366318</SerialNumber>
                           <ColorProcessing>Default</ColorProcessing>
                           <CameraTriggerEventsSubjectName>Camera0TriggerEvents</CameraTriggerEventsSubjectName>
-                          <FrameEventsSubjectName>FrameEvents3</FrameEventsSubjectName>
+                          <FrameEventsSubjectName>Camera-Body.Data</FrameEventsSubjectName>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
                           <Name>Camera-Pupil</Name>
@@ -392,7 +410,7 @@
                           <SerialNumber>25366328</SerialNumber>
                           <ColorProcessing>Default</ColorProcessing>
                           <CameraTriggerEventsSubjectName>Camera0TriggerEvents</CameraTriggerEventsSubjectName>
-                          <FrameEventsSubjectName>FrameEvents2</FrameEventsSubjectName>
+                          <FrameEventsSubjectName>Camera-Pupil.Data</FrameEventsSubjectName>
                         </Expression>
                       </Nodes>
                       <Edges>
@@ -1363,12 +1381,14 @@
                 <Edges>
                   <Edge From="0" To="1" Label="Source1" />
                   <Edge From="1" To="2" Label="Source1" />
+                  <Edge From="8" To="9" Label="Source1" />
+                  <Edge From="9" To="10" Label="Source1" />
+                  <Edge From="15" To="16" Label="Source1" />
+                  <Edge From="16" To="17" Label="Source1" />
+                  <Edge From="17" To="18" Label="Source1" />
+                  <Edge From="18" To="10" Label="Source2" />
                   <Edge From="3" To="4" Label="Source1" />
-                  <Edge From="4" To="5" Label="Source1" />
-                  <Edge From="10" To="11" Label="Source1" />
-                  <Edge From="11" To="12" Label="Source1" />
-                  <Edge From="12" To="13" Label="Source1" />
-                  <Edge From="13" To="5" Label="Source2" />
+                  <Edge From="6" To="7" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -1539,7 +1559,7 @@
                       </harp:Payload>
                     </Expression>
                     <Expression xsi:type="MulticastSubject">
-                      <Name>BehaviorCommands</Name>
+                      <Name>BehaviorBoard-Main.Commands</Name>
                     </Expression>
                     <Expression xsi:type="SubscribeSubject">
                       <Name>TrialSuccess</Name>
@@ -1551,10 +1571,10 @@
                       </harp:Payload>
                     </Expression>
                     <Expression xsi:type="MulticastSubject">
-                      <Name>BehaviorCommands</Name>
+                      <Name>BehaviorBoard-Main.Commands</Name>
                     </Expression>
                     <Expression xsi:type="SubscribeSubject">
-                      <Name>BehaviorEvents</Name>
+                      <Name>BehaviorBoard-Main.Data</Name>
                     </Expression>
                     <Expression xsi:type="Combinator">
                       <Combinator xsi:type="rx:Take">
@@ -1573,7 +1593,7 @@
                       </harp:Payload>
                     </Expression>
                     <Expression xsi:type="MulticastSubject">
-                      <Name>BehaviorCommands</Name>
+                      <Name>BehaviorBoard-Main.Commands</Name>
                     </Expression>
                   </Nodes>
                   <Edges>
@@ -5113,7 +5133,7 @@
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="SubscribeSubject">
-                          <Name>BehaviorEvents</Name>
+                          <Name>BehaviorBoard-Main.Data</Name>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="Extensions\LoggingPrefixCondition.bonsai" />
                         <Expression xsi:type="GroupWorkflow">
@@ -5203,7 +5223,7 @@
                           </Workflow>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogHarpDevice.bonsai">
-                          <LogName>BehaviorBoard</LogName>
+                          <LogName>BehaviorBoard-Main</LogName>
                         </Expression>
                       </Nodes>
                       <Edges>
@@ -5224,7 +5244,7 @@
                           <Workflow>
                             <Nodes>
                               <Expression xsi:type="SubscribeSubject">
-                                <Name>FrameEvents1</Name>
+                                <Name>Camera-Face.Data</Name>
                               </Expression>
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="rx:Skip">
@@ -5251,7 +5271,7 @@
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="StringProperty">
-                                              <Value>Cameras</Value>
+                                              <Value>Camera-Face</Value>
                                             </Combinator>
                                           </Expression>
                                           <Expression xsi:type="ExternalizedMapping">
@@ -5259,7 +5279,7 @@
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="StringProperty">
-                                              <Value>VideoData_Camera1</Value>
+                                              <Value>Camera-Face</Value>
                                             </Combinator>
                                           </Expression>
                                           <Expression xsi:type="ExternalizedMapping">
@@ -5335,7 +5355,7 @@ Item4 as ExposureTime)</scr:Expression>
                                             <Property Name="FileName" />
                                           </Expression>
                                           <Expression xsi:type="io:CsvWriter">
-                                            <io:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\VideoData_Camera1.csv</io:FileName>
+                                            <io:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\Camera-Face.csv</io:FileName>
                                             <io:Append>false</io:Append>
                                             <io:Overwrite>true</io:Overwrite>
                                             <io:Suffix>None</io:Suffix>
@@ -5373,7 +5393,7 @@ Item4 as ExposureTime)</scr:Expression>
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="StringProperty">
-                                              <Value>Cameras</Value>
+                                              <Value>Camera-Face</Value>
                                             </Combinator>
                                           </Expression>
                                           <Expression xsi:type="ExternalizedMapping">
@@ -5381,7 +5401,7 @@ Item4 as ExposureTime)</scr:Expression>
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="StringProperty">
-                                              <Value>VideoData_Camera1</Value>
+                                              <Value>Camera-Face</Value>
                                             </Combinator>
                                           </Expression>
                                           <Expression xsi:type="ExternalizedMapping">
@@ -5429,7 +5449,7 @@ Item4 as ExposureTime)</scr:Expression>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
-                                        <cv:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\VideoData_Camera1.avi</cv:FileName>
+                                        <cv:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\Camera-Face.avi</cv:FileName>
                                         <cv:Suffix>None</cv:Suffix>
                                         <cv:Buffered>true</cv:Buffered>
                                         <cv:Overwrite>false</cv:Overwrite>
@@ -5460,7 +5480,7 @@ Item4 as ExposureTime)</scr:Expression>
                                 </Workflow>
                               </Expression>
                               <Expression xsi:type="SubscribeSubject">
-                                <Name>FrameEvents2</Name>
+                                <Name>Camera-Pupil.Data</Name>
                               </Expression>
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="rx:Skip">
@@ -5487,7 +5507,7 @@ Item4 as ExposureTime)</scr:Expression>
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="StringProperty">
-                                              <Value>Cameras</Value>
+                                              <Value>Camera-Pupil</Value>
                                             </Combinator>
                                           </Expression>
                                           <Expression xsi:type="ExternalizedMapping">
@@ -5495,7 +5515,7 @@ Item4 as ExposureTime)</scr:Expression>
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="StringProperty">
-                                              <Value>VideoData_Camera2</Value>
+                                              <Value>Camera-Pupil</Value>
                                             </Combinator>
                                           </Expression>
                                           <Expression xsi:type="ExternalizedMapping">
@@ -5571,7 +5591,7 @@ Item4 as ExposureTime)</scr:Expression>
                                             <Property Name="FileName" />
                                           </Expression>
                                           <Expression xsi:type="io:CsvWriter">
-                                            <io:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\VideoData_Camera2.csv</io:FileName>
+                                            <io:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\Camera-Pupil.csv</io:FileName>
                                             <io:Append>false</io:Append>
                                             <io:Overwrite>true</io:Overwrite>
                                             <io:Suffix>None</io:Suffix>
@@ -5609,7 +5629,7 @@ Item4 as ExposureTime)</scr:Expression>
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="StringProperty">
-                                              <Value>Cameras</Value>
+                                              <Value>Camera-Pupil</Value>
                                             </Combinator>
                                           </Expression>
                                           <Expression xsi:type="ExternalizedMapping">
@@ -5617,7 +5637,7 @@ Item4 as ExposureTime)</scr:Expression>
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="StringProperty">
-                                              <Value>VideoData_Camera2</Value>
+                                              <Value>Camera-Pupil</Value>
                                             </Combinator>
                                           </Expression>
                                           <Expression xsi:type="ExternalizedMapping">
@@ -5665,7 +5685,7 @@ Item4 as ExposureTime)</scr:Expression>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
-                                        <cv:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\VideoData_Camera2.avi</cv:FileName>
+                                        <cv:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\Camera-Pupil.avi</cv:FileName>
                                         <cv:Suffix>None</cv:Suffix>
                                         <cv:Buffered>true</cv:Buffered>
                                         <cv:Overwrite>true</cv:Overwrite>
@@ -5696,7 +5716,7 @@ Item4 as ExposureTime)</scr:Expression>
                                 </Workflow>
                               </Expression>
                               <Expression xsi:type="SubscribeSubject">
-                                <Name>FrameEvents3</Name>
+                                <Name>Camera-Body.Data</Name>
                               </Expression>
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="rx:Skip">
@@ -5723,7 +5743,7 @@ Item4 as ExposureTime)</scr:Expression>
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="StringProperty">
-                                              <Value>Cameras</Value>
+                                              <Value>Camera-Body</Value>
                                             </Combinator>
                                           </Expression>
                                           <Expression xsi:type="ExternalizedMapping">
@@ -5731,7 +5751,7 @@ Item4 as ExposureTime)</scr:Expression>
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="StringProperty">
-                                              <Value>VideoData_Camera3</Value>
+                                              <Value>Camera-Body</Value>
                                             </Combinator>
                                           </Expression>
                                           <Expression xsi:type="ExternalizedMapping">
@@ -5807,7 +5827,7 @@ Item4 as ExposureTime)</scr:Expression>
                                             <Property Name="FileName" />
                                           </Expression>
                                           <Expression xsi:type="io:CsvWriter">
-                                            <io:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\VideoData_Camera3.csv</io:FileName>
+                                            <io:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\Camera-Body.csv</io:FileName>
                                             <io:Append>false</io:Append>
                                             <io:Overwrite>true</io:Overwrite>
                                             <io:Suffix>None</io:Suffix>
@@ -5845,7 +5865,7 @@ Item4 as ExposureTime)</scr:Expression>
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="StringProperty">
-                                              <Value>Cameras</Value>
+                                              <Value>Camera-Body</Value>
                                             </Combinator>
                                           </Expression>
                                           <Expression xsi:type="ExternalizedMapping">
@@ -5853,7 +5873,7 @@ Item4 as ExposureTime)</scr:Expression>
                                           </Expression>
                                           <Expression xsi:type="Combinator">
                                             <Combinator xsi:type="StringProperty">
-                                              <Value>VideoData_Camera3</Value>
+                                              <Value>Camera-Body</Value>
                                             </Combinator>
                                           </Expression>
                                           <Expression xsi:type="ExternalizedMapping">
@@ -5901,7 +5921,7 @@ Item4 as ExposureTime)</scr:Expression>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
-                                        <cv:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\VideoData_Camera3.avi</cv:FileName>
+                                        <cv:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\Camera-Body.avi</cv:FileName>
                                         <cv:Suffix>None</cv:Suffix>
                                         <cv:Buffered>true</cv:Buffered>
                                         <cv:Overwrite>true</cv:Overwrite>
@@ -5985,18 +6005,18 @@ Item4 as ExposureTime)</scr:Expression>
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="SubscribeSubject">
-                          <Name>LickEventsLeft</Name>
+                          <Name>LicketySplit-Left.Data</Name>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="Extensions\LoggingPrefixCondition.bonsai" />
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogHarpDevice.bonsai">
-                          <LogName>LicketySplitLeft</LogName>
+                          <LogName>LicketySplit-Left</LogName>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
-                          <Name>LickEventsRight</Name>
+                          <Name>LicketySplit-Right.Data</Name>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="Extensions\LoggingPrefixCondition.bonsai" />
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogHarpDevice.bonsai">
-                          <LogName>LicketySplitRight</LogName>
+                          <LogName>LicketySplit-Right</LogName>
                         </Expression>
                       </Nodes>
                       <Edges>
@@ -6008,11 +6028,11 @@ Item4 as ExposureTime)</scr:Expression>
                     </Workflow>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>ClockSynchronizerEvents</Name>
+                    <Name>TimestampGeneratorGen3-Main.Data</Name>
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="Extensions\LoggingPrefixCondition.bonsai" />
                   <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogHarpDevice.bonsai">
-                    <LogName>TimestampGenerator</LogName>
+                    <LogName>TimestampGeneratorGen3-Main</LogName>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
                     <Name>StartSession</Name>
@@ -6133,6 +6153,20 @@ Item4 as ExposureTime)</scr:Expression>
                       </Edges>
                     </Workflow>
                   </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>StepperDriver1Events</Name>
+                  </Expression>
+                  <Expression xsi:type="IncludeWorkflow" Path="Extensions\LoggingPrefixCondition.bonsai" />
+                  <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogHarpDevice.bonsai">
+                    <LogName>LickSpoutStage-Main_DriverA</LogName>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>StepperDriver2Events</Name>
+                  </Expression>
+                  <Expression xsi:type="IncludeWorkflow" Path="Extensions\LoggingPrefixCondition.bonsai" />
+                  <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogHarpDevice.bonsai">
+                    <LogName>LickSpoutStage-Main_DriverB</LogName>
+                  </Expression>
                 </Nodes>
                 <Edges>
                   <Edge From="5" To="6" Label="Source1" />
@@ -6144,6 +6178,10 @@ Item4 as ExposureTime)</scr:Expression>
                   <Edge From="13" To="14" Label="Source1" />
                   <Edge From="15" To="16" Label="Source1" />
                   <Edge From="16" To="17" Label="Source1" />
+                  <Edge From="20" To="21" Label="Source1" />
+                  <Edge From="21" To="22" Label="Source1" />
+                  <Edge From="23" To="24" Label="Source1" />
+                  <Edge From="24" To="25" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -6224,6 +6262,18 @@ Item4 as ExposureTime)</scr:Expression>
               <Combinator xsi:type="orcl:ReportPhase">
                 <orcl:Phase>Recording</orcl:Phase>
               </Combinator>
+            </Expression>
+            <Expression xsi:type="hd:RecordHarpDevices">
+              <Name>RecordHarpDevices</Name>
+              <Description>Checks every Harp device in rig.yml at Start and records it into each session (OpenRigs.HarpDevices): the Behavior board, the timestamp generator and both Lickety Splits (each a rig.yml entry with a portName whose data the workflow publishes as &lt;Name&gt;.Data) must be on their portName with their usbSerial, or the workflow stops saying which board is where; 0.5 s after the session folder appears it asks each for a register dump on &lt;Name&gt;.Commands, which its log records; and it writes &lt;Name&gt;\&lt;Name&gt;_device.json and the register map &lt;Name&gt;\&lt;Name&gt;.yml, which SessionManifest expects (harp). The lick spout stage's two driver boards are nested under one entry, so they are not checked here; their logs go into LickSpoutStage-Main.</Description>
+              <hd:ConfigRoot>C:\Coen-Lab-Local\RigConfigs</hd:ConfigRoot>
+            </Expression>
+            <Expression xsi:type="mf:SessionManifest">
+              <Name>SessionManifest</Name>
+              <Description>Writes manifest.json into the session folder (OpenRigs.Manifest), finding PathPrefix itself: once when the folder appears and again when the workflow stops. No run is connected: a session ends with the controller's Stop, recorded as stopped with its reason. It records the machine, this repo's commit, Bonsai's command line, the settings at Go (SubjectId, SessionId and every parameter), rig.yml's path and hash, and what the session must leave: a folder for each device in rig.yml (BehaviorBoard-Main, TimestampGeneratorGen3-Main, LickSpoutStage-Main, LicketySplit-Left/Right, Camera-Face/Pupil/Body), the record and register map RecordHarpDevices writes for each Harp device (harp), RigSchema, TrialSettings, SessionState and StimulusStartEvents, which the overnight copy (rig-sync) alarms on if missing.</Description>
+              <mf:IngestScript>av-dome</mf:IngestScript>
+              <mf:ConfigFiles>C:\Coen-Lab-Local\RigConfigs\%COMPUTERNAME%\rig.yml</mf:ConfigFiles>
+              <mf:ExpectedFiles>auto;harp;RigSchema/;TrialSettings/;SessionState/;StimulusStartEvents/</mf:ExpectedFiles>
             </Expression>
           </Nodes>
           <Edges>
@@ -9615,6 +9665,13 @@ Things we want to do with this:
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="rx:Repeat" />
+      </Expression>
+      <Expression xsi:type="lv:StreamDevices">
+        <Name>LiveView</Name>
+        <Description>Streams every device in this machine's rig.yml that the workflow publishes, over ZeroMQ, for the live view (OpenRigs.LiveView): data on TCP 5556, video on 5558, from Start, in ready mode too. The three cameras as Camera-Face/Pupil/Body.video, 5 JPEG frames a second at 320 x 240, and the Behavior board's encoder from BehaviorBoard-Main.Data, 10 a second; each rate and size can be changed in rig.yml under the device's liveView:. Also elapsed, seconds since the session folder appeared, and liveview, this workflow and its commit. Every message carries the rig and the session key, ready until the session folder exists. Last in the workflow, because it streams only subjects built before it. A port already in use stops the workflow at Start.</Description>
+        <lv:ConfigRoot>C:\Coen-Lab-Local\RigConfigs</lv:ConfigRoot>
+        <lv:DataPort>5556</lv:DataPort>
+        <lv:VideoPort>5558</lv:VideoPort>
       </Expression>
     </Nodes>
     <Edges>
