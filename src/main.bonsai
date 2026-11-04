@@ -1882,6 +1882,17 @@
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="p4:AppendBuffer" />
                               </Expression>
+                              <Expression xsi:type="SubscribeSubject">
+                                <Name>RigConfigs</Name>
+                              </Expression>
+                              <Expression xsi:type="PropertyMapping">
+                                <PropertyMappings>
+                                  <Property Name="HostApi" Selector="SpeakerArray.Device.HostApi" />
+                                  <Property Name="DeviceName" Selector="SpeakerArray.Device.DeviceName" />
+                                  <Property Name="SampleRate" Selector="SpeakerArray.Device.SampleRate" />
+                                  <Property Name="SuggestedLatency" Selector="SpeakerArray.Device.SuggestedLatency" />
+                                </PropertyMappings>
+                              </Expression>
                             </Nodes>
                             <Edges>
                               <Edge From="0" To="1" Label="Source1" />
@@ -1898,6 +1909,8 @@
                               <Edge From="18" To="19" Label="Source1" />
                               <Edge From="20" To="22" Label="Source1" />
                               <Edge From="21" To="22" Label="Source2" />
+                              <Edge From="23" To="24" Label="Source1" />
+                              <Edge From="24" To="0" Label="Source1" />
                             </Edges>
                           </Workflow>
                         </Expression>
@@ -1919,8 +1932,13 @@
                       </Edges>
                     </Workflow>
                   </Expression>
-                  <Expression xsi:type="ExternalizedMapping">
-                    <Property Name="Value" DisplayName="ChannelCount" />
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>RigConfigs</Name>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="Value" Selector="SpeakerArray.Device.ChannelCount" />
+                    </PropertyMappings>
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="IntProperty">
@@ -2266,13 +2284,14 @@
                   <Edge From="1" To="2" Label="Source1" />
                   <Edge From="4" To="5" Label="Source1" />
                   <Edge From="5" To="6" Label="Source1" />
-                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="6" To="7" Label="Source1" />
                   <Edge From="8" To="9" Label="Source1" />
-                  <Edge From="10" To="11" Label="Source1" />
-                  <Edge From="12" To="13" Label="Source1" />
+                  <Edge From="9" To="10" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source1" />
                   <Edge From="13" To="14" Label="Source1" />
-                  <Edge From="15" To="16" Label="Source1" />
+                  <Edge From="14" To="15" Label="Source1" />
                   <Edge From="16" To="17" Label="Source1" />
+                  <Edge From="17" To="18" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -4998,8 +5017,13 @@ Item4 as ExposureTime)</scr:Expression>
                                         <Property Name="FileName" />
                                       </PropertyMappings>
                                     </Expression>
-                                    <Expression xsi:type="ExternalizedMapping">
-                                      <Property Name="FrameRate" />
+                                    <Expression xsi:type="SubscribeSubject">
+                                      <Name>BehaviorBoard-Main</Name>
+                                    </Expression>
+                                    <Expression xsi:type="PropertyMapping">
+                                      <PropertyMappings>
+                                        <Property Name="FrameRate" Selector="Settings.CameraTriggerController.Trigger0Frequency" />
+                                      </PropertyMappings>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
@@ -5025,11 +5049,12 @@ Item4 as ExposureTime)</scr:Expression>
                                     <Edge From="2" To="3" Label="Source1" />
                                     <Edge From="3" To="4" Label="Source2" />
                                     <Edge From="4" To="5" Label="Source1" />
-                                    <Edge From="5" To="9" Label="Source1" />
+                                    <Edge From="5" To="10" Label="Source1" />
                                     <Edge From="6" To="7" Label="Source1" />
-                                    <Edge From="7" To="9" Label="Source2" />
-                                    <Edge From="8" To="9" Label="Source3" />
-                                    <Edge From="9" To="10" Label="Source1" />
+                                    <Edge From="7" To="10" Label="Source2" />
+                                    <Edge From="8" To="9" Label="Source1" />
+                                    <Edge From="9" To="10" Label="Source3" />
+                                    <Edge From="10" To="11" Label="Source1" />
                                   </Edges>
                                 </Workflow>
                               </Expression>
@@ -5234,8 +5259,13 @@ Item4 as ExposureTime)</scr:Expression>
                                         <Property Name="FileName" />
                                       </PropertyMappings>
                                     </Expression>
-                                    <Expression xsi:type="ExternalizedMapping">
-                                      <Property Name="FrameRate" />
+                                    <Expression xsi:type="SubscribeSubject">
+                                      <Name>BehaviorBoard-Main</Name>
+                                    </Expression>
+                                    <Expression xsi:type="PropertyMapping">
+                                      <PropertyMappings>
+                                        <Property Name="FrameRate" Selector="Settings.CameraTriggerController.Trigger0Frequency" />
+                                      </PropertyMappings>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
@@ -5261,11 +5291,12 @@ Item4 as ExposureTime)</scr:Expression>
                                     <Edge From="2" To="3" Label="Source1" />
                                     <Edge From="3" To="4" Label="Source2" />
                                     <Edge From="4" To="5" Label="Source1" />
-                                    <Edge From="5" To="9" Label="Source1" />
+                                    <Edge From="5" To="10" Label="Source1" />
                                     <Edge From="6" To="7" Label="Source1" />
-                                    <Edge From="7" To="9" Label="Source2" />
-                                    <Edge From="8" To="9" Label="Source3" />
-                                    <Edge From="9" To="10" Label="Source1" />
+                                    <Edge From="7" To="10" Label="Source2" />
+                                    <Edge From="8" To="9" Label="Source1" />
+                                    <Edge From="9" To="10" Label="Source3" />
+                                    <Edge From="10" To="11" Label="Source1" />
                                   </Edges>
                                 </Workflow>
                               </Expression>
@@ -5470,8 +5501,13 @@ Item4 as ExposureTime)</scr:Expression>
                                         <Property Name="FileName" />
                                       </PropertyMappings>
                                     </Expression>
-                                    <Expression xsi:type="ExternalizedMapping">
-                                      <Property Name="FrameRate" />
+                                    <Expression xsi:type="SubscribeSubject">
+                                      <Name>BehaviorBoard-Main</Name>
+                                    </Expression>
+                                    <Expression xsi:type="PropertyMapping">
+                                      <PropertyMappings>
+                                        <Property Name="FrameRate" Selector="Settings.CameraTriggerController.Trigger0Frequency" />
+                                      </PropertyMappings>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
@@ -5497,11 +5533,12 @@ Item4 as ExposureTime)</scr:Expression>
                                     <Edge From="2" To="3" Label="Source1" />
                                     <Edge From="3" To="4" Label="Source2" />
                                     <Edge From="4" To="5" Label="Source1" />
-                                    <Edge From="5" To="9" Label="Source1" />
+                                    <Edge From="5" To="10" Label="Source1" />
                                     <Edge From="6" To="7" Label="Source1" />
-                                    <Edge From="7" To="9" Label="Source2" />
-                                    <Edge From="8" To="9" Label="Source3" />
-                                    <Edge From="9" To="10" Label="Source1" />
+                                    <Edge From="7" To="10" Label="Source2" />
+                                    <Edge From="8" To="9" Label="Source1" />
+                                    <Edge From="9" To="10" Label="Source3" />
+                                    <Edge From="10" To="11" Label="Source1" />
                                   </Edges>
                                 </Workflow>
                               </Expression>
