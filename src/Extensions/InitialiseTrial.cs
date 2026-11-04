@@ -223,6 +223,9 @@ public class InitialiseTrial
         trialData.visualFlickerFrequency = parameters.FlickerFrequency;
         trialData.audioFlickerFrequency = parameters.FlickerFrequency;
 
+        // TODO: ADDED BY GERION CHECK IF HAPPY WITH IMPLEMENTATION
+        trialData.audioWaveformIdx = (int)Math.Round(99 * trialRand.NextDouble());
+
         // define random phase of grating:
         trialData.visualPhase = 2 * Math.PI * trialRand.NextDouble();
 
@@ -739,6 +742,7 @@ public class Trial
     public double audioAzimuth;
     public double audioElevation;
     public double audioFlickerFrequency;  // in Hz
+    public int audioWaveformIdx;  // Idx of waveform to load for current trial
 
     // Optogenetics
     public bool OptogeneticEnabled;

@@ -8,6 +8,7 @@ obj
 *.dll
 *.exe
 *.exe.settings
+*.wav
 *.layout
 *.editor
 .bonsai/**
