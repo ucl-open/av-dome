@@ -3,8 +3,9 @@
 # av-dome rig configuration TEMPLATE
 #
 # Per-rig configuration files are NOT committed to this repo. To deploy a rig:
-#   1. Copy this file to <ConfigRoot>\<MACHINE-NAME>\rig.yml, where ConfigRoot defaults to
-#      C:\RigConfigs, e.g. C:\RigConfigs\GREEN-DOME-2\rig.yml. The workflow resolves the
+#   1. Copy this file to <ConfigRoot>\<MACHINE-NAME>\rig.yml, where ConfigRoot is
+#      C:\Coen-Lab-Local\RigConfigs (the lab's place, as coen-behaviour-box's, kept apart from
+#      production's C:\RigConfigs), e.g. C:\Coen-Lab-Local\RigConfigs\GREEN-DOME-2\rig.yml. The workflow resolves the
 #      directory by hostname and fails at startup if it or rig.yml is missing.
 #   2. Fill in the values for that rig. Calibration artefacts (valve curves and the like) go in
 #      calibration\ beside rig.yml and are referenced by paths relative to that directory.

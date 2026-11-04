@@ -19,7 +19,7 @@
           <Nodes>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="uoc:ResolveRigConfigDirectory">
-                <uoc:ConfigRoot>C:\RigConfigs</uoc:ConfigRoot>
+                <uoc:ConfigRoot>C:\Coen-Lab-Local\RigConfigs</uoc:ConfigRoot>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:AsyncSubject">
