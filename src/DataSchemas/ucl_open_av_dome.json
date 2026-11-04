@@ -67,6 +67,15 @@
           "title": "PortName",
           "type": "string"
         },
+        "usbSerial": {
+          "default": null,
+          "description": "The USB serial number of the board on port_name, which tells it from others of its kind.",
+          "title": "UsbSerial",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "pulseController": {
           "anyOf": [
             {
@@ -295,6 +304,15 @@
           "title": "PortName",
           "type": "string"
         },
+        "usbSerial": {
+          "default": null,
+          "description": "The USB serial number of the board on port_name, which tells it from others of its kind.",
+          "title": "UsbSerial",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "stepInterval": {
           "default": 250,
           "description": "Step interval in \u00b5s (100-20000). Lower = faster.",
@@ -341,6 +359,15 @@
           "title": "PortName",
           "type": "string"
         },
+        "usbSerial": {
+          "default": null,
+          "description": "The USB serial number of the board on port_name, which tells it from others of its kind.",
+          "title": "UsbSerial",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
         "timerFrequency": {
           "$ref": "#/$defs/TimerFrequency",
           "default": "Timer1000Hz",
@@ -363,6 +390,15 @@
           ],
           "title": "PortName",
           "type": "string"
+        },
+        "usbSerial": {
+          "default": null,
+          "description": "The USB serial number of the board on port_name, which tells it from others of its kind.",
+          "title": "UsbSerial",
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "channel0TriggerThreshold": {
           "default": 0,
@@ -844,6 +880,15 @@
           "description": "The root path on which to log all data.",
           "title": "RootPath",
           "type": "string"
+        },
+        "rigId": {
+          "default": null,
+          "description": "A short code naming this rig, kept when another computer takes over its job, for labs that build it into session IDs (for example the <RR> in ses-<NNN><RR>). Its form is the lab's to decide.",
+          "title": "RigId",
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "version": {
           "const": "0.0.0-rc1",

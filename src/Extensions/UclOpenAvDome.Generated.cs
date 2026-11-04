@@ -21,6 +21,8 @@ namespace UclOpenAvDome
     
         private string _rootPath;
     
+        private string _rigId;
+    
         private string _version;
     
         private BehaviorBoard _behaviorBoard;
@@ -70,6 +72,7 @@ namespace UclOpenAvDome
         protected UclOpenAvDomeRig(UclOpenAvDomeRig other)
         {
             _rootPath = other._rootPath;
+            _rigId = other._rigId;
             _version = other._version;
             _behaviorBoard = other._behaviorBoard;
             _timestampGenerator = other._timestampGenerator;
@@ -101,6 +104,26 @@ namespace UclOpenAvDome
             set
             {
                 _rootPath = value;
+            }
+        }
+    
+        /// <summary>
+        /// A short code naming this rig, kept when another computer takes over its job, for labs that build it into session IDs (for example the <RR> in ses-<NNN><RR>). Its form is the lab's to decide.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("rigId")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="rigId")]
+        [System.ComponentModel.DescriptionAttribute("A short code naming this rig, kept when another computer takes over its job, for " +
+            "labs that build it into session IDs (for example the <RR> in ses-<NNN><RR>). Its" +
+            " form is the lab\'s to decide.")]
+        public string RigId
+        {
+            get
+            {
+                return _rigId;
+            }
+            set
+            {
+                _rigId = value;
             }
         }
     
@@ -380,6 +403,7 @@ namespace UclOpenAvDome
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("RootPath = " + _rootPath + ", ");
+            stringBuilder.Append("RigId = " + _rigId + ", ");
             stringBuilder.Append("Version = " + _version + ", ");
             stringBuilder.Append("BehaviorBoard = " + _behaviorBoard + ", ");
             stringBuilder.Append("TimestampGenerator = " + _timestampGenerator + ", ");
@@ -610,6 +634,8 @@ namespace UclOpenAvDome
     
         private string _portName;
     
+        private string _usbSerial;
+    
         private PulseController _pulseController;
     
         private CameraTriggerController _cameraTriggerController;
@@ -623,6 +649,7 @@ namespace UclOpenAvDome
         protected BehaviorBoard(BehaviorBoard other)
         {
             _portName = other._portName;
+            _usbSerial = other._usbSerial;
             _pulseController = other._pulseController;
             _cameraTriggerController = other._cameraTriggerController;
             _runningWheel = other._runningWheel;
@@ -643,6 +670,25 @@ namespace UclOpenAvDome
             set
             {
                 _portName = value;
+            }
+        }
+    
+        /// <summary>
+        /// The USB serial number of the board on port_name, which tells it from others of its kind.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("usbSerial")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="usbSerial")]
+        [System.ComponentModel.DescriptionAttribute("The USB serial number of the board on port_name, which tells it from others of it" +
+            "s kind.")]
+        public string UsbSerial
+        {
+            get
+            {
+                return _usbSerial;
+            }
+            set
+            {
+                _usbSerial = value;
             }
         }
     
@@ -716,6 +762,7 @@ namespace UclOpenAvDome
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("PortName = " + _portName + ", ");
+            stringBuilder.Append("UsbSerial = " + _usbSerial + ", ");
             stringBuilder.Append("PulseController = " + _pulseController + ", ");
             stringBuilder.Append("CameraTriggerController = " + _cameraTriggerController + ", ");
             stringBuilder.Append("RunningWheel = " + _runningWheel);
@@ -1196,6 +1243,8 @@ namespace UclOpenAvDome
     
         private string _portName;
     
+        private string _usbSerial;
+    
         private int _stepInterval;
     
         private HarpStepperDriverMicrostepResolution _microstepResolution;
@@ -1212,6 +1261,7 @@ namespace UclOpenAvDome
         protected HarpStepperDriver(HarpStepperDriver other)
         {
             _portName = other._portName;
+            _usbSerial = other._usbSerial;
             _stepInterval = other._stepInterval;
             _microstepResolution = other._microstepResolution;
             _maximumRunCurrent = other._maximumRunCurrent;
@@ -1232,6 +1282,25 @@ namespace UclOpenAvDome
             set
             {
                 _portName = value;
+            }
+        }
+    
+        /// <summary>
+        /// The USB serial number of the board on port_name, which tells it from others of its kind.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("usbSerial")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="usbSerial")]
+        [System.ComponentModel.DescriptionAttribute("The USB serial number of the board on port_name, which tells it from others of it" +
+            "s kind.")]
+        public string UsbSerial
+        {
+            get
+            {
+                return _usbSerial;
+            }
+            set
+            {
+                _usbSerial = value;
             }
         }
     
@@ -1302,6 +1371,7 @@ namespace UclOpenAvDome
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("PortName = " + _portName + ", ");
+            stringBuilder.Append("UsbSerial = " + _usbSerial + ", ");
             stringBuilder.Append("StepInterval = " + _stepInterval + ", ");
             stringBuilder.Append("MicrostepResolution = " + _microstepResolution + ", ");
             stringBuilder.Append("MaximumRunCurrent = " + _maximumRunCurrent);
@@ -1336,6 +1406,8 @@ namespace UclOpenAvDome
     
         private string _portName;
     
+        private string _usbSerial;
+    
         private Harp.TimestampGeneratorGen3.TimerRate _timerFrequency;
     
         public HarpTimestampGeneratorGen3()
@@ -1346,6 +1418,7 @@ namespace UclOpenAvDome
         protected HarpTimestampGeneratorGen3(HarpTimestampGeneratorGen3 other)
         {
             _portName = other._portName;
+            _usbSerial = other._usbSerial;
             _timerFrequency = other._timerFrequency;
         }
     
@@ -1364,6 +1437,25 @@ namespace UclOpenAvDome
             set
             {
                 _portName = value;
+            }
+        }
+    
+        /// <summary>
+        /// The USB serial number of the board on port_name, which tells it from others of its kind.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("usbSerial")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="usbSerial")]
+        [System.ComponentModel.DescriptionAttribute("The USB serial number of the board on port_name, which tells it from others of it" +
+            "s kind.")]
+        public string UsbSerial
+        {
+            get
+            {
+                return _usbSerial;
+            }
+            set
+            {
+                _usbSerial = value;
             }
         }
     
@@ -1398,6 +1490,7 @@ namespace UclOpenAvDome
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("PortName = " + _portName + ", ");
+            stringBuilder.Append("UsbSerial = " + _usbSerial + ", ");
             stringBuilder.Append("TimerFrequency = " + _timerFrequency);
             return true;
         }
@@ -1429,6 +1522,8 @@ namespace UclOpenAvDome
     
         private string _portName;
     
+        private string _usbSerial;
+    
         private int _channel0TriggerThreshold;
     
         private int _channel0UntriggerThreshold;
@@ -1442,6 +1537,7 @@ namespace UclOpenAvDome
         protected LicketySplit(LicketySplit other)
         {
             _portName = other._portName;
+            _usbSerial = other._usbSerial;
             _channel0TriggerThreshold = other._channel0TriggerThreshold;
             _channel0UntriggerThreshold = other._channel0UntriggerThreshold;
         }
@@ -1461,6 +1557,25 @@ namespace UclOpenAvDome
             set
             {
                 _portName = value;
+            }
+        }
+    
+        /// <summary>
+        /// The USB serial number of the board on port_name, which tells it from others of its kind.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("usbSerial")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="usbSerial")]
+        [System.ComponentModel.DescriptionAttribute("The USB serial number of the board on port_name, which tells it from others of it" +
+            "s kind.")]
+        public string UsbSerial
+        {
+            get
+            {
+                return _usbSerial;
+            }
+            set
+            {
+                _usbSerial = value;
             }
         }
     
@@ -1513,6 +1628,7 @@ namespace UclOpenAvDome
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("PortName = " + _portName + ", ");
+            stringBuilder.Append("UsbSerial = " + _usbSerial + ", ");
             stringBuilder.Append("Channel0TriggerThreshold = " + _channel0TriggerThreshold + ", ");
             stringBuilder.Append("Channel0UntriggerThreshold = " + _channel0UntriggerThreshold);
             return true;
