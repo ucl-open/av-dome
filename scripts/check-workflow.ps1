@@ -73,13 +73,13 @@ function Write-FilledTemplate {
 
 if ($Step -eq 'Build') {
     Initialize-Assemblies
-    $workflow = Join-Path $repo "src\$Workflow"
-    foreach ($m in [regex]::Matches((Get-Content $workflow -Raw), 'assembly=([A-Za-z0-9\.]+)"')) {
+    $workflowPath = Join-Path $repo "src\$Workflow"
+    foreach ($m in [regex]::Matches((Get-Content $workflowPath -Raw), 'assembly=([A-Za-z0-9\.]+)"')) {
         $null = [Reflection.Assembly]::Load($m.Groups[1].Value)
     }
     # Bonsai opens a workflow from its own folder, and relative include paths are found from there.
-    Set-Location (Split-Path $workflow); [Environment]::CurrentDirectory = (Split-Path $workflow)
-    $reader = [Xml.XmlReader]::Create($workflow)
+    Set-Location (Split-Path $workflowPath); [Environment]::CurrentDirectory = (Split-Path $workflowPath)
+    $reader = [Xml.XmlReader]::Create($workflowPath)
     try { $wb = [Bonsai.WorkflowBuilder]::Serializer.Deserialize($reader) } finally { $reader.Close() }
     $rigYml = Write-FilledTemplate
     $configRoot = Join-Path $bin 'config'
@@ -116,6 +116,35 @@ if ($Step -eq 'Build') {
     }
     "  ok    $Workflow builds"
     if ($Workflow -ne 'main.bonsai') { exit $(if ($failed) { 1 } else { 0 }) }
+    # A Harp Device opens its port as it is subscribed, with whatever PortName it holds then, so each
+    # device's settings must be complete before HardwareDevices subscribes. Bonsai connects a node
+    # with more than one successor only after the whole workflow has subscribed, so a branch anywhere
+    # upstream of a RigDevice in RigSetup reads rig.yml too late, and the board opens its design-time
+    # port (4 Nov 2026 on GREEN-DOME-1: "The port 'COM16' does not exist").
+    $rigSetup = $wb.Workflow | Where-Object { $b = [Bonsai.Expressions.ExpressionBuilder]::Unwrap($_.Value); $b -is [Bonsai.Expressions.GroupWorkflowBuilder] -and $b.Name -eq 'RigSetup' } | Select-Object -First 1
+    if (-not $rigSetup) { "  FAIL  main.bonsai has no RigSetup group"; $failed++ }
+    else {
+        $g = ([Bonsai.Expressions.ExpressionBuilder]::Unwrap($rigSetup.Value)).Workflow
+        $preds = @{}
+        foreach ($n in $g) { foreach ($e in $n.Successors) { if (-not $preds.ContainsKey($e.Target)) { $preds[$e.Target] = @() }; $preds[$e.Target] += $n } }
+        $branching = New-Object System.Collections.Generic.List[string]; $devices = 0
+        foreach ($n in $g) {
+            $b = [Bonsai.Expressions.ExpressionBuilder]::Unwrap($n.Value)
+            if (-not ($b -is [Bonsai.Expressions.CombinatorBuilder] -and $b.Combinator.GetType().Name -eq 'RigDevice')) { continue }
+            $devices++
+            $todo = New-Object System.Collections.Generic.Queue[object]; $todo.Enqueue($n); $seen = @{}
+            while ($todo.Count) {
+                $c = $todo.Dequeue()
+                foreach ($p in @($preds[$c])) {
+                    if (-not $p -or $seen.ContainsKey($p)) { continue }; $seen[$p] = 1; $todo.Enqueue($p)
+                    if ($p.Successors.Count -gt 1) { $branching.Add("$([Bonsai.Expressions.ExpressionBuilder]::GetElementDisplayName($p.Value)) (before $($b.Combinator.Name))") }
+                }
+            }
+        }
+        $branching = @($branching | Sort-Object -Unique)
+        if ($devices -eq 8 -and $branching.Count -eq 0) { "  ok    RigSetup: none of the $devices RigDevice chains branches, so rig.yml is read before any board opens" }
+        else { "  FAIL  RigSetup: $devices RigDevice node(s); branching upstream of one: $($branching -join '; ')"; $failed++ }
+    }
     # What the build made, read from the objects in the built expression.
     Add-Type -ReferencedAssemblies System.Core -TypeDefinition @'
 public class BuiltObjects : System.Linq.Expressions.ExpressionVisitor {
@@ -130,7 +159,8 @@ public class BuiltObjects : System.Linq.Expressions.ExpressionVisitor {
     $null = $objects.Visit($built)
     $records = @($objects.Found | Where-Object { $_.GetType().FullName -eq 'OpenRigs.HarpDevices.RecordHarpDevice' })
     $got = @($records | ForEach-Object { "$($_.Name) $($_.PortName) $($_.UsbSerial) $($_.ExpectedWhoAmI)" } | Sort-Object)
-    $want = @('BehaviorBoard-Main COM1 BG01WA0E 1216', 'LicketySplit-Left COM5 E664C856C360B937 ', 'LicketySplit-Right COM6 E664C856C31F4637 ', 'TimestampGeneratorGen3-Main COM2 AQ03WH45 1158')
+    # ExpectedWhoAmI 0: none is known for a Lickety Split, so its WhoAmI is not checked.
+    $want = @('BehaviorBoard-Main COM1 BG01WA0E 1216', 'LicketySplit-Left COM5 E664C856C360B937 0', 'LicketySplit-Right COM6 E664C856C31F4637 0', 'TimestampGeneratorGen3-Main COM2 AQ03WH45 1158')
     if (($got -join '; ') -eq ($want -join '; ')) { "  ok    RecordHarpDevices records the Behavior board, the timestamp generator and both Lickety Splits from rig.yml" }
     else { "  FAIL  RecordHarpDevices made: $($got -join '; ')"; $failed++ }
     $dumps = @($objects.Found | Where-Object { $_.GetType().FullName -eq 'OpenRigs.HarpDevices.RequestRegisterDump' }).Count
@@ -138,9 +168,10 @@ public class BuiltObjects : System.Linq.Expressions.ExpressionVisitor {
     $recorder = @($objects.Found | Where-Object { $_.GetType().Name -eq 'ManifestRecorder' })
     $planField = if ($recorder.Count) { $recorder[0].GetType().GetFields([Reflection.BindingFlags]'Instance,NonPublic,Public') | Where-Object { $_.FieldType.Name -eq 'ExpectedPlan' } | Select-Object -First 1 }
     $expected = if ($planField) { @($planField.GetValue($recorder[0]).Entries | ForEach-Object { $_.Path }) } else { @() }
+    # A register map (<Name>.yml) only for a board a loaded Harp package decodes: the Behavior board.
     $wantFiles = 'BehaviorBoard-Main/', 'TimestampGeneratorGen3-Main/', 'LickSpoutStage-Main/', 'LicketySplit-Left/', 'LicketySplit-Right/', 'Camera-Face/', 'Camera-Pupil/', 'Camera-Body/',
         'BehaviorBoard-Main/BehaviorBoard-Main_device.json', 'BehaviorBoard-Main/BehaviorBoard-Main.yml',
-        'TimestampGeneratorGen3-Main/TimestampGeneratorGen3-Main_device.json', 'TimestampGeneratorGen3-Main/TimestampGeneratorGen3-Main.yml',
+        'TimestampGeneratorGen3-Main/TimestampGeneratorGen3-Main_device.json',
         'LicketySplit-Left/LicketySplit-Left_device.json', 'LicketySplit-Right/LicketySplit-Right_device.json',
         'RigSchema/', 'TrialSettings/', 'SessionState/', 'StimulusStartEvents/'
     $missing = @($wantFiles | Where-Object { $expected -notcontains $_ })
