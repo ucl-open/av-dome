@@ -5656,51 +5656,6 @@ Item4 as ExposureTime)</scr:Expression>
                       </Edges>
                     </Workflow>
                   </Expression>
-                  <Expression xsi:type="GroupWorkflow">
-                    <Name>StimulusTriggerLogs</Name>
-                    <Description>Harp-timestamped CSV log of each stimulus onset (StimulusOnset: StartAuditoryStimulus stamped where it fires, so trial 1's onset, which comes before this log starts, keeps its own time).</Description>
-                    <Workflow>
-                      <Nodes>
-                        <Expression xsi:type="SubscribeSubject">
-                          <Name>StimulusOnset</Name>
-                        </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
-                          <LogName>StimulusStartEvents</LogName>
-                          <Selector>Seconds,Value</Selector>
-                          <Extension>csv</Extension>
-                        </Expression>
-                        <Expression xsi:type="SubscribeSubject">
-                          <Name>DecisionVariable</Name>
-                        </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
-                          <Name>Timestamp</Name>
-                        </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
-                          <LogName>DecisionVariable</LogName>
-                          <Selector>Seconds,Value</Selector>
-                          <Extension>csv</Extension>
-                        </Expression>
-                        <Expression xsi:type="SubscribeSubject">
-                          <Name>visualAzimuth</Name>
-                        </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
-                          <Name>Timestamp</Name>
-                        </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
-                          <LogName>VisualAzimuth</LogName>
-                          <Selector>Seconds,Value</Selector>
-                          <Extension>csv</Extension>
-                        </Expression>
-                      </Nodes>
-                      <Edges>
-                        <Edge From="2" To="3" Label="Source1" />
-                        <Edge From="3" To="4" Label="Source1" />
-                        <Edge From="5" To="6" Label="Source1" />
-                        <Edge From="6" To="7" Label="Source1" />
-                        <Edge From="0" To="1" Label="Source1" />
-                      </Edges>
-                    </Workflow>
-                  </Expression>
                   <Expression xsi:type="SubscribeSubject">
                     <Name>StepperDriver1Events</Name>
                   </Expression>
@@ -5723,10 +5678,10 @@ Item4 as ExposureTime)</scr:Expression>
                   <Edge From="8" To="9" Label="Source1" />
                   <Edge From="10" To="11" Label="Source1" />
                   <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="14" To="15" Label="Source1" />
                   <Edge From="15" To="16" Label="Source1" />
-                  <Edge From="16" To="17" Label="Source1" />
+                  <Edge From="17" To="18" Label="Source1" />
                   <Edge From="18" To="19" Label="Source1" />
-                  <Edge From="19" To="20" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -5810,10 +5765,10 @@ Item4 as ExposureTime)</scr:Expression>
             </Expression>
             <Expression xsi:type="mf:SessionManifest">
               <Name>SessionManifest</Name>
-              <Description>Writes manifest.json into the session folder (OpenRigs.Manifest), finding PathPrefix itself: once when the folder appears and again when the workflow stops. No run is connected: a session ends with the controller's Stop, recorded as stopped with its reason. It records the machine, this repo's commit, Bonsai's command line, the settings at Go (SubjectId, SessionId and every parameter), rig.yml's path and hash, and what the session must leave: a folder for each device in rig.yml (BehaviorBoard-Main, TimestampGeneratorGen3-Main, LickSpoutStage-Main, LicketySplit-Left/Right, Camera-Face/Pupil/Body), the record and register map RecordHarpDevices writes for each Harp device (harp), RigSchema, TaskSchema, BonsaiData (BonsaiData_Trial and BonsaiData_Async) and StimulusStartEvents, which the overnight copy (rig-sync) alarms on if missing.</Description>
+              <Description>Writes manifest.json into the session folder (OpenRigs.Manifest), finding PathPrefix itself: once when the folder appears and again when the workflow stops. No run is connected: a session ends with the controller's Stop, recorded as stopped with its reason. It records the machine, this repo's commit, Bonsai's command line, the settings at Go (SubjectId, SessionId and every parameter), rig.yml's path and hash, and what the session must leave: a folder for each device in rig.yml (BehaviorBoard-Main, TimestampGeneratorGen3-Main, LickSpoutStage-Main, LicketySplit-Left/Right, Camera-Face/Pupil/Body), the record and register map RecordHarpDevices writes for each Harp device (harp), RigSchema, TaskSchema and BonsaiData (BonsaiData_Trial and BonsaiData_Async), which the overnight copy (rig-sync) alarms on if missing.</Description>
               <mf:IngestScript>av-dome</mf:IngestScript>
               <mf:ConfigFiles>C:\Coen-Lab-Local\RigConfigs\%COMPUTERNAME%\rig.yml</mf:ConfigFiles>
-              <mf:ExpectedFiles>auto;harp;RigSchema/;TaskSchema/;BonsaiData/;StimulusStartEvents/</mf:ExpectedFiles>
+              <mf:ExpectedFiles>auto;harp;RigSchema/;TaskSchema/;BonsaiData/</mf:ExpectedFiles>
             </Expression>
             <Expression xsi:type="scr:ExpressionTransform">
               <scr:Expression>new(&quot;RewardDelivered&quot; as Event, (it.Line == 1 ? &quot;Left&quot; : it.Line == 2 ? &quot;Right&quot; : &quot;DO&quot; + it.Line.ToString()) + &quot; requested=&quot; + it.RequestedUl.ToString() + &quot; pulses=&quot; + it.Count.ToString() + &quot; calibrated=&quot; + it.Calibrated.ToString() + &quot; clamped=&quot; + it.Clamped.ToString() as Detail, it.DeliveredUl as Value)</scr:Expression>

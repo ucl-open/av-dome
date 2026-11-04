@@ -6,7 +6,6 @@ The certain findings were fixed in 0078311, 97358e6, 1234f38 and d565649. NoResp
 
 ### Needs a real session
 
-- **`StimulusStartEvents/` in `ExpectedFiles`.** A session stopped before trial 1's stimulus may leave no `StimulusStartEvents\` folder, so rig-sync would alarm. If a session confirms it, drop it from `ExpectedFiles` (`SessionManifest` in `src\main.bonsai`) and from `scripts\check-workflow.ps1`; the onsets are also in `BonsaiData_Trial`'s `stimulusOnsetSeconds`.
 - **Session record against the view.** Check a staged session's files against `ExpectedFiles`, `BonsaiData_Trial`'s header against `config\rig-control.toml` `[trials]`, and that `BonsaiData_Async` has a `Go` row.
 
 ### Design questions for Tom
