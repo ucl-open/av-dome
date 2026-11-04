@@ -13,7 +13,7 @@
 #      to a checked-out src/DataSchemas/ucl_open_av_dome.json (or a raw GitHub URL)
 #      to keep editor validation working.
 #
-rootPath: C:\Data
+rootPath: C:\Coen-Lab-Local\Acquired-Data   # sessions go to <rootPath>\<task datasetName>\sub-<mouse>\ses-...
 rigId: XX                 # two capitals or a capital and a digit, such as D1: rig-control's session numbering
 
 # Each kind of device is a group of named entries: behaviorBoard: main: is BehaviorBoard-Main in the
@@ -61,12 +61,9 @@ lickSpoutStage:
     driverB:
       portName: COM4        # motors 4,5
       usbSerial: null
-    axisMapping:
-      leftElevation: { board: a, motor: 0 }     # motor 1
-      rightElevation: { board: a, motor: 1 }    # motor 2
-      rightRadial: { board: a, motor: 2 }       # motor 3
-      leftRadial: { board: b, motor: 0 }        # motor 4
-      baseTransverse: { board: b, motor: 1 }    # motor 5
+    # The workflow drives the axes by motor number, fixed: driver A motor 0 left elevation (1),
+    # motor 1 right elevation (2), motor 2 right radial (3); driver B motor 0 left radial (4),
+    # motor 1 base transverse (5). The schema's optional axisMapping is not read.
 
 licketySplit:
   left:
@@ -97,19 +94,20 @@ camera:
     gain: 0
     binning: 1
 
+# Full paths into this rig's calibration folder; the placeholder is the machine name.
 projectionCalibration:
-  meshMapPath: C:\RigConfigs\MeshMap.csv
-  gammaLutPath: C:\RigConfigs\gammalut.bmp
+  meshMapPath: C:\Coen-Lab-Local\RigConfigs\CHANGE-ME\calibration\MeshMap.csv
+  gammaLutPath: C:\Coen-Lab-Local\RigConfigs\CHANGE-ME\calibration\gammalut.bmp
 
 speakerArray:
-  device:
+  device:                   # the mixer and the stimulus loader read these
     deviceName: Speakers (XMOS xCORE-200 MC (UAC2.0))
     hostApi: Windows WDM-KS
-    sampleRate: 48000       # Hz
+    sampleRate: 48000       # Hz; the stimulus WAVs and speaker filters must be at this rate
     channelCount: 32
     suggestedLatency: 0.002 # s
-    bootDelay: 3.0          # s; guards a driver fault if the workflow stops during mixer init
-  syncChannel: 31           # carries a copy of each stimulus for alignment with acquisition
+    bootDelay: 3.0          # s; documented only: the workflow's mixer start delay is fixed at 3 s
+  syncChannel: 31           # documented only: the workflow plays the sync copy on channel 31 at gain 0.2
   syncGain: 0.2
   unusedChannels: [30]      # not connected
   # Speakers currently wired on this rig. Position is relative to the subject:

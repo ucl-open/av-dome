@@ -65,11 +65,11 @@ function Write-FilledTemplate {
     $template = [IO.File]::ReadAllText((Join-Path $repo 'config\rig-template.yml'))
     $serials = 'BG01WA0E', 'AQ03WH45', 'E664C856C360B937', 'E664C856C31F4637'
     foreach ($s in $serials) { $template = ([regex]'usbSerial: CHANGE-ME').Replace($template, "usbSerial: $s", 1) }
-    $template = $template.Replace('rigId: XX', 'rigId: D1').Replace('serialNumber: "00000000"', "serialNumber: '1'").Replace("rootPath: C:\Data", "rootPath: $bin")
-    foreach ($left in 'usbSerial: CHANGE-ME', 'rigId: XX', 'serialNumber: "00000000"', "rootPath: C:\Data") {
+    $template = $template.Replace('rigId: XX', 'rigId: D1').Replace('serialNumber: "00000000"', "serialNumber: '1'").Replace("rootPath: C:\Coen-Lab-Local\Acquired-Data", "rootPath: $bin").Replace('RigConfigs\CHANGE-ME\', "RigConfigs\$([Environment]::MachineName)\")
+    foreach ($left in 'CHANGE-ME', 'rigId: XX', 'serialNumber: "00000000"', "rootPath: C:\Coen-Lab-Local\Acquired-Data") {
         if ($template.Contains($left)) { throw "check-workflow: the template still holds '$left' after filling; update Write-FilledTemplate." }
     }
-    if (-not $template.Contains("rootPath: $bin")) { throw "check-workflow: config\rig-template.yml's rootPath is not C:\Data; update the Replace above." }
+    if (-not $template.Contains("rootPath: $bin")) { throw "check-workflow: config\rig-template.yml's rootPath is not C:\Coen-Lab-Local\Acquired-Data; update the Replace above." }
     [IO.File]::WriteAllText($rigYml, $template)
     return $rigYml
 }
