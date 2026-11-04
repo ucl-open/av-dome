@@ -35,7 +35,7 @@ taskParameters:
     thresholdLicks: 1      # net lick difference ending the response window; 1 = first-lick 2AFC
     degreesPerLick: 0      # deg the grating moves per net lick; 0 = stimulus fixed
   errorSound:
-    enabled: false
+    enabled: true
     path: LocalFiles\error_tone.wav
     channel: 2
     gain: 1.0
