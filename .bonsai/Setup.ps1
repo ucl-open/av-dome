@@ -38,5 +38,18 @@ if (-not $env:GITHUB_PACKAGES_TOKEN -and $nugetConfig -match '%GITHUB_PACKAGES_T
         "%GITHUB_PACKAGES_TOKEN% with a PAT that has read:packages, or set the " +
         "GITHUB_PACKAGES_TOKEN environment variable. See NuGet.config.example for details.")
 }
+# The workflow's layout (config\main.layout, tracked) into the editor's per-machine file, as
+# coen-behaviour-box does. rig-setup runs this again whenever config\*.layout changes, so a
+# restructure that moves window indices reaches every rig with its layout. A different one
+# already here is kept beside it as main.saved.layout.
+$layout = ".\Settings\src\main.layout"
+$tracked = "..\config\main.layout"
+if (Test-Path $tracked) {
+    New-Item -ItemType Directory -Path (Split-Path -Parent $layout) -Force | Out-Null
+    if ((Test-Path $layout) -and ((Get-FileHash $layout).Hash -ne (Get-FileHash $tracked).Hash)) {
+        Copy-Item $layout ".\Settings\src\main.saved.layout" -Force
+    }
+    Copy-Item $tracked $layout -Force
+}
 & .\Bonsai.exe --no-editor
 Pop-Location

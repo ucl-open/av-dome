@@ -10,6 +10,7 @@ obj
 *.exe.settings
 *.wav
 *.layout
+!config/main.layout
 *.editor
 .bonsai/**
 !.bonsai/Bonsai.config
