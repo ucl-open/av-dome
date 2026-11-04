@@ -2,6 +2,7 @@
 <configuration>
   <packageSources>
     <add key="nuget.org" value="https://api.nuget.org/v3/index.json" protocolVersion="3" />
+    <add key="local packages" value="../local_packages/" />
     <!--
       This file is a TEMPLATE. Setup.cmd copies it to NuGet.config (git-ignored) on
       first run; edit that copy, never this one.
