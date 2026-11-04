@@ -135,18 +135,14 @@ namespace UclOpenAvDomeTask
     
         private System.Collections.Generic.List<SphericalPosition> _speakerLocations;
     
-        private string _stimulusPath;
-    
         public AudioStimulus()
         {
             _speakerLocations = new System.Collections.Generic.List<SphericalPosition>();
-            _stimulusPath = "LocalFiles\\filtered_pink_pulse_train.wav";
         }
     
         protected AudioStimulus(AudioStimulus other)
         {
             _speakerLocations = other._speakerLocations;
-            _stimulusPath = other._stimulusPath;
         }
     
         /// <summary>
@@ -169,25 +165,6 @@ namespace UclOpenAvDomeTask
             }
         }
     
-        /// <summary>
-        /// Wav file of the amplitude-modulated pulse train; the experimenter must generate it to pulse at the task flickerFrequency
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("stimulusPath")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="stimulusPath")]
-        [System.ComponentModel.DescriptionAttribute("Wav file of the amplitude-modulated pulse train; the experimenter must generate i" +
-            "t to pulse at the task flickerFrequency")]
-        public string StimulusPath
-        {
-            get
-            {
-                return _stimulusPath;
-            }
-            set
-            {
-                _stimulusPath = value;
-            }
-        }
-    
         public System.IObservable<AudioStimulus> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new AudioStimulus(this)));
@@ -200,8 +177,7 @@ namespace UclOpenAvDomeTask
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
-            stringBuilder.Append("SpeakerLocations = " + _speakerLocations + ", ");
-            stringBuilder.Append("StimulusPath = " + _stimulusPath);
+            stringBuilder.Append("SpeakerLocations = " + _speakerLocations);
             return true;
         }
     
@@ -1581,12 +1557,13 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Pulse rate shared by both modalities, in Hz: the grating gates on and off at this rate and the audio pulse-train wav must match it
+        /// Pulse rate shared by both modalities, in Hz: the grating gates on and off at this rate; must be 8, the pulse rate of the auditory stimulus set (calibration\AuditoryStimuli)
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("flickerFrequency")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="flickerFrequency")]
         [System.ComponentModel.DescriptionAttribute("Pulse rate shared by both modalities, in Hz: the grating gates on and off at this" +
-            " rate and the audio pulse-train wav must match it")]
+            " rate; must be 8, the pulse rate of the auditory stimulus set (calibration\\Audit" +
+            "oryStimuli)")]
         public double FlickerFrequency
         {
             get

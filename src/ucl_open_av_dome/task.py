@@ -76,10 +76,6 @@ class AudioStimulus(BaseSchema):
     speaker_locations: List[SphericalPosition] = Field(
         description="Candidate lateral sound positions, one drawn per audio trial; no azimuth-0 entry, the centre sound of visual-only and neutral trials is fixed in code"
     )
-    stimulus_path: String = Field(
-        default="LocalFiles\\filtered_pink_pulse_train.wav",
-        description="Wav file of the amplitude-modulated pulse train; the experimenter must generate it to pulse at the task flickerFrequency",
-    )
 
     @field_validator("speaker_locations")
     @classmethod
@@ -187,7 +183,7 @@ class UclOpenAvDomeTaskParameters(TaskParameters):
     flicker_frequency: Double = Field(
         default=8.0,
         ge=0,
-        description="Pulse rate shared by both modalities, in Hz: the grating gates on and off at this rate and the audio pulse-train wav must match it",
+        description="Pulse rate shared by both modalities, in Hz: the grating gates on and off at this rate; must be 8, the pulse rate of the auditory stimulus set (calibration\\AuditoryStimuli)",
     )
     trial_structure: TrialStructure = Field(description="Timing parameters of the trial state machine")
     visual_stimulus: VisualStimulus = Field(description="Grating stimulus parameters")

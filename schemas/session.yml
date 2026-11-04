@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=data-schema.json
-# Legacy task config, read at startup by the variant workflows (main_4Hz, main_ClosedLoop,
+# Legacy task config, read at startup by the variant workflows (main_ClosedLoop,
 # main_NabbefeldG) via the absolute path C:\dev\av-dome\schemas\session.yml. main.bonsai has
 # migrated to config/task.yml; this file and data-schema.json are to be retired or replaced when the 
 # variants migrate. Only the fields marked USED below actually drive behaviour in TrialTypeInitialise.cs;

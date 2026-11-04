@@ -21,6 +21,9 @@ public class AuditoryStimulusSet
     /// <summary>Number of waveforms in the set, filtered_pink_pulse_train_0.wav to _99.wav.</summary>
     public const int WaveformCount = 100;
 
+    /// <summary>Pulse rate the set was generated at, in Hz; the task's flickerFrequency must equal it.</summary>
+    public const double PulseRateHz = 8;
+
     readonly Mat[] raw;
     readonly Dictionary<int, Mat[]> equalised;
     readonly Dictionary<int, Mat> kernels;
@@ -66,8 +69,9 @@ public class AuditoryStimulusSet
     }
 
     // Each row of the waveform correlated with the kernel, centred on the kernel's middle tap and
-    // zero beyond the ends, so the output is as long as the input and not delayed. The taps are
-    // symmetric (linear phase), so this is the convolution too.
+    // zero beyond the ends, so the output is as long as the input and not delayed. Load refuses
+    // taps that are not symmetric (linear phase), so this is the convolution too. Production's
+    // FirFilter gives the same output 128 samples later for its 257 taps.
     static Mat Equalise(Mat waveform, Mat kernel)
     {
         int taps = kernel.Cols;
@@ -140,6 +144,11 @@ public class AuditoryStimulusSet
                 problems.Add("speaker '" + entry.Key + "' filter was designed for " + filter.SampleRate + " Hz, but the audio device runs at " + sampleRate + " Hz: " + path);
                 continue;
             }
+            if (!IsSymmetric(filter.Taps))
+            {
+                problems.Add("speaker '" + entry.Key + "' filter's taps are not symmetric, so equalising by correlation would not be its convolution: " + path);
+                continue;
+            }
             if (!string.IsNullOrEmpty(filter.MachineName) &&
                 !string.Equals(filter.MachineName, Environment.MachineName, StringComparison.OrdinalIgnoreCase))
             {
@@ -192,6 +201,17 @@ public class AuditoryStimulusSet
 
         var channels = speakerArray.Speakers.Values.Select(speaker => speaker.Channel).ToArray();
         return new AuditoryStimulusSet(raw, kernels, channels);
+    }
+
+    // Symmetric to within float precision of the largest tap, as a linear-phase FIR is.
+    static bool IsSymmetric(IList<double> taps)
+    {
+        double tolerance = 1e-6 * taps.Max(tap => Math.Abs(tap));
+        for (int i = 0; i < taps.Count / 2; i++)
+        {
+            if (Math.Abs(taps[i] - taps[taps.Count - 1 - i]) > tolerance) return false;
+        }
+        return true;
     }
 
     // A mono 16-bit PCM WAV as a 1 x samples F32 waveform in -1 to 1, scaled as the production

@@ -140,6 +140,12 @@ public class InitialiseTrial
             throw new InvalidOperationException(
                 "speakerLocations must not have an azimuth-0 entry; the centre sound is fixed in code.");
         }
+        if (parameters.FlickerFrequency != AuditoryStimulusSet.PulseRateHz)
+        {
+            throw new InvalidOperationException(
+                "flickerFrequency is " + parameters.FlickerFrequency + " Hz, but the auditory stimulus set pulses at " +
+                AuditoryStimulusSet.PulseRateHz + " Hz; set flickerFrequency to " + AuditoryStimulusSet.PulseRateHz + ".");
+        }
         configChecked = true;
     }
 
@@ -257,9 +263,11 @@ public class InitialiseTrial
         trialData.RepeatCount = 0;
         SetupOptogeneticParameters(trialData, parameters, trialRand);
 
-        // Which of the auditory stimulus set's waveforms this trial plays, uniform over the set.
-        // Drawn last so it leaves every earlier draw of the seeded stream as it was. A repeat
-        // (Clone) plays the same waveform as the trial it repeats.
+        // Which of the auditory stimulus set's waveforms this trial plays, uniform over the set
+        // (production's Round(99 * NextDouble()) gives 0 and 99 half the weight). Drawn last, so
+        // this trial's other draws are as before; every later trial's draws differ from a session
+        // run with the same rngSeed before audioWaveformIdx existed. A repeat (Clone) plays the
+        // same waveform as the trial it repeats.
         trialData.audioWaveformIdx = trialRand.Next(AuditoryStimulusSet.WaveformCount);
 
         return trialData;

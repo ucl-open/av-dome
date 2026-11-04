@@ -1,6 +1,6 @@
 param(
     # Internal: the step this script runs in a fresh process of its own (assemblies stay loaded).
-    [ValidateSet('', 'Build', 'RigDevice', 'Checks')][string]$Step = '',
+    [ValidateSet('', 'Build', 'RigDevice', 'Checks', 'Audio')][string]$Step = '',
     [string]$Workflow = 'main.bonsai'
 )
 # Checks a change to src\ without the rig and without opening Bonsai: no window, no device.
@@ -15,6 +15,9 @@ param(
 #      refused, and every key in the template reaches the RigSchema JSON the session logs.
 #   4. ApplyTaskOverrides: blank keeps the task file's values, on/off and numbers apply, and a bad
 #      value or a minimum above the maximum is refused naming the parameter.
+#   5. LoadAuditoryStimulusSet on synthetic WAVs and filters: equalising matches the filter's
+#      convolution, and asymmetric taps, a wrong rate or a missing file are refused naming it;
+#      InitialiseTrial refuses a flickerFrequency other than the set's 8 Hz.
 # Needs the environment set up (.bonsai\Setup.ps1: .bonsai\Packages). Exit 0 when all pass.
 $ErrorActionPreference = 'Stop'
 $self = $MyInvocation.MyCommand.Path
@@ -293,6 +296,90 @@ if ($Step -eq 'Checks') {
     exit $(if ($failed) { 1 } else { 0 })
 }
 
+if ($Step -eq 'Audio') {
+    Initialize-Assemblies
+    $failed = 0
+    $rig = Join-Path $bin 'audio-check'
+    Remove-Item $rig -Recurse -Force -ErrorAction SilentlyContinue
+    $stimDir = Join-Path $rig 'calibration\AuditoryStimuli'
+    $null = New-Item -ItemType Directory -Path $stimDir -Force
+    function Write-Wave([string]$Path, [int16[]]$Samples, [int]$Rate) {
+        $w = New-Object IO.BinaryWriter ([IO.File]::Create($Path))
+        $w.Write([Text.Encoding]::ASCII.GetBytes('RIFF')); $w.Write([int](36 + 2 * $Samples.Length)); $w.Write([Text.Encoding]::ASCII.GetBytes('WAVEfmt '))
+        $w.Write([int]16); $w.Write([int16]1); $w.Write([int16]1); $w.Write([int]$Rate); $w.Write([int]($Rate * 2)); $w.Write([int16]2); $w.Write([int16]16)
+        $w.Write([Text.Encoding]::ASCII.GetBytes('data')); $w.Write([int](2 * $Samples.Length)); foreach ($s in $Samples) { $w.Write($s) }
+        $w.Close()
+    }
+    function Write-Filter([string]$Name, [double[]]$Taps, [double]$Rate) {
+        $json = '{"calibratedAt":"2026-11-04T00:00:00Z","calibratedBy":"check-workflow","machineName":"","notes":"","sampleRate":' + $Rate + ',"taps":[' + (($Taps | ForEach-Object { $_.ToString('R', [Globalization.CultureInfo]::InvariantCulture) }) -join ',') + ']}'
+        [IO.File]::WriteAllText((Join-Path $rig "calibration\$Name.json"), $json)
+    }
+    $rand = New-Object Random 1
+    $waves = @{}
+    foreach ($i in 0..99) {
+        $s = [int16[]](1..480 | ForEach-Object { $rand.Next(-32768, 32768) }); $waves[$i] = $s
+        Write-Wave (Join-Path $stimDir "filtered_pink_pulse_train_$i.wav") $s 48000
+    }
+    $sym = [double[]](0.01, -0.05, 0.2, 1.1, 0.2, -0.05, 0.01)
+    Write-Filter 'sym' $sym 48000
+    Write-Filter 'asym' ([double[]](1, 0.5, 0.25)) 48000
+    Write-Filter 'rate' $sym 44100
+    function New-Speakers([string]$Filter) {
+        $a = New-Object UclOpenAvDome.SpeakerArray; $a.Device.SampleRate = 48000
+        $a.Speakers = New-Object 'System.Collections.Generic.Dictionary[string,UclOpenAvDome.Speaker]'
+        $l = New-Object UclOpenAvDome.Speaker; $l.Channel = 0; $l.Filter = $Filter; $a.Speakers.Add('left', $l)
+        $c = New-Object UclOpenAvDome.Speaker; $c.Channel = 2; $c.Filter = 'calibration/sym.json'; $a.Speakers.Add('centre', $c)
+        return $a
+    }
+    function Get-Refusal([scriptblock]$Run) {
+        try { & $Run; return $null } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; return $x }
+    }
+    function Invoke-Load($Speakers) { [AuditoryStimulusSet]::Load($Speakers, $rig, 'calibration\AuditoryStimuli', 'filtered_pink_pulse_train_') }
+    [Console]::SetOut([IO.TextWriter]::Null)  # Load's warnings
+    try {
+        $set = Invoke-Load (New-Speakers $null)
+        # Channel 2's waveform 7 against the filter by hand: centred, zero outside, scaled as production's Rescale.
+        $x = $waves[7] | ForEach-Object { ($_ + 32768.0) * (2.0 / 65535.0) - 1.0 }
+        $m = $set.Stimulus(7, 2); $got = New-Object float[] $m.Cols; [Runtime.InteropServices.Marshal]::Copy($m.Data, $got, 0, $m.Cols)
+        $worst = 0.0
+        for ($n = 0; $n -lt $x.Count; $n++) {
+            $want = 0.0; for ($j = 0; $j -lt $sym.Length; $j++) { $k = $n + $j - 3; if ($k -ge 0 -and $k -lt $x.Count) { $want += $sym[$j] * $x[$k] } }
+            $worst = [Math]::Max($worst, [Math]::Abs($want - $got[$n]))
+        }
+        $raw = $set.Stimulus(7, 0); $rawGot = New-Object float[] $raw.Cols; [Runtime.InteropServices.Marshal]::Copy($raw.Data, $rawGot, 0, $raw.Cols)
+        $rawWorst = 0.0; for ($n = 0; $n -lt $x.Count; $n++) { $rawWorst = [Math]::Max($rawWorst, [Math]::Abs($x[$n] - $rawGot[$n])) }
+        if ($m.Cols -eq 480 -and $worst -lt 1e-5 -and $rawWorst -lt 1e-6 -and $set.WaveformLength -eq 480) { $r = "  ok    LoadAuditoryStimulusSet equalises as the filter's convolution, centred, and leaves an unfiltered speaker as read" }
+        else { $r = "  FAIL  equalised error $worst, unfiltered error $rawWorst, length $($m.Cols)"; $failed++ }
+    } catch { $e = $_.Exception; while ($e.InnerException) { $e = $e.InnerException }; $r = "  FAIL  LoadAuditoryStimulusSet: $($e.Message)"; $failed++ }
+    $cases = @(
+        @('asymmetric taps', { Invoke-Load (New-Speakers 'calibration/asym.json') }, 'not symmetric'),
+        @('a filter for 44100 Hz', { Invoke-Load (New-Speakers 'calibration/rate.json') }, 'designed for 44100 Hz'),
+        @('a missing filter', { Invoke-Load (New-Speakers 'calibration/none.json') }, 'filter not found'),
+        @('a stimulus at 44100 Hz', { Write-Wave (Join-Path $stimDir 'filtered_pink_pulse_train_5.wav') $waves[5] 44100; Invoke-Load (New-Speakers $null) }, 'filtered_pink_pulse_train_5.wav'),
+        @('a missing stimulus', { Remove-Item (Join-Path $stimDir 'filtered_pink_pulse_train_42.wav'); Invoke-Load (New-Speakers $null) }, 'filtered_pink_pulse_train_42.wav'))
+    $lines = @($r)
+    foreach ($case in $cases) {
+        $e = Get-Refusal $case[1]
+        if ($e -and $e.Message.Contains($case[2])) { $lines += "  ok    LoadAuditoryStimulusSet refuses $($case[0])" }
+        else { $lines += "  FAIL  LoadAuditoryStimulusSet on $($case[0]): $(if ($e) { $e.Message } else { 'accepted' })"; $failed++ }
+    }
+    # InitialiseTrial's first-trial check: flickerFrequency must be the set's pulse rate.
+    $p = New-Object UclOpenAvDomeTask.UclOpenAvDomeTaskParameters
+    $p.VisualStimulus = New-Object UclOpenAvDomeTask.VisualStimulus
+    $p.AudioStimulus = New-Object UclOpenAvDomeTask.AudioStimulus
+    $p.AudioStimulus.SpeakerLocations = New-Object 'System.Collections.Generic.List[UclOpenAvDomeTask.SphericalPosition]'
+    $check = [InitialiseTrial].GetMethod('EnsureConfigChecked', [Reflection.BindingFlags]'Instance,NonPublic')
+    $p.FlickerFrequency = 4
+    $e = Get-Refusal { $null = $check.Invoke((New-Object InitialiseTrial), [object[]]@($p.PSObject.BaseObject)) }
+    $p.FlickerFrequency = 8
+    $e8 = Get-Refusal { $null = $check.Invoke((New-Object InitialiseTrial), [object[]]@($p.PSObject.BaseObject)) }
+    if ($e -and $e.Message.Contains('flickerFrequency is 4') -and -not $e8) { $lines += "  ok    InitialiseTrial refuses a flickerFrequency other than the stimulus set's 8 Hz" }
+    else { $lines += "  FAIL  flickerFrequency check: 4 Hz $(if ($e) { $e.Message } else { 'accepted' }); 8 Hz $(if ($e8) { $e8.Message } else { 'accepted' })"; $failed++ }
+    [Console]::SetOut((New-Object IO.StreamWriter ([Console]::OpenStandardOutput()) -Property @{ AutoFlush = $true }))
+    $lines
+    exit $(if ($failed) { 1 } else { 0 })
+}
+
 if (-not (Test-Path (Join-Path $bonsaiDir 'Packages'))) { throw "No .bonsai\Packages in $repo. Run .bonsai\Setup.ps1 first." }
 $bad = 0
 "1. Compiling src\Extensions as C# 5..."
@@ -319,5 +406,8 @@ if ($LASTEXITCODE -ne 0) { "  FAILED"; $bad++ }
 "4. ApplyTaskOverrides and the spout positions path..."
 & { $ErrorActionPreference = 'Continue'; & powershell -NoProfile -ExecutionPolicy Bypass -File $self -Step Checks 2>&1 | ForEach-Object { "$_" } }
 if ($LASTEXITCODE -ne 0) { "  FAILED"; $bad++ }
+"5. The auditory stimulus set and the flickerFrequency check, on synthetic files..."
+& { $ErrorActionPreference = 'Continue'; & powershell -NoProfile -ExecutionPolicy Bypass -File $self -Step Audio 2>&1 | ForEach-Object { "$_" } }
+if ($LASTEXITCODE -ne 0) { "  FAILED"; $bad++ }
 if ($bad) { "check-workflow: $bad step(s) failed."; exit 1 }
-"check-workflow: all 4 steps passed."
+"check-workflow: all 5 steps passed."

@@ -7,7 +7,7 @@
 taskParameters:
   rngSeed: null            # null = draw a random seed; the seed used is logged per trial
   datasetName: AV_Dome     # save subfolder under the rig rootPath
-  flickerFrequency: 8      # Hz, pulse rate shared by both modalities; the audio wav must be generated to match
+  flickerFrequency: 8      # Hz, pulse rate shared by both modalities; must be 8, the rate of the auditory stimulus set
   trialStructure:
     itiMin: 4.0            # s
     itiMax: 5.0            # s
@@ -32,7 +32,6 @@ taskParameters:
     speakerLocations:      # lateral positions, one drawn per audio trial; no centre entry (fixed in code); playback uses the nearest wired speaker
       - { azimuth: -60, elevation: 15 }
       - { azimuth: 60, elevation: 15 }
-    stimulusPath: LocalFiles\filtered_pink_pulse_train.wav   # pulse rate baked in; must match the task flickerFrequency
   response:
     thresholdLicks: 1      # net lick difference ending the response window; 1 = first-lick 2AFC
     degreesPerLick: 0      # deg the grating moves per net lick; 0 = stimulus fixed

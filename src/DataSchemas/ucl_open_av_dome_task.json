@@ -10,12 +10,6 @@
           },
           "title": "SpeakerLocations",
           "type": "array"
-        },
-        "stimulusPath": {
-          "default": "LocalFiles\\filtered_pink_pulse_train.wav",
-          "description": "Wav file of the amplitude-modulated pulse train; the experimenter must generate it to pulse at the task flickerFrequency",
-          "title": "StimulusPath",
-          "type": "string"
         }
       },
       "required": [
@@ -417,7 +411,7 @@
         },
         "flickerFrequency": {
           "default": 8.0,
-          "description": "Pulse rate shared by both modalities, in Hz: the grating gates on and off at this rate and the audio pulse-train wav must match it",
+          "description": "Pulse rate shared by both modalities, in Hz: the grating gates on and off at this rate; must be 8, the pulse rate of the auditory stimulus set (calibration\\AuditoryStimuli)",
           "minimum": 0,
           "title": "FlickerFrequency",
           "type": "number"
