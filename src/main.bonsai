@@ -2494,8 +2494,8 @@
                 </Parameter>
                 <Parameter>
                   <Name>Zapit</Name>
-                  <Value />
-                  <Description>Optogenetics: on or off; blank keeps the task file's optogenetics.enabled.</Description>
+                  <Value>off</Value>
+                  <Description>Optogenetics: on or off, off unless set (a session on a rig without Zapit running stopped at Go, 4 Nov 2026); blank keeps the task file's optogenetics.enabled.</Description>
                 </Parameter>
                 <Parameter>
                   <Name>StepSize</Name>

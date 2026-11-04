@@ -7,7 +7,7 @@
 # rig-control's src/open_rigs_control/performance.py says how; trials.py reads the files.
 
 [layout]
-camera_height_share = 0.4   # 0.2 to 0.8: the cameras' share of the page's height; charts get the rest
+camera_height_share = 0.55  # 0.2 to 0.8: the cameras' share of the page's height; charts get the rest
 
 # ---- The trial log ---------------------------------------------------------------------------
 # Which column of BonsaiData_Trial means what. A column the log lacks is read as blank.
@@ -94,9 +94,17 @@ auto_reward = "Auto Reward"
 #   placeholder  shown in an empty field
 #   help         the tooltip
 #   choices      a list to pick from instead of a text field; `labels` names each choice
+#   tick         a tick-box instead: [value unticked, value ticked]
+#   task_value   where in the task file the value a blank field keeps is, shown in the field;
+#                a {Name} part is that parameter's value (a row past the end is the last row)
 # All of them can be changed until Go, and are fixed from then on.
 # The stages are config\task.yml's trainingStages rows; a label here is that row's comment, so
 # change both together. An id past the last row runs the last row, so none is offered.
+[task]
+folder = "config"        # the task files, in this repository
+pattern = "task*.yml"    # which files there are task files: Task File picks from them
+file = "TaskFile"        # the parameter naming the one the session runs
+
 [parameters.TrainingStage]
 label = "Training Stage"
 choices = ["0", "1", "2", "3", "4"]
@@ -105,32 +113,34 @@ help = "The task file's training stage (task.yml trainingStages). 0 Habituation:
 
 [parameters.TaskFile]
 label = "Task File"
-help = "The task file in config\\, task.yml unless testing."
+help = "Which task file in config\\ the session runs: task.yml is the task; the others are for tests (task-closedloop.yml, task-zapit-test.yml). Read at Go."
 
 [parameters.RewardSizeUl]
 label = "Reward Size"
 unit = "µl"
 placeholder = "As the task file"
-help = "Water per reward. Blank keeps the task file's."
+task_value = "taskParameters.trainingStages.{TrainingStage}.rewardSizeUl"
+help = "Water per reward. Blank keeps the task file's (this stage's rewardSizeUl), shown in grey."
 
 [parameters.ItiMin]
 label = "ITI Min"
 unit = "s"
 placeholder = "As the task file"
-help = "Shortest inter-trial interval. Blank keeps the task file's."
+task_value = "taskParameters.trialStructure.itiMin"
+help = "Shortest inter-trial interval. Blank keeps the task file's, shown in grey."
 
 [parameters.ItiMax]
 label = "ITI Max"
 unit = "s"
 placeholder = "As the task file"
-help = "Longest inter-trial interval. Blank keeps the task file's."
+task_value = "taskParameters.trialStructure.itiMax"
+help = "Longest inter-trial interval. Blank keeps the task file's, shown in grey."
 
 [parameters.Zapit]
 label = "Zapit"
-choices = ["", "on", "off"]
-# What each choice is called; "" is the blank choice.
-labels = { "" = "As the task file", on = "On", off = "Off" }
-help = "Optogenetics through the Zapit PC. Off where Zapit is not running."
+tick = ["off", "on"]
+task_value = "taskParameters.optogenetics.enabled"
+help = "Optogenetics through Zapit. Off unless ticked; ticked, the session stops at Go if the Zapit program is not running on this rig."
 
 [parameters.StepSize]
 label = "Step Size"
