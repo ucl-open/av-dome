@@ -1,5 +1,5 @@
 from enum import StrEnum
-from typing import List, Literal
+from typing import List, Literal, Optional
 
 from pydantic import Field, field_validator, model_validator
 from swc.aeon.schema import BaseSchema
@@ -32,6 +32,10 @@ class VisualStimulus(BaseSchema):
 
     azimuth_min: Double = Field(default=-60.0, ge=-180, le=180, description="Lower bound of the uniformly drawn grating azimuth, in degrees")
     azimuth_max: Double = Field(default=60.0, ge=-180, le=180, description="Upper bound of the uniformly drawn grating azimuth, in degrees")
+    overwrite_azimuths: Optional[List[Double]] = Field(
+        default=None,
+        description="Discrete grating azimuths, in degrees; when set and non-empty, every trial draws from this list (filtered to the trial's side, capped on coherent trials) instead of [azimuthMin, azimuthMax]",
+    )
     elevation_min: Double = Field(default=15.0, ge=-90, le=90, description="Lower bound of the uniformly drawn grating elevation, in degrees")
     elevation_max: Double = Field(default=15.0, ge=-90, le=90, description="Upper bound of the uniformly drawn grating elevation, in degrees")
     coherent_azimuth_cap: Double = Field(default=80.0, ge=0, le=180, description="On coherent trials the grating azimuth magnitude is kept below this cap, in degrees")
@@ -48,12 +52,29 @@ class VisualStimulus(BaseSchema):
             raise ValueError("elevation_max must be >= elevation_min")
         return self
 
+    @model_validator(mode="after")
+    def _overwrite_azimuths_cover_both_sides(self) -> "VisualStimulus":
+        # Coherent and conflict trials draw from one side each, so a list needs a usable value on
+        # both. InitialiseTrial.cs repeats this check, since Bonsai loads the YAML without pydantic.
+        values = self.overwrite_azimuths
+        if not values:
+            return self
+        for value in values:
+            if not -180 <= value <= 180:
+                raise ValueError(f"overwrite_azimuths value {value} is outside [-180, 180]")
+        cap = self.coherent_azimuth_cap
+        if not any(0 < value <= cap for value in values):
+            raise ValueError(f"overwrite_azimuths needs a value in (0, {cap}] (coherent_azimuth_cap) for right-side trials")
+        if not any(-cap <= value < 0 for value in values):
+            raise ValueError(f"overwrite_azimuths needs a value in [-{cap}, 0) (coherent_azimuth_cap) for left-side trials")
+        return self
+
 
 class AudioStimulus(BaseSchema):
     """Auditory stimulus parameters common to all trials."""
 
     speaker_locations: List[SphericalPosition] = Field(
-        description="Candidate sound positions, one drawn per trial; keep an azimuth-0 entry for trials that place the sound at the centre"
+        description="Candidate lateral sound positions, one drawn per audio trial; no azimuth-0 entry, the centre sound of visual-only and neutral trials is fixed in code"
     )
     stimulus_path: String = Field(
         default="LocalFiles\\filtered_pink_pulse_train.wav",
@@ -65,6 +86,9 @@ class AudioStimulus(BaseSchema):
     def _at_least_one_location(cls, value: List[SphericalPosition]) -> List[SphericalPosition]:
         if not value:
             raise ValueError("speaker_locations must have at least one entry")
+        # A centre entry would make some unisensory audio trials centre trials with a coin-flip target.
+        if any(location.azimuth == 0 for location in value):
+            raise ValueError("speaker_locations must not have an azimuth-0 entry; the centre sound is fixed in code")
         return value
 
 

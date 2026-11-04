@@ -20,6 +20,7 @@ taskParameters:
   visualStimulus:
     azimuthMin: -60        # deg, grating azimuth drawn uniformly in [min, max]
     azimuthMax: 60         # deg
+    overwriteAzimuths: [-60, 60]   # deg, discrete grating azimuths; when set, used instead of [min, max]
     elevationMin: 15       # deg, grating elevation drawn uniformly in [min, max]
     elevationMax: 15       # deg
     coherentAzimuthCap: 80 # deg, |azimuth| kept below this on coherent trials
@@ -28,9 +29,8 @@ taskParameters:
     spatialFrequency: 0.066666667   # cycles/deg
     temporalFrequency: 0   # Hz, unsigned drift rate; direction is orthogonal to orientation
   audioStimulus:
-    speakerLocations:      # one position drawn per trial; playback uses the nearest wired speaker
+    speakerLocations:      # lateral positions, one drawn per audio trial; no centre entry (fixed in code); playback uses the nearest wired speaker
       - { azimuth: -60, elevation: 15 }
-      - { azimuth: 0, elevation: 15 }   # keep a centre entry: centre-audio trials draw from it
       - { azimuth: 60, elevation: 15 }
     stimulusPath: LocalFiles\filtered_pink_pulse_train.wav   # pulse rate baked in; must match the task flickerFrequency
   response:
