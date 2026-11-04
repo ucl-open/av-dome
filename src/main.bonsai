@@ -5557,18 +5557,6 @@ Item4 as ExposureTime)</scr:Expression>
                     <LogName>TimestampGeneratorGen3-Main</LogName>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>StartSession</Name>
-                  </Expression>
-                  <Expression xsi:type="IncludeWorkflow" Path="Extensions\LoggingPrefixCondition.bonsai" />
-                  <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
-                    <Name>Timestamp</Name>
-                  </Expression>
-                  <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
-                    <LogName>SessionState</LogName>
-                    <Selector>Seconds,Value</Selector>
-                    <Extension>csv</Extension>
-                  </Expression>
-                  <Expression xsi:type="SubscribeSubject">
                     <Name>RigConfigs</Name>
                   </Expression>
                   <Expression xsi:type="Combinator">
@@ -5691,15 +5679,12 @@ Item4 as ExposureTime)</scr:Expression>
                   <Edge From="5" To="6" Label="Source1" />
                   <Edge From="7" To="8" Label="Source1" />
                   <Edge From="8" To="9" Label="Source1" />
-                  <Edge From="9" To="10" Label="Source1" />
+                  <Edge From="10" To="11" Label="Source1" />
                   <Edge From="11" To="12" Label="Source1" />
-                  <Edge From="12" To="13" Label="Source1" />
-                  <Edge From="14" To="15" Label="Source1" />
                   <Edge From="15" To="16" Label="Source1" />
+                  <Edge From="16" To="17" Label="Source1" />
+                  <Edge From="18" To="19" Label="Source1" />
                   <Edge From="19" To="20" Label="Source1" />
-                  <Edge From="20" To="21" Label="Source1" />
-                  <Edge From="22" To="23" Label="Source1" />
-                  <Edge From="23" To="24" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -5783,10 +5768,10 @@ Item4 as ExposureTime)</scr:Expression>
             </Expression>
             <Expression xsi:type="mf:SessionManifest">
               <Name>SessionManifest</Name>
-              <Description>Writes manifest.json into the session folder (OpenRigs.Manifest), finding PathPrefix itself: once when the folder appears and again when the workflow stops. No run is connected: a session ends with the controller's Stop, recorded as stopped with its reason. It records the machine, this repo's commit, Bonsai's command line, the settings at Go (SubjectId, SessionId and every parameter), rig.yml's path and hash, and what the session must leave: a folder for each device in rig.yml (BehaviorBoard-Main, TimestampGeneratorGen3-Main, LickSpoutStage-Main, LicketySplit-Left/Right, Camera-Face/Pupil/Body), the record and register map RecordHarpDevices writes for each Harp device (harp), RigSchema, BonsaiData (BonsaiData_Trial and BonsaiData_Async), SessionState and StimulusStartEvents, which the overnight copy (rig-sync) alarms on if missing.</Description>
+              <Description>Writes manifest.json into the session folder (OpenRigs.Manifest), finding PathPrefix itself: once when the folder appears and again when the workflow stops. No run is connected: a session ends with the controller's Stop, recorded as stopped with its reason. It records the machine, this repo's commit, Bonsai's command line, the settings at Go (SubjectId, SessionId and every parameter), rig.yml's path and hash, and what the session must leave: a folder for each device in rig.yml (BehaviorBoard-Main, TimestampGeneratorGen3-Main, LickSpoutStage-Main, LicketySplit-Left/Right, Camera-Face/Pupil/Body), the record and register map RecordHarpDevices writes for each Harp device (harp), RigSchema, TaskSchema, BonsaiData (BonsaiData_Trial and BonsaiData_Async) and StimulusStartEvents, which the overnight copy (rig-sync) alarms on if missing.</Description>
               <mf:IngestScript>av-dome</mf:IngestScript>
               <mf:ConfigFiles>C:\Coen-Lab-Local\RigConfigs\%COMPUTERNAME%\rig.yml</mf:ConfigFiles>
-              <mf:ExpectedFiles>auto;harp;RigSchema/;BonsaiData/;SessionState/;StimulusStartEvents/</mf:ExpectedFiles>
+              <mf:ExpectedFiles>auto;harp;RigSchema/;TaskSchema/;BonsaiData/;StimulusStartEvents/</mf:ExpectedFiles>
             </Expression>
             <Expression xsi:type="scr:ExpressionTransform">
               <scr:Expression>new(&quot;RewardDelivered&quot; as Event, (it.Line == 1 ? &quot;Left&quot; : it.Line == 2 ? &quot;Right&quot; : &quot;DO&quot; + it.Line.ToString()) + &quot; requested=&quot; + it.RequestedUl.ToString() + &quot; pulses=&quot; + it.Count.ToString() + &quot; calibrated=&quot; + it.Calibrated.ToString() + &quot; clamped=&quot; + it.Clamped.ToString() as Detail, it.DeliveredUl as Value)</scr:Expression>
@@ -5904,7 +5889,7 @@ Item4 as ExposureTime)</scr:Expression>
                   </Expression>
                   <Expression xsi:type="Equal">
                     <Operand xsi:type="StringProperty">
-                      <Value>AutoRewarded</Value>
+                      <Value>IncorrectAutoRewarded</Value>
                     </Operand>
                   </Expression>
                   <Expression xsi:type="Combinator">

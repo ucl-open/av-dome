@@ -178,7 +178,7 @@ public class BuiltObjects : System.Linq.Expressions.ExpressionVisitor {
         'TimestampGeneratorGen3-Main/TimestampGeneratorGen3-Main_device.json',
         'LicketySplit-Left/LicketySplit-Left_device.json', 'LicketySplit-Right/LicketySplit-Right_device.json',
         'LicketySplit-Left/LicketySplit-Left.yml', 'LicketySplit-Right/LicketySplit-Right.yml',
-        'RigSchema/', 'BonsaiData/', 'SessionState/', 'StimulusStartEvents/'
+        'RigSchema/', 'TaskSchema/', 'BonsaiData/', 'StimulusStartEvents/'
     $missing = @($wantFiles | Where-Object { $expected -notcontains $_ })
     $extra = @($expected | Where-Object { $wantFiles -notcontains $_ })
     if ($missing.Count -eq 0 -and $extra.Count -eq 0) { "  ok    SessionManifest expects the $($expected.Count) folders and files of a session" }
