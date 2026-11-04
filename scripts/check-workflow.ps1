@@ -168,11 +168,13 @@ public class BuiltObjects : System.Linq.Expressions.ExpressionVisitor {
     $recorder = @($objects.Found | Where-Object { $_.GetType().Name -eq 'ManifestRecorder' })
     $planField = if ($recorder.Count) { $recorder[0].GetType().GetFields([Reflection.BindingFlags]'Instance,NonPublic,Public') | Where-Object { $_.FieldType.Name -eq 'ExpectedPlan' } | Select-Object -First 1 }
     $expected = if ($planField) { @($planField.GetValue($recorder[0]).Entries | ForEach-Object { $_.Path }) } else { @() }
-    # A register map (<Name>.yml) only for a board a loaded Harp package decodes: the Behavior board.
+    # A register map (<Name>.yml) only for a board a loaded Harp package decodes: the Behavior board and,
+    # since OpenRigs.Manifest 0.1.0-local.13 knows WhoAmI 1400, both Lickety Splits.
     $wantFiles = 'BehaviorBoard-Main/', 'TimestampGeneratorGen3-Main/', 'LickSpoutStage-Main/', 'LicketySplit-Left/', 'LicketySplit-Right/', 'Camera-Face/', 'Camera-Pupil/', 'Camera-Body/',
         'BehaviorBoard-Main/BehaviorBoard-Main_device.json', 'BehaviorBoard-Main/BehaviorBoard-Main.yml',
         'TimestampGeneratorGen3-Main/TimestampGeneratorGen3-Main_device.json',
         'LicketySplit-Left/LicketySplit-Left_device.json', 'LicketySplit-Right/LicketySplit-Right_device.json',
+        'LicketySplit-Left/LicketySplit-Left.yml', 'LicketySplit-Right/LicketySplit-Right.yml',
         'RigSchema/', 'TrialSettings/', 'SessionState/', 'StimulusStartEvents/'
     $missing = @($wantFiles | Where-Object { $expected -notcontains $_ })
     $extra = @($expected | Where-Object { $wantFiles -notcontains $_ })
