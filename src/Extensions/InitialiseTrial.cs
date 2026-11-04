@@ -257,6 +257,11 @@ public class InitialiseTrial
         trialData.RepeatCount = 0;
         SetupOptogeneticParameters(trialData, parameters, trialRand);
 
+        // Which of the auditory stimulus set's waveforms this trial plays, uniform over the set.
+        // Drawn last so it leaves every earlier draw of the seeded stream as it was. A repeat
+        // (Clone) plays the same waveform as the trial it repeats.
+        trialData.audioWaveformIdx = trialRand.Next(AuditoryStimulusSet.WaveformCount);
+
         return trialData;
     }
 
@@ -739,6 +744,7 @@ public class Trial
     public double audioAzimuth;
     public double audioElevation;
     public double audioFlickerFrequency;  // in Hz
+    public int audioWaveformIdx;  // index into the auditory stimulus set: calibration\AuditoryStimuli\filtered_pink_pulse_train_<idx>.wav
 
     // Optogenetics
     public bool OptogeneticEnabled;

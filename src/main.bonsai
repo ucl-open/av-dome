@@ -1748,21 +1748,21 @@
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="SubscribeSubject">
-                          <Name>TaskConfig</Name>
+                          <Name>RigConfigs</Name>
                         </Expression>
                         <Expression xsi:type="MemberSelector">
-                          <Selector>TaskParameters.AudioStimulus.StimulusPath</Selector>
+                          <Selector>SpeakerArray</Selector>
                         </Expression>
-                        <Expression xsi:type="PropertyMapping">
-                          <PropertyMappings>
-                            <Property Name="FileName" />
-                          </PropertyMappings>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>RigConfigDirectory</Name>
                         </Expression>
                         <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="al:AudioReader">
-                            <al:FileName>LocalFiles\filtered_pink_pulse_train.wav</al:FileName>
-                            <al:BufferLength>0</al:BufferLength>
-                            <al:SampleRate>0</al:SampleRate>
+                          <Combinator xsi:type="rx:Zip" />
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="p1:LoadAuditoryStimulusSet">
+                            <p1:Folder>calibration\AuditoryStimuli</p1:Folder>
+                            <p1:FilePrefix>filtered_pink_pulse_train_</p1:FilePrefix>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="Combinator">
@@ -1770,30 +1770,14 @@
                             <rx:Count>1</rx:Count>
                           </Combinator>
                         </Expression>
-                        <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="dsp:Rescale">
-                            <dsp:Min>-32768</dsp:Min>
-                            <dsp:Max>32768</dsp:Max>
-                            <dsp:RangeMin>-1</dsp:RangeMin>
-                            <dsp:RangeMax>1</dsp:RangeMax>
-                            <dsp:RescaleType>Linear</dsp:RescaleType>
-                          </Combinator>
-                        </Expression>
-                        <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="dsp:ConvertScale">
-                            <dsp:Depth>F32</dsp:Depth>
-                            <dsp:Scale>0.5</dsp:Scale>
-                            <dsp:Shift>0</dsp:Shift>
-                          </Combinator>
-                        </Expression>
                         <Expression xsi:type="rx:AsyncSubject">
-                          <Name>waveformPinkNoise</Name>
+                          <Name>AuditoryStimulusSet</Name>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
-                          <Name>waveformPinkNoise</Name>
+                          <Name>AuditoryStimulusSet</Name>
                         </Expression>
                         <Expression xsi:type="MemberSelector">
-                          <Selector>Cols</Selector>
+                          <Selector>WaveformLength</Selector>
                         </Expression>
                         <Expression xsi:type="PropertyMapping">
                           <PropertyMappings>
@@ -1861,27 +1845,61 @@
                         <Expression xsi:type="rx:AsyncSubject">
                           <Name>waveformErrorSound</Name>
                         </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="al:AudioReader">
+                            <al:FileName>LocalFiles\background_white_noise.wav</al:FileName>
+                            <al:BufferLength>0</al:BufferLength>
+                            <al:SampleRate>0</al:SampleRate>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Take">
+                            <rx:Count>1</rx:Count>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="dsp:Rescale">
+                            <dsp:Min>-32768</dsp:Min>
+                            <dsp:Max>32768</dsp:Max>
+                            <dsp:RangeMin>-1</dsp:RangeMin>
+                            <dsp:RangeMax>1</dsp:RangeMax>
+                            <dsp:RescaleType>Linear</dsp:RescaleType>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="dsp:ConvertScale">
+                            <dsp:Depth>F32</dsp:Depth>
+                            <dsp:Scale>0.05</dsp:Scale>
+                            <dsp:Shift>0</dsp:Shift>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="rx:AsyncSubject">
+                          <Name>waveformBackground</Name>
+                        </Expression>
                       </Nodes>
                       <Edges>
                         <Edge From="0" To="1" Label="Source1" />
-                        <Edge From="1" To="2" Label="Source1" />
-                        <Edge From="2" To="3" Label="Source1" />
+                        <Edge From="1" To="3" Label="Source1" />
+                        <Edge From="2" To="3" Label="Source2" />
                         <Edge From="3" To="4" Label="Source1" />
                         <Edge From="4" To="5" Label="Source1" />
                         <Edge From="5" To="6" Label="Source1" />
-                        <Edge From="6" To="7" Label="Source1" />
+                        <Edge From="7" To="8" Label="Source1" />
                         <Edge From="8" To="9" Label="Source1" />
                         <Edge From="9" To="10" Label="Source1" />
                         <Edge From="10" To="11" Label="Source1" />
                         <Edge From="11" To="12" Label="Source1" />
-                        <Edge From="12" To="13" Label="Source1" />
+                        <Edge From="13" To="14" Label="Source1" />
                         <Edge From="14" To="15" Label="Source1" />
                         <Edge From="15" To="16" Label="Source1" />
                         <Edge From="16" To="17" Label="Source1" />
                         <Edge From="17" To="18" Label="Source1" />
                         <Edge From="18" To="19" Label="Source1" />
                         <Edge From="19" To="20" Label="Source1" />
-                        <Edge From="20" To="21" Label="Source1" />
+                        <Edge From="21" To="22" Label="Source1" />
+                        <Edge From="22" To="23" Label="Source1" />
+                        <Edge From="23" To="24" Label="Source1" />
+                        <Edge From="24" To="25" Label="Source1" />
                       </Edges>
                     </Workflow>
                   </Expression>
@@ -2049,6 +2067,28 @@
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="p4:AppendBuffer" />
                               </Expression>
+                              <Expression xsi:type="SubscribeSubject">
+                                <Name>Mixer</Name>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="p4:CreateSource">
+                                  <p4:Looping>true</p4:Looping>
+                                  <p4:Playing>true</p4:Playing>
+                                  <p4:Gain>1</p4:Gain>
+                                </Combinator>
+                              </Expression>
+                              <Expression xsi:type="MulticastSubject">
+                                <Name>MixerBackgroundSoundSource</Name>
+                              </Expression>
+                              <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p5:Mat">
+                                <rx:Name>MixerBufferBackgroundSound</rx:Name>
+                              </Expression>
+                              <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p4:MixerSourceContext">
+                                <rx:Name>MixerBackgroundSoundSource</rx:Name>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="p4:AppendBuffer" />
+                              </Expression>
                             </Nodes>
                             <Edges>
                               <Edge From="0" To="1" Label="Source1" />
@@ -2061,6 +2101,10 @@
                               <Edge From="11" To="12" Label="Source1" />
                               <Edge From="14" To="16" Label="Source1" />
                               <Edge From="15" To="16" Label="Source2" />
+                              <Edge From="17" To="18" Label="Source1" />
+                              <Edge From="18" To="19" Label="Source1" />
+                              <Edge From="20" To="22" Label="Source1" />
+                              <Edge From="21" To="22" Label="Source2" />
                             </Edges>
                           </Workflow>
                         </Expression>
@@ -2113,7 +2157,19 @@
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="SubscribeSubject">
-                          <Name>waveformPinkNoise</Name>
+                          <Name>AuditoryStimulusSet</Name>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>thisTrialData</Name>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>ActiveSoundChannels</Name>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Zip" />
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="p1:SelectAuditoryStimulus" />
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="rx:Take">
@@ -2186,21 +2242,25 @@
                         </Expression>
                       </Nodes>
                       <Edges>
-                        <Edge From="0" To="1" Label="Source1" />
-                        <Edge From="1" To="4" Label="Source1" />
-                        <Edge From="2" To="3" Label="Source1" />
-                        <Edge From="3" To="4" Label="Source2" />
-                        <Edge From="4" To="9" Label="Source1" />
-                        <Edge From="5" To="6" Label="Source1" />
+                        <Edge From="0" To="3" Label="Source1" />
+                        <Edge From="1" To="3" Label="Source2" />
+                        <Edge From="2" To="3" Label="Source3" />
+                        <Edge From="3" To="4" Label="Source1" />
+                        <Edge From="4" To="5" Label="Source1" />
+                        <Edge From="5" To="8" Label="Source1" />
                         <Edge From="6" To="7" Label="Source1" />
-                        <Edge From="7" To="8" Label="Source1" />
-                        <Edge From="8" To="9" Label="Source2" />
-                        <Edge From="9" To="13" Label="Source1" />
+                        <Edge From="7" To="8" Label="Source2" />
+                        <Edge From="8" To="13" Label="Source1" />
+                        <Edge From="9" To="10" Label="Source1" />
                         <Edge From="10" To="11" Label="Source1" />
                         <Edge From="11" To="12" Label="Source1" />
                         <Edge From="12" To="13" Label="Source2" />
-                        <Edge From="13" To="14" Label="Source1" />
+                        <Edge From="13" To="17" Label="Source1" />
                         <Edge From="14" To="15" Label="Source1" />
+                        <Edge From="15" To="16" Label="Source1" />
+                        <Edge From="16" To="17" Label="Source2" />
+                        <Edge From="17" To="18" Label="Source1" />
+                        <Edge From="18" To="19" Label="Source1" />
                       </Edges>
                     </Workflow>
                   </Expression>
@@ -2297,10 +2357,30 @@
                         <Expression xsi:type="MulticastSubject">
                           <Name>MixerBufferErrorSound</Name>
                         </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>AuditoryStimulusSet</Name>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>TaskConfig</Name>
+                        </Expression>
+                        <Expression xsi:type="MemberSelector">
+                          <Selector>TaskParameters.ErrorSound.Channel</Selector>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Zip" />
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="p1:EqualiseForSpeaker" />
+                        </Expression>
                       </Nodes>
                       <Edges>
                         <Edge From="0" To="1" Label="Source1" />
-                        <Edge From="1" To="4" Label="Source1" />
+                        <Edge From="17" To="20" Label="Source1" />
+                        <Edge From="1" To="20" Label="Source2" />
+                        <Edge From="18" To="19" Label="Source1" />
+                        <Edge From="19" To="20" Label="Source3" />
+                        <Edge From="20" To="21" Label="Source1" />
+                        <Edge From="21" To="4" Label="Source1" />
                         <Edge From="2" To="3" Label="Source1" />
                         <Edge From="3" To="4" Label="Source2" />
                         <Edge From="4" To="15" Label="Source1" />
@@ -2318,6 +2398,76 @@
                       </Edges>
                     </Workflow>
                   </Expression>
+                  <Expression xsi:type="rx:Defer">
+                    <Name>PlayBackground</Name>
+                    <Description>Background white noise for the whole workflow, looping from 2 s after start on every wired speaker in rig.yml (speakerArray.speakers), never on the sync or unused channels.</Description>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>waveformBackground</Name>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="rx:Take">
+                            <rx:Count>1</rx:Count>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>ChannelCount</Name>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="ChannelCount" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="p1:Broadcast">
+                            <p1:ChannelCount>32</p1:ChannelCount>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="SubscribeSubject">
+                          <Name>AuditoryStimulusSet</Name>
+                        </Expression>
+                        <Expression xsi:type="MemberSelector">
+                          <Selector>SpeakerChannels</Selector>
+                        </Expression>
+                        <Expression xsi:type="PropertyMapping">
+                          <PropertyMappings>
+                            <Property Name="Channels" />
+                          </PropertyMappings>
+                        </Expression>
+                        <Expression xsi:type="Combinator">
+                          <Combinator xsi:type="p1:ChannelActivation">
+                            <p1:Channels>
+                              <p1:int>0</p1:int>
+                            </p1:Channels>
+                            <p1:Gain>
+                              <p1:double>1</p1:double>
+                            </p1:Gain>
+                          </Combinator>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                        <Edge From="1" To="4" Label="Source1" />
+                        <Edge From="2" To="3" Label="Source1" />
+                        <Edge From="3" To="4" Label="Source2" />
+                        <Edge From="4" To="8" Label="Source1" />
+                        <Edge From="5" To="6" Label="Source1" />
+                        <Edge From="6" To="7" Label="Source1" />
+                        <Edge From="7" To="8" Label="Source2" />
+                        <Edge From="8" To="9" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="MulticastSubject">
+                    <Name>MixerBufferBackgroundSound</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:DelaySubscription">
+                      <rx:DueTime>PT2S</rx:DueTime>
+                    </Combinator>
+                  </Expression>
                 </Nodes>
                 <Edges>
                   <Edge From="1" To="2" Label="Source1" />
@@ -2328,6 +2478,8 @@
                   <Edge From="10" To="11" Label="Source1" />
                   <Edge From="12" To="13" Label="Source1" />
                   <Edge From="13" To="14" Label="Source1" />
+                  <Edge From="15" To="16" Label="Source1" />
+                  <Edge From="16" To="17" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -5240,7 +5392,8 @@
     Item2.visualTemporalFrequency as visualTemporalFrequency,
     Item2.visualFlickerFrequency as visualFlickerFrequency,
     Item2.audioElevation as audioElevation,
-    Item2.audioFlickerFrequency as audioFlickerFrequency)</scr:Expression>
+    Item2.audioFlickerFrequency as audioFlickerFrequency,
+    Item2.audioWaveformIdx as audioWaveformIdx)</scr:Expression>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
                           <Name>Timestamp</Name>
@@ -7778,114 +7931,6 @@ Item4 as ExposureTime)</scr:Expression>
                       </Edges>
                     </Workflow>
                   </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="SubscribeSubject">
-                      <Name>settings</Name>
-                    </Builder>
-                  </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="SubscribeSubject">
-                      <Name>RigConfigs</Name>
-                    </Builder>
-                  </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="Combinator">
-                      <Combinator xsi:type="rx:Zip" />
-                    </Builder>
-                  </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="rx:Condition">
-                      <Name>HardwareTriggeredOptoTrial?</Name>
-                      <Workflow>
-                        <Nodes>
-                          <Expression xsi:type="WorkflowInput">
-                            <Name>Source1</Name>
-                          </Expression>
-                          <Expression xsi:type="MemberSelector">
-                            <Selector>Item1</Selector>
-                          </Expression>
-                          <Expression xsi:type="MemberSelector">
-                            <Selector>OptogeneticEnabled</Selector>
-                          </Expression>
-                          <Expression xsi:type="MemberSelector">
-                            <Selector>Item2</Selector>
-                          </Expression>
-                          <Expression xsi:type="MemberSelector">
-                            <Selector>Zapit.HardwareTriggered</Selector>
-                          </Expression>
-                          <Expression xsi:type="Combinator">
-                            <Combinator xsi:type="rx:Zip" />
-                          </Expression>
-                          <Expression xsi:type="BitwiseAnd" />
-                          <Expression xsi:type="WorkflowOutput" />
-                        </Nodes>
-                        <Edges>
-                          <Edge From="0" To="1" Label="Source1" />
-                          <Edge From="0" To="3" Label="Source1" />
-                          <Edge From="1" To="2" Label="Source1" />
-                          <Edge From="2" To="5" Label="Source1" />
-                          <Edge From="3" To="4" Label="Source1" />
-                          <Edge From="4" To="5" Label="Source2" />
-                          <Edge From="5" To="6" Label="Source1" />
-                          <Edge From="6" To="7" Label="Source1" />
-                        </Edges>
-                      </Workflow>
-                    </Builder>
-                  </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="MemberSelector">
-                      <Selector>Item2.Zapit.TriggerLine</Selector>
-                    </Builder>
-                  </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="MulticastSubject">
-                      <Name>TriggerPulse</Name>
-                    </Builder>
-                  </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="SubscribeSubject">
-                      <Name>settings</Name>
-                    </Builder>
-                  </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="PropertyMapping">
-                      <PropertyMappings>
-                        <Property Name="ConditionNumber" Selector="OptogeneticCondition" />
-                        <Property Name="StimDuration" Selector="OptogeneticDuration" />
-                        <Property Name="StartDelay" Selector="OptogeneticDelay" />
-                      </PropertyMappings>
-                    </Builder>
-                  </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="SubscribeSubject">
-                      <Name>RigConfigs</Name>
-                    </Builder>
-                  </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="PropertyMapping">
-                      <PropertyMappings>
-                        <Property Name="HardwareTriggered" Selector="Zapit.HardwareTriggered" />
-                      </PropertyMappings>
-                    </Builder>
-                  </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="Combinator">
-                      <Combinator xsi:type="p1:CreateStartStimulus">
-                        <p1:ConditionNumber>0</p1:ConditionNumber>
-                        <p1:LaserOn>true</p1:LaserOn>
-                        <p1:HardwareTriggered>true</p1:HardwareTriggered>
-                        <p1:Logging>true</p1:Logging>
-                        <p1:StimDuration>0</p1:StimDuration>
-                        <p1:LaserPower>0</p1:LaserPower>
-                        <p1:StartDelay>0</p1:StartDelay>
-                      </Combinator>
-                    </Builder>
-                  </Expression>
-                  <Expression xsi:type="Disable">
-                    <Builder xsi:type="MulticastSubject">
-                      <Name>ZapitCommands</Name>
-                    </Builder>
-                  </Expression>
                 </Nodes>
                 <Edges>
                   <Edge From="0" To="1" Label="Source1" />
@@ -7896,17 +7941,6 @@ Item4 as ExposureTime)</scr:Expression>
                   <Edge From="6" To="7" Label="Source1" />
                   <Edge From="8" To="9" Label="Source1" />
                   <Edge From="9" To="10" Label="Source1" />
-                  <Edge From="11" To="13" Label="Source1" />
-                  <Edge From="12" To="13" Label="Source2" />
-                  <Edge From="13" To="14" Label="Source1" />
-                  <Edge From="14" To="15" Label="Source1" />
-                  <Edge From="15" To="16" Label="Source1" />
-                  <Edge From="16" To="21" Label="Source1" />
-                  <Edge From="17" To="18" Label="Source1" />
-                  <Edge From="18" To="21" Label="Source2" />
-                  <Edge From="19" To="20" Label="Source1" />
-                  <Edge From="20" To="21" Label="Source3" />
-                  <Edge From="21" To="22" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>

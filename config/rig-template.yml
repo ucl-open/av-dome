@@ -114,16 +114,23 @@ speakerArray:
   unusedChannels: [30]      # not connected
   # Speakers currently wired on this rig. Position is relative to the subject:
   # azimuth 0 = straight ahead, positive to the right; elevation 0 = horizontal.
+  # filter: the speaker's SpeakerFilter artefact (FIR taps for the device's sample rate), relative
+  # to this directory; leave it out to play that speaker unequalised. The auditory stimuli are
+  # calibration\AuditoryStimuli\filtered_pink_pulse_train_0.wav to _99.wav (mono 16-bit PCM at the
+  # device's rate). A missing stimulus or filter stops the workflow at startup, naming the file.
   speakers:
     left:
       position: { azimuth: -90, elevation: 15 }
       channel: 0
+      filter: calibration/speaker-left.json
     right:
       position: { azimuth: 90, elevation: 15 }
       channel: 1
+      filter: calibration/speaker-right.json
     centre:
       position: { azimuth: 0, elevation: 15 }
       channel: 2
+      filter: calibration/speaker-centre.json
   # Full 25-speaker dome layout, transcribed from the legacy SpeakerCalibration map in
   # TrialTypeInitialise.cs. Channel numbers below are the legacy 1-based speaker IDs and MUST be
   # re-checked against the actual mixer wiring before use. Enable per rig once the speakers are wired.
