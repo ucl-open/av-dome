@@ -159,8 +159,8 @@ public class BuiltObjects : System.Linq.Expressions.ExpressionVisitor {
     $null = $objects.Visit($built)
     $records = @($objects.Found | Where-Object { $_.GetType().FullName -eq 'OpenRigs.HarpDevices.RecordHarpDevice' })
     $got = @($records | ForEach-Object { "$($_.Name) $($_.PortName) $($_.UsbSerial) $($_.ExpectedWhoAmI)" } | Sort-Object)
-    # ExpectedWhoAmI 0: none is known for a Lickety Split, so its WhoAmI is not checked.
-    $want = @('BehaviorBoard-Main COM1 BG01WA0E 1216', 'LicketySplit-Left COM5 E664C856C360B937 0', 'LicketySplit-Right COM6 E664C856C31F4637 0', 'TimestampGeneratorGen3-Main COM2 AQ03WH45 1158')
+    # A Lickety Split reports WhoAmI 1400 (known since OpenRigs.HarpDevices 0.1.0-local.7), so it is checked.
+    $want = @('BehaviorBoard-Main COM1 BG01WA0E 1216', 'LicketySplit-Left COM5 E664C856C360B937 1400', 'LicketySplit-Right COM6 E664C856C31F4637 1400', 'TimestampGeneratorGen3-Main COM2 AQ03WH45 1158')
     if (($got -join '; ') -eq ($want -join '; ')) { "  ok    RecordHarpDevices records the Behavior board, the timestamp generator and both Lickety Splits from rig.yml" }
     else { "  FAIL  RecordHarpDevices made: $($got -join '; ')"; $failed++ }
     $dumps = @($objects.Found | Where-Object { $_.GetType().FullName -eq 'OpenRigs.HarpDevices.RequestRegisterDump' }).Count
