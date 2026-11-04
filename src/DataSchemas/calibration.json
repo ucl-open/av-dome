@@ -1,0 +1,509 @@
+{
+  "$defs": {
+    "CalibrationCurve": {
+      "description": "A calibration measured as pairs, such as valve opening time against delivered volume.\n\nWritten by the platform's DispenseCalibration procedure (valves, pumps) and read by a rig\nwhose configuration points a CalibratedPulse at it; the rig fits the points at startup.",
+      "properties": {
+        "calibratedAt": {
+          "description": "When the calibration was measured, in UTC.",
+          "format": "date-time",
+          "title": "CalibratedAt",
+          "type": "string"
+        },
+        "calibratedBy": {
+          "description": "Who ran the calibration.",
+          "title": "CalibratedBy",
+          "type": "string"
+        },
+        "machineName": {
+          "description": "Name of the machine the calibration was measured on. A rig warns when it is not the machine it runs on.",
+          "title": "MachineName",
+          "type": "string"
+        },
+        "notes": {
+          "default": "",
+          "description": "Free-text notes about the calibration.",
+          "title": "Notes",
+          "type": "string"
+        },
+        "xName": {
+          "description": "Name of the quantity the rig controls.",
+          "examples": [
+            "pulse_width"
+          ],
+          "title": "XName",
+          "type": "string"
+        },
+        "xUnit": {
+          "description": "Unit of the x values.",
+          "examples": [
+            "ms"
+          ],
+          "title": "XUnit",
+          "type": "string"
+        },
+        "yName": {
+          "description": "Name of the measured quantity.",
+          "examples": [
+            "volume"
+          ],
+          "title": "YName",
+          "type": "string"
+        },
+        "yUnit": {
+          "description": "Unit of the y values.",
+          "examples": [
+            "ul"
+          ],
+          "title": "YUnit",
+          "type": "string"
+        },
+        "points": {
+          "description": "Measured pairs; the fit is done at load, not stored.",
+          "items": {
+            "$ref": "#/$defs/CalibrationPoint"
+          },
+          "minItems": 2,
+          "title": "Points",
+          "type": "array"
+        },
+        "payloadPath": {
+          "anyOf": [
+            {
+              "type": "string",
+              "x-rig-artefact": true
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Relative path of a file a consumer still needs alongside the points, such as a gamma LUT bitmap.",
+          "title": "PayloadPath"
+        }
+      },
+      "required": [
+        "calibratedAt",
+        "calibratedBy",
+        "machineName",
+        "xName",
+        "xUnit",
+        "yName",
+        "yUnit",
+        "points"
+      ],
+      "title": "CalibrationCurve",
+      "type": "object"
+    },
+    "CalibrationModel": {
+      "description": "How a calibration curve is derived from its points; the `OpenRigs.Core.CalibrationModel` operators' enum.",
+      "enum": [
+        "LinearFit",
+        "PolynomialFit",
+        "Linear",
+        "CubicSpline",
+        "Step"
+      ],
+      "title": "CalibrationModel",
+      "type": "string",
+      "x-sgen-typename": "OpenRigs.Core.CalibrationModel"
+    },
+    "CalibrationPoint": {
+      "description": "One measured pair of a calibration curve.",
+      "properties": {
+        "x": {
+          "description": "The value the rig controls, in the unit of the x axis.",
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "description": "The measured value, in the unit of the y axis.",
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "title": "CalibrationPoint",
+      "type": "object"
+    },
+    "DispenseCalibration": {
+      "description": "What an experiment repository commits as `config/<dispenser>-calibration.yml`.\n\n`OpenRigs.Core:DispenseCalibration.bonsai` deserialises it with the Core `DeserializeFromYaml`\nand runs the procedure; the balance port is set on the workflow at run time.",
+      "properties": {
+        "procedure": {
+          "$ref": "#/$defs/DispenseProcedure",
+          "description": "What to fire and how to weigh it.",
+          "title": "Procedure"
+        },
+        "balance": {
+          "$ref": "#/$defs/SerialBalance",
+          "default": {
+            "portName": "COMx",
+            "baudRate": 9600,
+            "newLine": "\r\n",
+            "readBufferSize": 4096,
+            "writeBufferSize": 2048,
+            "tareCommand": "T",
+            "printCommand": "IP",
+            "printPeriodS": 0.5,
+            "bootDelayS": 0.5,
+            "tareDelayS": 1.5,
+            "unitSuffix": "g",
+            "unstableMarker": "?",
+            "ignore": "ES"
+          },
+          "description": "The balance's serial protocol.",
+          "title": "Balance"
+        }
+      },
+      "required": [
+        "procedure"
+      ],
+      "title": "DispenseCalibration",
+      "type": "object"
+    },
+    "DispenseProcedure": {
+      "description": "Settings of the dispense calibration: fire known sizes, weigh the gain, write a CalibrationCurve.\n\nRun by `OpenRigs.Core:DispenseCalibration.bonsai`. Subjects are declared to wire in a rig's own hardware",
+      "properties": {
+        "samples": {
+          "description": "Sizes to measure, each fired and weighed in turn.",
+          "items": {
+            "$ref": "#/$defs/DispenseSample"
+          },
+          "minItems": 2,
+          "title": "Samples",
+          "type": "array"
+        },
+        "xName": {
+          "default": "pulse_width",
+          "description": "Name of the quantity fired.",
+          "title": "XName",
+          "type": "string"
+        },
+        "xUnit": {
+          "default": "ms",
+          "description": "Unit of the sizes.",
+          "title": "XUnit",
+          "type": "string"
+        },
+        "primingPulses": {
+          "default": 5,
+          "description": "Pulses fired before the baseline weighing to fill the line.",
+          "minimum": 0,
+          "title": "PrimingPulses",
+          "type": "integer"
+        },
+        "primingSize": {
+          "anyOf": [
+            {
+              "maximum": 65535,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Size of the priming pulses; the largest sample size when unset.",
+          "title": "PrimingSize"
+        },
+        "densityGPerMl": {
+          "default": 1.0,
+          "description": "Density used to turn the weighed grams into microlitres. Water = 1.0.",
+          "exclusiveMinimum": 0,
+          "title": "DensityGPerMl",
+          "type": "number"
+        },
+        "settleWindow": {
+          "default": 10,
+          "description": "Consecutive stable readings, after the last pulse, before a weight is taken.",
+          "minimum": 1,
+          "title": "SettleWindow",
+          "type": "integer"
+        },
+        "weighTimeoutS": {
+          "default": 60.0,
+          "description": "Fail if the balance has not settled within this time, in seconds.",
+          "exclusiveMinimum": 0,
+          "title": "WeighTimeoutS",
+          "type": "number"
+        },
+        "fit": {
+          "$ref": "#/$defs/CalibrationModel",
+          "default": "LinearFit",
+          "description": "Model fitted to the points for the acceptance report; the artefact stores the points, not the fit.",
+          "title": "Fit"
+        },
+        "fitOrder": {
+          "default": 2,
+          "description": "Polynomial order; used by PolynomialFit only.",
+          "minimum": 1,
+          "title": "FitOrder",
+          "type": "integer"
+        },
+        "requireMonotone": {
+          "default": true,
+          "description": "Refuse to write a curve that is not monotone in either direction, since a rig inverts it to look a volume up.",
+          "title": "RequireMonotone",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "samples"
+      ],
+      "title": "DispenseProcedure",
+      "type": "object"
+    },
+    "DispenseSample": {
+      "description": "One size to measure: the dispenser fires `repeats` times at it and the gain is weighed once.\n    ",
+      "properties": {
+        "size": {
+          "description": "The size to fire, in the procedure's x unit: milliseconds for a valve, steps for a pump.",
+          "exclusiveMinimum": 0,
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "Size",
+          "type": "integer"
+        },
+        "repeats": {
+          "default": 10,
+          "description": "Pulses fired at this size before the gain is weighed.",
+          "minimum": 1,
+          "title": "Repeats",
+          "type": "integer"
+        },
+        "interPulseIntervalMs": {
+          "default": 500,
+          "description": "Gap between consecutive pulses, in milliseconds; long enough for the valve to seat.",
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "InterPulseIntervalMs",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "size"
+      ],
+      "title": "DispenseSample",
+      "type": "object"
+    },
+    "MeshMap": {
+      "description": "A projection mesh map, stored as the CSV BonVision loads beside this descriptor.",
+      "properties": {
+        "calibratedAt": {
+          "description": "When the calibration was measured, in UTC.",
+          "format": "date-time",
+          "title": "CalibratedAt",
+          "type": "string"
+        },
+        "calibratedBy": {
+          "description": "Who ran the calibration.",
+          "title": "CalibratedBy",
+          "type": "string"
+        },
+        "machineName": {
+          "description": "Name of the machine the calibration was measured on. A rig warns when it is not the machine it runs on.",
+          "title": "MachineName",
+          "type": "string"
+        },
+        "notes": {
+          "default": "",
+          "description": "Free-text notes about the calibration.",
+          "title": "Notes",
+          "type": "string"
+        },
+        "azimuthResolution": {
+          "description": "Number of mesh points in azimuth.",
+          "exclusiveMinimum": 0,
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "title": "AzimuthResolution",
+          "type": "integer"
+        },
+        "elevationResolution": {
+          "description": "Number of mesh points in elevation.",
+          "exclusiveMinimum": 0,
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "title": "ElevationResolution",
+          "type": "integer"
+        },
+        "meshPath": {
+          "description": "Relative path of the mesh CSV that BonVision loads.",
+          "title": "MeshPath",
+          "type": "string",
+          "x-rig-artefact": true
+        }
+      },
+      "required": [
+        "calibratedAt",
+        "calibratedBy",
+        "machineName",
+        "azimuthResolution",
+        "elevationResolution",
+        "meshPath"
+      ],
+      "title": "MeshMap",
+      "type": "object"
+    },
+    "SerialBalance": {
+      "description": "A serial balance read by the platform's dispense calibration through `OpenRigs.Devices:SerialBalance.bonsai`.\n\nExtends `SerialDevice` with the balance's protocol.",
+      "properties": {
+        "portName": {
+          "default": "COMx",
+          "description": "The balance's serial port; set on the workflow at run time.",
+          "examples": [
+            "COM5"
+          ],
+          "title": "PortName",
+          "type": "string"
+        },
+        "baudRate": {
+          "default": 9600,
+          "description": "Baud rate for serial communication.",
+          "title": "BaudRate",
+          "type": "integer"
+        },
+        "newLine": {
+          "default": "\r\n",
+          "description": "Line termination sequence used to delimit incoming messages.",
+          "title": "NewLine",
+          "type": "string"
+        },
+        "readBufferSize": {
+          "default": 4096,
+          "description": "Size, in bytes, of the read buffer.",
+          "title": "ReadBufferSize",
+          "type": "integer"
+        },
+        "writeBufferSize": {
+          "default": 2048,
+          "description": "Size, in bytes, of the write buffer.",
+          "title": "WriteBufferSize",
+          "type": "integer"
+        },
+        "tareCommand": {
+          "default": "T",
+          "description": "Command that tares the balance.",
+          "title": "TareCommand",
+          "type": "string"
+        },
+        "printCommand": {
+          "default": "IP",
+          "description": "Command that makes the balance print one reading.",
+          "title": "PrintCommand",
+          "type": "string"
+        },
+        "printPeriodS": {
+          "default": 0.5,
+          "description": "How often a reading is requested, in seconds.",
+          "exclusiveMinimum": 0,
+          "title": "PrintPeriodS",
+          "type": "number"
+        },
+        "bootDelayS": {
+          "default": 0.5,
+          "description": "Wait after opening the port before taring, in seconds.",
+          "minimum": 0,
+          "title": "BootDelayS",
+          "type": "number"
+        },
+        "tareDelayS": {
+          "default": 1.5,
+          "description": "Wait after taring before the first reading is requested, in seconds.",
+          "minimum": 0,
+          "title": "TareDelayS",
+          "type": "number"
+        },
+        "unitSuffix": {
+          "default": "g",
+          "description": "Text that follows the number in a reading; the value is parsed up to it.",
+          "title": "UnitSuffix",
+          "type": "string"
+        },
+        "unstableMarker": {
+          "default": "?",
+          "description": "Text present in a reading while the balance has not settled.",
+          "title": "UnstableMarker",
+          "type": "string"
+        },
+        "ignore": {
+          "default": "ES",
+          "description": "Readings to discard, comma separated, such as the balance's error or echo strings.",
+          "title": "Ignore",
+          "type": "string"
+        }
+      },
+      "title": "SerialBalance",
+      "type": "object"
+    },
+    "SpeakerFilter": {
+      "description": "An equalisation filter measured for one speaker, with its FIR taps inline.",
+      "properties": {
+        "calibratedAt": {
+          "description": "When the calibration was measured, in UTC.",
+          "format": "date-time",
+          "title": "CalibratedAt",
+          "type": "string"
+        },
+        "calibratedBy": {
+          "description": "Who ran the calibration.",
+          "title": "CalibratedBy",
+          "type": "string"
+        },
+        "machineName": {
+          "description": "Name of the machine the calibration was measured on. A rig warns when it is not the machine it runs on.",
+          "title": "MachineName",
+          "type": "string"
+        },
+        "notes": {
+          "default": "",
+          "description": "Free-text notes about the calibration.",
+          "title": "Notes",
+          "type": "string"
+        },
+        "taps": {
+          "description": "FIR filter coefficients, in order.",
+          "items": {
+            "type": "number"
+          },
+          "minItems": 1,
+          "title": "Taps",
+          "type": "array"
+        },
+        "sampleRate": {
+          "description": "Sampling rate the taps were designed for, in Hz; must match the audio device.",
+          "exclusiveMinimum": 0,
+          "title": "SampleRate",
+          "type": "number"
+        }
+      },
+      "required": [
+        "calibratedAt",
+        "calibratedBy",
+        "machineName",
+        "taps",
+        "sampleRate"
+      ],
+      "title": "SpeakerFilter",
+      "type": "object"
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "#/$defs/CalibrationCurve"
+    },
+    {
+      "$ref": "#/$defs/MeshMap"
+    },
+    {
+      "$ref": "#/$defs/SpeakerFilter"
+    },
+    {
+      "$ref": "#/$defs/DispenseCalibration"
+    }
+  ],
+  "title": "CalibrationTypes"
+}

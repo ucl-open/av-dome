@@ -34,10 +34,9 @@
       <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
         <Name>Timestamp</Name>
       </Expression>
-      <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+      <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
         <LogName>RenderHeartbeat</LogName>
         <Selector>Seconds,Value</Selector>
-        <Extension>csv</Extension>
       </Expression>
       <Expression xsi:type="SubscribeSubject">
         <Name>Timestamp</Name>
@@ -57,10 +56,9 @@
       <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
         <Name>Timestamp</Name>
       </Expression>
-      <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+      <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
         <LogName>ResponseEvents</LogName>
         <Selector>Seconds,Value</Selector>
-        <Extension>csv</Extension>
       </Expression>
       <Expression xsi:type="ExternalizedMapping">
         <Property Name="Name" DisplayName="TrialStartSubjectName" Description="The subject emitting per-trial data at trial start (default: thisTrialData)." />
@@ -71,10 +69,9 @@
       <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
         <Name>Timestamp</Name>
       </Expression>
-      <Expression xsi:type="IncludeWorkflow" Path="UclOpen.Logging:LogData.bonsai">
+      <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
         <LogName>TrialStartEvents</LogName>
         <Selector>Seconds,Value.trialType</Selector>
-        <Extension>csv</Extension>
       </Expression>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="rx:Timer">

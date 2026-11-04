@@ -113,9 +113,66 @@
       "title": "BehaviorBoard",
       "type": "object"
     },
-    "CameraTriggerController": {
-      "description": "Represents a CameraTriggerController module on a BehaviorBoard device.",
+    "CalibratedPulse": {
+      "description": "A pulsed output whose width comes from a calibration curve at run time, such as a reward valve.",
       "properties": {
+        "artefact": {
+          "description": "Relative path of the CalibrationCurve that converts the requested quantity to a pulse width: a file written by the platform's DispenseCalibration procedure into this machine's calibration folder.",
+          "examples": [
+            "calibration/valve-DO1.json"
+          ],
+          "title": "Artefact",
+          "type": "string",
+          "x-rig-artefact": true
+        },
+        "fit": {
+          "$ref": "#/$defs/CalibrationModel",
+          "default": "LinearFit",
+          "description": "How the rig fits the artefact's points at startup. LinearFit suits repeated weighings.",
+          "title": "Fit"
+        },
+        "maxAgeDays": {
+          "default": 90,
+          "description": "Warn at startup when the artefact is older than this many days. 0 disables the check.",
+          "minimum": 0,
+          "title": "MaxAgeDays",
+          "type": "integer"
+        },
+        "discriminatorType": {
+          "const": "CalibratedPulse",
+          "default": "CalibratedPulse",
+          "title": "DiscriminatorType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "artefact"
+      ],
+      "title": "CalibratedPulse",
+      "type": "object"
+    },
+    "CalibrationModel": {
+      "description": "How a calibration curve is derived from its points; the `OpenRigs.Core.CalibrationModel` operators' enum.",
+      "enum": [
+        "LinearFit",
+        "PolynomialFit",
+        "Linear",
+        "CubicSpline",
+        "Step"
+      ],
+      "title": "CalibrationModel",
+      "type": "string",
+      "x-sgen-typename": "OpenRigs.Core.CalibrationModel"
+    },
+    "CameraTriggerController": {
+      "description": "Represents a CameraTriggerController module on a BehaviorBoard device.\n\nThe two camera trigger outputs share pins with digital outputs: Trigger0 is DO0 and Trigger1\nis DO1. A trigger that is not enabled is never started, which leaves its pin free for a pulse\noutput such as a reward valve.",
+      "properties": {
+        "trigger0Enabled": {
+          "default": true,
+          "description": "Start camera trigger 0 (CameraOutput0, the DO0 pin) when the rig starts.",
+          "title": "Trigger0Enabled",
+          "type": "boolean"
+        },
         "trigger0Frequency": {
           "description": "The frequency, in Hz, at which to emit camera triggers on Trigger0 (DO0, CameraOutput0)",
           "examples": [
@@ -124,8 +181,14 @@
           "title": "Trigger0Frequency",
           "type": "integer"
         },
+        "trigger1Enabled": {
+          "default": false,
+          "description": "Start camera trigger 1 (CameraOutput1, the DO1 pin) when the rig starts. Leave off when DO1 drives a pulse output.",
+          "title": "Trigger1Enabled",
+          "type": "boolean"
+        },
         "trigger1Frequency": {
-          "description": "The frequency, in Hz, at which to emit camera triggers on Trigger1 (DO1, CameraOutput1)",
+          "description": "The frequency, in Hz, at which to emit camera triggers on Trigger1 (DO1, CameraOutput1). Only matters when trigger 1 is enabled.",
           "examples": [
             "50"
           ],
@@ -149,6 +212,29 @@
       "description": "A set of behavior board digital output lines, written comma separated.",
       "title": "DigitalOutputs",
       "x-sgen-typename": "Harp.Behavior.DigitalOutputs"
+    },
+    "FixedPulse": {
+      "description": "A pulsed output whose width is set in the rig configuration, such as an LED, an air puff or a TTL.",
+      "properties": {
+        "pulseWidthMs": {
+          "description": "Pulse duration, in milliseconds.",
+          "maximum": 65535,
+          "minimum": 0,
+          "title": "PulseWidthMs",
+          "type": "integer"
+        },
+        "discriminatorType": {
+          "const": "FixedPulse",
+          "default": "FixedPulse",
+          "title": "DiscriminatorType",
+          "type": "string"
+        }
+      },
+      "required": [
+        "pulseWidthMs"
+      ],
+      "title": "FixedPulse",
+      "type": "object"
     },
     "HarpLickSpoutStage": {
       "description": "Harp-based lick spout stage: two StepperDriver boards driving a 5-axis rig.\nCalibration (named positions) is stored separately in a SpoutRigPosition YAML file.",
@@ -329,7 +415,7 @@
       "type": "object"
     },
     "ProjectionCalibration": {
-      "description": "File-based calibration assets for mesh-mapped projection displays.",
+      "description": "File-based calibration assets for mesh-mapped projection displays.\n\nSuperseded by vision.ProjectionCorrection, whose paths are relative to the rig configuration\ndirectory; kept until av-dome migrates (ucl-open/av-dome#20, #22).",
       "properties": {
         "meshMapPath": {
           "description": "Path to the mesh-mapping interpolation file (CSV)",
@@ -364,48 +450,62 @@
           "description": "Digital output lines enabled for pulse generation, comma separated.",
           "title": "OutputPulseEnable"
         },
-        "pulseWidths": {
-          "$ref": "#/$defs/PulseWidths",
-          "description": "Pulse width configuration for DO1, DO2, and DO3 lines."
+        "outputs": {
+          "$ref": "#/$defs/PulseOutputs",
+          "description": "Pulse source of each digital output line.",
+          "title": "Outputs"
         }
       },
       "required": [
-        "pulseWidths"
+        "outputs"
       ],
       "title": "PulseController",
       "type": "object"
     },
-    "PulseWidths": {
-      "description": "Pulse durations for the behavior board digital outputs, in milliseconds.\n\nA line that is not used on a rig may be omitted.",
+    "PulseOutput": {
+      "description": "What drives the pulse width of one digital output line: a fixed width or a calibration curve.",
+      "discriminator": {
+        "mapping": {
+          "CalibratedPulse": "#/$defs/CalibratedPulse",
+          "FixedPulse": "#/$defs/FixedPulse"
+        },
+        "propertyName": "discriminatorType"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/FixedPulse"
+        },
+        {
+          "$ref": "#/$defs/CalibratedPulse"
+        }
+      ],
+      "title": "PulseOutput"
+    },
+    "PulseOutputs": {
+      "description": "The pulse source of each behavior board digital output line. Each line appears once.\n\nAll three lines are required: a union has no default that survives code generation, so an\nunused line is written as a FixedPulse with a width of 0.",
       "properties": {
-        "PulseDO1": {
-          "description": "Pulse duration on DO1, in milliseconds.",
-          "maximum": 65535,
-          "minimum": 0,
-          "title": "PulseDo1",
-          "type": "integer"
+        "DO1": {
+          "$ref": "#/$defs/PulseOutput",
+          "description": "Pulse source for DO1.",
+          "title": "Do1"
         },
-        "PulseDO2": {
-          "description": "Pulse duration on DO2, in milliseconds.",
-          "maximum": 65535,
-          "minimum": 0,
-          "title": "PulseDo2",
-          "type": "integer"
+        "DO2": {
+          "$ref": "#/$defs/PulseOutput",
+          "description": "Pulse source for DO2.",
+          "title": "Do2"
         },
-        "PulseDO3": {
-          "default": 0,
-          "description": "Pulse duration on DO3, in milliseconds.",
-          "maximum": 65535,
-          "minimum": 0,
-          "title": "PulseDo3",
-          "type": "integer"
+        "DO3": {
+          "$ref": "#/$defs/PulseOutput",
+          "description": "Pulse source for DO3; a FixedPulse of width 0 if unused.",
+          "title": "Do3"
         }
       },
       "required": [
-        "PulseDO1",
-        "PulseDO2"
+        "DO1",
+        "DO2",
+        "DO3"
       ],
-      "title": "PulseWidths",
+      "title": "PulseOutputs",
       "type": "object"
     },
     "RunningWheel": {
@@ -450,6 +550,23 @@
           "minimum": 0,
           "title": "Gain",
           "type": "number"
+        },
+        "filter": {
+          "anyOf": [
+            {
+              "type": "string",
+              "x-rig-artefact": true
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Relative path of this speaker's SpeakerFilter artefact; none means the channel is not equalised.",
+          "examples": [
+            "calibration/speaker-left.json"
+          ],
+          "title": "Filter"
         }
       },
       "required": [

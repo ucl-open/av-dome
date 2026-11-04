@@ -173,6 +173,16 @@ wheels = [
 ]
 
 [[package]]
+name = "open-rigs"
+version = "0.0.0"
+source = { git = "https://github.com/open-rigs/open-rigs?branch=main#f31371662c68606d9f177ce50aed86834d55767f" }
+dependencies = [
+    { name = "pydantic" },
+    { name = "pydantic-yaml" },
+    { name = "swc-aeon" },
+]
+
+[[package]]
 name = "opencv-python"
 version = "4.11.0.86"
 source = { registry = "https://pypi.org/simple" }
@@ -449,28 +459,18 @@ wheels = [
 ]
 
 [[package]]
-name = "ucl-open"
-version = "0.0.0"
-source = { git = "https://github.com/ucl-open/ucl-open?branch=tr-dev#c6c41a1cbfe7bf516320d56d146a1644211389dd" }
-dependencies = [
-    { name = "pydantic" },
-    { name = "pydantic-yaml" },
-    { name = "swc-aeon" },
-]
-
-[[package]]
 name = "ucl-open-av-dome"
 version = "0.0.0rc1"
 source = { editable = "." }
 dependencies = [
+    { name = "open-rigs" },
     { name = "pydantic-settings" },
     { name = "swc-aeon" },
-    { name = "ucl-open" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "open-rigs", git = "https://github.com/open-rigs/open-rigs?branch=main" },
     { name = "pydantic-settings" },
     { name = "swc-aeon", git = "https://github.com/SainsburyWellcomeCentre/aeon_api.git?branch=main" },
-    { name = "ucl-open", git = "https://github.com/ucl-open/ucl-open?branch=tr-dev" },
 ]

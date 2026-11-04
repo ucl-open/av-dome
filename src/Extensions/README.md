@@ -5,6 +5,27 @@ pre-C# 6, so keep to explicit `string.Format`, plain auto-properties and no `?.`
 string interpolation. Do not run `dotnet build` on `Extensions.csproj`; open the workflow in the
 Bonsai editor (or run it headless) to check that the code compiles.
 
+## Reward lines and valve calibration
+
+Each reward valve (DO1 left, DO2 right) is a `RewardLine` built at startup from its `outputs` entry
+in the machine's `rig.yml`: a `FixedPulse` keeps its width and assumes the nominal 2 µl per pulse,
+a `CalibratedPulse` reads its artefact, a platform `OpenRigs.Core.Calibration.CalibrationCurve`
+written by `src/CalibrateValve.bonsai`, and fits it with the entry's `fit` model. A requested
+volume becomes `ceil(ul / largest calibrated volume)` equal pulses looked up on the inverse curve
+and fired through the PulseController's `TriggerCalibratedPulse`.
+
+| Operator | Kind | Role |
+|---|---|---|
+| `LoadRewardLine` | Transform `(PulseOutput, directory) -> RewardLine` | One per line, in the `RewardLines` group. Fails at startup when the artefact is missing (naming the file and the workflow that creates it), malformed or not monotone; warns when it was measured on another machine or is older than the entry's `maxAgeDays`. |
+| `PlanReward` | Transform `((line, ul), (left, right)) -> RewardDelivery` | Plans a command on the matching line: pulse count, width, volume per pulse, whether it was clamped to the calibrated range. |
+| `RewardLine`, `RewardDelivery` | types | The line and the plan; `RewardDelivery` is what `DeliverReward.bonsai` fires and the `Logging` group writes as `RewardDelivery`, with the artefacts snapshotted as `ValveCalibrationDO1` and `ValveCalibrationDO2`. |
+
+Calibrating: `src/CalibrateValve.bonsai` wraps the platform's `OpenRigs.Core:DispenseCalibration.bonsai`
+with this rig's behavior board and a serial balance. Set `Channel`, `FileName` (`valve-DO1` or
+`valve-DO2`), `CalibratedBy`, `BoardPortName` and `BalancePortName`, then start it; the settings
+are in `config/valve-calibration.yml`. It reads nothing from `rig.yml`. The console prints every
+step, the fit report and the `artefact:` line to paste into the rig configuration.
+
 ## Zapit optogenetics client
 
 Zapit ([Zapit-Optostim/zapit](https://github.com/Zapit-Optostim/zapit)) is the MATLAB scanning
