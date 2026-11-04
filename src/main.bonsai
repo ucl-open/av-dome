@@ -68,17 +68,96 @@
             <Expression xsi:type="rx:AsyncSubject">
               <Name>RigConfigs</Name>
             </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>BehaviorBoard</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p2:RigDevice">
+                <p2:Name>BehaviorBoard-Main</p2:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:AsyncSubject">
+              <Name>BehaviorBoard-Main</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>TimestampGeneratorGen3</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p2:RigDevice">
+                <p2:Name>TimestampGeneratorGen3-Main</p2:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:AsyncSubject">
+              <Name>TimestampGeneratorGen3-Main</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>LickSpoutStage</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p2:RigDevice">
+                <p2:Name>LickSpoutStage-Main</p2:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:AsyncSubject">
+              <Name>LickSpoutStage-Main</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>LicketySplit</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p2:RigDevice">
+                <p2:Name>LicketySplit-Left</p2:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:AsyncSubject">
+              <Name>LicketySplit-Left</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p2:RigDevice">
+                <p2:Name>LicketySplit-Right</p2:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:AsyncSubject">
+              <Name>LicketySplit-Right</Name>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>Camera</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p2:RigDevice">
+                <p2:Name>Camera-Face</p2:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:AsyncSubject">
+              <Name>Camera-Face</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p2:RigDevice">
+                <p2:Name>Camera-Pupil</p2:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:AsyncSubject">
+              <Name>Camera-Pupil</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p2:RigDevice">
+                <p2:Name>Camera-Body</p2:Name>
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="rx:AsyncSubject">
+              <Name>Camera-Body</Name>
+            </Expression>
             <Expression xsi:type="GroupWorkflow">
               <Name>HardwareDevices</Name>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>RigConfigs</Name>
+                    <Name>TimestampGeneratorGen3-Main</Name>
                   </Expression>
                   <Expression xsi:type="PropertyMapping">
                     <PropertyMappings>
-                      <Property Name="PortName" Selector="TimestampGenerator.PortName" />
-                      <Property Name="TimerFrequency" Selector="TimestampGenerator.TimerFrequency" />
+                      <Property Name="PortName" Selector="Settings.PortName" />
+                      <Property Name="TimerFrequency" Selector="Settings.TimerFrequency" />
                     </PropertyMappings>
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:TimestampGeneratorGen3.bonsai">
@@ -90,18 +169,18 @@
                     <TimerFrequency>Timer1000Hz</TimerFrequency>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>RigConfigs</Name>
+                    <Name>BehaviorBoard-Main</Name>
                   </Expression>
                   <Expression xsi:type="PropertyMapping">
                     <PropertyMappings>
-                      <Property Name="PortName" Selector="BehaviorBoard.PortName" />
-                      <Property Name="CountsPerRev" Selector="BehaviorBoard.RunningWheel.CountsPerRev" />
-                      <Property Name="WheelDiameterMm" Selector="BehaviorBoard.RunningWheel.WheelDiameterMm" />
-                      <Property Name="EnableTrigger0" Selector="BehaviorBoard.CameraTriggerController.Trigger0Enabled" />
-                      <Property Name="EnableTrigger1" Selector="BehaviorBoard.CameraTriggerController.Trigger1Enabled" />
-                      <Property Name="Trigger0Frequency" Selector="BehaviorBoard.CameraTriggerController.Trigger0Frequency" />
-                      <Property Name="Trigger1Frequency" Selector="BehaviorBoard.CameraTriggerController.Trigger1Frequency" />
-                      <Property Name="OutputPulseEnable" Selector="BehaviorBoard.PulseController.OutputPulseEnable" />
+                      <Property Name="PortName" Selector="Settings.PortName" />
+                      <Property Name="CountsPerRev" Selector="Settings.RunningWheel.CountsPerRev" />
+                      <Property Name="WheelDiameterMm" Selector="Settings.RunningWheel.WheelDiameterMm" />
+                      <Property Name="EnableTrigger0" Selector="Settings.CameraTriggerController.Trigger0Enabled" />
+                      <Property Name="EnableTrigger1" Selector="Settings.CameraTriggerController.Trigger1Enabled" />
+                      <Property Name="Trigger0Frequency" Selector="Settings.CameraTriggerController.Trigger0Frequency" />
+                      <Property Name="Trigger1Frequency" Selector="Settings.CameraTriggerController.Trigger1Frequency" />
+                      <Property Name="OutputPulseEnable" Selector="Settings.PulseController.OutputPulseEnable" />
                     </PropertyMappings>
                   </Expression>
                   <Expression xsi:type="GroupWorkflow">
@@ -195,13 +274,13 @@
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="SubscribeSubject">
-                          <Name>RigConfigs</Name>
+                          <Name>LicketySplit-Right</Name>
                         </Expression>
                         <Expression xsi:type="PropertyMapping">
                           <PropertyMappings>
-                            <Property Name="PortName" Selector="LicketySplitRight.PortName" />
-                            <Property Name="Channel0TriggerThreshold" Selector="LicketySplitRight.Channel0TriggerThreshold" />
-                            <Property Name="Channel0UntriggerThreshold" Selector="LicketySplitRight.Channel0UntriggerThreshold" />
+                            <Property Name="PortName" Selector="Settings.PortName" />
+                            <Property Name="Channel0TriggerThreshold" Selector="Settings.Channel0TriggerThreshold" />
+                            <Property Name="Channel0UntriggerThreshold" Selector="Settings.Channel0UntriggerThreshold" />
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:LicketySplit.bonsai">
@@ -215,13 +294,13 @@
                           <LickStateSubjectName>LickStateRight</LickStateSubjectName>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
-                          <Name>RigConfigs</Name>
+                          <Name>LicketySplit-Left</Name>
                         </Expression>
                         <Expression xsi:type="PropertyMapping">
                           <PropertyMappings>
-                            <Property Name="PortName" Selector="LicketySplitLeft.PortName" />
-                            <Property Name="Channel0TriggerThreshold" Selector="LicketySplitLeft.Channel0TriggerThreshold" />
-                            <Property Name="Channel0UntriggerThreshold" Selector="LicketySplitLeft.Channel0UntriggerThreshold" />
+                            <Property Name="PortName" Selector="Settings.PortName" />
+                            <Property Name="Channel0TriggerThreshold" Selector="Settings.Channel0TriggerThreshold" />
+                            <Property Name="Channel0UntriggerThreshold" Selector="Settings.Channel0UntriggerThreshold" />
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:LicketySplit.bonsai">
@@ -248,10 +327,10 @@
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="SubscribeSubject">
-                          <Name>RigConfigs</Name>
+                          <Name>Camera-Face</Name>
                         </Expression>
                         <Expression xsi:type="MemberSelector">
-                          <Selector>CameraFace</Selector>
+                          <Selector>Settings</Selector>
                         </Expression>
                         <Expression xsi:type="PropertyMapping">
                           <PropertyMappings>
@@ -271,10 +350,10 @@
                           <FrameEventsSubjectName>FrameEvents1</FrameEventsSubjectName>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
-                          <Name>RigConfigs</Name>
+                          <Name>Camera-Body</Name>
                         </Expression>
                         <Expression xsi:type="MemberSelector">
-                          <Selector>CameraBody</Selector>
+                          <Selector>Settings</Selector>
                         </Expression>
                         <Expression xsi:type="PropertyMapping">
                           <PropertyMappings>
@@ -294,10 +373,10 @@
                           <FrameEventsSubjectName>FrameEvents3</FrameEventsSubjectName>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
-                          <Name>RigConfigs</Name>
+                          <Name>Camera-Pupil</Name>
                         </Expression>
                         <Expression xsi:type="MemberSelector">
-                          <Selector>CameraPupil</Selector>
+                          <Selector>Settings</Selector>
                         </Expression>
                         <Expression xsi:type="PropertyMapping">
                           <PropertyMappings>
@@ -335,12 +414,12 @@
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="SubscribeSubject">
-                          <Name>RigConfigs</Name>
+                          <Name>LickSpoutStage-Main</Name>
                         </Expression>
                         <Expression xsi:type="PropertyMapping">
                           <PropertyMappings>
-                            <Property Name="StepperDriver1PortName" Selector="LickSpoutStage.DriverA.PortName" />
-                            <Property Name="StepperDriver2PortName" Selector="LickSpoutStage.DriverB.PortName" />
+                            <Property Name="StepperDriver1PortName" Selector="Settings.DriverA.PortName" />
+                            <Property Name="StepperDriver2PortName" Selector="Settings.DriverB.PortName" />
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="GroupWorkflow">
@@ -1268,10 +1347,10 @@
                     </Workflow>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>RigConfigs</Name>
+                    <Name>BehaviorBoard-Main</Name>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
-                    <Selector>BehaviorBoard.PulseController.Outputs.DO3</Selector>
+                    <Selector>Settings.PulseController.Outputs.DO3</Selector>
                   </Expression>
                   <Expression xsi:type="p2:MatchPulseOutput">
                     <p2:Type xsi:type="TypeMapping" TypeArguments="p2:FixedPulse" />
@@ -2109,10 +2188,10 @@
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>RigConfigs</Name>
+                    <Name>BehaviorBoard-Main</Name>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
-                    <Selector>BehaviorBoard.PulseController.Outputs.DO1</Selector>
+                    <Selector>Settings.PulseController.Outputs.DO1</Selector>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
                     <Name>RigConfigDirectory</Name>
@@ -2134,10 +2213,10 @@
                     <Name>RewardLineLeft</Name>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>RigConfigs</Name>
+                    <Name>BehaviorBoard-Main</Name>
                   </Expression>
                   <Expression xsi:type="MemberSelector">
-                    <Selector>BehaviorBoard.PulseController.Outputs.DO2</Selector>
+                    <Selector>Settings.PulseController.Outputs.DO2</Selector>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
                     <Name>RigConfigDirectory</Name>
@@ -2180,9 +2259,30 @@
             <Edge From="0" To="1" Label="Source1" />
             <Edge From="1" To="2" Label="Source1" />
             <Edge From="2" To="3" Label="Source1" />
+            <Edge From="26" To="27" Label="Source1" />
+            <Edge From="27" To="29" Label="Source1" />
+            <Edge From="28" To="29" Label="Source2" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="5" Label="Source1" />
             <Edge From="5" To="6" Label="Source1" />
-            <Edge From="6" To="8" Label="Source1" />
-            <Edge From="7" To="8" Label="Source2" />
+            <Edge From="3" To="7" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="8" To="9" Label="Source1" />
+            <Edge From="3" To="10" Label="Source1" />
+            <Edge From="10" To="11" Label="Source1" />
+            <Edge From="11" To="12" Label="Source1" />
+            <Edge From="3" To="13" Label="Source1" />
+            <Edge From="13" To="14" Label="Source1" />
+            <Edge From="14" To="15" Label="Source1" />
+            <Edge From="13" To="16" Label="Source1" />
+            <Edge From="16" To="17" Label="Source1" />
+            <Edge From="3" To="18" Label="Source1" />
+            <Edge From="18" To="19" Label="Source1" />
+            <Edge From="19" To="20" Label="Source1" />
+            <Edge From="18" To="21" Label="Source1" />
+            <Edge From="21" To="22" Label="Source1" />
+            <Edge From="18" To="23" Label="Source1" />
+            <Edge From="23" To="24" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>

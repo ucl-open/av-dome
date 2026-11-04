@@ -14,70 +14,85 @@
 #      to keep editor validation working.
 #
 rootPath: C:\Data
+rigId: XX                 # two capitals or a capital and a digit, such as D1: rig-control's session numbering
 
+# Each kind of device is a group of named entries: behaviorBoard: main: is BehaviorBoard-Main in the
+# data and in live view. The workflow takes each device it drives by that name and stops at startup,
+# naming what this file has, if one is missing. usbSerial is the board's FTDI serial (rig-setup's
+# hardware scan lists each port's); a Behavior board's is required and checked at Start.
 behaviorBoard:
-  portName: COM1
-  pulseController:
-    outputPulseEnable: "DO1, DO2, DO3"
-    # Each line is a FixedPulse (width set here) or a CalibratedPulse (width looked up per reward
-    # on a valve calibration curve in calibration\). A fixed reward line delivers ceil(ul / 2)
-    # pulses of its width, assuming 2 ul per pulse; a calibrated one delivers the requested volume.
-    outputs:
-      DO1: { discriminatorType: FixedPulse, pulseWidthMs: 40 }   # left reward valve, ms
-      DO2: { discriminatorType: FixedPulse, pulseWidthMs: 40 }   # right reward valve, ms
-      DO3: { discriminatorType: FixedPulse, pulseWidthMs: 5 }    # Zapit TTL (used when zapit.hardwareTriggered is true)
-      # Calibrated reward line:
-      # DO1: { discriminatorType: CalibratedPulse, artefact: calibration/valve-DO1.json }
-  cameraTriggerController:
-    trigger0Enabled: true     # camera trigger 0 shares the DO0 pin
-    trigger0Frequency: 50     # Hz
-    trigger1Enabled: false    # camera trigger 1 shares the DO1 pin, which drives the left valve; off means nothing is written to it
-    trigger1Frequency: 50     # Hz, used only if trigger 1 is enabled
-  runningWheel:
-    wheelDiameterMm: 170
-    countsPerRev: 4096
+  main:
+    portName: COM1
+    usbSerial: CHANGE-ME
+    pulseController:
+      outputPulseEnable: "DO1, DO2, DO3"
+      # Each line is a FixedPulse (width set here) or a CalibratedPulse (width looked up per reward
+      # on a valve calibration curve in calibration\). A fixed reward line delivers ceil(ul / 2)
+      # pulses of its width, assuming 2 ul per pulse; a calibrated one delivers the requested volume.
+      outputs:
+        DO1: { discriminatorType: FixedPulse, pulseWidthMs: 40 }   # left reward valve, ms
+        DO2: { discriminatorType: FixedPulse, pulseWidthMs: 40 }   # right reward valve, ms
+        DO3: { discriminatorType: FixedPulse, pulseWidthMs: 5 }    # Zapit TTL (used when zapit.hardwareTriggered is true)
+        # Calibrated reward line:
+        # DO1: { discriminatorType: CalibratedPulse, artefact: calibration/valve-DO1.json }
+    cameraTriggerController:
+      trigger0Enabled: true     # camera trigger 0 shares the DO0 pin
+      trigger0Frequency: 50     # Hz
+      trigger1Enabled: false    # camera trigger 1 shares the DO1 pin, which drives the left valve; off means nothing is written to it
+      trigger1Frequency: 50     # Hz, used only if trigger 1 is enabled
+    runningWheel:
+      wheelDiameterMm: 170
+      countsPerRev: 4096
 
-timestampGenerator:
-  portName: COM2
-  timerFrequency: Timer1000Hz
+timestampGeneratorGen3:
+  main:
+    portName: COM2
+    usbSerial: null
+    timerFrequency: Timer1000Hz
 
 lickSpoutStage:
-  driverA:
-    portName: COM3        # motors 1,2,3
-  driverB:
-    portName: COM4        # motors 4,5
-  axisMapping:
-    leftElevation: { board: a, motor: 0 }     # motor 1
-    rightElevation: { board: a, motor: 1 }    # motor 2
-    rightRadial: { board: a, motor: 2 }       # motor 3
-    leftRadial: { board: b, motor: 0 }        # motor 4
-    baseTransverse: { board: b, motor: 1 }    # motor 5
+  main:
+    driverA:
+      portName: COM3        # motors 1,2,3
+      usbSerial: null
+    driverB:
+      portName: COM4        # motors 4,5
+      usbSerial: null
+    axisMapping:
+      leftElevation: { board: a, motor: 0 }     # motor 1
+      rightElevation: { board: a, motor: 1 }    # motor 2
+      rightRadial: { board: a, motor: 2 }       # motor 3
+      leftRadial: { board: b, motor: 0 }        # motor 4
+      baseTransverse: { board: b, motor: 1 }    # motor 5
 
-licketySplitLeft:
-  portName: COM5
-  channel0TriggerThreshold: 0     # ADC counts above which a lick registers
-  channel0UntriggerThreshold: 0   # ADC counts below which the lick ends
-licketySplitRight:
-  portName: COM6
-  channel0TriggerThreshold: 0
-  channel0UntriggerThreshold: 0
+licketySplit:
+  left:
+    portName: COM5
+    usbSerial: null
+    channel0TriggerThreshold: 0     # ADC counts above which a lick registers
+    channel0UntriggerThreshold: 0   # ADC counts below which the lick ends
+  right:
+    portName: COM6
+    usbSerial: null
+    channel0TriggerThreshold: 0
+    channel0UntriggerThreshold: 0
 
-cameraFace:
-  serialNumber: "00000000"
-  exposureTime: 19000    # microseconds
-  gain: 0
-  binning: 1
-cameraPupil:
-  serialNumber: "00000000"
-  exposureTime: 19000    # microseconds
-  gain: 20
-  binning: 1
-cameraBody:
-  serialNumber: "00000000"
-  exposureTime: 19000    # microseconds
-  gain: 0
-  binning: 1
-
+camera:
+  face:
+    serialNumber: "00000000"
+    exposureTime: 19000    # microseconds
+    gain: 0
+    binning: 1
+  pupil:
+    serialNumber: "00000000"
+    exposureTime: 19000    # microseconds
+    gain: 20
+    binning: 1
+  body:
+    serialNumber: "00000000"
+    exposureTime: 19000    # microseconds
+    gain: 0
+    binning: 1
 
 projectionCalibration:
   meshMapPath: C:\RigConfigs\MeshMap.csv

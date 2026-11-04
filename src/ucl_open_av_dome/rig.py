@@ -1,17 +1,18 @@
-from typing import Literal
+from typing import Dict, Literal
 
 from pydantic import Field
 from swc.aeon.schema import BaseSchema
 from open_rigs.components import ProjectionCalibration, SpeakerArray
 from open_rigs.core.rig import Rig
 from open_rigs.devices import (
-    BehaviorBoard,
     HarpLickSpoutStage,
     HarpTimestampGeneratorGen3,
     LicketySplit,
     StepperPositions,
 )
-from open_rigs.video.video import SpinnakerCamera
+# The lab's board and camera: open_rigs' with a liveView: block (OpenRigs.LiveView), and the
+# board's usbSerial required (OpenRigs.HarpDevices checks the board by it).
+from open_rigs.rigs.behaviour_box import BehaviorBoard, SpinnakerCamera
 
 from ucl_open_av_dome import __semver__
 
@@ -43,19 +44,30 @@ class ZapitServer(BaseSchema):
 
 
 class UclOpenAvDomeRig(Rig):
-    """Rig configuration for the av-dome experiment."""
+    """Rig configuration for the av-dome experiment.
+
+    Each kind of device is a group of named entries, as the lab's rig.yml (open_rigs.rigs.behaviour_box):
+    the name in the data is the kind and the entry joined by a hyphen, so behaviorBoard: main: is
+    BehaviorBoard-Main. The workflow takes each device it drives by that name (RigDevice). Harp kinds
+    are named as lib-open-rigs' HarpRig names them, so RecordHarpDevices checks each board's WhoAmI.
+    """
 
     version: Literal[__semver__] = __semver__
-    behavior_board: BehaviorBoard = Field(description="Main Harp behavior board (valve outputs, wheel encoder)")
-    timestamp_generator: HarpTimestampGeneratorGen3 = Field(description="Harp timestamp generator (clock sync)")
-    lick_spout_stage: HarpLickSpoutStage = Field(
-        description="Two Harp StepperDriver boards driving the 5-axis lick spout stage"
+    behavior_board: Dict[str, BehaviorBoard] = Field(
+        description="Harp Behavior boards by name: main (BehaviorBoard-Main) drives the valves, camera trigger and wheel encoder"
     )
-    lickety_split_left: LicketySplit = Field(description="Left lick detector")
-    lickety_split_right: LicketySplit = Field(description="Right lick detector")
-    camera_face: SpinnakerCamera = Field(description="Face camera")
-    camera_pupil: SpinnakerCamera = Field(description="Pupil camera")
-    camera_body: SpinnakerCamera = Field(description="Body camera")
+    timestamp_generator_gen3: Dict[str, HarpTimestampGeneratorGen3] = Field(
+        description="Harp timestamp generators by name: main (TimestampGeneratorGen3-Main) syncs the boards' clocks"
+    )
+    lick_spout_stage: Dict[str, HarpLickSpoutStage] = Field(
+        description="Lick spout stages by name: main (LickSpoutStage-Main), two Harp StepperDriver boards driving 5 axes"
+    )
+    lickety_split: Dict[str, LicketySplit] = Field(
+        description="Lick detectors by name: left (LicketySplit-Left) and right (LicketySplit-Right)"
+    )
+    camera: Dict[str, SpinnakerCamera] = Field(
+        description="Spinnaker cameras by name: face, pupil and body (Camera-Face, Camera-Pupil, Camera-Body)"
+    )
     projection_calibration: ProjectionCalibration = Field(
         description="Mesh-map and gamma-LUT file paths for the dome projection"
     )

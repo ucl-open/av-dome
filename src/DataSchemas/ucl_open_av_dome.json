@@ -68,13 +68,9 @@
           "type": "string"
         },
         "usbSerial": {
-          "default": null,
-          "description": "The USB serial number of the board on port_name, which tells it from others of its kind.",
+          "description": "The board's USB serial number, its FTDI chip's (AB0M7PLB): which board this is. OpenRigs.HarpDevices stops the workflow at Start if the board on portName has another. The rig's hardware scan lists each port's (serialPorts, usbSerial).",
           "title": "UsbSerial",
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "pulseController": {
           "anyOf": [
@@ -114,10 +110,24 @@
           "default": null,
           "description": "Optional RunningWheelModule module to define wheel geometry.",
           "title": "RunningWheel"
+        },
+        "liveView": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LiveView"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Live view settings for this board (OpenRigs.LiveView).",
+          "title": "LiveView"
         }
       },
       "required": [
-        "portName"
+        "portName",
+        "usbSerial"
       ],
       "title": "BehaviorBoard",
       "type": "object"
@@ -421,6 +431,64 @@
         "portName"
       ],
       "title": "LicketySplit",
+      "type": "object"
+    },
+    "LiveView": {
+      "description": "How OpenRigs.LiveView's StreamDevices streams this device; each setting left out keeps its default for the device's kind.",
+      "properties": {
+        "enabled": {
+          "default": true,
+          "description": "False: the device is not streamed at all.",
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "rate": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 1000,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Messages per second (camera default 5, behavior board 10).",
+          "title": "Rate"
+        },
+        "width": {
+          "anyOf": [
+            {
+              "maximum": 4096,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Width of the streamed frames, in pixels; video only (default 320).",
+          "title": "Width"
+        },
+        "height": {
+          "anyOf": [
+            {
+              "maximum": 4096,
+              "minimum": 1,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Height of the streamed frames, in pixels; video only (default 240).",
+          "title": "Height"
+        }
+      },
+      "title": "LiveView",
       "type": "object"
     },
     "MotorAddress": {
@@ -769,6 +837,19 @@
           "default": "SpinnakerCamera",
           "title": "DiscriminatorType",
           "type": "string"
+        },
+        "liveView": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/LiveView"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Live view settings for this camera (OpenRigs.LiveView).",
+          "title": "LiveView"
         }
       },
       "title": "SpinnakerCamera",
@@ -874,7 +955,7 @@
       "x-sgen-typename": "Harp.TimestampGeneratorGen3.TimerRate"
     },
     "UclOpenAvDomeRig": {
-      "description": "Rig configuration for the av-dome experiment.",
+      "description": "Rig configuration for the av-dome experiment.\n\nEach kind of device is a group of named entries, as the lab's rig.yml (open_rigs.rigs.behaviour_box):\nthe name in the data is the kind and the entry joined by a hyphen, so behaviorBoard: main: is\nBehaviorBoard-Main. The workflow takes each device it drives by that name (RigDevice). Harp kinds\nare named as lib-open-rigs' HarpRig names them, so RecordHarpDevices checks each board's WhoAmI.",
       "properties": {
         "rootPath": {
           "description": "The root path on which to log all data.",
@@ -897,43 +978,44 @@
           "type": "string"
         },
         "behaviorBoard": {
-          "$ref": "#/$defs/BehaviorBoard",
-          "description": "Main Harp behavior board (valve outputs, wheel encoder)"
+          "additionalProperties": {
+            "$ref": "#/$defs/BehaviorBoard"
+          },
+          "description": "Harp Behavior boards by name: main (BehaviorBoard-Main) drives the valves, camera trigger and wheel encoder",
+          "title": "BehaviorBoard",
+          "type": "object"
         },
-        "timestampGenerator": {
-          "$ref": "#/$defs/HarpTimestampGeneratorGen3",
-          "description": "Harp timestamp generator (clock sync)",
-          "title": "TimestampGenerator"
+        "timestampGeneratorGen3": {
+          "additionalProperties": {
+            "$ref": "#/$defs/HarpTimestampGeneratorGen3"
+          },
+          "description": "Harp timestamp generators by name: main (TimestampGeneratorGen3-Main) syncs the boards' clocks",
+          "title": "TimestampGeneratorGen3",
+          "type": "object"
         },
         "lickSpoutStage": {
-          "$ref": "#/$defs/HarpLickSpoutStage",
-          "description": "Two Harp StepperDriver boards driving the 5-axis lick spout stage",
-          "title": "LickSpoutStage"
+          "additionalProperties": {
+            "$ref": "#/$defs/HarpLickSpoutStage"
+          },
+          "description": "Lick spout stages by name: main (LickSpoutStage-Main), two Harp StepperDriver boards driving 5 axes",
+          "title": "LickSpoutStage",
+          "type": "object"
         },
-        "licketySplitLeft": {
-          "$ref": "#/$defs/LicketySplit",
-          "description": "Left lick detector",
-          "title": "LicketySplitLeft"
+        "licketySplit": {
+          "additionalProperties": {
+            "$ref": "#/$defs/LicketySplit"
+          },
+          "description": "Lick detectors by name: left (LicketySplit-Left) and right (LicketySplit-Right)",
+          "title": "LicketySplit",
+          "type": "object"
         },
-        "licketySplitRight": {
-          "$ref": "#/$defs/LicketySplit",
-          "description": "Right lick detector",
-          "title": "LicketySplitRight"
-        },
-        "cameraFace": {
-          "$ref": "#/$defs/SpinnakerCamera",
-          "description": "Face camera",
-          "title": "CameraFace"
-        },
-        "cameraPupil": {
-          "$ref": "#/$defs/SpinnakerCamera",
-          "description": "Pupil camera",
-          "title": "CameraPupil"
-        },
-        "cameraBody": {
-          "$ref": "#/$defs/SpinnakerCamera",
-          "description": "Body camera",
-          "title": "CameraBody"
+        "camera": {
+          "additionalProperties": {
+            "$ref": "#/$defs/SpinnakerCamera"
+          },
+          "description": "Spinnaker cameras by name: face, pupil and body (Camera-Face, Camera-Pupil, Camera-Body)",
+          "title": "Camera",
+          "type": "object"
         },
         "projectionCalibration": {
           "$ref": "#/$defs/ProjectionCalibration",
@@ -964,13 +1046,10 @@
       "required": [
         "rootPath",
         "behaviorBoard",
-        "timestampGenerator",
+        "timestampGeneratorGen3",
         "lickSpoutStage",
-        "licketySplitLeft",
-        "licketySplitRight",
-        "cameraFace",
-        "cameraPupil",
-        "cameraBody",
+        "licketySplit",
+        "camera",
         "projectionCalibration",
         "speakerArray",
         "lickSpoutDefaultPosition",

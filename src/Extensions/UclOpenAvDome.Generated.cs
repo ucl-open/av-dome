@@ -11,9 +11,19 @@ namespace UclOpenAvDome
 
     /// <summary>
     /// Rig configuration for the av-dome experiment.
+    ///
+    ///Each kind of device is a group of named entries, as the lab's rig.yml (open_rigs.rigs.behaviour_box):
+    ///the name in the data is the kind and the entry joined by a hyphen, so behaviorBoard: main: is
+    ///BehaviorBoard-Main. The workflow takes each device it drives by that name (RigDevice). Harp kinds
+    ///are named as lib-open-rigs' HarpRig names them, so RecordHarpDevices checks each board's WhoAmI.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.ComponentModel.DescriptionAttribute("Rig configuration for the av-dome experiment.")]
+    [System.ComponentModel.DescriptionAttribute(@"Rig configuration for the av-dome experiment.
+
+    Each kind of device is a group of named entries, as the lab's rig.yml (open_rigs.rigs.behaviour_box):
+    the name in the data is the kind and the entry joined by a hyphen, so behaviorBoard: main: is
+    BehaviorBoard-Main. The workflow takes each device it drives by that name (RigDevice). Harp kinds
+    are named as lib-open-rigs' HarpRig names them, so RecordHarpDevices checks each board's WhoAmI.")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
     public partial class UclOpenAvDomeRig
@@ -25,21 +35,15 @@ namespace UclOpenAvDome
     
         private string _version;
     
-        private BehaviorBoard _behaviorBoard;
+        private System.Collections.Generic.Dictionary<string, BehaviorBoard> _behaviorBoard;
     
-        private HarpTimestampGeneratorGen3 _timestampGenerator;
+        private System.Collections.Generic.Dictionary<string, HarpTimestampGeneratorGen3> _timestampGeneratorGen3;
     
-        private HarpLickSpoutStage _lickSpoutStage;
+        private System.Collections.Generic.Dictionary<string, HarpLickSpoutStage> _lickSpoutStage;
     
-        private LicketySplit _licketySplitLeft;
+        private System.Collections.Generic.Dictionary<string, LicketySplit> _licketySplit;
     
-        private LicketySplit _licketySplitRight;
-    
-        private SpinnakerCamera _cameraFace;
-    
-        private SpinnakerCamera _cameraPupil;
-    
-        private SpinnakerCamera _cameraBody;
+        private System.Collections.Generic.Dictionary<string, SpinnakerCamera> _camera;
     
         private ProjectionCalibration _projectionCalibration;
     
@@ -54,14 +58,11 @@ namespace UclOpenAvDome
         public UclOpenAvDomeRig()
         {
             _version = "0.0.0-rc1";
-            _behaviorBoard = new BehaviorBoard();
-            _timestampGenerator = new HarpTimestampGeneratorGen3();
-            _lickSpoutStage = new HarpLickSpoutStage();
-            _licketySplitLeft = new LicketySplit();
-            _licketySplitRight = new LicketySplit();
-            _cameraFace = new SpinnakerCamera();
-            _cameraPupil = new SpinnakerCamera();
-            _cameraBody = new SpinnakerCamera();
+            _behaviorBoard = new System.Collections.Generic.Dictionary<string, BehaviorBoard>();
+            _timestampGeneratorGen3 = new System.Collections.Generic.Dictionary<string, HarpTimestampGeneratorGen3>();
+            _lickSpoutStage = new System.Collections.Generic.Dictionary<string, HarpLickSpoutStage>();
+            _licketySplit = new System.Collections.Generic.Dictionary<string, LicketySplit>();
+            _camera = new System.Collections.Generic.Dictionary<string, SpinnakerCamera>();
             _projectionCalibration = new ProjectionCalibration();
             _speakerArray = new SpeakerArray();
             _lickSpoutDefaultPosition = new StepperPositions();
@@ -75,13 +76,10 @@ namespace UclOpenAvDome
             _rigId = other._rigId;
             _version = other._version;
             _behaviorBoard = other._behaviorBoard;
-            _timestampGenerator = other._timestampGenerator;
+            _timestampGeneratorGen3 = other._timestampGeneratorGen3;
             _lickSpoutStage = other._lickSpoutStage;
-            _licketySplitLeft = other._licketySplitLeft;
-            _licketySplitRight = other._licketySplitRight;
-            _cameraFace = other._cameraFace;
-            _cameraPupil = other._cameraPupil;
-            _cameraBody = other._cameraBody;
+            _licketySplit = other._licketySplit;
+            _camera = other._camera;
             _projectionCalibration = other._projectionCalibration;
             _speakerArray = other._speakerArray;
             _lickSpoutDefaultPosition = other._lickSpoutDefaultPosition;
@@ -142,13 +140,14 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
-        /// Main Harp behavior board (valve outputs, wheel encoder)
+        /// Harp Behavior boards by name: main (BehaviorBoard-Main) drives the valves, camera trigger and wheel encoder
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [Newtonsoft.Json.JsonPropertyAttribute("behaviorBoard", Required=Newtonsoft.Json.Required.Always)]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="behaviorBoard")]
-        [System.ComponentModel.DescriptionAttribute("Main Harp behavior board (valve outputs, wheel encoder)")]
-        public BehaviorBoard BehaviorBoard
+        [System.ComponentModel.DescriptionAttribute("Harp Behavior boards by name: main (BehaviorBoard-Main) drives the valves, camera" +
+            " trigger and wheel encoder")]
+        public System.Collections.Generic.Dictionary<string, BehaviorBoard> BehaviorBoard
         {
             get
             {
@@ -161,32 +160,34 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
-        /// Harp timestamp generator (clock sync)
+        /// Harp timestamp generators by name: main (TimestampGeneratorGen3-Main) syncs the boards' clocks
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("timestampGenerator", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="timestampGenerator")]
-        [System.ComponentModel.DescriptionAttribute("Harp timestamp generator (clock sync)")]
-        public HarpTimestampGeneratorGen3 TimestampGenerator
+        [Newtonsoft.Json.JsonPropertyAttribute("timestampGeneratorGen3", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="timestampGeneratorGen3")]
+        [System.ComponentModel.DescriptionAttribute("Harp timestamp generators by name: main (TimestampGeneratorGen3-Main) syncs the b" +
+            "oards\' clocks")]
+        public System.Collections.Generic.Dictionary<string, HarpTimestampGeneratorGen3> TimestampGeneratorGen3
         {
             get
             {
-                return _timestampGenerator;
+                return _timestampGeneratorGen3;
             }
             set
             {
-                _timestampGenerator = value;
+                _timestampGeneratorGen3 = value;
             }
         }
     
         /// <summary>
-        /// Two Harp StepperDriver boards driving the 5-axis lick spout stage
+        /// Lick spout stages by name: main (LickSpoutStage-Main), two Harp StepperDriver boards driving 5 axes
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [Newtonsoft.Json.JsonPropertyAttribute("lickSpoutStage", Required=Newtonsoft.Json.Required.Always)]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="lickSpoutStage")]
-        [System.ComponentModel.DescriptionAttribute("Two Harp StepperDriver boards driving the 5-axis lick spout stage")]
-        public HarpLickSpoutStage LickSpoutStage
+        [System.ComponentModel.DescriptionAttribute("Lick spout stages by name: main (LickSpoutStage-Main), two Harp StepperDriver boa" +
+            "rds driving 5 axes")]
+        public System.Collections.Generic.Dictionary<string, HarpLickSpoutStage> LickSpoutStage
         {
             get
             {
@@ -199,97 +200,41 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
-        /// Left lick detector
+        /// Lick detectors by name: left (LicketySplit-Left) and right (LicketySplit-Right)
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("licketySplitLeft", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="licketySplitLeft")]
-        [System.ComponentModel.DescriptionAttribute("Left lick detector")]
-        public LicketySplit LicketySplitLeft
+        [Newtonsoft.Json.JsonPropertyAttribute("licketySplit", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="licketySplit")]
+        [System.ComponentModel.DescriptionAttribute("Lick detectors by name: left (LicketySplit-Left) and right (LicketySplit-Right)")]
+        public System.Collections.Generic.Dictionary<string, LicketySplit> LicketySplit
         {
             get
             {
-                return _licketySplitLeft;
+                return _licketySplit;
             }
             set
             {
-                _licketySplitLeft = value;
+                _licketySplit = value;
             }
         }
     
         /// <summary>
-        /// Right lick detector
+        /// Spinnaker cameras by name: face, pupil and body (Camera-Face, Camera-Pupil, Camera-Body)
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("licketySplitRight", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="licketySplitRight")]
-        [System.ComponentModel.DescriptionAttribute("Right lick detector")]
-        public LicketySplit LicketySplitRight
+        [Newtonsoft.Json.JsonPropertyAttribute("camera", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="camera")]
+        [System.ComponentModel.DescriptionAttribute("Spinnaker cameras by name: face, pupil and body (Camera-Face, Camera-Pupil, Camer" +
+            "a-Body)")]
+        public System.Collections.Generic.Dictionary<string, SpinnakerCamera> Camera
         {
             get
             {
-                return _licketySplitRight;
+                return _camera;
             }
             set
             {
-                _licketySplitRight = value;
-            }
-        }
-    
-        /// <summary>
-        /// Face camera
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("cameraFace", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="cameraFace")]
-        [System.ComponentModel.DescriptionAttribute("Face camera")]
-        public SpinnakerCamera CameraFace
-        {
-            get
-            {
-                return _cameraFace;
-            }
-            set
-            {
-                _cameraFace = value;
-            }
-        }
-    
-        /// <summary>
-        /// Pupil camera
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("cameraPupil", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="cameraPupil")]
-        [System.ComponentModel.DescriptionAttribute("Pupil camera")]
-        public SpinnakerCamera CameraPupil
-        {
-            get
-            {
-                return _cameraPupil;
-            }
-            set
-            {
-                _cameraPupil = value;
-            }
-        }
-    
-        /// <summary>
-        /// Body camera
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("cameraBody", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="cameraBody")]
-        [System.ComponentModel.DescriptionAttribute("Body camera")]
-        public SpinnakerCamera CameraBody
-        {
-            get
-            {
-                return _cameraBody;
-            }
-            set
-            {
-                _cameraBody = value;
+                _camera = value;
             }
         }
     
@@ -406,13 +351,10 @@ namespace UclOpenAvDome
             stringBuilder.Append("RigId = " + _rigId + ", ");
             stringBuilder.Append("Version = " + _version + ", ");
             stringBuilder.Append("BehaviorBoard = " + _behaviorBoard + ", ");
-            stringBuilder.Append("TimestampGenerator = " + _timestampGenerator + ", ");
+            stringBuilder.Append("TimestampGeneratorGen3 = " + _timestampGeneratorGen3 + ", ");
             stringBuilder.Append("LickSpoutStage = " + _lickSpoutStage + ", ");
-            stringBuilder.Append("LicketySplitLeft = " + _licketySplitLeft + ", ");
-            stringBuilder.Append("LicketySplitRight = " + _licketySplitRight + ", ");
-            stringBuilder.Append("CameraFace = " + _cameraFace + ", ");
-            stringBuilder.Append("CameraPupil = " + _cameraPupil + ", ");
-            stringBuilder.Append("CameraBody = " + _cameraBody + ", ");
+            stringBuilder.Append("LicketySplit = " + _licketySplit + ", ");
+            stringBuilder.Append("Camera = " + _camera + ", ");
             stringBuilder.Append("ProjectionCalibration = " + _projectionCalibration + ", ");
             stringBuilder.Append("SpeakerArray = " + _speakerArray + ", ");
             stringBuilder.Append("LickSpoutDefaultPosition = " + _lickSpoutDefaultPosition + ", ");
@@ -642,6 +584,8 @@ namespace UclOpenAvDome
     
         private RunningWheel _runningWheel;
     
+        private LiveView _liveView;
+    
         public BehaviorBoard()
         {
         }
@@ -653,6 +597,7 @@ namespace UclOpenAvDome
             _pulseController = other._pulseController;
             _cameraTriggerController = other._cameraTriggerController;
             _runningWheel = other._runningWheel;
+            _liveView = other._liveView;
         }
     
         /// <summary>
@@ -674,12 +619,13 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
-        /// The USB serial number of the board on port_name, which tells it from others of its kind.
+        /// The board's USB serial number, its FTDI chip's (AB0M7PLB): which board this is. OpenRigs.HarpDevices stops the workflow at Start if the board on portName has another. The rig's hardware scan lists each port's (serialPorts, usbSerial).
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("usbSerial")]
+        [Newtonsoft.Json.JsonPropertyAttribute("usbSerial", Required=Newtonsoft.Json.Required.Always)]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="usbSerial")]
-        [System.ComponentModel.DescriptionAttribute("The USB serial number of the board on port_name, which tells it from others of it" +
-            "s kind.")]
+        [System.ComponentModel.DescriptionAttribute("The board\'s USB serial number, its FTDI chip\'s (AB0M7PLB): which board this is. O" +
+            "penRigs.HarpDevices stops the workflow at Start if the board on portName has ano" +
+            "ther. The rig\'s hardware scan lists each port\'s (serialPorts, usbSerial).")]
         public string UsbSerial
         {
             get
@@ -749,6 +695,25 @@ namespace UclOpenAvDome
             }
         }
     
+        /// <summary>
+        /// Live view settings for this board (OpenRigs.LiveView).
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("liveView")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="liveView")]
+        [System.ComponentModel.DescriptionAttribute("Live view settings for this board (OpenRigs.LiveView).")]
+        public LiveView LiveView
+        {
+            get
+            {
+                return _liveView;
+            }
+            set
+            {
+                _liveView = value;
+            }
+        }
+    
         public System.IObservable<BehaviorBoard> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new BehaviorBoard(this)));
@@ -765,7 +730,8 @@ namespace UclOpenAvDome
             stringBuilder.Append("UsbSerial = " + _usbSerial + ", ");
             stringBuilder.Append("PulseController = " + _pulseController + ", ");
             stringBuilder.Append("CameraTriggerController = " + _cameraTriggerController + ", ");
-            stringBuilder.Append("RunningWheel = " + _runningWheel);
+            stringBuilder.Append("RunningWheel = " + _runningWheel + ", ");
+            stringBuilder.Append("LiveView = " + _liveView);
             return true;
         }
     
@@ -1631,6 +1597,144 @@ namespace UclOpenAvDome
             stringBuilder.Append("UsbSerial = " + _usbSerial + ", ");
             stringBuilder.Append("Channel0TriggerThreshold = " + _channel0TriggerThreshold + ", ");
             stringBuilder.Append("Channel0UntriggerThreshold = " + _channel0UntriggerThreshold);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    /// <summary>
+    /// How OpenRigs.LiveView's StreamDevices streams this device; each setting left out keeps its default for the device's kind.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute("How OpenRigs.LiveView\'s StreamDevices streams this device; each setting left out " +
+        "keeps its default for the device\'s kind.")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class LiveView
+    {
+    
+        private bool _enabled;
+    
+        private double? _rate;
+    
+        private int? _width;
+    
+        private int? _height;
+    
+        public LiveView()
+        {
+            _enabled = true;
+        }
+    
+        protected LiveView(LiveView other)
+        {
+            _enabled = other._enabled;
+            _rate = other._rate;
+            _width = other._width;
+            _height = other._height;
+        }
+    
+        /// <summary>
+        /// False: the device is not streamed at all.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("enabled")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="enabled")]
+        [System.ComponentModel.DescriptionAttribute("False: the device is not streamed at all.")]
+        public bool Enabled
+        {
+            get
+            {
+                return _enabled;
+            }
+            set
+            {
+                _enabled = value;
+            }
+        }
+    
+        /// <summary>
+        /// Messages per second (camera default 5, behavior board 10).
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("rate")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="rate")]
+        [System.ComponentModel.DescriptionAttribute("Messages per second (camera default 5, behavior board 10).")]
+        public double? Rate
+        {
+            get
+            {
+                return _rate;
+            }
+            set
+            {
+                _rate = value;
+            }
+        }
+    
+        /// <summary>
+        /// Width of the streamed frames, in pixels; video only (default 320).
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("width")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="width")]
+        [System.ComponentModel.DescriptionAttribute("Width of the streamed frames, in pixels; video only (default 320).")]
+        public int? Width
+        {
+            get
+            {
+                return _width;
+            }
+            set
+            {
+                _width = value;
+            }
+        }
+    
+        /// <summary>
+        /// Height of the streamed frames, in pixels; video only (default 240).
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("height")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="height")]
+        [System.ComponentModel.DescriptionAttribute("Height of the streamed frames, in pixels; video only (default 240).")]
+        public int? Height
+        {
+            get
+            {
+                return _height;
+            }
+            set
+            {
+                _height = value;
+            }
+        }
+    
+        public System.IObservable<LiveView> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new LiveView(this)));
+        }
+    
+        public System.IObservable<LiveView> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new LiveView(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("Enabled = " + _enabled + ", ");
+            stringBuilder.Append("Rate = " + _rate + ", ");
+            stringBuilder.Append("Width = " + _width + ", ");
+            stringBuilder.Append("Height = " + _height);
             return true;
         }
     
@@ -2635,6 +2739,8 @@ namespace UclOpenAvDome
     
         private string _discriminatorType;
     
+        private LiveView _liveView;
+    
         public SpinnakerCamera()
         {
             _triggerFrequency = 50D;
@@ -2653,6 +2759,7 @@ namespace UclOpenAvDome
             _gain = other._gain;
             _binning = other._binning;
             _discriminatorType = other._discriminatorType;
+            _liveView = other._liveView;
         }
     
         /// <summary>
@@ -2759,6 +2866,25 @@ namespace UclOpenAvDome
             }
         }
     
+        /// <summary>
+        /// Live view settings for this camera (OpenRigs.LiveView).
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("liveView")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="liveView")]
+        [System.ComponentModel.DescriptionAttribute("Live view settings for this camera (OpenRigs.LiveView).")]
+        public LiveView LiveView
+        {
+            get
+            {
+                return _liveView;
+            }
+            set
+            {
+                _liveView = value;
+            }
+        }
+    
         public System.IObservable<SpinnakerCamera> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new SpinnakerCamera(this)));
@@ -2776,7 +2902,8 @@ namespace UclOpenAvDome
             stringBuilder.Append("SerialNumber = " + _serialNumber + ", ");
             stringBuilder.Append("Gain = " + _gain + ", ");
             stringBuilder.Append("Binning = " + _binning + ", ");
-            stringBuilder.Append("DiscriminatorType = " + _discriminatorType);
+            stringBuilder.Append("DiscriminatorType = " + _discriminatorType + ", ");
+            stringBuilder.Append("LiveView = " + _liveView);
             return true;
         }
     
@@ -3720,6 +3847,11 @@ namespace UclOpenAvDome
             return Process<LicketySplit>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<LiveView> source)
+        {
+            return Process<LiveView>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<MotorAddress> source)
         {
             return Process<MotorAddress>(source);
@@ -3814,6 +3946,7 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpStepperDriver>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpTimestampGeneratorGen3>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LicketySplit>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LiveView>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<MotorAddress>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ProjectionCalibration>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseController>))]
@@ -4039,6 +4172,11 @@ namespace UclOpenAvDome
             return Process<LicketySplit>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<LiveView> source)
+        {
+            return Process<LiveView>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<MotorAddress> source)
         {
             return Process<MotorAddress>(source);
@@ -4133,6 +4271,7 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpStepperDriver>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpTimestampGeneratorGen3>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LicketySplit>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LiveView>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<MotorAddress>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ProjectionCalibration>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseController>))]
