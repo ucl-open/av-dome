@@ -140,7 +140,10 @@ help = "Longest inter-trial interval. Blank keeps the task file's, shown in grey
 label = "Zapit"
 tick = ["off", "on"]
 task_value = "taskParameters.optogenetics.enabled"
-help = "Optogenetics through Zapit. Off unless ticked; ticked, the session stops at Go if the Zapit program is not running on this rig."
+help = "Optogenetics through Zapit. Off unless ticked; ticked, the window checks Zapit is running on this rig before Go, and does not send Go if it is not."
+# What Zapit needs when on: its TCP server, where this rig's rig.yml says (zapit.host, zapit.port).
+# The window asks the rig before Go and marks the box "Not Answering" if nothing is listening.
+needs = { address = "zapit.host:zapit.port", when = "on", name = "Zapit" }
 
 [parameters.StepSize]
 label = "Step Size"
