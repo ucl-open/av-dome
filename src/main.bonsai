@@ -1525,6 +1525,11 @@
                 </Edges>
               </Workflow>
             </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="p1:DisposeOnRenderThread">
+                <p1:TimeoutSeconds>2</p1:TimeoutSeconds>
+              </Combinator>
+            </Expression>
             <Expression xsi:type="GroupWorkflow">
               <Name>RewardCounter</Name>
               <Workflow>
@@ -2338,6 +2343,7 @@
             <Edge From="37" To="38" Label="Source1" />
             <Edge From="38" To="40" Label="Source1" />
             <Edge From="39" To="40" Label="Source2" />
+            <Edge From="40" To="41" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
