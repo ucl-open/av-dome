@@ -8,10 +8,10 @@ The workflow has no window of its own. It runs under rig-control (Coen-Lab/rig-c
 
 | Parameter | Default | |
 |-----------|---------|-|
-| `TrainingStage` | 4 | Row of the task file's `trainingStages`, 0 to 5 |
+| `TrainingStage` | 4 | Row of the task file's `trainingStages`, 0 to 4 (a row past the end runs the last) |
 | `TaskFile` | `task.yml` | The task file in `config\`, read at Go |
 | `RewardSizeUl`, `ItiMin`, `ItiMax` | blank | Override the task file's reward size and inter-trial interval; blank keeps the file's |
-| `Zapit` | blank | `on` or `off`; blank keeps the file's `optogenetics.enabled` |
+| `Zapit` | `off` | `on` or `off`; blank keeps the file's `optogenetics.enabled` |
 | `StepSize` | 150 | Motor steps per spout nudge, taken live |
 
 Commands, while ready or recording: `RewardLeft` and `RewardRight` (a flush), `SpoutsHome`, `SpoutsIn`, `SpoutsOut`, `SaveSpoutPositions` (to `<rig config>\calibration\LickSpoutPositions\<SubjectId>.csv`), and the nudges `LeftUp`, `LeftDown`, `RightUp`, `RightDown`, `LeftFront`, `LeftBack`, `RightFront`, `RightBack`, `BaseLeft`, `BaseRight`.
