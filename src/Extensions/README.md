@@ -68,7 +68,7 @@ server code in `zapit/+zapit/+interfaces/@TCPserver`.
   the rig YAML `zapit` block, see the timing model below). Repeat trials copy the original trial's
   draw, so with `optogenetics.excludeRepeats: false` a repeat presents the same condition again;
   with `true` (the default) repeats are never stimulated.
-  Every reply is logged to `Zapit.csv` alongside `TrialSettings.csv` on the same Harp clock.
+  Every reply is logged to `Zapit.csv` alongside `BonsaiData_Trial` on the same Harp clock.
 - `../ZapitDemo.bonsai`: standalone connectivity check against a running Zapit, no rig hardware
   needed. Prints and logs every reply.
 - `../ZapitTrialTest.bonsai`: the trial draw and Zapit wiring of `main.bonsai` driven by timers, for
