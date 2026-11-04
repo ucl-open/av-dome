@@ -1,0 +1,290 @@
+param(
+    # Internal: the step this script runs in a fresh process of its own (assemblies stay loaded).
+    [ValidateSet('', 'Build', 'RigDevice', 'Checks')][string]$Step = '',
+    [string]$Workflow = 'main.bonsai'
+)
+# Checks a change to src\ without the rig and without opening Bonsai: no window, no device.
+#   1. Compiles src\Extensions under C# 5, the language Bonsai compiles it with.
+#   2. Builds every workflow that reads rig.yml (main, CalibrateValve, CameraFrameMonitor,
+#      ZapitTrialTest) with Bonsai's own expression builders, as Bonsai does at Start before it
+#      subscribes anything: every type, selector, include, subject and mapping. Each is built
+#      against config\rig-template.yml filled in as a rig's, with every node that reads rig.yml
+#      pointed at that copy, and for main.bonsai what RecordHarpDevices made from it and what
+#      SessionManifest expects are checked.
+#   3. Runs RigDevice on the template: every name main.bonsai asks for is there, a wrong name is
+#      refused, and every key in the template reaches the RigSchema JSON the session logs.
+#   4. ApplyTaskOverrides: blank keeps the task file's values, on/off and numbers apply, and a bad
+#      value or a minimum above the maximum is refused naming the parameter.
+# Needs the environment set up (.bonsai\Setup.ps1: .bonsai\Packages). Exit 0 when all pass.
+$ErrorActionPreference = 'Stop'
+$self = $MyInvocation.MyCommand.Path
+$repo = Split-Path -Parent (Split-Path -Parent $self)
+$bin = Join-Path ([IO.Path]::GetTempPath()) 'av-dome-check'
+$bonsaiDir = Join-Path $repo '.bonsai'
+$workflows = 'main.bonsai', 'CalibrateValve.bonsai', 'CameraFrameMonitor.bonsai', 'ZapitTrialTest.bonsai'
+
+function Initialize-Assemblies {
+    [xml]$cfg = Get-Content (Join-Path $bonsaiDir 'Bonsai.config') -Raw
+    $map = @{}
+    foreach ($a in $cfg.PackageConfiguration.AssemblyLocations.AssemblyLocation) {
+        if ($a.processorArchitecture -in 'MSIL', 'Amd64') { $map[$a.assemblyName] = Join-Path $bonsaiDir $a.location }
+    }
+    $map['Extensions'] = Join-Path $bin 'Extensions.dll'
+    foreach ($n in 'YamlDotNet', 'Newtonsoft.Json') { $map[$n] = Join-Path $bin "$n.dll" }
+    # Native libraries (OpenCV, libgit2) from the folders Bonsai.config names for x64.
+    foreach ($f in $cfg.PackageConfiguration.LibraryFolders.LibraryFolder) {
+        if ($f.platform -eq 'x64') { $env:PATH = (Join-Path $bonsaiDir $f.path) + ';' + $env:PATH }
+    }
+    $script:resolveMap = $map; $script:resolvePkgs = Join-Path $bonsaiDir 'Packages'
+    $script:resolver = [ResolveEventHandler]{
+        param($s, $e)
+        $n = (New-Object Reflection.AssemblyName $e.Name).Name
+        $loaded = [AppDomain]::CurrentDomain.GetAssemblies() | Where-Object { $_.GetName().Name -eq $n } | Select-Object -First 1
+        if ($loaded) { return $loaded }
+        $p = $script:resolveMap[$n]
+        if (-not $p) {
+            $p = Get-ChildItem $script:resolvePkgs -Recurse -Filter "$n.dll" -ErrorAction SilentlyContinue |
+                Where-Object { $_.FullName -match '\\lib\\net4' } | Sort-Object FullName -Descending | Select-Object -First 1 -ExpandProperty FullName
+        }
+        if ($p -and (Test-Path $p)) { return [Reflection.Assembly]::LoadFrom($p) }
+        return $null
+    }
+    [AppDomain]::CurrentDomain.add_AssemblyResolve($script:resolver)
+    foreach ($n in 'Bonsai.Core', 'Bonsai', 'Extensions') { $null = [Reflection.Assembly]::LoadFrom($map[$n]) }
+}
+
+# The template filled in as a rig's, at <bin>\config\<MACHINE>\rig.yml, so the nodes that read
+# rig.yml when the workflow is built make what they make on a rig; this machine need not have one.
+function Write-FilledTemplate {
+    $rigDir = Join-Path $bin "config\$([Environment]::MachineName)"
+    $null = New-Item -ItemType Directory -Path $rigDir -Force
+    $rigYml = Join-Path $rigDir 'rig.yml'
+    $template = [IO.File]::ReadAllText((Join-Path $repo 'config\rig-template.yml'))
+    $serials = 'BG01WA0E', 'AQ03WH45', 'E664C856C360B937', 'E664C856C31F4637'
+    foreach ($s in $serials) { $template = ([regex]'usbSerial: CHANGE-ME').Replace($template, "usbSerial: $s", 1) }
+    $template = $template.Replace('rigId: XX', 'rigId: D1').Replace('serialNumber: "00000000"', "serialNumber: '1'").Replace("rootPath: C:\Data", "rootPath: $bin")
+    foreach ($left in 'usbSerial: CHANGE-ME', 'rigId: XX', 'serialNumber: "00000000"', "rootPath: C:\Data") {
+        if ($template.Contains($left)) { throw "check-workflow: the template still holds '$left' after filling; update Write-FilledTemplate." }
+    }
+    if (-not $template.Contains("rootPath: $bin")) { throw "check-workflow: config\rig-template.yml's rootPath is not C:\Data; update the Replace above." }
+    [IO.File]::WriteAllText($rigYml, $template)
+    return $rigYml
+}
+
+if ($Step -eq 'Build') {
+    Initialize-Assemblies
+    $workflow = Join-Path $repo "src\$Workflow"
+    foreach ($m in [regex]::Matches((Get-Content $workflow -Raw), 'assembly=([A-Za-z0-9\.]+)"')) {
+        $null = [Reflection.Assembly]::Load($m.Groups[1].Value)
+    }
+    # Bonsai opens a workflow from its own folder, and relative include paths are found from there.
+    Set-Location (Split-Path $workflow); [Environment]::CurrentDirectory = (Split-Path $workflow)
+    $reader = [Xml.XmlReader]::Create($workflow)
+    try { $wb = [Bonsai.WorkflowBuilder]::Serializer.Deserialize($reader) } finally { $reader.Close() }
+    $rigYml = Write-FilledTemplate
+    $configRoot = Join-Path $bin 'config'
+    # Every node's own copy of where rig.yml is (ResolveRigConfigDirectory, RecordHarpDevices,
+    # StreamDevices; SessionManifest's ConfigFiles) is typed by hand into the workflow: they must
+    # all be the same root, and each is pointed at the filled template for this build.
+    $script:roots = New-Object System.Collections.Generic.List[string]
+    function Redirect-ConfigRoots($graph) {
+        foreach ($n in $graph) {
+            $b = [Bonsai.Expressions.ExpressionBuilder]::Unwrap($n.Value)
+            $owner = if ($b -is [Bonsai.Expressions.CombinatorBuilder]) { $b.Combinator } else { $b }
+            # A node's inner Settings node mirrors its ConfigRoot and is already redirected with it.
+            if ($owner -and $owner.GetType().Namespace -like 'OpenRigs.*' -and $owner.GetType().Name -notlike '*Settings' -and $owner.PSObject.Properties['ConfigRoot']) {
+                $script:roots.Add("$($owner.GetType().Name)=$($owner.ConfigRoot)"); $owner.ConfigRoot = $configRoot
+            }
+            if ($b.GetType().Name -eq 'SessionManifest') {
+                foreach ($file in $b.ConfigFiles -split ';') { if ($file -match '^(.*)\\%COMPUTERNAME%\\rig\.yml$') { $script:roots.Add("SessionManifest.ConfigFiles=$($Matches[1])") } }
+                $b.ConfigFiles = $rigYml
+            }
+            if ($b -is [Bonsai.Expressions.IWorkflowExpressionBuilder] -and $b.Workflow) { Redirect-ConfigRoots $b.Workflow }
+        }
+    }
+    Redirect-ConfigRoots $wb.Workflow
+    $failed = 0
+    $distinct = @($script:roots | ForEach-Object { ($_ -split '=', 2)[1].TrimEnd('\') } | Sort-Object -Unique)
+    if ($script:roots.Count -ge 1 -and $distinct.Count -eq 1) { "  ok    every node reads rig.yml under the same root, $($distinct[0]) ($($script:roots.Count) nodes)" }
+    else { "  FAIL  the nodes' rig.yml roots differ, or none was found: $($script:roots -join '; ')"; $failed++ }
+    try {
+        $built = [Bonsai.Expressions.ExpressionBuilderGraphExtensions]::Build($wb.Workflow)
+    } catch {
+        $x = $_.Exception
+        while ($x) { $b = $null; try { $b = $x.Builder } catch {}; $nm = if ($b) { [Bonsai.Expressions.ExpressionBuilder]::GetElementDisplayName($b) } else { '' }; "  $($x.GetType().Name): $nm :: $($x.Message)"; $x = $x.InnerException }
+        exit 1
+    }
+    "  ok    $Workflow builds"
+    if ($Workflow -ne 'main.bonsai') { exit $(if ($failed) { 1 } else { 0 }) }
+    # What the build made, read from the objects in the built expression.
+    Add-Type -ReferencedAssemblies System.Core -TypeDefinition @'
+public class BuiltObjects : System.Linq.Expressions.ExpressionVisitor {
+    public System.Collections.Generic.List<object> Found = new System.Collections.Generic.List<object>();
+    protected override System.Linq.Expressions.Expression VisitConstant(System.Linq.Expressions.ConstantExpression node) {
+        if (node.Value != null) Found.Add(node.Value);
+        return base.VisitConstant(node);
+    }
+}
+'@
+    $objects = New-Object BuiltObjects
+    $null = $objects.Visit($built)
+    $records = @($objects.Found | Where-Object { $_.GetType().FullName -eq 'OpenRigs.HarpDevices.RecordHarpDevice' })
+    $got = @($records | ForEach-Object { "$($_.Name) $($_.PortName) $($_.UsbSerial) $($_.ExpectedWhoAmI)" } | Sort-Object)
+    $want = @('BehaviorBoard-Main COM1 BG01WA0E 1216', 'LicketySplit-Left COM5 E664C856C360B937 ', 'LicketySplit-Right COM6 E664C856C31F4637 ', 'TimestampGeneratorGen3-Main COM2 AQ03WH45 1158')
+    if (($got -join '; ') -eq ($want -join '; ')) { "  ok    RecordHarpDevices records the Behavior board, the timestamp generator and both Lickety Splits from rig.yml" }
+    else { "  FAIL  RecordHarpDevices made: $($got -join '; ')"; $failed++ }
+    $dumps = @($objects.Found | Where-Object { $_.GetType().FullName -eq 'OpenRigs.HarpDevices.RequestRegisterDump' }).Count
+    if ($dumps -eq 4) { "  ok    ... and asks each for its dump on <Name>.Commands" } else { "  FAIL  $dumps dump request(s), not 4: is every board's command subject <Name>.Commands?"; $failed++ }
+    $recorder = @($objects.Found | Where-Object { $_.GetType().Name -eq 'ManifestRecorder' })
+    $planField = if ($recorder.Count) { $recorder[0].GetType().GetFields([Reflection.BindingFlags]'Instance,NonPublic,Public') | Where-Object { $_.FieldType.Name -eq 'ExpectedPlan' } | Select-Object -First 1 }
+    $expected = if ($planField) { @($planField.GetValue($recorder[0]).Entries | ForEach-Object { $_.Path }) } else { @() }
+    $wantFiles = 'BehaviorBoard-Main/', 'TimestampGeneratorGen3-Main/', 'LickSpoutStage-Main/', 'LicketySplit-Left/', 'LicketySplit-Right/', 'Camera-Face/', 'Camera-Pupil/', 'Camera-Body/',
+        'BehaviorBoard-Main/BehaviorBoard-Main_device.json', 'BehaviorBoard-Main/BehaviorBoard-Main.yml',
+        'TimestampGeneratorGen3-Main/TimestampGeneratorGen3-Main_device.json', 'TimestampGeneratorGen3-Main/TimestampGeneratorGen3-Main.yml',
+        'LicketySplit-Left/LicketySplit-Left_device.json', 'LicketySplit-Right/LicketySplit-Right_device.json',
+        'RigSchema/', 'TrialSettings/', 'SessionState/', 'StimulusStartEvents/'
+    $missing = @($wantFiles | Where-Object { $expected -notcontains $_ })
+    $extra = @($expected | Where-Object { $wantFiles -notcontains $_ })
+    if ($missing.Count -eq 0 -and $extra.Count -eq 0) { "  ok    SessionManifest expects the $($expected.Count) folders and files of a session" }
+    else {
+        "  FAIL  SessionManifest expects '$($expected -join ', ')'; missing: $($missing -join ', '); extra: $($extra -join ', ')"; $failed++
+        if ($planField) { foreach ($note in $planField.GetValue($recorder[0]).Notes) { "        its note: $note" } }
+    }
+    exit $(if ($failed) { 1 } else { 0 })
+}
+
+if ($Step -eq 'RigDevice') {
+    Initialize-Assemblies
+    # A scriptblock resolver called from an Rx worker thread while this one waits deadlocks, so
+    # everything is loaded now and the resolver removed before anything runs.
+    foreach ($p in $script:resolveMap.Values) { if (Test-Path $p) { try { $null = [Reflection.Assembly]::LoadFrom($p) } catch {} } }
+    [AppDomain]::CurrentDomain.remove_AssemblyResolve($script:resolver)
+    $yaml = [IO.File]::ReadAllText((Write-FilledTemplate))
+    $E = [Linq.Expressions.Expression]
+    $wait = [System.Reactive.Linq.Observable].GetMethods() | Where-Object { $_.Name -eq 'Wait' -and $_.GetParameters().Count -eq 1 } | Select-Object -First 1
+    function New-RigYamlExpression {
+        $x = $E::Constant([System.Reactive.Linq.Observable]::Return($yaml), [IObservable[string]])
+        $des = New-Object UclOpenAvDome.DeserializeFromYaml
+        $des.Type = [Activator]::CreateInstance([Bonsai.Expressions.TypeMapping`1].MakeGenericType([UclOpenAvDome.UclOpenAvDomeRig]))
+        return $des.Build([Linq.Expressions.Expression[]]@($x))
+    }
+    # rig.yml text -> DeserializeFromYaml -> MemberSelector -> RigDevice, as RigSetup chains them.
+    function Invoke-RigDevice([string]$Member, [string]$Name) {
+        $x = New-RigYamlExpression
+        $sel = New-Object Bonsai.Expressions.MemberSelectorBuilder; $sel.Selector = $Member
+        $x = $sel.Build([Linq.Expressions.Expression[]]@($x))
+        $cb = New-Object Bonsai.Expressions.CombinatorBuilder
+        $rd = New-Object UclOpenAvDome.RigDevice; $rd.Name = $Name; $cb.Combinator = $rd
+        $x = $cb.Build([Linq.Expressions.Expression[]]@($x))
+        $call = $E::Call($wait.MakeGenericMethod($x.Type.GetGenericArguments()[0]), $x)
+        return $E::Lambda($E::Convert($call, [object])).Compile().DynamicInvoke()
+    }
+    $failed = 0
+    # The names main.bonsai asks for; each reads the rig.yml group of its kind (Camera-Face reads Camera).
+    $asked = [regex]::Matches((Get-Content (Join-Path $repo 'src\main.bonsai') -Raw), '<Combinator xsi:type="p2:RigDevice">\s*<p2:Name>([^<]*)</p2:Name>')
+    if ($asked.Count -ne 8) { "  FAIL  found $($asked.Count) RigDevice nodes in main.bonsai, not 8"; $failed++ }
+    foreach ($m in $asked) {
+        $name = $m.Groups[1].Value; $member = ($name -split '-')[0]
+        try {
+            $r = Invoke-RigDevice $member $name
+            if ($r.Name -ne $name) { throw "came back named '$($r.Name)'" }
+            "  ok    $name is in the template"
+        } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; "  FAIL  ${name}: $($x.Message)"; $failed++ }
+    }
+    foreach ($c in @(@('Camera', 'Camera-Box', 'KeyNotFoundException', 'Its camera entries: body, face, pupil.'), @('Camera', 'CameraFace', 'ArgumentException', 'Kind-Instance'))) {
+        try { $null = Invoke-RigDevice $c[0] $c[1]; "  FAIL  $($c[1]) was accepted"; $failed++ }
+        catch {
+            $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }
+            if ($x.GetType().Name -eq $c[2] -and $x.Message.Contains($c[3])) { "  ok    $($c[1]) refused: $($x.Message)" }
+            else { "  FAIL  $($c[1]): $($x.GetType().Name): $($x.Message)"; $failed++ }
+        }
+    }
+    # The session's RigSchema JSON is rig.yml as parsed, and the manifest keeps only rig.yml's hash,
+    # so every key in rig.yml must reach the JSON.
+    try {
+        $x = New-RigYamlExpression
+        $cb = New-Object Bonsai.Expressions.CombinatorBuilder
+        $ser = New-Object UclOpenAvDome.SerializeToJson; $ser.Formatting = 'Indented'; $cb.Combinator = $ser
+        $x = $cb.Build([Linq.Expressions.Expression[]]@($x))
+        $json = $E::Lambda($E::Call($wait.MakeGenericMethod([string]), $x)).Compile().DynamicInvoke()
+        $jsonKeys = New-Object System.Collections.Generic.List[string]
+        foreach ($t in [Newtonsoft.Json.Linq.JToken]::Parse($json).Descendants()) {
+            if ($t -is [Newtonsoft.Json.Linq.JProperty]) { $jsonKeys.Add(($t.Path -replace '\[\d+\]', '[]')) }
+        }
+        $yamlKeys = New-Object System.Collections.Generic.List[string]
+        function Add-YamlKeys($node, [string]$at) {
+            if ($node -is [System.Collections.IDictionary]) { foreach ($k in $node.Keys) { $p = if ($at) { "$at.$k" } else { "$k" }; $yamlKeys.Add($p); Add-YamlKeys $node[$k] $p } }
+            elseif ($node -is [System.Collections.IList]) { foreach ($i in $node) { Add-YamlKeys $i "$at[]" } }
+        }
+        Add-YamlKeys ((New-Object YamlDotNet.Serialization.Deserializer).Deserialize((New-Object IO.StringReader $yaml))) ''
+        $lost = @($yamlKeys | Where-Object { $jsonKeys -notcontains $_ })
+        if ($yamlKeys.Count -gt 0 -and $lost.Count -eq 0) { "  ok    RigSchema JSON keeps all $($yamlKeys.Count) keys of rig-template.yml" }
+        else { "  FAIL  RigSchema JSON lost $($lost.Count) of $($yamlKeys.Count) keys of rig-template.yml: $($lost -join ', ')"; $failed++ }
+    } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; "  FAIL  RigSchema JSON: $($x.Message)"; $failed++ }
+    exit $(if ($failed) { 1 } else { 0 })
+}
+
+if ($Step -eq 'Checks') {
+    Initialize-Assemblies
+    $failed = 0
+    function New-TaskConfig {
+        $c = New-Object UclOpenAvDomeTask.UclOpenAvDomeTaskLogic
+        $c.TaskParameters = New-Object UclOpenAvDomeTask.UclOpenAvDomeTaskParameters
+        $c.TaskParameters.TrialStructure = New-Object UclOpenAvDomeTask.TrialStructure
+        $c.TaskParameters.TrialStructure.ItiMin = 4; $c.TaskParameters.TrialStructure.ItiMax = 5
+        $c.TaskParameters.Optogenetics = New-Object UclOpenAvDomeTask.OptogeneticsSettings
+        $c.TaskParameters.Optogenetics.Enabled = $true
+        $c.TaskParameters.TrainingStages = New-Object 'System.Collections.Generic.List[UclOpenAvDomeTask.TrainingStage]'
+        foreach ($i in 0, 1) { $s = New-Object UclOpenAvDomeTask.TrainingStage; $s.RewardSizeUl = 3; $c.TaskParameters.TrainingStages.Add($s) }
+        return $c
+    }
+    function Get-Refusal([scriptblock]$Run) {
+        try { & $Run; return $null } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; return $x }
+    }
+    $c = New-TaskConfig
+    $null = [UclOpenAvDome.ApplyTaskOverrides]::Apply($c, '', '', '', '')
+    if ($c.TaskParameters.TrainingStages[0].RewardSizeUl -eq 3 -and $c.TaskParameters.TrialStructure.ItiMin -eq 4 -and $c.TaskParameters.Optogenetics.Enabled) { "  ok    ApplyTaskOverrides: blank keeps the task file's values" }
+    else { "  FAIL  ApplyTaskOverrides changed values on blank overrides"; $failed++ }
+    $c = New-TaskConfig
+    $null = [UclOpenAvDome.ApplyTaskOverrides]::Apply($c, '5', '2.5', '6', 'OFF')
+    if ($c.TaskParameters.TrainingStages[1].RewardSizeUl -eq 5 -and $c.TaskParameters.TrialStructure.ItiMin -eq 2.5 -and $c.TaskParameters.TrialStructure.ItiMax -eq 6 -and -not $c.TaskParameters.Optogenetics.Enabled) { "  ok    ApplyTaskOverrides: 5 ul on every stage, ITI 2.5 to 6, Zapit off" }
+    else { "  FAIL  ApplyTaskOverrides did not apply 5, 2.5, 6, OFF"; $failed++ }
+    foreach ($case in @(@('x', '', '', '', 'RewardSizeUl must be'), @('', '-1', '', '', 'ItiMin must be'), @('', '7', '', '', 'above ItiMax'), @('', '', '', 'maybe', 'Zapit must be'))) {
+        $x = Get-Refusal { $null = [UclOpenAvDome.ApplyTaskOverrides]::Apply((New-TaskConfig), $case[0], $case[1], $case[2], $case[3]) }
+        if ($x -and $x.Message.Contains($case[4])) { "  ok    ApplyTaskOverrides refused: $($x.Message)" }
+        else { "  FAIL  ApplyTaskOverrides on '$($case[0..3] -join "','")': $(if ($x) { $x.Message } else { 'accepted' })"; $failed++ }
+    }
+    $wf = Get-Content (Join-Path $repo 'src\main.bonsai') -Raw
+    if ($wf -match 'C:\\RigConfigs\\LickSpoutPositions') { "  FAIL  main.bonsai still names production's C:\RigConfigs\LickSpoutPositions"; $failed++ }
+    else { "  ok    main.bonsai keeps spout positions under the rig's own config directory" }
+    exit $(if ($failed) { 1 } else { 0 })
+}
+
+if (-not (Test-Path (Join-Path $bonsaiDir 'Packages'))) { throw "No .bonsai\Packages in $repo. Run .bonsai\Setup.ps1 first." }
+$bad = 0
+"1. Compiling src\Extensions as C# 5..."
+Remove-Item $bin -Recurse -Force -ErrorAction SilentlyContinue
+# Bonsai compiles the Extensions folder beside each workflow with that folder's own project, so a
+# folder under src with a project of its own is not part of this build (GammaCalibrationFromBonvision
+# needs MathNet, which src's project does not list). Quoted as \"...\" for Windows PowerShell 5.1.
+$src = Join-Path $repo 'src'
+$nested = @(Get-ChildItem $src -Recurse -Filter *.csproj | Where-Object { $_.DirectoryName -ne $src } |
+    ForEach-Object { ($_.DirectoryName.Substring($src.Length + 1) -replace '\\', '/') + '/**' } | Select-Object -Unique)
+$exclude = '-p:DefaultItemExcludesInProjectFolder=\"' + ((@('**/.*/**') + $nested) -join ';') + '\"'
+$log = & { $ErrorActionPreference = 'Continue'; & dotnet build (Join-Path $repo 'src\Extensions.csproj') -o $bin -nologo -v q -p:LangVersion=5 $exclude `
+    --source https://api.nuget.org/v3/index.json --source (Join-Path $repo 'local_packages') 2>&1 | ForEach-Object { "$_" } }
+if ($LASTEXITCODE -ne 0) { $log | Where-Object { $_ -match 'error' } | Select-Object -Unique | ForEach-Object { "  $_" }; "  FAILED"; exit 1 }
+"  ok"
+"2. Building each workflow that reads rig.yml with Bonsai's builders, against the filled template..."
+foreach ($w in $workflows) {
+    & { $ErrorActionPreference = 'Continue'; & powershell -NoProfile -ExecutionPolicy Bypass -File $self -Step Build -Workflow $w 2>&1 | ForEach-Object { "$_" } }
+    if ($LASTEXITCODE -ne 0) { "  FAILED  $w"; $bad++ }
+}
+"3. RigDevice and RigSchema on config\rig-template.yml..."
+& { $ErrorActionPreference = 'Continue'; & powershell -NoProfile -ExecutionPolicy Bypass -File $self -Step RigDevice 2>&1 | ForEach-Object { "$_" } }
+if ($LASTEXITCODE -ne 0) { "  FAILED"; $bad++ }
+"4. ApplyTaskOverrides and the spout positions path..."
+& { $ErrorActionPreference = 'Continue'; & powershell -NoProfile -ExecutionPolicy Bypass -File $self -Step Checks 2>&1 | ForEach-Object { "$_" } }
+if ($LASTEXITCODE -ne 0) { "  FAILED"; $bad++ }
+if ($bad) { "check-workflow: $bad step(s) failed."; exit 1 }
+"check-workflow: all 4 steps passed."
