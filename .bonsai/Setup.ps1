@@ -4,6 +4,16 @@ if (!(Test-Path "./NuGet.config") -and (Test-Path "./NuGet.config.example")) {
     Write-Host ("Created .bonsai/NuGet.config from NuGet.config.example. The copy is git-ignored: " +
         "you can safely replace %GITHUB_PACKAGES_TOKEN% in it with your own PAT (read:packages).")
 }
+# The lab's OpenRigs.* packages come from ../local_packages/, which a NuGet.config copied before
+# the example listed it lacks; add it there, keeping the rest of that copy as it is.
+if (Test-Path "./NuGet.config") {
+    $existing = Get-Content "./NuGet.config" -Raw
+    if ($existing -notmatch 'local_packages') {
+        $existing = $existing -replace '(<packageSources>\s*\r?\n)', ('$1    <add key="local packages" value="../local_packages/" />' + "`r`n")
+        Set-Content "./NuGet.config" $existing -NoNewline -Encoding UTF8
+        Write-Host "Added ../local_packages/ to .bonsai/NuGet.config."
+    }
+}
 if (!(Test-Path "./Bonsai.exe")) {
     $release = "https://github.com/bonsai-rx/bonsai/releases/latest/download/Bonsai.zip"
     $configPath = "./Bonsai.config"
