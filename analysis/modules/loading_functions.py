@@ -2,6 +2,15 @@ import pandas as pd
 import numpy as np
 import re
 
+from open_rigs import trials
+
+
+def load_experiment_trials(experiment_folder):
+    """An open-rigs experiment's BonsaiData_Trial as one DataFrame: hour files joined, older column
+    names renamed, each column typed and trialType decoded, by lib-open-rigs' data dictionary.
+    load_sessions below reads production's TrialSettings layout."""
+    return pd.DataFrame(trials.read(experiment_folder, rig="av-dome"))
+
 
 def load_sessions(root_folder, all_subjects, show_warnings=False):
     df = pd.DataFrame()
