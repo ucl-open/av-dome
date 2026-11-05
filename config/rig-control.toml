@@ -10,26 +10,15 @@
 camera_height_share = 0.55  # 0.2 to 0.8: the cameras' share of the page's height; charts get the rest
 
 # ---- The trial log ---------------------------------------------------------------------------
-# Which column of BonsaiData_Trial means what. A column the log lacks is read as blank.
+# This rig's own columns of BonsaiData_Trial. The core ones (trialNumber, outcome, choice, target,
+# stimulusOnsetTime, Seconds) and the outcomes (Correct, Incorrect, NoResponse) come from the lab's
+# data dictionary (lib-open-rigs data_dictionary.yml), as do older names of every column.
+# Performance = correct / (correct + incorrect), two-spout trials only, as production computed it.
 [trials]
-log = "BonsaiData_Trial"           # LogData name: files BonsaiData\BonsaiData_Trial_<hour>.csv
 older_logs = ["TrialSettings"]     # read for older experiments that have no BonsaiData_Trial
-number = "trialNumber"             # trial number
-outcome = "outcome"                # the trial's result, as named under [trials.outcomes]
-choice = "choice"                  # the side the mouse chose: Left, Right or NoResponse
-target = "target"                  # the side that was right: Left or Right
 two_spout = "bothSpouts"           # True when both spouts were offered (performance counts only these)
 type = "trialType"                 # the trial type, for "Performance by Trial Type"
 type_metric = "trialType"          # the status metric that is the trial type: Current Trial names it below
-onset = "stimulusOnsetTime"        # stimulus onset, Harp seconds (licks are aligned to it)
-end = "Seconds"                    # when the outcome was known, Harp seconds
-
-# What each outcome means: correct, incorrect or none.
-# Performance = correct / (correct + incorrect), two-spout trials only, as production computed it.
-[trials.outcomes]
-Correct = "correct"
-Incorrect = "incorrect"
-NoResponse = "none"
 
 # Names for trial types on the charts; a type not named here shows as "Type 0", "Type 1"...
 # The numbers are trialType as drawn in src/Extensions/InitialiseTrial.cs (GenerateNewTrial).
