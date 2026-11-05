@@ -55,6 +55,8 @@ timestampGeneratorGen3:
 # The lick spout stage's two Harp StepperDriver boards. The workflow drives the axes by motor
 # number, fixed: board a motor 0 left elevation (1), motor 1 right elevation (2), motor 2 right
 # radial (3); board b motor 0 left radial (4), motor 1 base transverse (5). The rest are spare.
+# Only portName and usbSerial are read: the schema's optional stepInterval, microstepResolution
+# and maximumRunCurrent are not (the run current is set in the workflow).
 stepperDriver:
   a:
     portName: COM3
