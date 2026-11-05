@@ -29,10 +29,10 @@ public class InitialiseTrial
     [Description("Offset added to the configured rngSeed so multiple operator instances draw distinct deterministic streams.")]
     public int SeedOffset { get; set; }
 
-    [Description("Trials completed so far this session (map from the TrialCount subject). Trials with TrialNumber < optogenetics.warmupTrials are never stimulated.")]
+    [Description("Trials completed so far this experiment (map from the TrialCount subject). Trials with TrialNumber < optogenetics.warmupTrials are never stimulated.")]
     public int TrialNumber { get; set; }
 
-    // One RNG per operator instance, seeded once from the config on the first trial so a session
+    // One RNG per operator instance, seeded once from the config on the first trial so an experiment
     // is reproducible from its task YAML. Instance state persists across re-subscriptions
     // (e.g. inside a SelectMany), matching the shuffle-block and repeat bookkeeping below.
     private Random trialRand;
@@ -265,7 +265,7 @@ public class InitialiseTrial
 
         // Which of the auditory stimulus set's waveforms this trial plays, uniform over the set
         // (production's Round(99 * NextDouble()) gives 0 and 99 half the weight). Drawn last, so
-        // this trial's other draws are as before; every later trial's draws differ from a session
+        // this trial's other draws are as before; every later trial's draws differ from an experiment
         // run with the same rngSeed before audioWaveformIdx existed. A repeat (Clone) plays the
         // same waveform as the trial it repeats.
         trialData.audioWaveformIdx = trialRand.Next(AuditoryStimulusSet.WaveformCount);
@@ -711,7 +711,7 @@ public class InitialiseTrial
 public class Trial
 {
     // Provenance
-    public int rngSeedUsed;  // effective RNG seed for this session's draw stream (config rngSeed + offset, or random)
+    public int rngSeedUsed;  // effective RNG seed for this experiment's draw stream (config rngSeed + offset, or random)
 
     // TrialStructure
     public int trialType;

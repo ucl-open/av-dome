@@ -8,13 +8,13 @@ using UclOpenAvDomeTask;
 namespace UclOpenAvDome
 {
     /// <summary>
-    /// Applies the session controller's overrides to the task configuration read at Go: the
+    /// Applies the experiment controller's overrides to the task configuration read at Go: the
     /// reward size (every training stage's rewardSizeUl), the inter-trial interval bounds
     /// (trialStructure.itiMin and itiMax) and optogenetics (optogenetics.enabled, "on" or
     /// "off"). Each is text, as ControlServer holds parameters; blank keeps the task file's
     /// value. A value that is not a number of at least 0, or a Zapit value other than on, off or
     /// blank, or a minimum above the maximum, stops the workflow at Go naming the parameter,
-    /// rather than running a session on a setting nobody asked for.
+    /// rather than running an experiment on a setting nobody asked for.
     /// </summary>
     [Combinator]
     [WorkflowElementCategory(ElementCategory.Transform)]

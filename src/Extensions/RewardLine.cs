@@ -63,7 +63,7 @@ public class RewardLine
     /// <summary>Gets the absolute path of the calibration artefact; null for a fixed line.</summary>
     public string ArtefactPath { get { return artefactPath; } }
 
-    /// <summary>Gets the calibration artefact as read, for the session snapshot; null for a fixed line.</summary>
+    /// <summary>Gets the calibration artefact as read, for the experiment's snapshot; null for a fixed line.</summary>
     public string ArtefactJson { get { return artefactJson; } }
 
     /// <summary>

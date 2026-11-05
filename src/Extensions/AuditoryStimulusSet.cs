@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 using UclOpenAvDome;
 
 /// <summary>
-/// The auditory stimuli of a session: the rig's set of stimulus waveforms, each already
+/// The auditory stimuli of an experiment: the rig's set of stimulus waveforms, each already
 /// equalised for every speaker that has a filter in rig.yml, so a trial's stimulus is a lookup
 /// with no filtering at stimulus onset.
 /// </summary>

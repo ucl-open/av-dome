@@ -11,7 +11,7 @@ using System.Threading;
 // framebuffer with GL calls in a Finally, on whichever thread disposes the workflow. The controller's
 // Stop (and any error raised by OpenRigs.Control) ends the workflow on the ControlServer's own thread,
 // which has no GL context, so the GL call raised an access violation that killed Bonsai before the
-// session's CSV writers and manifest were flushed.
+// experiment's CSV writers and manifest were flushed.
 [Combinator]
 [Description("Disposes the sequence it is given (a group holding the shader window and BonVision's render targets) on the shader window's render thread, where the GL context is current, and waits for it. Its elements are not passed on. If the window is not running, or the render thread does not answer within TimeoutSeconds, it disposes on the calling thread instead.")]
 [WorkflowElementCategory(ElementCategory.Sink)]
