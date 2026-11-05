@@ -66,7 +66,7 @@ With Zapit still in simulated mode (or with the laser shutter closed):
 1. In `config/task.yml` set `optogenetics.enabled: true` and `zapitConfigPath` as in step 3.
 2. In the rig YAML set `zapit.hardwareTriggered` to `false` for the first run.
 3. Run a normal short session from `main.bonsai`. The workflow stops at startup with a clear error if Zapit is unreachable or has no config loaded.
-4. In the session folder compare `Zapit.csv` and `BonsaiData\BonsaiData_Trial_*.csv`. `Zapit.csv` columns: `Seconds` (Harp clock), `command` (1 = StartStimulus, 2 and 4 = the startup queries), `value` (condition presented), `laserOn`, `isError`, `serverDatenum` (Zapit PC clock). Every `BonsaiData_Trial` row with `OptogeneticEnabled = True` must have a `command = 1` row in `Zapit.csv` with the same condition, a fraction of a second later.
+4. In the session folder compare `Zapit.csv` and `BonsaiData\BonsaiData_Trial_*.csv`. `Zapit.csv` columns: `Seconds` (Harp clock), `command` (1 = StartStimulus, 2 and 4 = the startup queries), `value` (condition presented), `laserOn`, `isError`, `serverDatenum` (Zapit PC clock). Every `BonsaiData_Trial` row with `optoStimulated = True` must have a `command = 1` row in `Zapit.csv` with the same condition, a fraction of a second later.
 
 **Pass:** the two files agree trial by trial and Zapit's own trial log lists the same sequence.
 

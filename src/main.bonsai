@@ -4659,7 +4659,7 @@
             </Expression>
             <Expression xsi:type="rx:SelectMany">
               <Name>SessionLogs</Name>
-              <Description>Starts every session log once LogControllerLogic publishes PathPrefix. TrialParameters writes BonsaiData_Trial (LogTrial): one row per trial, its settings and outcome together, with stimulusOnsetSeconds, the Harp time of that trial's stimulus onset (StimulusOnset; NaN until the first). Subjects that already hold a value (BehaviorSubject, AsyncSubject) hand it to the late subscriber. Values set at startup, such as the Zapit startup replies and the first trial draw, are therefore logged when the session logs start, about a second after Go, with that time. Add new loggers inside this group.</Description>
+              <Description>Starts every session log once LogControllerLogic publishes PathPrefix. TrialParameters writes BonsaiData_Trial (LogTrial): one row per trial, what was drawn for it and its outcome together, with stimulusOnsetSeconds, the Harp time of that trial's stimulus onset (StimulusOnset; NaN until the first). Its columns are named as lib-open-rigs' lab_names.yml allows (check-bonsai holds them to it); settings that are the same all session are not columns, being in TaskConfig and the manifest's settings at Go, and the RNG seed is logged once, as the RngSeed event in BonsaiData_Async. Subjects that already hold a value (BehaviorSubject, AsyncSubject) hand it to the late subscriber. Values set at startup, such as the Zapit startup replies and the first trial draw, are therefore logged when the session logs start, about a second after Go, with that time. Add new loggers inside this group.</Description>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="GroupWorkflow">
@@ -4677,48 +4677,30 @@
                         </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
                           <scr:Expression>new(
-    Item1.Item1.CorrectResponse as correctResponse,
-    Item1.Item1.Response as response,
-    Item1.Item1.TrialCnt as TrialCnt,
+    Item1.Item1.TrialCnt as trialNumber,
     Item1.Item2.trialType as trialType,
-    Item1.Item2.RewardProbability as RewardProbability,
-    Item1.Item2.IsRewarded as IsRewarded,
-    Item1.Item2.IsRepeat as IsRepeat,
-    Item1.Item2.RepeatCount as RepeatCount,
-    Item1.Item2.targetSide as targetSide,
-    Item1.Item2.ITI as ITI,
-    Item1.Item2.Quiescent as Quiescent,
-    Item1.Item2.rngSeedUsed as rngSeedUsed,
-    Item1.Item2.autoRewardProbability as autoRewardProbability,
+    Item1.Item2.targetSide as target,
+    Item1.Item1.Response as choice,
+    Item1.Item1.CorrectResponse as outcome,
     Item1.Item2.autoReward as autoReward,
+    Item1.Item2.BothSpouts as bothSpouts,
+    Item2 as stimulusOnsetSeconds,
+    Item1.Item2.RewardSizeInUl as rewardSize,
+    Item1.Item2.IsRewarded as rewardIfCorrect,
     Item1.Item2.largeReward as largeReward,
-    Item1.Item2.RewardSizeInUl as RewardSizeInUl,
-    Item1.Item2.BothSpouts as BothSpouts,
+    Item1.Item2.IsRepeat as isRepeat,
+    Item1.Item2.RepeatCount as repeatCount,
+    Item1.Item2.ITI as itiDuration,
+    Item1.Item2.Quiescent as quiescentDuration,
     Item1.Item2.visualAzimuth as visualAzimuth,
+    Item1.Item2.visualElevation as visualElevation,
     Item1.Item2.visualContrast as visualContrast,
     Item1.Item2.visualPhase as visualPhase,
     Item1.Item2.audioAzimuth as audioAzimuth,
-    Item1.Item2.OptogeneticEnabled as OptogeneticEnabled,
-    Item1.Item2.OptogeneticCondition as OptogeneticCondition,
-    Item1.Item2.OptogeneticDelay as OptogeneticDelay,
-    Item1.Item2.OptogeneticDuration as OptogeneticDuration,
-    Item1.Item2.OptogeneticPower as OptogeneticPower,
-    Item1.Item2.IncorrectTimeoutDuration as IncorrectTimeoutDuration,
-    Item1.Item2.LargeRewardMultiplier as LargeRewardMultiplier,
-    Item1.Item2.LargeRewardProbability as LargeRewardProbability,
-    Item1.Item2.BothSpoutsProbability as BothSpoutsProbability,
-    Item1.Item2.openLoopDuration as openLoopDuration,
-    Item1.Item2.closedLoopDuration as closedLoopDuration,
-    Item1.Item2.visualElevation as visualElevation,
-    Item1.Item2.visualGaussianWindowSigma as visualGaussianWindowSigma,
-    Item1.Item2.visualOrientation as visualOrientation,
-    Item1.Item2.visualSpatialFrequency as visualSpatialFrequency,
-    Item1.Item2.visualTemporalFrequency as visualTemporalFrequency,
-    Item1.Item2.visualFlickerFrequency as visualFlickerFrequency,
     Item1.Item2.audioElevation as audioElevation,
-    Item1.Item2.audioFlickerFrequency as audioFlickerFrequency,
-    Item1.Item2.audioWaveformIdx as audioWaveformIdx,
-    Item2 as stimulusOnsetSeconds)</scr:Expression>
+    Item1.Item2.audioWaveformIdx as audioWaveformIndex,
+    Item1.Item2.OptogeneticEnabled as optoStimulated,
+    Item1.Item2.OptogeneticCondition as optoCondition)</scr:Expression>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
                           <Name>Timestamp</Name>
@@ -5062,6 +5044,30 @@
                   <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogHarpDevice.bonsai">
                     <LogName>StepperDriver-B</LogName>
                   </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>thisTrialData</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Take">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Name>RngSeed</Name>
+                    <Description>The session's effective RNG seed (the task file's rngSeed plus its offset, or a random one), the same for every trial, so it is logged once as a BonsaiData_Async event (RngSeed, its value in Value) rather than on every trial row. With the task file (TaskConfig) and the settings at Go (manifest.json) it reproduces the session's draws.</Description>
+                    <Selector>rngSeedUsed</Selector>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="orl:CreateAsyncEvent">
+                      <orl:Event>RngSeed</orl:Event>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
+                    <Name>Timestamp</Name>
+                  </Expression>
+                  <Expression xsi:type="MulticastSubject">
+                    <Name>AsyncEvents</Name>
+                  </Expression>
                 </Nodes>
                 <Edges>
                   <Edge From="4" To="5" Label="Source1" />
@@ -5074,6 +5080,11 @@
                   <Edge From="15" To="16" Label="Source1" />
                   <Edge From="17" To="18" Label="Source1" />
                   <Edge From="18" To="19" Label="Source1" />
+                  <Edge From="20" To="21" Label="Source1" />
+                  <Edge From="21" To="22" Label="Source1" />
+                  <Edge From="22" To="23" Label="Source1" />
+                  <Edge From="23" To="24" Label="Source1" />
+                  <Edge From="24" To="25" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>

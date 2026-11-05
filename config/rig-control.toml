@@ -14,11 +14,11 @@ camera_height_share = 0.55  # 0.2 to 0.8: the cameras' share of the page's heigh
 [trials]
 log = "BonsaiData_Trial"           # LogData name: files BonsaiData\BonsaiData_Trial_<hour>.csv
 older_logs = ["TrialSettings"]     # read for older sessions that have no BonsaiData_Trial
-number = "TrialCnt"                # trial number
-outcome = "correctResponse"        # the trial's result, as named under [trials.outcomes]
-choice = "response"                # the side the mouse chose: Left, Right or NoResponse
-target = "targetSide"              # the side that was right: Left or Right
-two_spout = "BothSpouts"           # True when both spouts were offered (performance counts only these)
+number = "trialNumber"             # trial number
+outcome = "outcome"                # the trial's result, as named under [trials.outcomes]
+choice = "choice"                  # the side the mouse chose: Left, Right or NoResponse
+target = "target"                  # the side that was right: Left or Right
+two_spout = "bothSpouts"           # True when both spouts were offered (performance counts only these)
 auto = "autoReward"                # True when the reward was given automatically
 type = "trialType"                 # the trial type, for "Performance by Trial Type"
 type_metric = "trial_type"         # the status metric that is the trial type: Current Trial names it below
