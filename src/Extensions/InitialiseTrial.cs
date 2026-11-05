@@ -10,7 +10,7 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
 [Combinator]
-[Description("Draws the next trial from the task configuration: weighted trial-type selection, repeat bookkeeping and per-trial parameter assignment. All parameters come from the task schema.")]
+[Description("Draws each trial of the experiment from the task configuration: weighted trial-type selection, repeat bookkeeping and per-trial parameter assignment. Input: the previous trial's outcome (Correct, Incorrect or NoResponse; empty for the first trial) with the task configuration. One instance draws every trial, so one RNG and one repeat history serve the whole experiment.")]
 [WorkflowElementCategory(ElementCategory.Transform)]
 public class InitialiseTrial
 {
@@ -20,21 +20,8 @@ public class InitialiseTrial
     [Description("Set to -1 to use the weighted random selection (recommended). Or force specific trial: 0=UnisensoryVisual, 1=UnisensoryAudio, 2=Multisensory (coherent), 3=Multisensory (conflict), 4=Neutral")]
     public int TrialType { get; set; }
 
-    [Description("Whether the last response was correct. This is used to determine if a trial should be repeated.")]
-    public bool WasCorrect { get; set; }
-
-    [Description("Whether the last trial ended in a timeout. This is used to determine if a trial should be repeated.")]
-    public bool WasTimeout { get; set; }
-
-    [Description("Offset added to the configured rngSeed so multiple operator instances draw distinct deterministic streams.")]
-    public int SeedOffset { get; set; }
-
-    [Description("Trials completed so far this experiment (map from the TrialCount subject). Trials with TrialNumber < optogenetics.warmupTrials are never stimulated.")]
-    public int TrialNumber { get; set; }
-
-    // One RNG per operator instance, seeded once from the config on the first trial so an experiment
-    // is reproducible from its task YAML. Instance state persists across re-subscriptions
-    // (e.g. inside a SelectMany), matching the shuffle-block and repeat bookkeeping below.
+    // One RNG for the experiment, seeded once from the config on the first trial so an experiment
+    // is reproducible from its task YAML.
     private Random trialRand;
     private int rngSeedUsed;
 
@@ -45,29 +32,34 @@ public class InitialiseTrial
     // Trial repetition tracking
     private Trial lastTrial = null;
     private int currentRepeatCount = 0;
-    private bool isFirstTrial = true;
+
+    // Trials drawn so far this experiment: the next trial's number is one more. Trials drawn
+    // while fewer than optogenetics.warmupTrials came before are never stimulated.
+    private int trialsDrawn = 0;
 
     private static List<int> _zapitConditions = new List<int>();
     private static List<int> _conditionQueue = new List<int>();
     private static int _currentConditionIndex = 0;
     private static DateTime _zapitConfigLastLoaded = DateTime.MinValue;
 
-    public IObservable<Trial> Process(IObservable<UclOpenAvDomeTaskLogic> source)
+    public IObservable<Trial> Process(IObservable<Tuple<string, UclOpenAvDomeTaskLogic>> source)
     {
         return source.Select(value =>
         {
-            UclOpenAvDomeTaskParameters parameters = value.TaskParameters;
+            string previousOutcome = value.Item1;
+            UclOpenAvDomeTaskParameters parameters = value.Item2.TaskParameters;
             TrainingStage stage = GetTrainingStage(parameters);
 
             EnsureRandomInitialised(parameters);
             EnsureConfigChecked(parameters);
 
             // Check if we need to repeat the last trial
-            if (ShouldRepeatTrial(parameters, stage))
+            if (ShouldRepeatTrial(parameters, stage, previousOutcome))
             {
                 currentRepeatCount++;
                 // Return a copy of the same trial with repeat information
                 var repeatTrial = lastTrial.Clone();
+                repeatTrial.trialNumber = ++trialsDrawn;
                 repeatTrial.IsRepeat = true;
                 repeatTrial.RepeatCount = currentRepeatCount;
                 // The copy carries the original trial's optogenetic draw; clear it unless
@@ -86,9 +78,9 @@ public class InitialiseTrial
 
             // Generate new trial
             currentRepeatCount = 0;
-            isFirstTrial = false;
 
             var newTrial = GenerateNewTrial(parameters, stage);
+            newTrial.trialNumber = ++trialsDrawn;
 
             // Keep a record of the last trial for trial repeats.
             lastTrial = newTrial;
@@ -102,7 +94,7 @@ public class InitialiseTrial
         int seed;
         if (parameters.RngSeed.HasValue)
         {
-            seed = (int)parameters.RngSeed.Value + SeedOffset;
+            seed = (int)parameters.RngSeed.Value;
         }
         else
         {
@@ -162,13 +154,12 @@ public class InitialiseTrial
         return stages[index];
     }
 
-    private bool ShouldRepeatTrial(UclOpenAvDomeTaskParameters parameters, TrainingStage stage)
+    private bool ShouldRepeatTrial(UclOpenAvDomeTaskParameters parameters, TrainingStage stage, string previousOutcome)
     {
-        // Don't repeat if no previous trial, max repeats reached, this is the first trial,
+        // Don't repeat if no previous trial (the first trial), max repeats reached,
         // or the current stage disables repeats.
         if (lastTrial == null ||
             currentRepeatCount >= parameters.Repeats.MaxRepeats ||
-            isFirstTrial ||
             !stage.AllowRepeats)
             return false;
 
@@ -181,10 +172,10 @@ public class InitialiseTrial
         {
             case RepeatRule.OnFailure:
                 // Repeat if incorrect OR timeout
-                return !WasCorrect || WasTimeout;
+                return previousOutcome != "Correct";
             case RepeatRule.OnTimeout:
                 // Only repeat for timeout (not for unrewarded choice)
-                return WasTimeout;
+                return previousOutcome == "NoResponse";
             default:
                 return false;
         }
@@ -369,9 +360,9 @@ public class InitialiseTrial
         if (!optogenetics.Enabled)
             return;
 
-        if (TrialNumber < optogenetics.WarmupTrials)
+        if (trialsDrawn < optogenetics.WarmupTrials)
         {
-            Console.WriteLine("Optogenetics warmup: trial " + (TrialNumber + 1) + "/" + optogenetics.WarmupTrials + " - no stimulation");
+            Console.WriteLine("Optogenetics warmup: trial " + (trialsDrawn + 1) + "/" + optogenetics.WarmupTrials + " - no stimulation");
             return;
         }
         // Check if Zapit conditions are available
@@ -711,9 +702,10 @@ public class InitialiseTrial
 public class Trial
 {
     // Provenance
-    public int rngSeedUsed;  // effective RNG seed for this experiment's draw stream (config rngSeed + offset, or random)
+    public int rngSeedUsed;  // effective RNG seed for this experiment's draw stream (config rngSeed, or random)
 
     // TrialStructure
+    public int trialNumber;  // the trial's number in the experiment, from 1 (repeats count)
     public int trialType;
     public double RewardProbability;  // Probability of reward delivery for this trial (used for random reward assignment in conflict and neutral trials)
     public bool IsRewarded;

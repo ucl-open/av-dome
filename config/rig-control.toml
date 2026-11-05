@@ -19,18 +19,16 @@ outcome = "outcome"                # the trial's result, as named under [trials.
 choice = "choice"                  # the side the mouse chose: Left, Right or NoResponse
 target = "target"                  # the side that was right: Left or Right
 two_spout = "bothSpouts"           # True when both spouts were offered (performance counts only these)
-auto = "autoReward"                # True when the reward was given automatically
 type = "trialType"                 # the trial type, for "Performance by Trial Type"
-type_metric = "trial_type"         # the status metric that is the trial type: Current Trial names it below
-onset = "stimulusOnsetSeconds"     # stimulus onset, Harp seconds (licks are aligned to it)
-end = "Seconds"                    # the trial's end, Harp seconds
+type_metric = "trialType"          # the status metric that is the trial type: Current Trial names it below
+onset = "stimulusOnsetTime"        # stimulus onset, Harp seconds (licks are aligned to it)
+end = "Seconds"                    # when the outcome was known, Harp seconds
 
-# What each outcome means: correct, incorrect, auto (auto-rewarded after an error) or none.
+# What each outcome means: correct, incorrect or none.
 # Performance = correct / (correct + incorrect), two-spout trials only, as production computed it.
 [trials.outcomes]
 Correct = "correct"
 Incorrect = "incorrect"
-IncorrectAutoRewarded = "auto"
 NoResponse = "none"
 
 # Names for trial types on the charts; a type not named here shows as "Type 0", "Type 1"...
@@ -79,12 +77,11 @@ right = "LicketySplit-Right"
 # The workflow's status metrics, shown in a line under the tiles while it runs.
 # Each line: the workflow's metric name = the label shown. A metric not listed is not shown.
 [metrics]
-target_side = "Target"
-trial_type = "Trial Type"
-visual_azimuth = "Visual (°)"
-audio_azimuth = "Audio (°)"
-reward_size_ul = "Reward (µl)"
-auto_reward = "Auto Reward"
+target = "Target"
+trialType = "Trial Type"
+visualAzimuth = "Visual (°)"
+audioAzimuth = "Audio (°)"
+rewardSizeUl = "Reward (µl)"
 
 # ---- Parameters ------------------------------------------------------------------------------
 # Shown in this order. Each field optional:

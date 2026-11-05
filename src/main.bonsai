@@ -2470,7 +2470,7 @@
       </Expression>
       <Expression xsi:type="GroupWorkflow">
         <Name>Declarations</Name>
-        <Description>Experiment-wide subjects the other groups share: TrialCount (from 0), whether the steppers are zeroed, the decision variable, the visual azimuth (start and current), and the Zapit command and reply streams.</Description>
+        <Description>Experiment-wide subjects the other groups share: TrialCount (from 0), TrialRow (each trial's BonsaiData_Trial row, built in ExecuteTrial when the choice is made and replayed to the experiment logs), whether the steppers are zeroed, the decision variable, the visual azimuth (start and current), and the Zapit command and reply streams.</Description>
         <Workflow>
           <Nodes>
             <Expression xsi:type="Combinator">
@@ -2498,6 +2498,9 @@
             </Expression>
             <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:ZapitReply">
               <rx:Name>ZapitReplies</rx:Name>
+            </Expression>
+            <Expression xsi:type="rx:ReplaySubject" TypeArguments="harp:Timestamped(p1:TrialRow)">
+              <rx:Name>TrialRow</rx:Name>
             </Expression>
           </Nodes>
           <Edges>
@@ -2883,7 +2886,7 @@
       </Expression>
       <Expression xsi:type="GroupWorkflow">
         <Name>InitialiseTrials</Name>
-        <Description>At Go: reads the task file the controller named, applies its overrides, publishes TaskConfig and draws the first trial (thisTrialData).</Description>
+        <Description>At Go: reads the task file the controller named, applies its overrides and publishes TaskConfig. Declares thisTrialData, the current trial, which TrialLoop's DrawTrial fills.</Description>
         <Workflow>
           <Nodes>
             <Expression xsi:type="Annotation">
@@ -2940,33 +2943,8 @@
             <Expression xsi:type="rx:AsyncSubject">
               <Name>TaskConfig</Name>
             </Expression>
-            <Expression xsi:type="Annotation">
-              <Name>Initialised first trial</Name>
-              <Text><![CDATA[The first trial, from the task configuration and the controller's TrainingStage; later trials come from RedefineTrialData.]]></Text>
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>TaskConfig</Name>
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>TrainingStage</Name>
-            </Expression>
-            <Expression xsi:type="PropertyMapping">
-              <PropertyMappings>
-                <Property Name="trainingStageId" />
-              </PropertyMappings>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p1:InitialiseTrial">
-                <p1:trainingStageId>1</p1:trainingStageId>
-                <p1:TrialType>-1</p1:TrialType>
-                <p1:WasCorrect>true</p1:WasCorrect>
-                <p1:WasTimeout>false</p1:WasTimeout>
-                <p1:SeedOffset>0</p1:SeedOffset>
-                <p1:TrialNumber>0</p1:TrialNumber>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="rx:BehaviorSubject">
-              <Name>thisTrialData</Name>
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:Trial">
+              <rx:Name>thisTrialData</rx:Name>
             </Expression>
           </Nodes>
           <Edges>
@@ -2984,17 +2962,12 @@
             <Edge From="11" To="12" Label="Source5" />
             <Edge From="12" To="13" Label="Source1" />
             <Edge From="13" To="14" Label="Source1" />
-            <Edge From="15" To="16" Label="Source1" />
-            <Edge From="17" To="18" Label="Source1" />
-            <Edge From="16" To="19" Label="Source1" />
-            <Edge From="18" To="19" Label="Source2" />
-            <Edge From="19" To="20" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
       <Expression xsi:type="GroupWorkflow">
         <Name>Status</Name>
-        <Description>The current trial's facts, reported to the controller as metrics (ReportMetric; the latest value of each is in status): target_side, auto_reward, trial_type, visual_azimuth, audio_azimuth and reward_size_ul. Counts, water, licks and performance are not computed here: rig-control computes them from BonsaiData_Trial, BonsaiData_Async and the LicketySplit lick files (register 32). Also sets RewardUl, the size a manual reward uses.</Description>
+        <Description>The current trial's facts, reported to the controller as metrics (ReportMetric; the latest value of each is in status), named as BonsaiData_Trial's columns: target, trialType, visualAzimuth, audioAzimuth (as drawn; the row has the speaker that played) and rewardSizeUl. Counts, water, licks and performance are not computed here: rig-control computes them from BonsaiData_Trial, BonsaiData_Async and the LicketySplit lick files (register 32). Also sets RewardUl, the size a manual reward uses.</Description>
         <Workflow>
           <Nodes>
             <Expression xsi:type="SubscribeSubject">
@@ -3005,15 +2978,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:ReportMetric">
-                <orcl:Name>target_side</orcl:Name>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="MemberSelector">
-              <Selector>autoReward</Selector>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="orcl:ReportMetric">
-                <orcl:Name>auto_reward</orcl:Name>
+                <orcl:Name>target</orcl:Name>
               </Combinator>
             </Expression>
             <Expression xsi:type="MemberSelector">
@@ -3021,7 +2986,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:ReportMetric">
-                <orcl:Name>trial_type</orcl:Name>
+                <orcl:Name>trialType</orcl:Name>
               </Combinator>
             </Expression>
             <Expression xsi:type="MemberSelector">
@@ -3029,7 +2994,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:ReportMetric">
-                <orcl:Name>visual_azimuth</orcl:Name>
+                <orcl:Name>visualAzimuth</orcl:Name>
               </Combinator>
             </Expression>
             <Expression xsi:type="MemberSelector">
@@ -3037,7 +3002,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:ReportMetric">
-                <orcl:Name>audio_azimuth</orcl:Name>
+                <orcl:Name>audioAzimuth</orcl:Name>
               </Combinator>
             </Expression>
             <Expression xsi:type="MemberSelector">
@@ -3045,7 +3010,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:ReportMetric">
-                <orcl:Name>reward_size_ul</orcl:Name>
+                <orcl:Name>rewardSizeUl</orcl:Name>
               </Combinator>
             </Expression>
             <Expression xsi:type="MemberSelector">
@@ -3068,8 +3033,6 @@
             <Edge From="9" To="10" Label="Source1" />
             <Edge From="0" To="11" Label="Source1" />
             <Edge From="11" To="12" Label="Source1" />
-            <Edge From="0" To="13" Label="Source1" />
-            <Edge From="13" To="14" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
@@ -4643,100 +4606,29 @@
                 </Edges>
               </Workflow>
             </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>StartAuditoryStimulus</Name>
-            </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
-              <Name>Timestamp</Name>
-            </Expression>
-            <Expression xsi:type="rx:BehaviorSubject">
-              <Name>StimulusOnset</Name>
-              <Description>Each stimulus onset (StartAuditoryStimulus) with the Harp time it fired at, stamped here, from Ready, so the experiment logs, which start once the experiment folder exists after trial 1 has begun, read trial 1's true time instead of the time they subscribed.</Description>
-            </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogAsync.bonsai" />
             <Expression xsi:type="SubscribeSubject">
               <Name>PathPrefix</Name>
             </Expression>
             <Expression xsi:type="rx:SelectMany">
               <Name>ExperimentLogs</Name>
-              <Description>Starts every experiment log once LogControllerLogic publishes PathPrefix. TrialParameters writes BonsaiData_Trial (LogTrial): one row per trial, what was drawn for it and its outcome together, with stimulusOnsetSeconds, the Harp time of that trial's stimulus onset (StimulusOnset; NaN until the first). Its columns are named as lib-open-rigs' lab_names.yml allows (check-bonsai holds them to it); settings that are the same throughout the experiment are not columns, being in TaskConfig and the manifest's settings at Go, and the RNG seed is logged once, as the RngSeed event in BonsaiData_Async. Subjects that already hold a value (BehaviorSubject, AsyncSubject) hand it to the late subscriber. Values set at startup, such as the Zapit startup replies and the first trial draw, are therefore logged when the experiment logs start, about a second after Go, with that time. Add new loggers inside this group.</Description>
+              <Description>Starts every experiment log once LogControllerLogic publishes PathPrefix. TrialParameters writes BonsaiData_Trial (LogTrial): one row per trial, built in ExecuteTrial when the choice is made (TrialRow, a ReplaySubject, so rows made before the folder exists are written too): what was drawn for it, the choice, its outcome, the speaker that played, and two Harp times, stimulusOnsetTime and choiceTime, with Seconds the time the outcome was known. Its columns are named and typed as lib-open-rigs' lab_names.yml allows (check-bonsai holds them to it); settings that are the same throughout the experiment are not columns, being in TaskConfig and the manifest's settings at Go, and the RNG seed is logged once, as the RngSeed event in BonsaiData_Async. Subjects that already hold a value (BehaviorSubject, AsyncSubject) hand it to the late subscriber. Values set at startup, such as the Zapit startup replies and the first trial draw, are therefore logged when the experiment logs start, about a second after Go, with that time. Add new loggers inside this group.</Description>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="GroupWorkflow">
                     <Name>TrialParameters</Name>
+                    <Description>Writes each trial's row (TrialRow, built in ExecuteTrial when the choice is made, stamped then) into BonsaiData_Trial.</Description>
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="SubscribeSubject">
-                          <Name>ResponseData</Name>
-                        </Expression>
-                        <Expression xsi:type="SubscribeSubject">
-                          <Name>thisTrialData</Name>
-                        </Expression>
-                        <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="rx:Zip" />
-                        </Expression>
-                        <Expression xsi:type="scr:ExpressionTransform">
-                          <scr:Expression>new(
-    Item1.Item1.TrialCnt as trialNumber,
-    Item1.Item2.trialType as trialType,
-    Item1.Item2.targetSide as target,
-    Item1.Item1.Response as choice,
-    Item1.Item1.CorrectResponse as outcome,
-    Item1.Item2.autoReward as autoReward,
-    Item1.Item2.BothSpouts as bothSpouts,
-    Item2 as stimulusOnsetSeconds,
-    Item1.Item2.RewardSizeInUl as rewardSize,
-    Item1.Item2.IsRewarded as rewardIfCorrect,
-    Item1.Item2.largeReward as largeReward,
-    Item1.Item2.IsRepeat as isRepeat,
-    Item1.Item2.RepeatCount as repeatCount,
-    Item1.Item2.ITI as itiDuration,
-    Item1.Item2.Quiescent as quiescentDuration,
-    Item1.Item2.visualAzimuth as visualAzimuth,
-    Item1.Item2.visualElevation as visualElevation,
-    Item1.Item2.visualContrast as visualContrast,
-    Item1.Item2.visualPhase as visualPhase,
-    Item1.Item2.audioAzimuth as audioAzimuth,
-    Item1.Item2.audioElevation as audioElevation,
-    Item1.Item2.audioWaveformIdx as audioWaveformIndex,
-    Item1.Item2.OptogeneticEnabled as optoStimulated,
-    Item1.Item2.OptogeneticCondition as optoCondition)</scr:Expression>
-                        </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
-                          <Name>Timestamp</Name>
+                          <Name>TrialRow</Name>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogTrial.bonsai" />
                         <Expression xsi:type="WorkflowOutput" />
-                        <Expression xsi:type="SubscribeSubject">
-                          <Name>StimulusOnset</Name>
-                        </Expression>
-                        <Expression xsi:type="MemberSelector">
-                          <Selector>Seconds</Selector>
-                        </Expression>
-                        <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="DoubleProperty">
-                            <Value>NaN</Value>
-                          </Combinator>
-                        </Expression>
-                        <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="rx:Merge" />
-                        </Expression>
-                        <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="rx:WithLatestFrom" />
-                        </Expression>
                       </Nodes>
                       <Edges>
-                        <Edge From="0" To="2" Label="Source1" />
-                        <Edge From="1" To="2" Label="Source2" />
-                        <Edge From="2" To="11" Label="Source1" />
-                        <Edge From="11" To="3" Label="Source1" />
-                        <Edge From="3" To="4" Label="Source1" />
-                        <Edge From="4" To="5" Label="Source1" />
-                        <Edge From="5" To="6" Label="Source1" />
-                        <Edge From="7" To="8" Label="Source1" />
-                        <Edge From="9" To="10" Label="Source1" />
-                        <Edge From="8" To="10" Label="Source2" />
-                        <Edge From="10" To="11" Label="Source2" />
+                        <Edge From="0" To="1" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
                       </Edges>
                     </Workflow>
                   </Expression>
@@ -5049,11 +4941,13 @@
                   </Expression>
                   <Expression xsi:type="MemberSelector">
                     <Name>RngSeed</Name>
-                    <Description>The RNG seed a trial was drawn with (the task file's rngSeed plus the drawing node's SeedOffset, or a random one when rngSeed is null). Two InitialiseTrial nodes draw trials, the first trial and every later one, each with its own seed, so each seed is logged once, when it first appears, as a BonsaiData_Async event (RngSeed, its value in Value) rather than on every trial row. With the task file and the settings at Go they reproduce the experiment's draws.</Description>
+                    <Description>The RNG seed the experiment's trials are drawn with (the task file's rngSeed, or a random one when rngSeed is null). One InitialiseTrial draws every trial, so the seed is logged once, from the first trial, as a BonsaiData_Async event (RngSeed, its value in Value) rather than on every trial row. With the task file and the settings at Go they reproduce the experiment's draws.</Description>
                     <Selector>rngSeedUsed</Selector>
                   </Expression>
                   <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Distinct" />
+                    <Combinator xsi:type="rx:Take">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="orl:CreateAsyncEvent">
@@ -5201,196 +5095,69 @@
             </Expression>
           </Nodes>
           <Edges>
+            <Edge From="2" To="3" Label="Source1" />
+            <Edge From="4" To="5" Label="Source1" />
             <Edge From="5" To="6" Label="Source1" />
-            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="6" To="7" Label="Source1" />
             <Edge From="8" To="9" Label="Source1" />
             <Edge From="9" To="10" Label="Source1" />
-            <Edge From="11" To="12" Label="Source1" />
-            <Edge From="12" To="13" Label="Source1" />
-            <Edge From="13" To="14" Label="Source1" />
-            <Edge From="17" To="18" Label="Source1" />
-            <Edge From="18" To="19" Label="Source1" />
-            <Edge From="15" To="22" Label="Source1" />
+            <Edge From="10" To="11" Label="Source1" />
+            <Edge From="14" To="15" Label="Source1" />
+            <Edge From="15" To="16" Label="Source1" />
+            <Edge From="12" To="19" Label="Source1" />
+            <Edge From="19" To="20" Label="Source1" />
+            <Edge From="20" To="13" Label="Source1" />
+            <Edge From="13" To="21" Label="Source1" />
             <Edge From="22" To="23" Label="Source1" />
-            <Edge From="23" To="16" Label="Source1" />
-            <Edge From="16" To="24" Label="Source1" />
+            <Edge From="23" To="24" Label="Source1" />
+            <Edge From="24" To="25" Label="Source1" />
             <Edge From="25" To="26" Label="Source1" />
-            <Edge From="26" To="27" Label="Source1" />
-            <Edge From="27" To="28" Label="Source1" />
-            <Edge From="28" To="29" Label="Source1" />
-            <Edge From="1" To="2" Label="Source1" />
-            <Edge From="2" To="3" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
       <Expression xsi:type="GroupWorkflow">
         <Name>TrialLoop</Name>
-        <Description>The trial loop. InitialiseTrials publishes trial 1 into thisTrialData at Go; ArmZapit and StartLaser prepare and pulse Zapit, ExecuteTrial runs the trial and publishes its ResponseData; RedefineTrialData then draws the next trial from the task file, the stage and the outcome, and SetTrialVars resets the per-trial state. Runs only after Go (SubscribeWhen on StartExperiment).</Description>
+        <Description>The trial loop. DrawTrial, one InitialiseTrial for the whole experiment, draws trial 1 into thisTrialData when TaskConfig is read at Go and each later trial from the last one's outcome when its ResponseData arrives; SetTrialVars resets the per-trial state; ArmZapit and StartLaser prepare and pulse Zapit, and ExecuteTrial runs the trial, publishes its row to TrialRow when the choice is made and its ResponseData after the ITI. Runs only after Go (SubscribeWhen on StartExperiment).</Description>
         <Workflow>
           <Nodes>
             <Expression xsi:type="SubscribeSubject">
+              <Name>TaskConfig</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="StringProperty">
+                <Value />
+              </Combinator>
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
               <Name>ResponseData</Name>
             </Expression>
-            <Expression xsi:type="rx:SelectMany">
-              <Name>RedefineTrialData</Name>
-              <Description>Each response ends a trial: draws the next one from the task configuration, the stage and the outcome (repeat rules), and publishes it as thisTrialData.</Description>
-              <Workflow>
-                <Nodes>
-                  <Expression xsi:type="WorkflowInput">
-                    <Name>Source1</Name>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Take">
-                      <rx:Count>1</rx:Count>
-                    </Combinator>
-                  </Expression>
-                  <Expression xsi:type="rx:AsyncSubject">
-                    <Name>source</Name>
-                  </Expression>
-                  <Expression xsi:type="SubscribeSubject">
-                    <Name>source</Name>
-                  </Expression>
-                  <Expression xsi:type="ExternalizedMapping">
-                    <Property Name="SeedOffset" />
-                  </Expression>
-                  <Expression xsi:type="rx:SelectMany">
-                    <Name>RedefineTrial</Name>
-                    <Workflow>
-                      <Nodes>
-                        <Expression xsi:type="SubscribeSubject">
-                          <Name>TaskConfig</Name>
-                        </Expression>
-                        <Expression xsi:type="Annotation">
-                          <Name>Without, WasCorrect doesn't get updated</Name>
-                          <Text><![CDATA[Without, WasCorrect doesn't get updated]]></Text>
-                        </Expression>
-                        <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="rx:Delay">
-                            <rx:DueTime>PT0.1S</rx:DueTime>
-                          </Combinator>
-                        </Expression>
-                        <Expression xsi:type="ExternalizedMapping">
-                          <Property Name="SeedOffset" />
-                        </Expression>
-                        <Expression xsi:type="SubscribeSubject">
-                          <Name>TrainingStage</Name>
-                        </Expression>
-                        <Expression xsi:type="PropertyMapping">
-                          <PropertyMappings>
-                            <Property Name="trainingStageId" />
-                          </PropertyMappings>
-                        </Expression>
-                        <Expression xsi:type="WorkflowInput">
-                          <Name>Source1</Name>
-                        </Expression>
-                        <Expression xsi:type="MemberSelector">
-                          <Selector>CorrectResponse</Selector>
-                        </Expression>
-                        <Expression xsi:type="Equal">
-                          <Operand xsi:type="StringProperty">
-                            <Value>Correct</Value>
-                          </Operand>
-                        </Expression>
-                        <Expression xsi:type="Equal">
-                          <Operand xsi:type="StringProperty">
-                            <Value>IncorrectAutoRewarded</Value>
-                          </Operand>
-                        </Expression>
-                        <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="rx:Zip" />
-                        </Expression>
-                        <Expression xsi:type="BitwiseOr" />
-                        <Expression xsi:type="PropertyMapping">
-                          <PropertyMappings>
-                            <Property Name="WasCorrect" />
-                          </PropertyMappings>
-                        </Expression>
-                        <Expression xsi:type="Equal">
-                          <Operand xsi:type="StringProperty">
-                            <Value>NoResponse</Value>
-                          </Operand>
-                        </Expression>
-                        <Expression xsi:type="PropertyMapping">
-                          <PropertyMappings>
-                            <Property Name="WasTimeout" />
-                          </PropertyMappings>
-                        </Expression>
-                        <Expression xsi:type="SubscribeSubject">
-                          <Name>TrialCount</Name>
-                        </Expression>
-                        <Expression xsi:type="PropertyMapping">
-                          <PropertyMappings>
-                            <Property Name="TrialNumber" />
-                          </PropertyMappings>
-                        </Expression>
-                        <Expression xsi:type="Combinator">
-                          <Combinator xsi:type="p1:InitialiseTrial">
-                            <p1:trainingStageId>4</p1:trainingStageId>
-                            <p1:TrialType>-1</p1:TrialType>
-                            <p1:WasCorrect>false</p1:WasCorrect>
-                            <p1:WasTimeout>true</p1:WasTimeout>
-                            <p1:SeedOffset>1</p1:SeedOffset>
-                            <p1:TrialNumber>344</p1:TrialNumber>
-                          </Combinator>
-                        </Expression>
-                        <Expression xsi:type="WorkflowOutput" />
-                        <Expression xsi:type="MemberSelector">
-                          <Selector>trialType</Selector>
-                        </Expression>
-                        <Expression xsi:type="MemberSelector">
-                          <Selector>targetSide</Selector>
-                        </Expression>
-                        <Expression xsi:type="MemberSelector">
-                          <Selector>visualContrast</Selector>
-                        </Expression>
-                      </Nodes>
-                      <Edges>
-                        <Edge From="0" To="2" Label="Source1" />
-                        <Edge From="1" To="2" Label="Source2" />
-                        <Edge From="2" To="17" Label="Source1" />
-                        <Edge From="3" To="17" Label="Source2" />
-                        <Edge From="4" To="5" Label="Source1" />
-                        <Edge From="5" To="17" Label="Source3" />
-                        <Edge From="6" To="7" Label="Source1" />
-                        <Edge From="7" To="8" Label="Source1" />
-                        <Edge From="7" To="9" Label="Source1" />
-                        <Edge From="7" To="13" Label="Source1" />
-                        <Edge From="8" To="10" Label="Source1" />
-                        <Edge From="9" To="10" Label="Source2" />
-                        <Edge From="10" To="11" Label="Source1" />
-                        <Edge From="11" To="12" Label="Source1" />
-                        <Edge From="12" To="17" Label="Source4" />
-                        <Edge From="13" To="14" Label="Source1" />
-                        <Edge From="14" To="17" Label="Source5" />
-                        <Edge From="15" To="16" Label="Source1" />
-                        <Edge From="16" To="17" Label="Source6" />
-                        <Edge From="17" To="18" Label="Source1" />
-                        <Edge From="17" To="19" Label="Source1" />
-                        <Edge From="17" To="20" Label="Source1" />
-                        <Edge From="17" To="21" Label="Source1" />
-                      </Edges>
-                    </Workflow>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Take">
-                      <rx:Count>1</rx:Count>
-                    </Combinator>
-                  </Expression>
-                  <Expression xsi:type="WorkflowOutput" />
-                  <Expression xsi:type="MemberSelector">
-                    <Selector>trialType</Selector>
-                  </Expression>
-                </Nodes>
-                <Edges>
-                  <Edge From="0" To="1" Label="Source1" />
-                  <Edge From="1" To="2" Label="Source1" />
-                  <Edge From="3" To="5" Label="Source1" />
-                  <Edge From="4" To="5" Label="Source2" />
-                  <Edge From="5" To="6" Label="Source1" />
-                  <Edge From="6" To="7" Label="Source1" />
-                  <Edge From="6" To="8" Label="Source1" />
-                </Edges>
-              </Workflow>
+            <Expression xsi:type="MemberSelector">
+              <Selector>CorrectResponse</Selector>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Merge" />
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>TaskConfig</Name>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:CombineLatest" />
+            </Expression>
+            <Expression xsi:type="SubscribeSubject">
+              <Name>TrainingStage</Name>
+            </Expression>
+            <Expression xsi:type="PropertyMapping">
+              <PropertyMappings>
+                <Property Name="trainingStageId" />
+              </PropertyMappings>
+            </Expression>
+            <Expression xsi:type="Combinator">
+              <Name>DrawTrial</Name>
+              <Description>Draws every trial of the experiment: the first when TaskConfig is read at Go (previous outcome empty), each later one when the last trial's ResponseData arrives, after its ITI, from that outcome (repeat rules), the task configuration and the controller's TrainingStage.</Description>
+              <Combinator xsi:type="p1:InitialiseTrial">
+                <p1:trainingStageId>0</p1:trainingStageId>
+                <p1:TrialType>-1</p1:TrialType>
+              </Combinator>
             </Expression>
             <Expression xsi:type="MulticastSubject">
               <Name>thisTrialData</Name>
@@ -5698,7 +5465,7 @@
             </Expression>
             <Expression xsi:type="rx:SelectMany">
               <Name>ExecuteTrial</Name>
-              <Description>One trial: the quiescent wait, the stimulus (visual, auditory or both), the response window on the lick detectors, the consequences (reward, error sound, timeout) and the inter-trial interval; ends with the trial's response data.</Description>
+              <Description>One trial: the quiescent wait, the stimulus (visual, auditory or both), the response window on the lick detectors, the consequences (reward, error sound, timeout) and the inter-trial interval; ends with the trial's response data. Each trial's stimulusOnsetTime (stamped as StartAuditoryStimulus fires) and speakerIndex (the wired speaker SpatialLookup chose) are its own subjects; BuildTrialRow makes the trial's row when Response decides the choice and publishes it to TrialRow.</Description>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="WorkflowInput">
@@ -5709,6 +5476,12 @@
                   </Expression>
                   <Expression xsi:type="rx:PublishSubject" TypeArguments="sys:String">
                     <rx:Name>StopStimuli</rx:Name>
+                  </Expression>
+                  <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Double">
+                    <rx:Name>stimulusOnsetTime</rx:Name>
+                  </Expression>
+                  <Expression xsi:type="rx:BehaviorSubject" TypeArguments="sys:Int32">
+                    <rx:Name>speakerIndex</rx:Name>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
                     <Name>trial</Name>
@@ -5796,6 +5569,9 @@
                                 <Combinator xsi:type="rx:Sample" />
                               </Expression>
                               <Expression xsi:type="WorkflowOutput" />
+                              <Expression xsi:type="MulticastSubject">
+                                <Name>speakerIndex</Name>
+                              </Expression>
                             </Nodes>
                             <Edges>
                               <Edge From="0" To="1" Label="Source1" />
@@ -5808,6 +5584,7 @@
                               <Edge From="7" To="9" Label="Source1" />
                               <Edge From="8" To="9" Label="Source2" />
                               <Edge From="9" To="10" Label="Source1" />
+                              <Edge From="6" To="11" Label="Source1" />
                             </Edges>
                           </Workflow>
                         </Expression>
@@ -6178,6 +5955,15 @@
                             </Edges>
                           </Workflow>
                         </Expression>
+                        <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
+                          <Name>Timestamp</Name>
+                        </Expression>
+                        <Expression xsi:type="MemberSelector">
+                          <Selector>Seconds</Selector>
+                        </Expression>
+                        <Expression xsi:type="MulticastSubject">
+                          <Name>stimulusOnsetTime</Name>
+                        </Expression>
                       </Nodes>
                       <Edges>
                         <Edge From="0" To="1" Label="Source1" />
@@ -6188,6 +5974,9 @@
                         <Edge From="6" To="7" Label="Source1" />
                         <Edge From="8" To="9" Label="Source1" />
                         <Edge From="9" To="10" Label="Source1" />
+                        <Edge From="7" To="11" Label="Source1" />
+                        <Edge From="11" To="12" Label="Source1" />
+                        <Edge From="12" To="13" Label="Source1" />
                       </Edges>
                     </Workflow>
                   </Expression>
@@ -6684,7 +6473,7 @@ Item2.Item2 as autoReward) </scr:Expression>
                                 <Text><![CDATA[0.1 and 0.5 for zapit and 2 for time to drink]]></Text>
                               </Expression>
                               <Expression xsi:type="scr:ExpressionTransform">
-                                <scr:Expression>it -0.1 -0.5 - 2.0</scr:Expression>
+                                <scr:Expression>it &gt; 2.6 ? it - 0.1 - 0.5 - 2.0 : 0.0</scr:Expression>
                               </Expression>
                               <Expression xsi:type="PropertyMapping">
                                 <PropertyMappings>
@@ -7190,36 +6979,94 @@ Item2.Item2 as autoReward) </scr:Expression>
                       </Edges>
                     </Workflow>
                   </Expression>
+                  <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
+                    <Name>Timestamp</Name>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>trial</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="DoubleProperty">
+                      <Value>NaN</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>stimulusOnsetTime</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Merge" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="IntProperty">
+                      <Value>-1</Value>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>speakerIndex</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Merge" />
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>SpeakerLocations</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:CombineLatest" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:WithLatestFrom" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Name>BuildTrialRow</Name>
+                    <Description>The trial's BonsaiData_Trial row, built when the choice is made (stamped then, as Seconds and, unless NoResponse, choiceTime), before the drink time, error timeout and ITI, so Stop during them loses no answered trial.</Description>
+                    <Combinator xsi:type="p1:CreateTrialRow" />
+                  </Expression>
+                  <Expression xsi:type="MulticastSubject">
+                    <Name>TrialRow</Name>
+                  </Expression>
                 </Nodes>
                 <Edges>
                   <Edge From="0" To="1" Label="Source1" />
-                  <Edge From="3" To="4" Label="Source1" />
-                  <Edge From="5" To="10" Label="Source1" />
-                  <Edge From="6" To="7" Label="Source1" />
-                  <Edge From="7" To="8" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source1" />
+                  <Edge From="7" To="12" Label="Source1" />
                   <Edge From="8" To="9" Label="Source1" />
-                  <Edge From="9" To="10" Label="Source2" />
-                  <Edge From="10" To="16" Label="Source1" />
-                  <Edge From="11" To="13" Label="Source1" />
-                  <Edge From="12" To="13" Label="Source2" />
-                  <Edge From="13" To="14" Label="Source1" />
-                  <Edge From="14" To="15" Label="Source1" />
-                  <Edge From="15" To="16" Label="Source2" />
-                  <Edge From="16" To="23" Label="Source2" />
-                  <Edge From="17" To="18" Label="Source1" />
-                  <Edge From="18" To="23" Label="Source1" />
+                  <Edge From="9" To="10" Label="Source1" />
+                  <Edge From="10" To="11" Label="Source1" />
+                  <Edge From="11" To="12" Label="Source2" />
+                  <Edge From="12" To="18" Label="Source1" />
+                  <Edge From="13" To="15" Label="Source1" />
+                  <Edge From="14" To="15" Label="Source2" />
+                  <Edge From="15" To="16" Label="Source1" />
+                  <Edge From="16" To="17" Label="Source1" />
+                  <Edge From="17" To="18" Label="Source2" />
+                  <Edge From="18" To="25" Label="Source2" />
                   <Edge From="19" To="20" Label="Source1" />
-                  <Edge From="20" To="21" Label="Source1" />
+                  <Edge From="20" To="25" Label="Source1" />
                   <Edge From="21" To="22" Label="Source1" />
-                  <Edge From="22" To="23" Label="Source3" />
+                  <Edge From="22" To="23" Label="Source1" />
                   <Edge From="23" To="24" Label="Source1" />
-                  <Edge From="24" To="25" Label="Source1" />
-                  <Edge From="27" To="28" Label="Source1" />
-                  <Edge From="28" To="29" Label="Source1" />
+                  <Edge From="24" To="25" Label="Source3" />
+                  <Edge From="25" To="26" Label="Source1" />
+                  <Edge From="26" To="27" Label="Source1" />
                   <Edge From="29" To="30" Label="Source1" />
                   <Edge From="30" To="31" Label="Source1" />
                   <Edge From="31" To="32" Label="Source1" />
-                  <Edge From="16" To="17" Label="Source1" />
+                  <Edge From="32" To="33" Label="Source1" />
+                  <Edge From="33" To="34" Label="Source1" />
+                  <Edge From="18" To="19" Label="Source1" />
+                  <Edge From="18" To="35" Label="Source1" />
+                  <Edge From="35" To="45" Label="Source1" />
+                  <Edge From="36" To="44" Label="Source1" />
+                  <Edge From="37" To="39" Label="Source1" />
+                  <Edge From="38" To="39" Label="Source2" />
+                  <Edge From="39" To="44" Label="Source2" />
+                  <Edge From="40" To="42" Label="Source1" />
+                  <Edge From="41" To="42" Label="Source2" />
+                  <Edge From="42" To="44" Label="Source3" />
+                  <Edge From="43" To="44" Label="Source4" />
+                  <Edge From="44" To="45" Label="Source2" />
+                  <Edge From="45" To="46" Label="Source1" />
+                  <Edge From="46" To="47" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -7252,18 +7099,26 @@ Item2.Item2 as autoReward) </scr:Expression>
             </Expression>
           </Nodes>
           <Edges>
-            <Edge From="0" To="1" Label="Source1" />
-            <Edge From="1" To="2" Label="Source1" />
-            <Edge From="3" To="4" Label="Source1" />
-            <Edge From="5" To="6" Label="Source1" />
-            <Edge From="6" To="7" Label="Source1" />
-            <Edge From="7" To="8" Label="Source1" />
-            <Edge From="10" To="11" Label="Source1" />
-            <Edge From="11" To="15" Label="Source1" />
-            <Edge From="12" To="13" Label="Source1" />
+            <Edge From="11" To="12" Label="Source1" />
             <Edge From="13" To="14" Label="Source1" />
-            <Edge From="14" To="15" Label="Source2" />
-            <Edge From="8" To="9" Label="Source1" />
+            <Edge From="14" To="15" Label="Source1" />
+            <Edge From="15" To="16" Label="Source1" />
+            <Edge From="18" To="19" Label="Source1" />
+            <Edge From="19" To="23" Label="Source1" />
+            <Edge From="20" To="21" Label="Source1" />
+            <Edge From="21" To="22" Label="Source1" />
+            <Edge From="22" To="23" Label="Source2" />
+            <Edge From="16" To="17" Label="Source1" />
+            <Edge From="17" To="18" Label="Source1" />
+            <Edge From="0" To="1" Label="Source1" />
+            <Edge From="2" To="3" Label="Source1" />
+            <Edge From="1" To="4" Label="Source1" />
+            <Edge From="3" To="4" Label="Source2" />
+            <Edge From="4" To="6" Label="Source1" />
+            <Edge From="5" To="6" Label="Source2" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="6" To="9" Label="Source1" />
+            <Edge From="8" To="9" Label="Source2" />
             <Edge From="9" To="10" Label="Source1" />
           </Edges>
         </Workflow>
