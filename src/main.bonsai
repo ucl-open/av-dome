@@ -2511,7 +2511,7 @@
       </Expression>
       <Expression xsi:type="GroupWorkflow">
         <Name>Initialization</Name>
-        <Description>The session controller (OpenRigs.Control, SessionControl), in place of the Bonsai.Gui window: SubjectId (the mouse) and SessionId from this node's properties or the command line (--property:SubjectId=...), the settings a controller may change until Go (TrainingStage, TaskFile, RewardSizeUl, ItiMin, ItiMax, Zapit, StepSize) and the commands it may send while ready or recording, over TCP 5561 (the rig agent relays). The workflow starts into ready mode: devices connected, spouts zeroed and at this mouse's positions, live view streaming, nothing recorded, and reports Ready once the steppers are zeroed. Go publishes RunSettings (SubjectId, SessionId, TrainingStage), which logging and the trial loop wait for, sets StartSession true (the old Start button), and names the task file (TaskFilePath). SubjectId is also published at Start, for this mouse's spout positions file. StepSize follows the controller live (StepperStepSize); RewardUl is what RewardLeft and RewardRight deliver: 3 ul until RewardSizeUl is set or the first trial gives its size.</Description>
+        <Description>The session controller (OpenRigs.Control, ExperimentControl), in place of the Bonsai.Gui window: SubjectId (the mouse) and SessionId from this node's properties or the command line (--property:SubjectId=...), the settings a controller may change until Go (TrainingStage, TaskFile, RewardSizeUl, ItiMin, ItiMax, Zapit, StepSize) and the commands it may send while ready or recording, over TCP 5561 (the rig agent relays). The workflow starts into ready mode: devices connected, spouts zeroed and at this mouse's positions, live view streaming, nothing recorded, and reports Ready once the steppers are zeroed. Go publishes RunSettings (SubjectId, SessionId, TrainingStage), which logging and the trial loop wait for, sets StartSession true (the old Start button), and names the task file (TaskFilePath). SubjectId is also published at Start, for this mouse's spout positions file. StepSize follows the controller live (StepperStepSize); RewardUl is what RewardLeft and RewardRight deliver: 3 ul until RewardSizeUl is set or the first trial gives its size.</Description>
         <Workflow>
           <Nodes>
             <Expression xsi:type="ExternalizedMapping">
@@ -2541,7 +2541,7 @@
                 <Property Name="SubjectId" />
               </PropertyMappings>
             </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Control:SessionControl.bonsai">
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Control:ExperimentControl.bonsai">
               <SubjectId>UNMAPPED</SubjectId>
               <SessionId />
               <ControlEndpoint>@tcp://127.0.0.1:5561</ControlEndpoint>
@@ -2661,19 +2661,19 @@
               <Combinator xsi:type="rx:SubscribeWhen" />
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>SessionGo</Name>
+              <Name>ExperimentGo</Name>
             </Expression>
             <Expression xsi:type="MemberSelector">
               <Selector>SubjectId</Selector>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>SessionGo</Name>
+              <Name>ExperimentGo</Name>
             </Expression>
             <Expression xsi:type="MemberSelector">
               <Selector>SessionId</Selector>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>SessionGo</Name>
+              <Name>ExperimentGo</Name>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:ParameterValue">
@@ -2727,7 +2727,7 @@
               <Name>TrainingStage</Name>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>SessionGo</Name>
+              <Name>ExperimentGo</Name>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:ParameterValue">
@@ -2750,7 +2750,7 @@
               <Name>StartSession</Name>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>SessionGo</Name>
+              <Name>ExperimentGo</Name>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="BooleanProperty">
@@ -2900,7 +2900,7 @@
               <p6:Type xsi:type="TypeMapping" TypeArguments="p6:UclOpenAvDomeTaskLogic" />
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>SessionGo</Name>
+              <Name>ExperimentGo</Name>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:ParameterValue">
@@ -2908,7 +2908,7 @@
               </Combinator>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>SessionGo</Name>
+              <Name>ExperimentGo</Name>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:ParameterValue">
@@ -2916,7 +2916,7 @@
               </Combinator>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>SessionGo</Name>
+              <Name>ExperimentGo</Name>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:ParameterValue">
@@ -2924,7 +2924,7 @@
               </Combinator>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
-              <Name>SessionGo</Name>
+              <Name>ExperimentGo</Name>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:ParameterValue">
@@ -3080,7 +3080,7 @@
           <Nodes>
             <Expression xsi:type="Annotation">
               <Name>Commands</Name>
-              <Text><![CDATA[Each command the controller may send (declared on SessionControl) raises the subject the valve and stepper logic below already listens to. Spout nudges pair as the GUI's buttons did: Left/Right Up/Down are motors 4/5, Left/Right Front/Back motors 2/3, Base Left/Right motor 1.]]></Text>
+              <Text><![CDATA[Each command the controller may send (declared on ExperimentControl) raises the subject the valve and stepper logic below already listens to. Spout nudges pair as the GUI's buttons did: Left/Right Up/Down are motors 4/5, Left/Right Front/Back motors 2/3, Base Left/Right motor 1.]]></Text>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>ControlEvents</Name>
@@ -4584,7 +4584,7 @@
       </Expression>
       <Expression xsi:type="GroupWorkflow">
         <Name>Logging</Name>
-        <Description>Everything written to the session folder: LogControllerLogic makes the folder at Go and publishes PathPrefix; SessionLogs holds every log that waits for it; BonsaiData_Async takes the controller's events and each reward from Start; RecordHarpDevices, SessionManifest and the Recording phase follow PathPrefix.</Description>
+        <Description>Everything written to the session folder: LogControllerLogic makes the folder at Go and publishes PathPrefix; ExperimentLogs holds every log that waits for it; BonsaiData_Async takes the controller's events and each reward from Start; RecordHarpDevices, ExperimentManifest and the Recording phase follow PathPrefix.</Description>
         <Workflow>
           <Nodes>
             <Expression xsi:type="GroupWorkflow">
@@ -4658,7 +4658,7 @@
               <Name>PathPrefix</Name>
             </Expression>
             <Expression xsi:type="rx:SelectMany">
-              <Name>SessionLogs</Name>
+              <Name>ExperimentLogs</Name>
               <Description>Starts every session log once LogControllerLogic publishes PathPrefix. TrialParameters writes BonsaiData_Trial (LogTrial): one row per trial, what was drawn for it and its outcome together, with stimulusOnsetSeconds, the Harp time of that trial's stimulus onset (StimulusOnset; NaN until the first). Its columns are named as lib-open-rigs' lab_names.yml allows (check-bonsai holds them to it); settings that are the same all session are not columns, being in TaskConfig and the manifest's settings at Go, and the RNG seed is logged once, as the RngSeed event in BonsaiData_Async. Subjects that already hold a value (BehaviorSubject, AsyncSubject) hand it to the late subscriber. Values set at startup, such as the Zapit startup replies and the first trial draw, are therefore logged when the session logs start, about a second after Go, with that time. Add new loggers inside this group.</Description>
               <Workflow>
                 <Nodes>
@@ -4998,7 +4998,7 @@
                   </Expression>
                   <Expression xsi:type="GroupWorkflow">
                     <Name>ZapitReplies</Name>
-                    <Description>Harp-timestamped log of every Zapit reply: the presented condition and laser state per StartStimulus, plus the last startup query reply (GetNumConditions), handed over by the ZapitReplies BehaviorSubject when SessionLogs starts.</Description>
+                    <Description>Harp-timestamped log of every Zapit reply: the presented condition and laser state per StartStimulus, plus the last startup query reply (GetNumConditions), handed over by the ZapitReplies BehaviorSubject when ExperimentLogs starts.</Description>
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="SubscribeSubject">
@@ -5163,11 +5163,11 @@
             </Expression>
             <Expression xsi:type="hd:RecordHarpDevices">
               <Name>RecordHarpDevices</Name>
-              <Description>Checks every Harp device in rig.yml at Start and records it into each session (OpenRigs.HarpDevices): the Behavior board, the timestamp generator, both stepper drivers and both Lickety Splits (each a rig.yml entry with a portName whose data the workflow publishes as &lt;Name&gt;.Data) must be on their portName with their usbSerial, or the workflow stops saying which board is where; 0.5 s after the session folder appears it asks each for a register dump on &lt;Name&gt;.Commands, which its log records; and it writes &lt;Name&gt;\&lt;Name&gt;_device.json and the register map &lt;Name&gt;\&lt;Name&gt;.yml, which SessionManifest expects (harp).</Description>
+              <Description>Checks every Harp device in rig.yml at Start and records it into each session (OpenRigs.HarpDevices): the Behavior board, the timestamp generator, both stepper drivers and both Lickety Splits (each a rig.yml entry with a portName whose data the workflow publishes as &lt;Name&gt;.Data) must be on their portName with their usbSerial, or the workflow stops saying which board is where; 0.5 s after the session folder appears it asks each for a register dump on &lt;Name&gt;.Commands, which its log records; and it writes &lt;Name&gt;\&lt;Name&gt;_device.json and the register map &lt;Name&gt;\&lt;Name&gt;.yml, which ExperimentManifest expects (harp).</Description>
               <hd:ConfigRoot>C:\Coen-Lab-Local\RigConfigs</hd:ConfigRoot>
             </Expression>
-            <Expression xsi:type="mf:SessionManifest">
-              <Name>SessionManifest</Name>
+            <Expression xsi:type="mf:ExperimentManifest">
+              <Name>ExperimentManifest</Name>
               <Description>Writes manifest.json into the session folder (OpenRigs.Manifest), finding PathPrefix itself: once when the folder appears and again when the workflow stops. No run is connected: a session ends with the controller's Stop, recorded as stopped with its reason. It records the machine, this repo's commit, Bonsai's command line, the settings at Go (SubjectId, SessionId and every parameter), rig.yml's path and hash, and what the session must leave: a folder for each device in rig.yml (BehaviorBoard-Main, TimestampGeneratorGen3-Main, StepperDriver-A/B, LicketySplit-Left/Right, Camera-Face/Pupil/Body), the record and register map RecordHarpDevices writes for each Harp device (harp), RigSchema, TaskSchema and BonsaiData (BonsaiData_Trial and BonsaiData_Async), which the overnight copy (rig-sync) alarms on if missing.</Description>
               <mf:IngestScript>av-dome</mf:IngestScript>
               <mf:ConfigFiles>C:\Coen-Lab-Local\RigConfigs\%COMPUTERNAME%\rig.yml</mf:ConfigFiles>

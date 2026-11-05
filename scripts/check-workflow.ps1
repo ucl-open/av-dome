@@ -10,7 +10,7 @@ param(
 #      subscribes anything: every type, selector, include, subject and mapping. Each is built
 #      against config\rig-template.yml filled in as a rig's, with every node that reads rig.yml
 #      pointed at that copy, and for main.bonsai what RecordHarpDevices made from it, what
-#      SessionManifest expects, and that each window in config\main.layout (once there is one)
+#      ExperimentManifest expects, and that each window in config\main.layout (once there is one)
 #      sits on a node it fits are checked.
 #   3. Runs RigDevice on the template: every name main.bonsai asks for is there, a wrong name is
 #      refused, and every key in the template reaches the RigSchema JSON the session logs.
@@ -88,7 +88,7 @@ if ($Step -eq 'Build') {
     $rigYml = Write-FilledTemplate
     $configRoot = Join-Path $bin 'config'
     # Every node's own copy of where rig.yml is (ResolveRigConfigDirectory, RecordHarpDevices,
-    # StreamDevices; SessionManifest's ConfigFiles) is typed by hand into the workflow: they must
+    # StreamDevices; ExperimentManifest's ConfigFiles) is typed by hand into the workflow: they must
     # all be the same root, and each is pointed at the filled template for this build.
     $script:roots = New-Object System.Collections.Generic.List[string]
     function Redirect-ConfigRoots($graph) {
@@ -99,8 +99,8 @@ if ($Step -eq 'Build') {
             if ($owner -and $owner.GetType().Namespace -like 'OpenRigs.*' -and $owner.GetType().Name -notlike '*Settings' -and $owner.PSObject.Properties['ConfigRoot']) {
                 $script:roots.Add("$($owner.GetType().Name)=$($owner.ConfigRoot)"); $owner.ConfigRoot = $configRoot
             }
-            if ($b.GetType().Name -eq 'SessionManifest') {
-                foreach ($file in $b.ConfigFiles -split ';') { if ($file -match '^(.*)\\%COMPUTERNAME%\\rig\.yml$') { $script:roots.Add("SessionManifest.ConfigFiles=$($Matches[1])") } }
+            if ($b.GetType().Name -eq 'ExperimentManifest') {
+                foreach ($file in $b.ConfigFiles -split ';') { if ($file -match '^(.*)\\%COMPUTERNAME%\\rig\.yml$') { $script:roots.Add("ExperimentManifest.ConfigFiles=$($Matches[1])") } }
                 $b.ConfigFiles = $rigYml
             }
             if ($b -is [Bonsai.Expressions.IWorkflowExpressionBuilder] -and $b.Workflow) { Redirect-ConfigRoots $b.Workflow }
@@ -184,9 +184,9 @@ public class BuiltObjects : System.Linq.Expressions.ExpressionVisitor {
         'RigSchema/', 'TaskSchema/', 'BonsaiData/'
     $missing = @($wantFiles | Where-Object { $expected -notcontains $_ })
     $extra = @($expected | Where-Object { $wantFiles -notcontains $_ })
-    if ($missing.Count -eq 0 -and $extra.Count -eq 0) { "  ok    SessionManifest expects the $($expected.Count) folders and files of a session" }
+    if ($missing.Count -eq 0 -and $extra.Count -eq 0) { "  ok    ExperimentManifest expects the $($expected.Count) folders and files of a session" }
     else {
-        "  FAIL  SessionManifest expects '$($expected -join ', ')'; missing: $($missing -join ', '); extra: $($extra -join ', ')"; $failed++
+        "  FAIL  ExperimentManifest expects '$($expected -join ', ')'; missing: $($missing -join ', '); extra: $($extra -join ', ')"; $failed++
         if ($planField) { foreach ($note in $planField.GetValue($recorder[0]).Notes) { "        its note: $note" } }
     }
     # config\main.layout's windows, on the nodes as the editor has them (coen-behaviour-box's check):
