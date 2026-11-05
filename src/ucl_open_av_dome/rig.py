@@ -5,7 +5,7 @@ from swc.aeon.schema import BaseSchema
 from open_rigs.components import ProjectionCalibration, SpeakerArray
 from open_rigs.core.rig import Rig
 from open_rigs.devices import (
-    HarpLickSpoutStage,
+    HarpStepperDriver,
     HarpTimestampGeneratorGen3,
     LicketySplit,
     StepperPositions,
@@ -59,8 +59,11 @@ class UclOpenAvDomeRig(Rig):
     timestamp_generator_gen3: Dict[str, HarpTimestampGeneratorGen3] = Field(
         description="Harp timestamp generators by name: main (TimestampGeneratorGen3-Main) syncs the boards' clocks"
     )
-    lick_spout_stage: Dict[str, HarpLickSpoutStage] = Field(
-        description="Lick spout stages by name: main (LickSpoutStage-Main), two Harp StepperDriver boards driving 5 axes"
+    stepper_driver: Dict[str, HarpStepperDriver] = Field(
+        description=(
+            "Harp StepperDriver boards by name: a and b (StepperDriver-A, StepperDriver-B) drive the lick spout "
+            "stage's 5 axes; which motor moves which axis is fixed in the workflow"
+        )
     )
     lickety_split: Dict[str, LicketySplit] = Field(
         description="Lick detectors by name: left (LicketySplit-Left) and right (LicketySplit-Right)"

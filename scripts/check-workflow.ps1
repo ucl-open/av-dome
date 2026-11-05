@@ -64,7 +64,7 @@ function Write-FilledTemplate {
     $null = New-Item -ItemType Directory -Path $rigDir -Force
     $rigYml = Join-Path $rigDir 'rig.yml'
     $template = [IO.File]::ReadAllText((Join-Path $repo 'config\rig-template.yml'))
-    $serials = 'BG01WA0E', 'AQ03WH45', 'E664C856C360B937', 'E664C856C31F4637'
+    $serials = 'BG01WA0E', 'AQ03WH45', 'AQ03WRBG', 'AQ03WW0D', 'E664C856C360B937', 'E664C856C31F4637'
     foreach ($s in $serials) { $template = ([regex]'usbSerial: CHANGE-ME').Replace($template, "usbSerial: $s", 1) }
     $template = $template.Replace('rigId: XX', 'rigId: D1').Replace('serialNumber: "00000000"', "serialNumber: '1'").Replace("rootPath: C:\Coen-Lab-Local\Acquired-Data", "rootPath: $bin").Replace('RigConfigs\CHANGE-ME\', "RigConfigs\$([Environment]::MachineName)\")
     foreach ($left in 'CHANGE-ME', 'rigId: XX', 'serialNumber: "00000000"', "rootPath: C:\Coen-Lab-Local\Acquired-Data") {
@@ -146,7 +146,7 @@ if ($Step -eq 'Build') {
             }
         }
         $branching = @($branching | Sort-Object -Unique)
-        if ($devices -eq 8 -and $branching.Count -eq 0) { "  ok    RigSetup: none of the $devices RigDevice chains branches, so rig.yml is read before any board opens" }
+        if ($devices -eq 9 -and $branching.Count -eq 0) { "  ok    RigSetup: none of the $devices RigDevice chains branches, so rig.yml is read before any board opens" }
         else { "  FAIL  RigSetup: $devices RigDevice node(s); branching upstream of one: $($branching -join '; ')"; $failed++ }
     }
     # What the build made, read from the objects in the built expression.
@@ -164,19 +164,21 @@ public class BuiltObjects : System.Linq.Expressions.ExpressionVisitor {
     $records = @($objects.Found | Where-Object { $_.GetType().FullName -eq 'OpenRigs.HarpDevices.RecordHarpDevice' })
     $got = @($records | ForEach-Object { "$($_.Name) $($_.PortName) $($_.UsbSerial) $($_.ExpectedWhoAmI)" } | Sort-Object)
     # A Lickety Split reports WhoAmI 1400 (known since OpenRigs.HarpDevices 0.1.0-local.7), so it is checked.
-    $want = @('BehaviorBoard-Main COM1 BG01WA0E 1216', 'LicketySplit-Left COM5 E664C856C360B937 1400', 'LicketySplit-Right COM6 E664C856C31F4637 1400', 'TimestampGeneratorGen3-Main COM2 AQ03WH45 1158')
-    if (($got -join '; ') -eq ($want -join '; ')) { "  ok    RecordHarpDevices records the Behavior board, the timestamp generator and both Lickety Splits from rig.yml" }
+    $want = @('BehaviorBoard-Main COM1 BG01WA0E 1216', 'LicketySplit-Left COM5 E664C856C360B937 1400', 'LicketySplit-Right COM6 E664C856C31F4637 1400', 'StepperDriver-A COM3 AQ03WRBG 1130', 'StepperDriver-B COM4 AQ03WW0D 1130', 'TimestampGeneratorGen3-Main COM2 AQ03WH45 1158')
+    if (($got -join '; ') -eq ($want -join '; ')) { "  ok    RecordHarpDevices records the Behavior board, the timestamp generator, both stepper drivers and both Lickety Splits from rig.yml" }
     else { "  FAIL  RecordHarpDevices made: $($got -join '; ')"; $failed++ }
     $dumps = @($objects.Found | Where-Object { $_.GetType().FullName -eq 'OpenRigs.HarpDevices.RequestRegisterDump' }).Count
-    if ($dumps -eq 4) { "  ok    ... and asks each for its dump on <Name>.Commands" } else { "  FAIL  $dumps dump request(s), not 4: is every board's command subject <Name>.Commands?"; $failed++ }
+    if ($dumps -eq 6) { "  ok    ... and asks each for its dump on <Name>.Commands" } else { "  FAIL  $dumps dump request(s), not 6: is every board's command subject <Name>.Commands?"; $failed++ }
     $recorder = @($objects.Found | Where-Object { $_.GetType().Name -eq 'ManifestRecorder' })
     $planField = if ($recorder.Count) { $recorder[0].GetType().GetFields([Reflection.BindingFlags]'Instance,NonPublic,Public') | Where-Object { $_.FieldType.Name -eq 'ExpectedPlan' } | Select-Object -First 1 }
     $expected = if ($planField) { @($planField.GetValue($recorder[0]).Entries | ForEach-Object { $_.Path }) } else { @() }
-    # A register map (<Name>.yml) only for a board a loaded Harp package decodes: the Behavior board and,
-    # since OpenRigs.Manifest 0.1.0-local.13 knows WhoAmI 1400, both Lickety Splits.
-    $wantFiles = 'BehaviorBoard-Main/', 'TimestampGeneratorGen3-Main/', 'LickSpoutStage-Main/', 'LicketySplit-Left/', 'LicketySplit-Right/', 'Camera-Face/', 'Camera-Pupil/', 'Camera-Body/',
+    # A register map (<Name>.yml) for every board here: a loaded Harp package decodes each (the timestamp
+    # generator's map is the lab's copy since OpenRigs.Manifest 0.1.0-local.16, as its package carries none).
+    $wantFiles = 'BehaviorBoard-Main/', 'TimestampGeneratorGen3-Main/', 'StepperDriver-A/', 'StepperDriver-B/', 'LicketySplit-Left/', 'LicketySplit-Right/', 'Camera-Face/', 'Camera-Pupil/', 'Camera-Body/',
         'BehaviorBoard-Main/BehaviorBoard-Main_device.json', 'BehaviorBoard-Main/BehaviorBoard-Main.yml',
-        'TimestampGeneratorGen3-Main/TimestampGeneratorGen3-Main_device.json',
+        'TimestampGeneratorGen3-Main/TimestampGeneratorGen3-Main_device.json', 'TimestampGeneratorGen3-Main/TimestampGeneratorGen3-Main.yml',
+        'StepperDriver-A/StepperDriver-A_device.json', 'StepperDriver-A/StepperDriver-A.yml',
+        'StepperDriver-B/StepperDriver-B_device.json', 'StepperDriver-B/StepperDriver-B.yml',
         'LicketySplit-Left/LicketySplit-Left_device.json', 'LicketySplit-Right/LicketySplit-Right_device.json',
         'LicketySplit-Left/LicketySplit-Left.yml', 'LicketySplit-Right/LicketySplit-Right.yml',
         'RigSchema/', 'TaskSchema/', 'BonsaiData/'
@@ -253,7 +255,7 @@ if ($Step -eq 'RigDevice') {
     $failed = 0
     # The names main.bonsai asks for; each reads the rig.yml group of its kind (Camera-Face reads Camera).
     $asked = [regex]::Matches((Get-Content (Join-Path $repo 'src\main.bonsai') -Raw), '<Combinator xsi:type="p2:RigDevice">\s*<p2:Name>([^<]*)</p2:Name>')
-    if ($asked.Count -ne 8) { "  FAIL  found $($asked.Count) RigDevice nodes in main.bonsai, not 8"; $failed++ }
+    if ($asked.Count -ne 9) { "  FAIL  found $($asked.Count) RigDevice nodes in main.bonsai, not 9"; $failed++ }
     foreach ($m in $asked) {
         $name = $m.Groups[1].Value; $member = ($name -split '-')[0]
         try {

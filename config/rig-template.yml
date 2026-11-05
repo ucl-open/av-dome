@@ -20,9 +20,8 @@ rigId: XX                 # two capitals or a capital and a digit, such as D1: r
 # data and in live view. The workflow takes each device it drives by that name and stops at startup,
 # naming what this file has, if one is missing. usbSerial is the board's USB serial, an FTDI chip's
 # or a Pico's flash id (rig-setup's hardware scan lists each port's): RecordHarpDevices checks at
-# Start that the board on each portName has it, for the Behavior board, the timestamp generator
-# and both Lickety Splits, and stops the workflow saying which board is where if not. The lick
-# spout stage's two drivers are nested under one entry and are not checked.
+# Start that the board on each portName has it, for every Harp board here, and stops the workflow
+# saying which board is where if not.
 behaviorBoard:
   main:
     portName: COM1
@@ -53,17 +52,16 @@ timestampGeneratorGen3:
     usbSerial: CHANGE-ME
     timerFrequency: Timer1000Hz
 
-lickSpoutStage:
-  main:
-    driverA:
-      portName: COM3        # motors 1,2,3
-      usbSerial: null
-    driverB:
-      portName: COM4        # motors 4,5
-      usbSerial: null
-    # The workflow drives the axes by motor number, fixed: driver A motor 0 left elevation (1),
-    # motor 1 right elevation (2), motor 2 right radial (3); driver B motor 0 left radial (4),
-    # motor 1 base transverse (5). The schema's optional axisMapping is not read.
+# The lick spout stage's two Harp StepperDriver boards. The workflow drives the axes by motor
+# number, fixed: board a motor 0 left elevation (1), motor 1 right elevation (2), motor 2 right
+# radial (3); board b motor 0 left radial (4), motor 1 base transverse (5). The rest are spare.
+stepperDriver:
+  a:
+    portName: COM3
+    usbSerial: CHANGE-ME
+  b:
+    portName: COM4
+    usbSerial: CHANGE-ME
 
 licketySplit:
   left:

@@ -39,7 +39,7 @@ namespace UclOpenAvDome
     
         private System.Collections.Generic.Dictionary<string, HarpTimestampGeneratorGen3> _timestampGeneratorGen3;
     
-        private System.Collections.Generic.Dictionary<string, HarpLickSpoutStage> _lickSpoutStage;
+        private System.Collections.Generic.Dictionary<string, HarpStepperDriver> _stepperDriver;
     
         private System.Collections.Generic.Dictionary<string, LicketySplit> _licketySplit;
     
@@ -60,7 +60,7 @@ namespace UclOpenAvDome
             _version = "0.0.0-rc1";
             _behaviorBoard = new System.Collections.Generic.Dictionary<string, BehaviorBoard>();
             _timestampGeneratorGen3 = new System.Collections.Generic.Dictionary<string, HarpTimestampGeneratorGen3>();
-            _lickSpoutStage = new System.Collections.Generic.Dictionary<string, HarpLickSpoutStage>();
+            _stepperDriver = new System.Collections.Generic.Dictionary<string, HarpStepperDriver>();
             _licketySplit = new System.Collections.Generic.Dictionary<string, LicketySplit>();
             _camera = new System.Collections.Generic.Dictionary<string, SpinnakerCamera>();
             _projectionCalibration = new ProjectionCalibration();
@@ -77,7 +77,7 @@ namespace UclOpenAvDome
             _version = other._version;
             _behaviorBoard = other._behaviorBoard;
             _timestampGeneratorGen3 = other._timestampGeneratorGen3;
-            _lickSpoutStage = other._lickSpoutStage;
+            _stepperDriver = other._stepperDriver;
             _licketySplit = other._licketySplit;
             _camera = other._camera;
             _projectionCalibration = other._projectionCalibration;
@@ -180,22 +180,23 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
-        /// Lick spout stages by name: main (LickSpoutStage-Main), two Harp StepperDriver boards driving 5 axes
+        /// Harp StepperDriver boards by name: a and b (StepperDriver-A, StepperDriver-B) drive the lick spout stage's 5 axes; which motor moves which axis is fixed in the workflow
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("lickSpoutStage", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="lickSpoutStage")]
-        [System.ComponentModel.DescriptionAttribute("Lick spout stages by name: main (LickSpoutStage-Main), two Harp StepperDriver boa" +
-            "rds driving 5 axes")]
-        public System.Collections.Generic.Dictionary<string, HarpLickSpoutStage> LickSpoutStage
+        [Newtonsoft.Json.JsonPropertyAttribute("stepperDriver", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="stepperDriver")]
+        [System.ComponentModel.DescriptionAttribute("Harp StepperDriver boards by name: a and b (StepperDriver-A, StepperDriver-B) dri" +
+            "ve the lick spout stage\'s 5 axes; which motor moves which axis is fixed in the w" +
+            "orkflow")]
+        public System.Collections.Generic.Dictionary<string, HarpStepperDriver> StepperDriver
         {
             get
             {
-                return _lickSpoutStage;
+                return _stepperDriver;
             }
             set
             {
-                _lickSpoutStage = value;
+                _stepperDriver = value;
             }
         }
     
@@ -352,7 +353,7 @@ namespace UclOpenAvDome
             stringBuilder.Append("Version = " + _version + ", ");
             stringBuilder.Append("BehaviorBoard = " + _behaviorBoard + ", ");
             stringBuilder.Append("TimestampGeneratorGen3 = " + _timestampGeneratorGen3 + ", ");
-            stringBuilder.Append("LickSpoutStage = " + _lickSpoutStage + ", ");
+            stringBuilder.Append("StepperDriver = " + _stepperDriver + ", ");
             stringBuilder.Append("LicketySplit = " + _licketySplit + ", ");
             stringBuilder.Append("Camera = " + _camera + ", ");
             stringBuilder.Append("ProjectionCalibration = " + _projectionCalibration + ", ");
@@ -1076,128 +1077,6 @@ namespace UclOpenAvDome
 
 
     /// <summary>
-    /// Harp-based lick spout stage: two StepperDriver boards driving a 5-axis rig.
-    ///Calibration (named positions) is stored separately in a SpoutRigPosition YAML file.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.ComponentModel.DescriptionAttribute("Harp-based lick spout stage: two StepperDriver boards driving a 5-axis rig.\nCalib" +
-        "ration (named positions) is stored separately in a SpoutRigPosition YAML file.")]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    [Bonsai.CombinatorAttribute(MethodName="Generate")]
-    public partial class HarpLickSpoutStage
-    {
-    
-        private HarpStepperDriver _driverA;
-    
-        private HarpStepperDriver _driverB;
-    
-        private StageAxisMapping _axisMapping;
-    
-        public HarpLickSpoutStage()
-        {
-            _driverA = new HarpStepperDriver();
-            _driverB = new HarpStepperDriver();
-            _axisMapping = new StageAxisMapping();
-        }
-    
-        protected HarpLickSpoutStage(HarpLickSpoutStage other)
-        {
-            _driverA = other._driverA;
-            _driverB = other._driverB;
-            _axisMapping = other._axisMapping;
-        }
-    
-        /// <summary>
-        /// Primary StepperDriver board.
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("driverA", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="driverA")]
-        [System.ComponentModel.DescriptionAttribute("Primary StepperDriver board.")]
-        public HarpStepperDriver DriverA
-        {
-            get
-            {
-                return _driverA;
-            }
-            set
-            {
-                _driverA = value;
-            }
-        }
-    
-        /// <summary>
-        /// Secondary StepperDriver board.
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("driverB", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="driverB")]
-        [System.ComponentModel.DescriptionAttribute("Secondary StepperDriver board.")]
-        public HarpStepperDriver DriverB
-        {
-            get
-            {
-                return _driverB;
-            }
-            set
-            {
-                _driverB = value;
-            }
-        }
-    
-        /// <summary>
-        /// Maps each stage axis to its board and motor index.
-        /// </summary>
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("axisMapping")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="axisMapping")]
-        [System.ComponentModel.DescriptionAttribute("Maps each stage axis to its board and motor index.")]
-        public StageAxisMapping AxisMapping
-        {
-            get
-            {
-                return _axisMapping;
-            }
-            set
-            {
-                _axisMapping = value;
-            }
-        }
-    
-        public System.IObservable<HarpLickSpoutStage> Generate()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new HarpLickSpoutStage(this)));
-        }
-    
-        public System.IObservable<HarpLickSpoutStage> Generate<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new HarpLickSpoutStage(this));
-        }
-    
-        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
-            stringBuilder.Append("DriverA = " + _driverA + ", ");
-            stringBuilder.Append("DriverB = " + _driverB + ", ");
-            stringBuilder.Append("AxisMapping = " + _axisMapping);
-            return true;
-        }
-    
-        public override string ToString()
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" { ");
-            if (PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append("}");
-            return stringBuilder.ToString();
-        }
-    }
-
-
-    /// <summary>
     /// Single Harp StepperDriver board (who_am_i=1130). Controls up to 4 motors (0-3).
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
@@ -1735,98 +1614,6 @@ namespace UclOpenAvDome
             stringBuilder.Append("Rate = " + _rate + ", ");
             stringBuilder.Append("Width = " + _width + ", ");
             stringBuilder.Append("Height = " + _height);
-            return true;
-        }
-    
-        public override string ToString()
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" { ");
-            if (PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append("}");
-            return stringBuilder.ToString();
-        }
-    }
-
-
-    /// <summary>
-    /// Identifies a specific motor on a specific stepper driver board.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.ComponentModel.DescriptionAttribute("Identifies a specific motor on a specific stepper driver board.")]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    [Bonsai.CombinatorAttribute(MethodName="Generate")]
-    public partial class MotorAddress
-    {
-    
-        private MotorAddressBoard _board;
-    
-        private int _motor;
-    
-        public MotorAddress()
-        {
-        }
-    
-        protected MotorAddress(MotorAddress other)
-        {
-            _board = other._board;
-            _motor = other._motor;
-        }
-    
-        /// <summary>
-        /// Which board drives this axis: "a" or "b".
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("board", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="board")]
-        [System.ComponentModel.DescriptionAttribute("Which board drives this axis: \"a\" or \"b\".")]
-        public MotorAddressBoard Board
-        {
-            get
-            {
-                return _board;
-            }
-            set
-            {
-                _board = value;
-            }
-        }
-    
-        /// <summary>
-        /// Motor index on the board (0-3).
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("motor", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="motor")]
-        [System.ComponentModel.DescriptionAttribute("Motor index on the board (0-3).")]
-        public int Motor
-        {
-            get
-            {
-                return _motor;
-            }
-            set
-            {
-                _motor = value;
-            }
-        }
-    
-        public System.IObservable<MotorAddress> Generate()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new MotorAddress(this)));
-        }
-    
-        public System.IObservable<MotorAddress> Generate<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new MotorAddress(this));
-        }
-    
-        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
-            stringBuilder.Append("Board = " + _board + ", ");
-            stringBuilder.Append("Motor = " + _motor);
             return true;
         }
     
@@ -2923,164 +2710,6 @@ namespace UclOpenAvDome
 
 
     /// <summary>
-    /// Maps each of the 5 stage axes to a (board, motor) address.
-    ///Editing only the YAML re-routes axes across boards without touching the Bonsai workflow.
-    ///
-    ///Default layout:
-    ///    Board A: left_elevation(0), right_elevation(1), right_radial(2), left_radial(3)
-    ///    Board B: base_transverse(0)
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.ComponentModel.DescriptionAttribute(@"Maps each of the 5 stage axes to a (board, motor) address.
-    Editing only the YAML re-routes axes across boards without touching the Bonsai workflow.
-
-    Default layout:
-        Board A: left_elevation(0), right_elevation(1), right_radial(2), left_radial(3)
-        Board B: base_transverse(0)")]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    [Bonsai.CombinatorAttribute(MethodName="Generate")]
-    public partial class StageAxisMapping
-    {
-    
-        private MotorAddress _leftElevation;
-    
-        private MotorAddress _rightElevation;
-    
-        private MotorAddress _rightRadial;
-    
-        private MotorAddress _leftRadial;
-    
-        private MotorAddress _baseTransverse;
-    
-        public StageAxisMapping()
-        {
-            _leftElevation = new MotorAddress();
-            _rightElevation = new MotorAddress();
-            _rightRadial = new MotorAddress();
-            _leftRadial = new MotorAddress();
-            _baseTransverse = new MotorAddress();
-        }
-    
-        protected StageAxisMapping(StageAxisMapping other)
-        {
-            _leftElevation = other._leftElevation;
-            _rightElevation = other._rightElevation;
-            _rightRadial = other._rightRadial;
-            _leftRadial = other._leftRadial;
-            _baseTransverse = other._baseTransverse;
-        }
-    
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("leftElevation")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="leftElevation")]
-        public MotorAddress LeftElevation
-        {
-            get
-            {
-                return _leftElevation;
-            }
-            set
-            {
-                _leftElevation = value;
-            }
-        }
-    
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("rightElevation")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="rightElevation")]
-        public MotorAddress RightElevation
-        {
-            get
-            {
-                return _rightElevation;
-            }
-            set
-            {
-                _rightElevation = value;
-            }
-        }
-    
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("rightRadial")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="rightRadial")]
-        public MotorAddress RightRadial
-        {
-            get
-            {
-                return _rightRadial;
-            }
-            set
-            {
-                _rightRadial = value;
-            }
-        }
-    
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("leftRadial")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="leftRadial")]
-        public MotorAddress LeftRadial
-        {
-            get
-            {
-                return _leftRadial;
-            }
-            set
-            {
-                _leftRadial = value;
-            }
-        }
-    
-        [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("baseTransverse")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="baseTransverse")]
-        public MotorAddress BaseTransverse
-        {
-            get
-            {
-                return _baseTransverse;
-            }
-            set
-            {
-                _baseTransverse = value;
-            }
-        }
-    
-        public System.IObservable<StageAxisMapping> Generate()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new StageAxisMapping(this)));
-        }
-    
-        public System.IObservable<StageAxisMapping> Generate<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new StageAxisMapping(this));
-        }
-    
-        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
-            stringBuilder.Append("LeftElevation = " + _leftElevation + ", ");
-            stringBuilder.Append("RightElevation = " + _rightElevation + ", ");
-            stringBuilder.Append("RightRadial = " + _rightRadial + ", ");
-            stringBuilder.Append("LeftRadial = " + _leftRadial + ", ");
-            stringBuilder.Append("BaseTransverse = " + _baseTransverse);
-            return true;
-        }
-    
-        public override string ToString()
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" { ");
-            if (PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append("}");
-            return stringBuilder.ToString();
-        }
-    }
-
-
-    /// <summary>
     /// Absolute target position for the 5-axis spout rig, expressed in task-relative axes.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
@@ -3508,21 +3137,6 @@ namespace UclOpenAvDome
     }
 
 
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-    public enum MotorAddressBoard
-    {
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="a")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="a")]
-        A = 0,
-    
-        [System.Runtime.Serialization.EnumMemberAttribute(Value="b")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="b")]
-        B = 1,
-    }
-
-
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.9.0.0 (Newtonsoft.Json v13.0.0.0)")]
     [System.AttributeUsage(System.AttributeTargets.Class | System.AttributeTargets.Interface, AllowMultiple = true)]
     internal class JsonInheritanceAttribute : System.Attribute
@@ -3827,11 +3441,6 @@ namespace UclOpenAvDome
             return Process<FixedPulse>(source);
         }
 
-        public System.IObservable<string> Process(System.IObservable<HarpLickSpoutStage> source)
-        {
-            return Process<HarpLickSpoutStage>(source);
-        }
-
         public System.IObservable<string> Process(System.IObservable<HarpStepperDriver> source)
         {
             return Process<HarpStepperDriver>(source);
@@ -3850,11 +3459,6 @@ namespace UclOpenAvDome
         public System.IObservable<string> Process(System.IObservable<LiveView> source)
         {
             return Process<LiveView>(source);
-        }
-
-        public System.IObservable<string> Process(System.IObservable<MotorAddress> source)
-        {
-            return Process<MotorAddress>(source);
         }
 
         public System.IObservable<string> Process(System.IObservable<ProjectionCalibration> source)
@@ -3902,11 +3506,6 @@ namespace UclOpenAvDome
             return Process<SpinnakerCamera>(source);
         }
 
-        public System.IObservable<string> Process(System.IObservable<StageAxisMapping> source)
-        {
-            return Process<StageAxisMapping>(source);
-        }
-
         public System.IObservable<string> Process(System.IObservable<StepperPositions> source)
         {
             return Process<StepperPositions>(source);
@@ -3942,12 +3541,10 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CalibratedPulse>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraTriggerController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<FixedPulse>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpLickSpoutStage>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpStepperDriver>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpTimestampGeneratorGen3>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LicketySplit>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LiveView>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<MotorAddress>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ProjectionCalibration>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseOutput>))]
@@ -3957,7 +3554,6 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpeakerArray>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SphericalPosition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpinnakerCamera>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StageAxisMapping>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperPositions>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ZapitServer>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DO2>))]
@@ -4152,11 +3748,6 @@ namespace UclOpenAvDome
             return Process<FixedPulse>(source);
         }
 
-        public System.IObservable<string> Process(System.IObservable<HarpLickSpoutStage> source)
-        {
-            return Process<HarpLickSpoutStage>(source);
-        }
-
         public System.IObservable<string> Process(System.IObservable<HarpStepperDriver> source)
         {
             return Process<HarpStepperDriver>(source);
@@ -4175,11 +3766,6 @@ namespace UclOpenAvDome
         public System.IObservable<string> Process(System.IObservable<LiveView> source)
         {
             return Process<LiveView>(source);
-        }
-
-        public System.IObservable<string> Process(System.IObservable<MotorAddress> source)
-        {
-            return Process<MotorAddress>(source);
         }
 
         public System.IObservable<string> Process(System.IObservable<ProjectionCalibration> source)
@@ -4227,11 +3813,6 @@ namespace UclOpenAvDome
             return Process<SpinnakerCamera>(source);
         }
 
-        public System.IObservable<string> Process(System.IObservable<StageAxisMapping> source)
-        {
-            return Process<StageAxisMapping>(source);
-        }
-
         public System.IObservable<string> Process(System.IObservable<StepperPositions> source)
         {
             return Process<StepperPositions>(source);
@@ -4267,12 +3848,10 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CalibratedPulse>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraTriggerController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<FixedPulse>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpLickSpoutStage>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpStepperDriver>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<HarpTimestampGeneratorGen3>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LicketySplit>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<LiveView>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<MotorAddress>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ProjectionCalibration>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseOutput>))]
@@ -4282,7 +3861,6 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpeakerArray>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SphericalPosition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpinnakerCamera>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StageAxisMapping>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperPositions>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ZapitServer>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DO2>))]

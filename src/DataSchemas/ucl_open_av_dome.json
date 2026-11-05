@@ -255,54 +255,6 @@
       "title": "FixedPulse",
       "type": "object"
     },
-    "HarpLickSpoutStage": {
-      "description": "Harp-based lick spout stage: two StepperDriver boards driving a 5-axis rig.\nCalibration (named positions) is stored separately in a SpoutRigPosition YAML file.",
-      "properties": {
-        "driverA": {
-          "$ref": "#/$defs/HarpStepperDriver",
-          "description": "Primary StepperDriver board.",
-          "title": "DriverA"
-        },
-        "driverB": {
-          "$ref": "#/$defs/HarpStepperDriver",
-          "description": "Secondary StepperDriver board.",
-          "title": "DriverB"
-        },
-        "axisMapping": {
-          "$ref": "#/$defs/StageAxisMapping",
-          "default": {
-            "leftElevation": {
-              "board": "a",
-              "motor": 0
-            },
-            "rightElevation": {
-              "board": "a",
-              "motor": 1
-            },
-            "rightRadial": {
-              "board": "a",
-              "motor": 2
-            },
-            "leftRadial": {
-              "board": "a",
-              "motor": 3
-            },
-            "baseTransverse": {
-              "board": "b",
-              "motor": 0
-            }
-          },
-          "description": "Maps each stage axis to its board and motor index.",
-          "title": "AxisMapping"
-        }
-      },
-      "required": [
-        "driverA",
-        "driverB"
-      ],
-      "title": "HarpLickSpoutStage",
-      "type": "object"
-    },
     "HarpStepperDriver": {
       "description": "Single Harp StepperDriver board (who_am_i=1130). Controls up to 4 motors (0-3).",
       "properties": {
@@ -489,33 +441,6 @@
         }
       },
       "title": "LiveView",
-      "type": "object"
-    },
-    "MotorAddress": {
-      "description": "Identifies a specific motor on a specific stepper driver board.",
-      "properties": {
-        "board": {
-          "description": "Which board drives this axis: \"a\" or \"b\".",
-          "enum": [
-            "a",
-            "b"
-          ],
-          "title": "Board",
-          "type": "string"
-        },
-        "motor": {
-          "description": "Motor index on the board (0-3).",
-          "maximum": 3,
-          "minimum": 0,
-          "title": "Motor",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "board",
-        "motor"
-      ],
-      "title": "MotorAddress",
       "type": "object"
     },
     "ProjectionCalibration": {
@@ -855,53 +780,6 @@
       "title": "SpinnakerCamera",
       "type": "object"
     },
-    "StageAxisMapping": {
-      "description": "Maps each of the 5 stage axes to a (board, motor) address.\nEditing only the YAML re-routes axes across boards without touching the Bonsai workflow.\n\nDefault layout:\n    Board A: left_elevation(0), right_elevation(1), right_radial(2), left_radial(3)\n    Board B: base_transverse(0)",
-      "properties": {
-        "leftElevation": {
-          "$ref": "#/$defs/MotorAddress",
-          "default": {
-            "board": "a",
-            "motor": 0
-          },
-          "title": "LeftElevation"
-        },
-        "rightElevation": {
-          "$ref": "#/$defs/MotorAddress",
-          "default": {
-            "board": "a",
-            "motor": 1
-          },
-          "title": "RightElevation"
-        },
-        "rightRadial": {
-          "$ref": "#/$defs/MotorAddress",
-          "default": {
-            "board": "a",
-            "motor": 2
-          },
-          "title": "RightRadial"
-        },
-        "leftRadial": {
-          "$ref": "#/$defs/MotorAddress",
-          "default": {
-            "board": "a",
-            "motor": 3
-          },
-          "title": "LeftRadial"
-        },
-        "baseTransverse": {
-          "$ref": "#/$defs/MotorAddress",
-          "default": {
-            "board": "b",
-            "motor": 0
-          },
-          "title": "BaseTransverse"
-        }
-      },
-      "title": "StageAxisMapping",
-      "type": "object"
-    },
     "StepperPositions": {
       "description": "Absolute target position for the 5-axis spout rig, expressed in task-relative axes.",
       "properties": {
@@ -993,12 +871,12 @@
           "title": "TimestampGeneratorGen3",
           "type": "object"
         },
-        "lickSpoutStage": {
+        "stepperDriver": {
           "additionalProperties": {
-            "$ref": "#/$defs/HarpLickSpoutStage"
+            "$ref": "#/$defs/HarpStepperDriver"
           },
-          "description": "Lick spout stages by name: main (LickSpoutStage-Main), two Harp StepperDriver boards driving 5 axes",
-          "title": "LickSpoutStage",
+          "description": "Harp StepperDriver boards by name: a and b (StepperDriver-A, StepperDriver-B) drive the lick spout stage's 5 axes; which motor moves which axis is fixed in the workflow",
+          "title": "StepperDriver",
           "type": "object"
         },
         "licketySplit": {
@@ -1047,7 +925,7 @@
         "rootPath",
         "behaviorBoard",
         "timestampGeneratorGen3",
-        "lickSpoutStage",
+        "stepperDriver",
         "licketySplit",
         "camera",
         "projectionCalibration",
