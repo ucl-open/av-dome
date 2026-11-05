@@ -6,7 +6,7 @@ using System.ComponentModel;
 using System.Reactive.Linq;
 
 // One row of BonsaiData_Trial. Each field is a column, named and typed as lib-open-rigs'
-// lab_names.yml lists it (check-bonsai holds the two together); the order is the file's. The row
+// data_dictionary.yml lists it (check-bonsai holds the two together); the order is the file's. The row
 // travels Timestamped, and its Seconds (the Harp time the outcome was known: the choice, or the
 // end of the response window) is the file's first column.
 public class TrialRow
