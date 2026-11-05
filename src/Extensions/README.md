@@ -38,7 +38,7 @@ server code in `zapit/+zapit/+interfaces/@TCPserver`.
 - Zapit 0.12.0 or newer, started with `tcpServer.enable: true` in its settings YAML.
 - Default endpoint `localhost:1488`. If Zapit runs on a separate PC, set `tcpServer.IP` there to that
   PC's address and put the same address in the rig YAML.
-- A stimulus configuration must be loaded before the session starts; the workflow checks this on
+- A stimulus configuration must be loaded before the experiment starts; the workflow checks this on
   connect and stops with an error otherwise.
 - For a dry run without hardware: `start_zapit('simulated', true)`, then
   `hZP.applyUnityStereotaxicCalib` and load any example stim config.
@@ -57,7 +57,7 @@ server code in `zapit/+zapit/+interfaces/@TCPserver`.
 
 - `Zapit.bonsai` (include): reads `ZapitCommands`, runs `ZapitClient`, writes `ZapitReplies`.
   On connect it queries `IsStimConfigLoaded` and `GetNumConditions`; a reply of 0 to the first
-  raises an error so a session never runs with nothing to stimulate. The subjects are
+  raises an error so an experiment never runs with nothing to stimulate. The subjects are
   BehaviorSubjects declared by the host workflow, so per-trial scopes completing never close the
   connection.
 - `main.bonsai` wiring: the `Zapit` group under `HardwareDevices` connects only when the task YAML

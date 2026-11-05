@@ -1,9 +1,9 @@
-# How rig-control's window shows this workflow's sessions: the page's layout, its commands,
-# its parameters and its charts. Read by the rig's agent at each session; edit, commit, and the
-# next session shows the change on every rig. Nothing here changes what the workflow does.
+# How rig-control's window shows this workflow's experiments: the page's layout, its commands,
+# its parameters and its charts. Read by the rig's agent at each experiment; edit, commit, and the
+# next experiment shows the change on every rig. Nothing here changes what the workflow does.
 #
 # The window computes every number itself (trials, performance, water, licks) from the two
-# session files, BonsaiData_Trial and BonsaiData_Async; the workflow computes none of them.
+# experiment files, BonsaiData_Trial and BonsaiData_Async; the workflow computes none of them.
 # rig-control's src/open_rigs_control/performance.py says how; trials.py reads the files.
 
 [layout]
@@ -13,7 +13,7 @@ camera_height_share = 0.55  # 0.2 to 0.8: the cameras' share of the page's heigh
 # Which column of BonsaiData_Trial means what. A column the log lacks is read as blank.
 [trials]
 log = "BonsaiData_Trial"           # LogData name: files BonsaiData\BonsaiData_Trial_<hour>.csv
-older_logs = ["TrialSettings"]     # read for older sessions that have no BonsaiData_Trial
+older_logs = ["TrialSettings"]     # read for older experiments that have no BonsaiData_Trial
 number = "trialNumber"             # trial number
 outcome = "outcome"                # the trial's result, as named under [trials.outcomes]
 choice = "choice"                  # the side the mouse chose: Left, Right or NoResponse
@@ -54,7 +54,7 @@ wheel = "BehaviorBoard-Main"       # the live view's <name>.encoder stream (port
 wheel_unit = "counts/s"            # set wheel_scale to convert counts/s, e.g. to cm/s
 wheel_scale = 1.0
 
-# Lick detectors by side: each is a session device folder whose LickState register (32) is
+# Lick detectors by side: each is an experiment device folder whose LickState register (32) is
 # raw-logged; licks per trial and the lick raster come from these files.
 [live.licks]
 left = "LicketySplit-Left"
@@ -67,13 +67,13 @@ right = "LicketySplit-Right"
 #   performance_by_type  performance per trial type
 #   licks                licks around stimulus onset, and licks per trial
 #   wheel                wheel speed over the last minute, live
-#   history              this mouse's earlier sessions: performance and trials
+#   history              this mouse's earlier experiments: performance and trials
 [charts.tabs]
 "Performance" = ["response_history", "rolling_performance"]
 "Trial Types" = ["performance_by_type"]
 "Licks" = ["licks"]
 "Wheel" = ["wheel"]
-"Across Sessions" = ["history"]
+"Across Experiments" = ["history"]
 
 # ---- The current trial -----------------------------------------------------------------------
 # The workflow's status metrics, shown in a line under the tiles while it runs.
@@ -102,7 +102,7 @@ auto_reward = "Auto Reward"
 [task]
 folder = "config"        # the task files, in this repository
 pattern = "task*.yml"    # which files there are task files: Task File picks from them
-file = "TaskFile"        # the parameter naming the one the session runs
+file = "TaskFile"        # the parameter naming the one the experiment runs
 
 [parameters.TrainingStage]
 label = "Training Stage"
@@ -112,7 +112,7 @@ help = "The task file's training stage (task.yml trainingStages). 0 Habituation:
 
 [parameters.TaskFile]
 label = "Task File"
-help = "Which task file in config\\ the session runs: task.yml is the task; the others are for tests (task-closedloop.yml, task-zapit-test.yml). Read at Go."
+help = "Which task file in config\\ the experiment runs: task.yml is the task; the others are for tests (task-closedloop.yml, task-zapit-test.yml). Read at Go."
 
 [parameters.RewardSizeUl]
 label = "Reward Size"
@@ -265,5 +265,5 @@ help = "Both spouts to this mouse's Out positions."
 
 [commands.buttons.SaveSpoutPositions]
 label = "Save"
-help = "Save the spouts' current positions as this mouse's, read at its next session's Start."
+help = "Save the spouts' current positions as this mouse's, read at its next experiment's Start."
 confirm = "Save the spouts' current positions as this mouse's, replacing its saved ones?"

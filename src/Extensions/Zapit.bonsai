@@ -46,7 +46,7 @@
       </Expression>
       <Expression xsi:type="rx:Condition">
         <Name>NoStimConfigLoaded?</Name>
-        <Description>Passes the IsStimConfigLoaded reply only when Zapit answered 0, so the session fails at startup instead of stimulating nothing.</Description>
+        <Description>Passes the IsStimConfigLoaded reply only when Zapit answered 0, so the experiment fails at startup instead of stimulating nothing.</Description>
         <Workflow>
           <Nodes>
             <Expression xsi:type="WorkflowInput">

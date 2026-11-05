@@ -13,7 +13,7 @@
 #      to a checked-out src/DataSchemas/ucl_open_av_dome.json (or a raw GitHub URL)
 #      to keep editor validation working.
 #
-rootPath: C:\Coen-Lab-Local\Acquired-Data   # the acquisition folder itself: sessions go to <rootPath>\sub-<mouse>\ses-...
+rootPath: C:\Coen-Lab-Local\Acquired-Data   # the acquisition folder itself: experiments go to <rootPath>\sub-<mouse>\ses-...
 rigId: XX                 # two capitals or a capital and a digit, such as D1: rig-control's session numbering
 
 # Each kind of device is a group of named entries: behaviorBoard: main: is BehaviorBoard-Main in the
@@ -167,7 +167,7 @@ zapit:
   port: 1488
   hardwareTriggered: false  # true once DO<triggerLine> is cabled to the Zapit DAQ trigger input
   triggerLine: 3            # behavior board DO line for the TTL; width from outputs.DO3
-# Default absolute stage position at session start (steps)
+# Default absolute stage position at experiment start (steps)
 lickSpoutDefaultPosition:
   leftElevation: 0        # motor 1
   rightElevation: 0       # motor 2

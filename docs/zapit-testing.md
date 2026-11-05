@@ -1,6 +1,6 @@
 # Testing the Zapit link
 
-How to check, step by step, that Bonsai can drive Zapit before the first optogenetics session. Steps 1 to 3 need no rig hardware; step 4 is the dummy session on the rig. Each step has a pass condition. Do them in order, because each one assumes the previous passed.
+How to check, step by step, that Bonsai can drive Zapit before the first optogenetics experiment. Steps 1 to 3 need no rig hardware; step 4 is the dummy experiment on the rig. Each step has a pass condition. Do them in order, because each one assumes the previous passed.
 
 ## Before you start
 
@@ -59,14 +59,14 @@ If the rig YAML has `hardwareTriggered: true`, each armed reply pulses the behav
 
 **Fail modes:** console warning "Optogenetics enabled but no Zapit conditions available": the `zapitConfigPath` is wrong or the file has no `stimLocationsNN` entries. Replies show `value=255` or `error=True`: Zapit refused `sendSamples`, check the MATLAB window (missing or incorrect config loaded).
 
-## Step 4: dummy session on the rig, `src/main.bonsai`
+## Step 4: dummy experiment on the rig, `src/main.bonsai`
 
 With Zapit still in simulated mode (or with the laser shutter closed):
 
 1. In `config/task.yml` set `optogenetics.enabled: true` and `zapitConfigPath` as in step 3.
 2. In the rig YAML set `zapit.hardwareTriggered` to `false` for the first run.
-3. Run a normal short session from `main.bonsai`. The workflow stops at startup with a clear error if Zapit is unreachable or has no config loaded.
-4. In the session folder compare `Zapit.csv` and `BonsaiData\BonsaiData_Trial_*.csv`. `Zapit.csv` columns: `Seconds` (Harp clock), `command` (1 = StartStimulus, 2 and 4 = the startup queries), `value` (condition presented), `laserOn`, `isError`, `serverDatenum` (Zapit PC clock). Every `BonsaiData_Trial` row with `optoStimulated = True` must have a `command = 1` row in `Zapit.csv` with the same condition, a fraction of a second later.
+3. Run a normal short experiment from `main.bonsai`. The workflow stops at startup with a clear error if Zapit is unreachable or has no config loaded.
+4. In the experiment folder compare `Zapit.csv` and `BonsaiData\BonsaiData_Trial_*.csv`. `Zapit.csv` columns: `Seconds` (Harp clock), `command` (1 = StartStimulus, 2 and 4 = the startup queries), `value` (condition presented), `laserOn`, `isError`, `serverDatenum` (Zapit PC clock). Every `BonsaiData_Trial` row with `optoStimulated = True` must have a `command = 1` row in `Zapit.csv` with the same condition, a fraction of a second later.
 
 **Pass:** the two files agree trial by trial and Zapit's own trial log lists the same sequence.
 

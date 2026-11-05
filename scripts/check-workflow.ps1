@@ -13,7 +13,7 @@ param(
 #      ExperimentManifest expects, and that each window in config\main.layout (once there is one)
 #      sits on a node it fits are checked.
 #   3. Runs RigDevice on the template: every name main.bonsai asks for is there, a wrong name is
-#      refused, and every key in the template reaches the RigSchema JSON the session logs.
+#      refused, and every key in the template reaches the RigSchema JSON the experiment logs.
 #   4. ApplyTaskOverrides: blank keeps the task file's values, on/off and numbers apply, and a bad
 #      value or a minimum above the maximum is refused naming the parameter.
 #   5. LoadAuditoryStimulusSet on synthetic WAVs and filters: equalising matches the filter's
@@ -184,7 +184,7 @@ public class BuiltObjects : System.Linq.Expressions.ExpressionVisitor {
         'RigSchema/', 'TaskSchema/', 'BonsaiData/'
     $missing = @($wantFiles | Where-Object { $expected -notcontains $_ })
     $extra = @($expected | Where-Object { $wantFiles -notcontains $_ })
-    if ($missing.Count -eq 0 -and $extra.Count -eq 0) { "  ok    ExperimentManifest expects the $($expected.Count) folders and files of a session" }
+    if ($missing.Count -eq 0 -and $extra.Count -eq 0) { "  ok    ExperimentManifest expects the $($expected.Count) folders and files of an experiment" }
     else {
         "  FAIL  ExperimentManifest expects '$($expected -join ', ')'; missing: $($missing -join ', '); extra: $($extra -join ', ')"; $failed++
         if ($planField) { foreach ($note in $planField.GetValue($recorder[0]).Notes) { "        its note: $note" } }
@@ -272,7 +272,7 @@ if ($Step -eq 'RigDevice') {
             else { "  FAIL  $($c[1]): $($x.GetType().Name): $($x.Message)"; $failed++ }
         }
     }
-    # The session's RigSchema JSON is rig.yml as parsed, and the manifest keeps only rig.yml's hash,
+    # The experiment's RigSchema JSON is rig.yml as parsed, and the manifest keeps only rig.yml's hash,
     # so every key in rig.yml must reach the JSON.
     try {
         $x = New-RigYamlExpression
