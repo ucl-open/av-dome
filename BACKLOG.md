@@ -19,7 +19,7 @@ The certain findings were fixed in 0078311, 97358e6, 1234f38 and d565649. NoResp
 
 ### Decisions for Pip
 
-- **rootPath.** GREEN-DOME-1's rig.yml has `rootPath: C:\Coen-Lab-Local\Acquired-Data` and the workflow appends the task file's `datasetName`; rig-setup expects `rootPath` to be the project folder itself. Either set `rootPath` to `...\Acquired-Data\AV_Dome` and stop appending `datasetName` (README, template comment and `rig-control.toml` `dataset` change together), or accept rig-setup's flag.
+- **Analysis by task, not by folder.** Sessions no longer have a project folder (no `datasetName`): closed-loop and 4 Hz sessions sit beside the others under `sub-<mouse>`, told apart by each session's `TaskSchema`. `analysis\analysis.ipynb` still reads `Z:\AV_Dome`, `Z:\AV_Dome_4Hz_movingStim` and `Z:\AV_Dome_ClosedLoop` (production's layout).
 - **Water tile on FixedPulse lines** is nominal: ceil(µl / 2) pulses of 2 µl (`src\Extensions\RewardLine.cs`). Add a line to rig-control's water help, or calibrate the dome valves with `src\CalibrateValve.bonsai`.
 
 ### Lab standard (coen-behaviour-box as the reference)

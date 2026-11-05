@@ -177,9 +177,6 @@ class TrainingStage(BaseSchema):
 class UclOpenAvDomeTaskParameters(TaskParameters):
     """Task parameters for the av-dome audiovisual localisation task."""
 
-    dataset_name: String = Field(
-        default="AV_Dome", description="Subfolder under the rig rootPath where this task's sessions are saved"
-    )
     flicker_frequency: Double = Field(
         default=8.0,
         ge=0,

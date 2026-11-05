@@ -13,7 +13,7 @@
 #      to a checked-out src/DataSchemas/ucl_open_av_dome.json (or a raw GitHub URL)
 #      to keep editor validation working.
 #
-rootPath: C:\Coen-Lab-Local\Acquired-Data   # sessions go to <rootPath>\<task datasetName>\sub-<mouse>\ses-...
+rootPath: C:\Coen-Lab-Local\Acquired-Data   # the acquisition folder itself: sessions go to <rootPath>\sub-<mouse>\ses-...
 rigId: XX                 # two capitals or a capital and a digit, such as D1: rig-control's session numbering
 
 # Each kind of device is a group of named entries: behaviorBoard: main: is BehaviorBoard-Main in the

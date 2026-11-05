@@ -4,7 +4,6 @@
 # The effective config is snapshotted to the session folder as TaskSchema.json.
 taskParameters:
   rngSeed: null            # null = draw a random seed; the seed used is logged per trial
-  datasetName: AV_Dome     # save subfolder under the rig rootPath
   flickerFrequency: 8      # Hz, pulse rate shared by both modalities; must be 8, the rate of the auditory stimulus set
   trialStructure:
     itiMin: 4.0            # s

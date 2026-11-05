@@ -1467,8 +1467,6 @@ namespace UclOpenAvDomeTask
     
         private double? _rngSeed;
     
-        private string _datasetName;
-    
         private double _flickerFrequency;
     
         private TrialStructure _trialStructure;
@@ -1491,7 +1489,6 @@ namespace UclOpenAvDomeTask
     
         public UclOpenAvDomeTaskParameters()
         {
-            _datasetName = "AV_Dome";
             _flickerFrequency = 8D;
             _trialStructure = new TrialStructure();
             _visualStimulus = new VisualStimulus();
@@ -1507,7 +1504,6 @@ namespace UclOpenAvDomeTask
         protected UclOpenAvDomeTaskParameters(UclOpenAvDomeTaskParameters other)
         {
             _rngSeed = other._rngSeed;
-            _datasetName = other._datasetName;
             _flickerFrequency = other._flickerFrequency;
             _trialStructure = other._trialStructure;
             _visualStimulus = other._visualStimulus;
@@ -1535,24 +1531,6 @@ namespace UclOpenAvDomeTask
             set
             {
                 _rngSeed = value;
-            }
-        }
-    
-        /// <summary>
-        /// Subfolder under the rig rootPath where this task's sessions are saved
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("datasetName")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="datasetName")]
-        [System.ComponentModel.DescriptionAttribute("Subfolder under the rig rootPath where this task\'s sessions are saved")]
-        public string DatasetName
-        {
-            get
-            {
-                return _datasetName;
-            }
-            set
-            {
-                _datasetName = value;
             }
         }
     
@@ -1760,7 +1738,6 @@ namespace UclOpenAvDomeTask
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("RngSeed = " + _rngSeed + ", ");
-            stringBuilder.Append("DatasetName = " + _datasetName + ", ");
             stringBuilder.Append("FlickerFrequency = " + _flickerFrequency + ", ");
             stringBuilder.Append("TrialStructure = " + _trialStructure + ", ");
             stringBuilder.Append("VisualStimulus = " + _visualStimulus + ", ");

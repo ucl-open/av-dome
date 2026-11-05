@@ -4529,7 +4529,7 @@
           <Nodes>
             <Expression xsi:type="GroupWorkflow">
               <Name>LogControllerLogic</Name>
-              <Description>Waits for Go (RunSettings: the controller's SubjectId and SessionId), then LogController creates the session folder RootPath\DatasetName\sub-&lt;SubjectId&gt;\ses-&lt;SessionId&gt;_&lt;DateTime&gt; and publishes it as PathPrefix, which every log waits for. DatasetName is the task file's, so TaskConfig must have been read (at Go).</Description>
+              <Description>Waits for Go (RunSettings: the controller's SubjectId and SessionId), then LogController creates the session folder RootPath\sub-&lt;SubjectId&gt;\ses-&lt;SessionId&gt;_&lt;DateTime&gt; and publishes it as PathPrefix, which every log waits for. RootPath is rig.yml's, the rig's acquisition folder itself (C:\Coen-Lab-Local\Acquired-Data): sessions have no project folder.</Description>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="SubscribeSubject">
@@ -4547,18 +4547,6 @@
                   <Expression xsi:type="MemberSelector">
                     <Selector>RootPath</Selector>
                   </Expression>
-                  <Expression xsi:type="SubscribeSubject">
-                    <Name>TaskConfig</Name>
-                  </Expression>
-                  <Expression xsi:type="MemberSelector">
-                    <Selector>TaskParameters.DatasetName</Selector>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Zip" />
-                  </Expression>
-                  <Expression xsi:type="scr:ExpressionTransform">
-                    <scr:Expression>Item1 + "\\" + Item2</scr:Expression>
-                  </Expression>
                   <Expression xsi:type="PropertyMapping">
                     <PropertyMappings>
                       <Property Name="Path" />
@@ -4567,7 +4555,7 @@
                   <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogController.bonsai">
                     <SubjectId>UNMAPPED</SubjectId>
                     <SessionId>UNMAPPED</SessionId>
-                    <Path>C:\data\AV_Dome</Path>
+                    <Path>C:\Coen-Lab-Local\Acquired-Data</Path>
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:DelaySubscription">
@@ -4585,17 +4573,13 @@
                 <Edges>
                   <Edge From="0" To="1" Label="Source1" />
                   <Edge From="2" To="3" Label="Source1" />
-                  <Edge From="4" To="5" Label="Source1" />
-                  <Edge From="3" To="6" Label="Source1" />
-                  <Edge From="5" To="6" Label="Source2" />
-                  <Edge From="6" To="7" Label="Source1" />
-                  <Edge From="7" To="8" Label="Source1" />
-                  <Edge From="1" To="9" Label="Source1" />
-                  <Edge From="8" To="9" Label="Source2" />
-                  <Edge From="9" To="10" Label="Source1" />
-                  <Edge From="10" To="12" Label="Source1" />
-                  <Edge From="11" To="12" Label="Source2" />
-                  <Edge From="12" To="13" Label="Source1" />
+                  <Edge From="3" To="4" Label="Source1" />
+                  <Edge From="1" To="5" Label="Source1" />
+                  <Edge From="4" To="5" Label="Source2" />
+                  <Edge From="5" To="6" Label="Source1" />
+                  <Edge From="6" To="8" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source2" />
+                  <Edge From="8" To="9" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>

@@ -403,12 +403,6 @@
             "null"
           ]
         },
-        "datasetName": {
-          "default": "AV_Dome",
-          "description": "Subfolder under the rig rootPath where this task's sessions are saved",
-          "title": "DatasetName",
-          "type": "string"
-        },
         "flickerFrequency": {
           "default": 8.0,
           "description": "Pulse rate shared by both modalities, in Hz: the grating gates on and off at this rate; must be 8, the pulse rate of the auditory stimulus set (calibration\\AuditoryStimuli)",

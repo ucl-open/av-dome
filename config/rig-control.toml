@@ -14,7 +14,6 @@ camera_height_share = 0.55  # 0.2 to 0.8: the cameras' share of the page's heigh
 [trials]
 log = "BonsaiData_Trial"           # LogData name: files BonsaiData\BonsaiData_Trial_<hour>.csv
 older_logs = ["TrialSettings"]     # read for older sessions that have no BonsaiData_Trial
-dataset = "AV_Dome"                # session folders under Acquired-Data\AV_Dome\ (history only)
 number = "TrialCnt"                # trial number
 outcome = "correctResponse"        # the trial's result, as named under [trials.outcomes]
 choice = "response"                # the side the mouse chose: Left, Right or NoResponse
