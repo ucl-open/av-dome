@@ -5047,15 +5047,13 @@
                   <Expression xsi:type="SubscribeSubject">
                     <Name>thisTrialData</Name>
                   </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Take">
-                      <rx:Count>1</rx:Count>
-                    </Combinator>
-                  </Expression>
                   <Expression xsi:type="MemberSelector">
                     <Name>RngSeed</Name>
-                    <Description>The session's effective RNG seed (the task file's rngSeed plus its offset, or a random one), the same for every trial, so it is logged once as a BonsaiData_Async event (RngSeed, its value in Value) rather than on every trial row. With the task file (TaskConfig) and the settings at Go (manifest.json) it reproduces the session's draws.</Description>
+                    <Description>The RNG seed a trial was drawn with (the task file's rngSeed plus the drawing node's SeedOffset, or a random one when rngSeed is null). Two InitialiseTrial nodes draw trials, the first trial and every later one, each with its own seed, so each seed is logged once, when it first appears, as a BonsaiData_Async event (RngSeed, its value in Value) rather than on every trial row. With the task file and the settings at Go they reproduce the session's draws.</Description>
                     <Selector>rngSeedUsed</Selector>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Distinct" />
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="orl:CreateAsyncEvent">

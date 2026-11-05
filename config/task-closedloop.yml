@@ -3,7 +3,7 @@
 # Loaded by src/main.bonsai at startup and published as the TaskConfig subject.
 # The effective config is snapshotted to the session folder as TaskSchema.json.
 taskParameters:
-  rngSeed: null            # null = draw a random seed; the seed used is logged per trial
+  rngSeed: null            # null = draw a random seed; each seed used is a RngSeed event in BonsaiData_Async
   flickerFrequency: 8      # Hz, pulse rate shared by both modalities; must be 8, the rate of the auditory stimulus set
   trialStructure:
     itiMin: 4.0            # s
