@@ -11,8 +11,8 @@ camera_height_share = 0.55  # 0.2 to 0.8: the cameras' share of the page's heigh
 
 # ---- The trial log ---------------------------------------------------------------------------
 # This rig's own columns of BonsaiData_Trial. The core ones (trialNumber, outcome, choice, target,
-# stimulusOnsetTime, Seconds) and the outcomes (Correct, Incorrect, NoResponse) come from the lab's
-# data dictionary (lib-open-rigs data_dictionary.yml), as do older names of every column.
+# stimulusOnsetTime, Seconds) and the outcomes (Correct, Incorrect, NoResponse) are the lab's;
+# older names of every column come from each experiment's manifest (schemas\trial-columns.yml).
 # Performance = correct / (correct + incorrect), two-spout trials only, as production computed it.
 [trials]
 older_logs = ["TrialSettings"]     # read for older experiments that have no BonsaiData_Trial

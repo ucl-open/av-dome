@@ -1,0 +1,102 @@
+# What each BonsaiData_Trial column this workflow writes means (TrialRow.cs builds the row).
+# ExperimentManifest (TrialColumns) copies this file into every experiment's manifest.json at
+# Start, so each experiment carries the meaning of its own trial log; open_rigs.trials reads it
+# from there (lib-open-rigs DECISIONS.md, stage 3).
+#
+# Each column: type (int, double, bool or string), and where they apply values (the strings it
+# may hold, or a code: meaning map), unit, formerly (names it was recorded under before, newest
+# first) and description. The names and types must also be on the lab's list
+# (K:\config\data-dictionary.json, edited from rig-setup's Repos page): rig-control checks both
+# before it launches the workflow.
+#
+# Naming: camelCase; a Harp time ends in Time and is in seconds; a duration or other quantity
+# ends in its unit (itiSeconds, rewardSizeUl); never store a latency. Seconds, the row's own
+# Harp time, is the one exception.
+
+Seconds:
+  type: double
+  unit: s
+  description: Harp time the row was stamped, when the outcome is known (the choice, or the end of the response window).
+trialNumber:
+  type: int
+  formerly: [TrialCnt]
+  description: The trial's number in the experiment, from 1.
+trialType:
+  type: int
+  values: {0: Visual, 1: Audio, 2: AVCoherent, 3: AVConflict, 4: Neutral}
+  description: The kind of trial, as InitialiseTrial.cs draws it.
+target:
+  type: string
+  values: [Left, Right]
+  formerly: [targetSide]
+  description: The side that was right.
+choice:
+  type: string
+  values: [Left, Right, NoResponse]
+  formerly: [response]
+  description: The side the mouse chose.
+outcome:
+  type: string
+  values: [Correct, Incorrect, NoResponse]
+  description: The trial's result.
+stimulusOnsetTime:
+  type: double
+  unit: s
+  formerly: [stimulusOnsetSeconds]
+  description: Harp time the workflow commanded the stimulus on, NaN if it never was. The physical onset is in the hardware logs.
+choiceTime:
+  type: double
+  unit: s
+  description: Harp time of the lick the workflow counted as the choice; NaN on NoResponse.
+rewardSizeUl:
+  type: double
+  unit: ul
+  formerly: [rewardSize]
+  description: Microlitres a reward on this trial gives. What was delivered is RewardDelivered in BonsaiData_Async.
+bothSpouts:
+  type: bool
+  formerly: [BothSpouts]
+  description: True when both spouts were offered (otherwise only the correct one).
+largeReward:
+  type: bool
+  description: True when this trial's reward is the large one.
+repeatCount:
+  type: int
+  description: How many times in a row the trial has been repeated, 0 for a new draw.
+itiSeconds:
+  type: double
+  unit: s
+  formerly: [itiDuration]
+  description: Gap from this trial's outcome to the next trial, plus the error timeout after an error.
+visualAzimuth:
+  type: double
+  unit: deg
+  description: Grating azimuth.
+visualElevation:
+  type: double
+  unit: deg
+  description: Grating elevation.
+visualContrast:
+  type: double
+  description: Grating contrast, 0 to 1.
+visualPhase:
+  type: double
+  unit: rad
+  description: Grating phase.
+audioAzimuth:
+  type: double
+  unit: deg
+  description: Azimuth of the speaker that played, after snapping to the nearest wired one; NaN when none played.
+audioElevation:
+  type: double
+  unit: deg
+  description: Elevation of the speaker that played; NaN when none played.
+audioWaveformIndex:
+  type: int
+  description: Index into the auditory stimulus set (calibration\AuditoryStimuli).
+optoStimulated:
+  type: bool
+  description: True when this trial had optogenetic stimulation.
+optoCondition:
+  type: int
+  description: The Zapit condition stimulated, 0 when none.
