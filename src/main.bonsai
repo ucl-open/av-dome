@@ -2499,7 +2499,7 @@
             <Expression xsi:type="rx:BehaviorSubject" TypeArguments="p1:ZapitReply">
               <rx:Name>ZapitReplies</rx:Name>
             </Expression>
-            <Expression xsi:type="rx:ReplaySubject" TypeArguments="harp:Timestamped(p1:TrialRow)">
+            <Expression xsi:type="rx:BehaviorSubject" TypeArguments="harp:Timestamped(p1:TrialRow)">
               <rx:Name>TrialRow</rx:Name>
             </Expression>
           </Nodes>
@@ -4612,7 +4612,7 @@
             </Expression>
             <Expression xsi:type="rx:SelectMany">
               <Name>ExperimentLogs</Name>
-              <Description>Starts every experiment log once LogControllerLogic publishes PathPrefix. TrialParameters writes BonsaiData_Trial (LogTrial): one row per trial, built in ExecuteTrial when the choice is made (TrialRow, a ReplaySubject, so rows made before the folder exists are written too): what was drawn for it, the choice, its outcome, the speaker that played, and two Harp times, stimulusOnsetTime and choiceTime, with Seconds the time the outcome was known. Its columns are named and typed as the lab's list allows (K:\config\data-dictionary.json; rig-control checks before launch), and what each means (codes, units, former names) is schemas\trial-columns.yml, which ExperimentManifest copies into each experiment's manifest; settings that are the same throughout the experiment are not columns, being in TaskConfig and the manifest's settings at Go, and the RNG seed is logged once, as the RngSeed event in BonsaiData_Async. Subjects that already hold a value (BehaviorSubject, AsyncSubject) hand it to the late subscriber. Values set at startup, such as the Zapit startup replies and the first trial draw, are therefore logged when the experiment logs start, about a second after Go, with that time. Add new loggers inside this group.</Description>
+              <Description>Starts every experiment log once LogControllerLogic publishes PathPrefix. TrialParameters writes BonsaiData_Trial (LogTrial): one row per trial, built in ExecuteTrial when the choice is made (TrialRow, a BehaviorSubject, so the row made before the folder exists is written too; a ReplaySubject here is completed when trial 1's branch ends, and every later row is lost): what was drawn for it, the choice, its outcome, the speaker that played, and two Harp times, stimulusOnsetTime and choiceTime, with Seconds the time the outcome was known. Its columns are named and typed as the lab's list allows (K:\config\data-dictionary.json; rig-control checks before launch), and what each means (codes, units, former names) is schemas\trial-columns.yml, which ExperimentManifest copies into each experiment's manifest; settings that are the same throughout the experiment are not columns, being in TaskConfig and the manifest's settings at Go, and the RNG seed is logged once, as the RngSeed event in BonsaiData_Async. Subjects that already hold a value (BehaviorSubject, AsyncSubject) hand it to the late subscriber. Values set at startup, such as the Zapit startup replies and the first trial draw, are therefore logged when the experiment logs start, about a second after Go, with that time. Add new loggers inside this group.</Description>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="GroupWorkflow">
@@ -5581,11 +5581,11 @@
                               <Edge From="3" To="6" Label="Source1" />
                               <Edge From="4" To="5" Label="Source1" />
                               <Edge From="5" To="6" Label="Source2" />
-                              <Edge From="6" To="7" Label="Source1" />
+                              <Edge From="6" To="11" Label="Source1" />
+                              <Edge From="11" To="7" Label="Source1" />
                               <Edge From="7" To="9" Label="Source1" />
                               <Edge From="8" To="9" Label="Source2" />
                               <Edge From="9" To="10" Label="Source1" />
-                              <Edge From="6" To="11" Label="Source1" />
                             </Edges>
                           </Workflow>
                         </Expression>
