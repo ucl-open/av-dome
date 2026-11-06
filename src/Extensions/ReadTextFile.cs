@@ -8,7 +8,7 @@ namespace UclOpenAvDome
 {
     /// <summary>
     /// Reads the whole of each file named by the input. A transform, where Bonsai.IO's
-    /// ReadAllText is a source: the path comes from a sequence (the TaskFile parameter at Go)
+    /// ReadAllText is a source: the path comes from a sequence (TaskPath, at Go)
     /// and the file is read when that path arrives, not when the workflow starts. A relative
     /// path is from the workflow's folder, as Bonsai sets the working directory.
     /// </summary>

@@ -2511,10 +2511,11 @@
       <Expression xsi:type="ExternalizedMapping">
         <Property Name="SubjectId" Description="The mouse; the launch's own, from rig-control." />
         <Property Name="SessionId" Description="The session number; the launch's own, from rig-control." />
+        <Property Name="TaskPath" Description="The task file read at Go: rig-control's copy of the one chosen at launch, with the form's edits (lib-open-rigs settings-files plan); from the editor, config\task.yml." />
       </Expression>
       <Expression xsi:type="GroupWorkflow">
         <Name>Initialization</Name>
-        <Description>The experiment controller (OpenRigs.Control, ExperimentControl), in place of the Bonsai.Gui window: SubjectId (the mouse) and SessionId from this node's properties or the command line (--property:SubjectId=...), the settings a controller may change until Go (TrainingStage, TaskFile, RewardSizeUl, ItiMin, ItiMax, Zapit, StepSize) and the commands it may send while ready or recording, over TCP 5561 (the rig agent relays). The workflow starts into ready mode: devices connected, spouts zeroed and at this mouse's positions, live view streaming, nothing recorded, and reports Ready once the steppers are zeroed. Go publishes RunSettings (SubjectId, SessionId, TrainingStage), which logging and the trial loop wait for, sets StartExperiment true (the old Start button), and names the task file (TaskFilePath). SubjectId is also published at Start, for this mouse's spout positions file. StepSize follows the controller live (StepperStepSize); RewardUl is what RewardLeft and RewardRight deliver: 3 ul until RewardSizeUl is set or the first trial gives its size.</Description>
+        <Description>The experiment controller (OpenRigs.Control, ExperimentControl), in place of the Bonsai.Gui window: SubjectId (the mouse) and SessionId from this node's properties or the command line (--property:SubjectId=...), the settings a controller may change until Go (TrainingStage, ManualRewardUl, StepSize; the task's own settings are the task file's, which rig-control writes at Go and names in TaskPath) and the commands it may send while ready or recording, over TCP 5561 (the rig agent relays). The workflow starts into ready mode: devices connected, spouts zeroed and at this mouse's positions, live view streaming, nothing recorded, and reports Ready once the steppers are zeroed. Go publishes RunSettings (SubjectId, SessionId, TrainingStage), which logging and the trial loop wait for, sets StartExperiment true (the old Start button), and names the task file (TaskFilePath, from TaskPath). SubjectId is also published at Start, for this mouse's spout positions file. StepSize follows the controller live (StepperStepSize); RewardUl is what RewardLeft and RewardRight deliver: ManualRewardUl (3 ul unless set) until the first trial gives its size.</Description>
         <Workflow>
           <Nodes>
             <Expression xsi:type="ExternalizedMapping">
@@ -2558,29 +2559,10 @@
                   <WholeNumber>true</WholeNumber>
                 </Parameter>
                 <Parameter>
-                  <Name>TaskFile</Name>
-                  <Value>task.yml</Value>
-                  <Description>The task file to run, in the repository's config folder, read at Go.</Description>
-                </Parameter>
-                <Parameter>
-                  <Name>RewardSizeUl</Name>
-                  <Value />
-                  <Description>Reward size in microlitres, for every training stage; blank keeps the task file's. Also the size RewardLeft and RewardRight deliver before Go.</Description>
-                </Parameter>
-                <Parameter>
-                  <Name>ItiMin</Name>
-                  <Value />
-                  <Description>Shortest inter-trial interval in seconds; blank keeps the task file's.</Description>
-                </Parameter>
-                <Parameter>
-                  <Name>ItiMax</Name>
-                  <Value />
-                  <Description>Longest inter-trial interval in seconds; blank keeps the task file's.</Description>
-                </Parameter>
-                <Parameter>
-                  <Name>Zapit</Name>
-                  <Value>off</Value>
-                  <Description>Optogenetics: on or off, off unless set (an experiment on a rig without Zapit running stopped at Go, 4 Nov 2026); blank keeps the task file's optogenetics.enabled.</Description>
+                  <Name>ManualRewardUl</Name>
+                  <Value>3</Value>
+                  <Description>Microlitres RewardLeft and RewardRight deliver before Go, taken live; after Go a manual reward is the current trial's size. The task's own reward sizes are the task file's (trainingStages rewardSizeUl).</Description>
+                  <Minimum>0</Minimum>
                 </Parameter>
                 <Parameter>
                   <Name>StepSize</Name>
@@ -2733,13 +2715,14 @@
               <Name>ExperimentGo</Name>
             </Expression>
             <Expression xsi:type="Combinator">
-              <Combinator xsi:type="orcl:ParameterValue">
-                <orcl:Name>TaskFile</orcl:Name>
+              <Combinator xsi:type="StringProperty">
+                <Value>..\config\task.yml</Value>
               </Combinator>
             </Expression>
-            <Expression xsi:type="scr:ExpressionTransform">
-              <scr:Name>TaskFileInConfig</scr:Name>
-              <scr:Expression>"..\\config\\" + it</scr:Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Take">
+                <rx:Count>1</rx:Count>
+              </Combinator>
             </Expression>
             <Expression xsi:type="rx:AsyncSubject">
               <Name>TaskFilePath</Name>
@@ -2799,7 +2782,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:OnParameterSet">
-                <orcl:Name>RewardSizeUl</orcl:Name>
+                <orcl:Name>ManualRewardUl</orcl:Name>
               </Combinator>
             </Expression>
             <Expression xsi:type="rx:Condition">
@@ -2841,6 +2824,9 @@
                 <orcl:Phase>Ready</orcl:Phase>
               </Combinator>
             </Expression>
+            <Expression xsi:type="ExternalizedMapping">
+              <Property Name="Value" DisplayName="TaskPath" Description="The task file read at Go: rig-control's copy of the one chosen at launch, with the form's edits; from the editor, config\task.yml." />
+            </Expression>
           </Nodes>
           <Edges>
             <Edge From="0" To="1" Label="Source1" />
@@ -2881,17 +2867,18 @@
             <Edge From="45" To="46" Label="Source1" />
             <Edge From="47" To="48" Label="Source1" />
             <Edge From="48" To="49" Label="Source1" />
+            <Edge From="50" To="26" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
       <Expression xsi:type="GroupWorkflow">
         <Name>InitialiseTrials</Name>
-        <Description>At Go: reads the task file the controller named, applies its overrides and publishes TaskConfig. Declares thisTrialData, the current trial, which TrialLoop's DrawTrial fills.</Description>
+        <Description>At Go: reads the task file (TaskPath, as rig-control wrote it) and publishes TaskConfig. Declares thisTrialData, the current trial, which TrialLoop's DrawTrial fills.</Description>
         <Workflow>
           <Nodes>
             <Expression xsi:type="Annotation">
               <Name>Read task configuration</Name>
-              <Text><![CDATA[At Go: the task file the controller named (TaskFile, in config\) is read and the controller's RewardSizeUl, ItiMin, ItiMax and Zapit applied (blank keeps the file's), then published as TaskConfig and written to the experiment as Schemas\Schemas_Task_<DateTime>.json. Nothing is read before Go, so the controller's choice of file counts.]]></Text>
+              <Text><![CDATA[At Go: the task file named by TaskPath is read, as rig-control wrote it at Go (the file chosen at launch, with the form's edits and any null rngSeed drawn, checked against the task schema; lib-open-rigs settings-files plan), then published as TaskConfig and written to the experiment as Schemas\Schemas_Task_<DateTime>.json. Nothing is read before Go. From the editor TaskPath is config\task.yml, as it is.]]></Text>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>TaskFilePath</Name>
@@ -2901,44 +2888,6 @@
             </Expression>
             <Expression xsi:type="p6:DeserializeFromYaml">
               <p6:Type xsi:type="TypeMapping" TypeArguments="p6:UclOpenAvDomeTaskLogic" />
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>ExperimentGo</Name>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="orcl:ParameterValue">
-                <orcl:Name>RewardSizeUl</orcl:Name>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>ExperimentGo</Name>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="orcl:ParameterValue">
-                <orcl:Name>ItiMin</orcl:Name>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>ExperimentGo</Name>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="orcl:ParameterValue">
-                <orcl:Name>ItiMax</orcl:Name>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="SubscribeSubject">
-              <Name>ExperimentGo</Name>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="orcl:ParameterValue">
-                <orcl:Name>Zapit</orcl:Name>
-              </Combinator>
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="rx:Zip" />
-            </Expression>
-            <Expression xsi:type="Combinator">
-              <Combinator xsi:type="p2:ApplyTaskOverrides" />
             </Expression>
             <Expression xsi:type="rx:AsyncSubject">
               <Name>TaskConfig</Name>
@@ -2951,17 +2900,7 @@
             <Edge From="0" To="1" Label="Source1" />
             <Edge From="1" To="2" Label="Source1" />
             <Edge From="2" To="3" Label="Source1" />
-            <Edge From="4" To="5" Label="Source1" />
-            <Edge From="6" To="7" Label="Source1" />
-            <Edge From="8" To="9" Label="Source1" />
-            <Edge From="10" To="11" Label="Source1" />
-            <Edge From="3" To="12" Label="Source1" />
-            <Edge From="5" To="12" Label="Source2" />
-            <Edge From="7" To="12" Label="Source3" />
-            <Edge From="9" To="12" Label="Source4" />
-            <Edge From="11" To="12" Label="Source5" />
-            <Edge From="12" To="13" Label="Source1" />
-            <Edge From="13" To="14" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>

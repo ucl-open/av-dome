@@ -14,8 +14,8 @@ param(
 #      sits on a node it fits are checked.
 #   3. Runs RigDevice on the template: every name main.bonsai asks for is there, a wrong name is
 #      refused, and every key in the template reaches the Schemas_Rig JSON the experiment logs.
-#   4. ApplyTaskOverrides: blank keeps the task file's values, on/off and numbers apply, and a bad
-#      value or a minimum above the maximum is refused naming the parameter.
+#   4. Each config\task*.yml reads as the workflow reads it at Go, TaskPath is exposed and no
+#      override is applied (rig-control writes the task file; lib-open-rigs settings-files plan).
 #   5. LoadAuditoryStimulusSet on synthetic WAVs and filters: equalising matches the filter's
 #      convolution, and asymmetric taps, a wrong rate or a missing file are refused naming it;
 #      InitialiseTrial refuses a flickerFrequency other than the set's 8 Hz.
@@ -300,33 +300,22 @@ if ($Step -eq 'RigDevice') {
 if ($Step -eq 'Checks') {
     Initialize-Assemblies
     $failed = 0
-    function New-TaskConfig {
-        $c = New-Object UclOpenAvDomeTask.UclOpenAvDomeTaskLogic
-        $c.TaskParameters = New-Object UclOpenAvDomeTask.UclOpenAvDomeTaskParameters
-        $c.TaskParameters.TrialStructure = New-Object UclOpenAvDomeTask.TrialStructure
-        $c.TaskParameters.TrialStructure.ItiMin = 4; $c.TaskParameters.TrialStructure.ItiMax = 5
-        $c.TaskParameters.Optogenetics = New-Object UclOpenAvDomeTask.OptogeneticsSettings
-        $c.TaskParameters.Optogenetics.Enabled = $true
-        $c.TaskParameters.TrainingStages = New-Object 'System.Collections.Generic.List[UclOpenAvDomeTask.TrainingStage]'
-        foreach ($i in 0, 1) { $s = New-Object UclOpenAvDomeTask.TrainingStage; $s.RewardSizeUl = 3; $c.TaskParameters.TrainingStages.Add($s) }
-        return $c
+    # Each task file as the workflow reads it at Go (UclOpenAvDomeTask's DeserializeFromYaml: no
+    # unknown key), rig-control's copy of it being the same file with values changed. And TaskPath
+    # is the launch property rig-control sets, the task file no parameter.
+    $null = [Reflection.Assembly]::LoadFrom($script:resolveMap['YamlDotNet'])
+    foreach ($file in Get-ChildItem (Join-Path $repo 'config') -Filter 'task*.yml') {
+        try {
+            # The workflow's builder, but for its date converter, which PowerShell cannot construct: a task file holds no dates.
+            $d = (New-Object YamlDotNet.Serialization.DeserializerBuilder).Build()
+            $c = $d.Deserialize((New-Object IO.StringReader ([IO.File]::ReadAllText($file.FullName))), [UclOpenAvDomeTask.UclOpenAvDomeTaskLogic])
+            if ($c.TaskParameters.TrainingStages.Count -gt 0) { "  ok    config\$($file.Name) reads as the workflow reads it at Go" }
+            else { "  FAIL  config\$($file.Name) has no trainingStages"; $failed++ }
+        } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; "  FAIL  config\$($file.Name): $($x.Message)"; $failed++ }
     }
-    function Get-Refusal([scriptblock]$Run) {
-        try { & $Run; return $null } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; return $x }
-    }
-    $c = New-TaskConfig
-    $null = [UclOpenAvDome.ApplyTaskOverrides]::Apply($c, '', '', '', '')
-    if ($c.TaskParameters.TrainingStages[0].RewardSizeUl -eq 3 -and $c.TaskParameters.TrialStructure.ItiMin -eq 4 -and $c.TaskParameters.Optogenetics.Enabled) { "  ok    ApplyTaskOverrides: blank keeps the task file's values" }
-    else { "  FAIL  ApplyTaskOverrides changed values on blank overrides"; $failed++ }
-    $c = New-TaskConfig
-    $null = [UclOpenAvDome.ApplyTaskOverrides]::Apply($c, '5', '2.5', '6', 'OFF')
-    if ($c.TaskParameters.TrainingStages[1].RewardSizeUl -eq 5 -and $c.TaskParameters.TrialStructure.ItiMin -eq 2.5 -and $c.TaskParameters.TrialStructure.ItiMax -eq 6 -and -not $c.TaskParameters.Optogenetics.Enabled) { "  ok    ApplyTaskOverrides: 5 ul on every stage, ITI 2.5 to 6, Zapit off" }
-    else { "  FAIL  ApplyTaskOverrides did not apply 5, 2.5, 6, OFF"; $failed++ }
-    foreach ($case in @(@('x', '', '', '', 'RewardSizeUl must be'), @('', '-1', '', '', 'ItiMin must be'), @('', '7', '', '', 'above ItiMax'), @('', '', '', 'maybe', 'Zapit must be'))) {
-        $x = Get-Refusal { $null = [UclOpenAvDome.ApplyTaskOverrides]::Apply((New-TaskConfig), $case[0], $case[1], $case[2], $case[3]) }
-        if ($x -and $x.Message.Contains($case[4])) { "  ok    ApplyTaskOverrides refused: $($x.Message)" }
-        else { "  FAIL  ApplyTaskOverrides on '$($case[0..3] -join "','")': $(if ($x) { $x.Message } else { 'accepted' })"; $failed++ }
-    }
+    $wf = Get-Content (Join-Path $repo 'src\main.bonsai') -Raw
+    if ($wf -match '<Property Name="TaskPath"' -and $wf -notmatch 'ApplyTaskOverrides|<Name>TaskFile</Name>') { "  ok    main.bonsai takes its task file from TaskPath, with no overrides" }
+    else { "  FAIL  main.bonsai does not expose TaskPath, or still applies overrides or names a TaskFile parameter"; $failed++ }
     $wf = Get-Content (Join-Path $repo 'src\main.bonsai') -Raw
     if ($wf -match 'C:\\RigConfigs\\LickSpoutPositions') { "  FAIL  main.bonsai still names production's C:\RigConfigs\LickSpoutPositions"; $failed++ }
     else { "  ok    main.bonsai keeps spout positions under the rig's own config directory" }
@@ -440,7 +429,7 @@ foreach ($w in $workflows) {
 "3. RigDevice and Schemas_Rig on config\rig-template.yml..."
 & { $ErrorActionPreference = 'Continue'; & powershell -NoProfile -ExecutionPolicy Bypass -File $self -Step RigDevice 2>&1 | ForEach-Object { "$_" } }
 if ($LASTEXITCODE -ne 0) { "  FAILED"; $bad++ }
-"4. ApplyTaskOverrides and the spout positions path..."
+"4. The task files, TaskPath and the spout positions path..."
 & { $ErrorActionPreference = 'Continue'; & powershell -NoProfile -ExecutionPolicy Bypass -File $self -Step Checks 2>&1 | ForEach-Object { "$_" } }
 if ($LASTEXITCODE -ne 0) { "  FAILED"; $bad++ }
 "5. The auditory stimulus set and the flickerFrequency check, on synthetic files..."
