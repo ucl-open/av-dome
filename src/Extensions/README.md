@@ -21,8 +21,8 @@ and fired through the PulseController's `TriggerCalibratedPulse`.
 | `RewardLine`, `RewardDelivery` | types | The line and the plan; `RewardDelivery` is what `DeliverReward.bonsai` fires and the `Logging` group writes as `RewardDelivery`, with the artefacts snapshotted as `ValveCalibrationDO1` and `ValveCalibrationDO2`. |
 
 Calibrating: from rig-control's Calibrations page, which runs ucl-open/coen-calibrate-valve on
-this rig for the chosen line, with its board and artefact taken from `rig.yml`, and a serial
-balance or one read by eye. Then point the line at the artefact in `rig.yml`:
+this rig for the chosen line, with its board and artefact taken from `rig.yml`, and each
+weight read off the balance and typed in. Then point the line at the artefact in `rig.yml`:
 `DO1: { discriminatorType: CalibratedPulse, artefact: calibration/valve-DO1.json }`.
 `src/CalibrateValve.bonsai`, run by hand in Bonsai, writes the same artefact.
 
