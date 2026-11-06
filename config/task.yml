@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=../src/DataSchemas/ucl_open_av_dome_task.json
 # Task parameters for the av-dome audiovisual localisation task.
 # Loaded by src/main.bonsai at startup and published as the TaskConfig subject.
-# The task as read at Go is written to the experiment folder as Schemas\Schemas_Task_<DateTime>.json.
+# The task as read at Go is written to the experiment folder as Settings\Settings_Task_<DateTime>.json.
 taskParameters:
   rngSeed: null            # null = draw a random seed; each seed used is a RngSeed event in BonsaiData_Async
   flickerFrequency: 8      # Hz, pulse rate shared by both modalities; must be 8, the rate of the auditory stimulus set

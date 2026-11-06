@@ -13,7 +13,7 @@ param(
 #      ExperimentManifest expects, and that each window in config\main.layout (once there is one)
 #      sits on a node it fits are checked.
 #   3. Runs RigDevice on the template: every name main.bonsai asks for is there, a wrong name is
-#      refused, and every key in the template reaches the Schemas_Rig JSON the experiment logs.
+#      refused, and every key in the template reaches the Settings_Rig JSON the experiment logs.
 #   4. Each config\task*.yml reads as the workflow reads it at Go, TaskPath is exposed and no
 #      override is applied (rig-control writes the task file; lib-open-rigs settings-files plan).
 #   5. LoadAuditoryStimulusSet on synthetic WAVs and filters: equalising matches the filter's
@@ -181,7 +181,7 @@ public class BuiltObjects : System.Linq.Expressions.ExpressionVisitor {
         'StepperDriver-B/StepperDriver-B_device.json', 'StepperDriver-B/StepperDriver-B.yml',
         'LicketySplit-Left/LicketySplit-Left_device.json', 'LicketySplit-Right/LicketySplit-Right_device.json',
         'LicketySplit-Left/LicketySplit-Left.yml', 'LicketySplit-Right/LicketySplit-Right.yml',
-        'Schemas/Schemas_Rig_', 'Schemas/Schemas_Task_', 'Schemas/Schemas_Experiment_', 'BonsaiData/'
+        'Settings/Settings_Rig_', 'Settings/Settings_Task_', 'Settings/Settings_Experiment_', 'BonsaiData/'
     $missing = @($wantFiles | Where-Object { $expected -notcontains $_ })
     $extra = @($expected | Where-Object { $wantFiles -notcontains $_ })
     if ($missing.Count -eq 0 -and $extra.Count -eq 0) { "  ok    ExperimentManifest expects the $($expected.Count) folders and files of an experiment" }
@@ -272,7 +272,7 @@ if ($Step -eq 'RigDevice') {
             else { "  FAIL  $($c[1]): $($x.GetType().Name): $($x.Message)"; $failed++ }
         }
     }
-    # The experiment's Schemas_Rig JSON is rig.yml as parsed, and the manifest keeps only rig.yml's hash,
+    # The experiment's Settings_Rig JSON is rig.yml as parsed, and the manifest keeps only rig.yml's hash,
     # so every key in rig.yml must reach the JSON.
     try {
         $x = New-RigYamlExpression
@@ -291,9 +291,9 @@ if ($Step -eq 'RigDevice') {
         }
         Add-YamlKeys ((New-Object YamlDotNet.Serialization.Deserializer).Deserialize((New-Object IO.StringReader $yaml))) ''
         $lost = @($yamlKeys | Where-Object { $jsonKeys -notcontains $_ })
-        if ($yamlKeys.Count -gt 0 -and $lost.Count -eq 0) { "  ok    Schemas_Rig JSON keeps all $($yamlKeys.Count) keys of rig-template.yml" }
-        else { "  FAIL  Schemas_Rig JSON lost $($lost.Count) of $($yamlKeys.Count) keys of rig-template.yml: $($lost -join ', ')"; $failed++ }
-    } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; "  FAIL  Schemas_Rig JSON: $($x.Message)"; $failed++ }
+        if ($yamlKeys.Count -gt 0 -and $lost.Count -eq 0) { "  ok    Settings_Rig JSON keeps all $($yamlKeys.Count) keys of rig-template.yml" }
+        else { "  FAIL  Settings_Rig JSON lost $($lost.Count) of $($yamlKeys.Count) keys of rig-template.yml: $($lost -join ', ')"; $failed++ }
+    } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; "  FAIL  Settings_Rig JSON: $($x.Message)"; $failed++ }
     exit $(if ($failed) { 1 } else { 0 })
 }
 
@@ -426,7 +426,7 @@ foreach ($w in $workflows) {
     & { $ErrorActionPreference = 'Continue'; & powershell -NoProfile -ExecutionPolicy Bypass -File $self -Step Build -Workflow $w 2>&1 | ForEach-Object { "$_" } }
     if ($LASTEXITCODE -ne 0) { "  FAILED  $w"; $bad++ }
 }
-"3. RigDevice and Schemas_Rig on config\rig-template.yml..."
+"3. RigDevice and Settings_Rig on config\rig-template.yml..."
 & { $ErrorActionPreference = 'Continue'; & powershell -NoProfile -ExecutionPolicy Bypass -File $self -Step RigDevice 2>&1 | ForEach-Object { "$_" } }
 if ($LASTEXITCODE -ne 0) { "  FAILED"; $bad++ }
 "4. The task files, TaskPath and the spout positions path..."
