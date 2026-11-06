@@ -2891,7 +2891,7 @@
           <Nodes>
             <Expression xsi:type="Annotation">
               <Name>Read task configuration</Name>
-              <Text><![CDATA[At Go: the task file the controller named (TaskFile, in config\) is read and the controller's RewardSizeUl, ItiMin, ItiMax and Zapit applied (blank keeps the file's), then published as TaskConfig and snapshotted to the experiment as TaskSchema.json. Nothing is read before Go, so the controller's choice of file counts.]]></Text>
+              <Text><![CDATA[At Go: the task file the controller named (TaskFile, in config\) is read and the controller's RewardSizeUl, ItiMin, ItiMax and Zapit applied (blank keeps the file's), then published as TaskConfig and written to the experiment as Schemas\Schemas_Task_<DateTime>.json. Nothing is read before Go, so the controller's choice of file counts.]]></Text>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>TaskFilePath</Name>
@@ -4612,7 +4612,7 @@
             </Expression>
             <Expression xsi:type="rx:SelectMany">
               <Name>ExperimentLogs</Name>
-              <Description>Starts every experiment log once LogControllerLogic publishes PathPrefix. TrialParameters writes BonsaiData_Trial (LogTrial): one row per trial, built in ExecuteTrial when the choice is made (TrialRow, a BehaviorSubject, so the row made before the folder exists is written too; a ReplaySubject here is completed when trial 1's branch ends, and every later row is lost): what was drawn for it, the choice, its outcome, the speaker that played, and two Harp times, stimulusOnsetTime and choiceTime, with Seconds the time the outcome was known. Its columns are named and typed as the lab's list allows (K:\config\data-dictionary.json; rig-control checks before launch), and what each means (codes, units, former names) is schemas\trial-columns.yml, which ExperimentManifest copies into each experiment's manifest; settings that are the same throughout the experiment are not columns, being in TaskConfig and the manifest's settings at Go, and the RNG seed is logged once, as the RngSeed event in BonsaiData_Async. Subjects that already hold a value (BehaviorSubject, AsyncSubject) hand it to the late subscriber. Values set at startup, such as the Zapit startup replies and the first trial draw, are therefore logged when the experiment logs start, about a second after Go, with that time. Add new loggers inside this group.</Description>
+              <Description>Starts every experiment log once LogControllerLogic publishes PathPrefix. TrialParameters writes BonsaiData_Trial (LogTrial): one row per trial, built in ExecuteTrial when the choice is made (TrialRow, a BehaviorSubject, so the row made before the folder exists is written too; a ReplaySubject here is completed when trial 1's branch ends, and every later row is lost): what was drawn for it, the choice, its outcome, the speaker that played, and two Harp times, stimulusOnsetTime and choiceTime, with Seconds the time the outcome was known. Its columns are named and typed as the lab's list allows (K:\config\data-dictionary.json; rig-control checks before launch), and what each means (codes, units, former names) is schemas\trial-columns.yml, which ExperimentManifest copies into each experiment's manifest; settings that are the same throughout the experiment are not columns, being in the experiment's settings files (Schemas\Schemas_Rig_, Schemas_Task_ and Schemas_Experiment_&lt;DateTime&gt;.json: rig.yml as read, the task as read at Go, and from ExperimentSettings the subject, session, workflow, commit, who launched and sent Go and every ExperimentControl parameter at Go), and the RNG seed is logged once, as the RngSeed event in BonsaiData_Async. Subjects that already hold a value (BehaviorSubject, AsyncSubject) hand it to the late subscriber. Values set at startup, such as the Zapit startup replies and the first trial draw, are therefore logged when the experiment logs start, about a second after Go, with that time. Add new loggers inside this group.</Description>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="GroupWorkflow">
@@ -4873,7 +4873,7 @@
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogDataSchema.bonsai">
-                    <Name>RigSchema</Name>
+                    <Name>Schemas_Rig</Name>
                     <Extension>json</Extension>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
@@ -4885,7 +4885,7 @@
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogDataSchema.bonsai">
-                    <Name>TaskSchema</Name>
+                    <Name>Schemas_Task</Name>
                     <Extension>json</Extension>
                   </Expression>
                   <Expression xsi:type="GroupWorkflow">
@@ -4960,6 +4960,16 @@
                   <Expression xsi:type="MulticastSubject">
                     <Name>AsyncEvents</Name>
                   </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>ExperimentGo</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="orcl:ExperimentSettings" />
+                  </Expression>
+                  <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogDataSchema.bonsai">
+                    <Name>Schemas_Experiment</Name>
+                    <Extension>json</Extension>
+                  </Expression>
                 </Nodes>
                 <Edges>
                   <Edge From="4" To="5" Label="Source1" />
@@ -4977,6 +4987,8 @@
                   <Edge From="22" To="23" Label="Source1" />
                   <Edge From="23" To="24" Label="Source1" />
                   <Edge From="24" To="25" Label="Source1" />
+                  <Edge From="26" To="27" Label="Source1" />
+                  <Edge From="27" To="28" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -5060,10 +5072,10 @@
             </Expression>
             <Expression xsi:type="mf:ExperimentManifest">
               <Name>ExperimentManifest</Name>
-              <Description>Writes manifest.json into the experiment folder (OpenRigs.Manifest), finding PathPrefix itself: once when the folder appears and again when the workflow stops. No run is connected: an experiment ends with the controller's Stop, recorded as stopped with its reason. It records the machine, this repo's commit, Bonsai's command line, the settings at Go (SubjectId, SessionId and every parameter), rig.yml's path and hash, what each BonsaiData_Trial column means (schemas\trial-columns.yml, copied in at Start), and what the experiment must leave: a folder for each device in rig.yml (BehaviorBoard-Main, TimestampGeneratorGen3-Main, StepperDriver-A/B, LicketySplit-Left/Right, Camera-Face/Pupil/Body), the record and register map RecordHarpDevices writes for each Harp device (harp), RigSchema, TaskSchema and BonsaiData (BonsaiData_Trial and BonsaiData_Async), which the overnight copy (rig-sync) alarms on if missing.</Description>
+              <Description>Writes manifest.json into the experiment folder (OpenRigs.Manifest), finding PathPrefix itself: once when the folder appears and again when the workflow stops. No run is connected: an experiment ends with the controller's Stop, recorded as stopped with its reason. It records the machine, this repo's commit, Bonsai's command line, who launched it and sent Go (every parameter at Go is in Schemas_Experiment), rig.yml's path and hash, what each BonsaiData_Trial column means (schemas\trial-columns.yml, copied in at Start), and what the experiment must leave: a folder for each device in rig.yml (BehaviorBoard-Main, TimestampGeneratorGen3-Main, StepperDriver-A/B, LicketySplit-Left/Right, Camera-Face/Pupil/Body), the record and register map RecordHarpDevices writes for each Harp device (harp), each of the three settings files in Schemas (Schemas/Schemas_Rig_, Schemas/Schemas_Task_, Schemas/Schemas_Experiment_, each expected on its own) and BonsaiData (BonsaiData_Trial and BonsaiData_Async), which the overnight copy (rig-sync) alarms on if missing.</Description>
               <mf:IngestScript>av-dome</mf:IngestScript>
               <mf:ConfigFiles>C:\Coen-Lab-Local\RigConfigs\%COMPUTERNAME%\rig.yml</mf:ConfigFiles>
-              <mf:ExpectedFiles>auto;harp;RigSchema/;TaskSchema/;BonsaiData/</mf:ExpectedFiles>
+              <mf:ExpectedFiles>auto;harp;Schemas/Schemas_Rig_;Schemas/Schemas_Task_;Schemas/Schemas_Experiment_;BonsaiData/</mf:ExpectedFiles>
               <mf:TrialColumns>schemas\trial-columns.yml</mf:TrialColumns>
             </Expression>
             <Expression xsi:type="scr:ExpressionTransform">
