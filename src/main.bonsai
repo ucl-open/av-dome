@@ -614,7 +614,7 @@
                                 </Combinator>
                               </Expression>
                               <Expression xsi:type="Unit" />
-                              <Expression xsi:type="rx:Defer">
+                              <Expression xsi:type="rx:SelectMany">
                                 <Name>Initialize StepperDriver1</Name>
                                 <Workflow>
                                   <Nodes>
@@ -823,7 +823,7 @@
                                 </Combinator>
                               </Expression>
                               <Expression xsi:type="Unit" />
-                              <Expression xsi:type="rx:Defer">
+                              <Expression xsi:type="rx:SelectMany">
                                 <Name>Initialize StepperDriver2</Name>
                                 <Workflow>
                                   <Nodes>
