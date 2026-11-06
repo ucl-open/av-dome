@@ -1,6 +1,7 @@
+from enum import Enum
 from typing import Dict, Literal
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from swc.aeon.schema import BaseSchema
 from open_rigs.components import ProjectionCalibration, SpeakerArray
 from open_rigs.core.rig import Rig
@@ -43,6 +44,30 @@ class ZapitServer(BaseSchema):
     )
 
 
+class ValveLine(str, Enum):
+    """A behavior board digital output that can drive a reward valve."""
+
+    DO1 = "DO1"
+    DO2 = "DO2"
+    DO3 = "DO3"
+
+
+class RewardValves(BaseSchema):
+    """Which behavior board line drives each side's reward valve. The workflow reads it at startup
+    (LoadSideRewardLine): a left reward pulses the left line, a right reward the right line, each
+    with that line's entry in behaviorBoard.main.pulseController.outputs. rig-control's Calibrations
+    page names each valve line's side from it."""
+
+    left: ValveLine = Field(description="The line that drives the left lick spout's reward valve")
+    right: ValveLine = Field(description="The line that drives the right lick spout's reward valve")
+
+    @model_validator(mode="after")
+    def _two_lines(self):
+        if self.left == self.right:
+            raise ValueError(f"rewardValves gives {self.left.value} to both sides; each side needs its own line")
+        return self
+
+
 class UclOpenAvDomeRig(Rig):
     """Rig configuration for the av-dome experiment.
 
@@ -80,6 +105,9 @@ class UclOpenAvDomeRig(Rig):
     )
     zapit: ZapitServer = Field(
         description="Zapit optogenetics server endpoint; only contacted when the task enables optogenetics"
+    )
+    reward_valves: RewardValves = Field(
+        description="Which behavior board line drives the left and which the right reward valve, such as { left: DO1, right: DO2 }"
     )
     # Reward delivery structure; moves to the task schema when task parameters migrate.
     inter_pulse_interval: int = Field(

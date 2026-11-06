@@ -32,15 +32,15 @@ behaviorBoard:
       # on a valve calibration curve in calibration\). A fixed reward line delivers ceil(ul / 2)
       # pulses of its width, assuming 2 ul per pulse; a calibrated one delivers the requested volume.
       outputs:
-        DO1: { discriminatorType: FixedPulse, pulseWidthMs: 40 }   # left reward valve, ms
-        DO2: { discriminatorType: FixedPulse, pulseWidthMs: 40 }   # right reward valve, ms
+        DO1: { discriminatorType: FixedPulse, pulseWidthMs: 40 }   # a reward valve, ms (which side: rewardValves)
+        DO2: { discriminatorType: FixedPulse, pulseWidthMs: 40 }   # a reward valve, ms
         DO3: { discriminatorType: FixedPulse, pulseWidthMs: 5 }    # Zapit TTL (used when zapit.hardwareTriggered is true)
         # Calibrated reward line:
         # DO1: { discriminatorType: CalibratedPulse, artefact: calibration/valve-DO1.json }
     cameraTriggerController:
       trigger0Enabled: true     # camera trigger 0 shares the DO0 pin
       trigger0Frequency: 50     # Hz
-      trigger1Enabled: false    # camera trigger 1 shares the DO1 pin, which drives the left valve; off means nothing is written to it
+      trigger1Enabled: false    # camera trigger 1 shares the DO1 pin, which drives a reward valve; off means nothing is written to it
       trigger1Frequency: 50     # Hz, used only if trigger 1 is enabled
     runningWheel:
       wheelDiameterMm: 170
@@ -158,6 +158,10 @@ speakerArray:
   #   layer4_-90:    { position: { azimuth: -90,    elevation: -15 }, channel: 24 }
   #   layer4_-120:   { position: { azimuth: -120,   elevation: -15 }, channel: 25 }
 
+# Which line drives each side's reward valve: a left reward pulses the left line, a right reward the
+# right line, each as its outputs entry says. Required; rig-control's Calibrations page names each
+# valve line's side from it too.
+rewardValves: { left: DO1, right: DO2 }
 interPulseInterval: 50   # ms between consecutive reward pulses; must let the valve seat
 
 # Zapit optogenetics server (tcpServer section of the Zapit settings file). Only contacted

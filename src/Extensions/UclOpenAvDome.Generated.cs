@@ -53,6 +53,8 @@ namespace UclOpenAvDome
     
         private ZapitServer _zapit;
     
+        private RewardValves _rewardValves;
+    
         private int _interPulseInterval;
     
         public UclOpenAvDomeRig()
@@ -67,6 +69,7 @@ namespace UclOpenAvDome
             _speakerArray = new SpeakerArray();
             _lickSpoutDefaultPosition = new StepperPositions();
             _zapit = new ZapitServer();
+            _rewardValves = new RewardValves();
             _interPulseInterval = 50;
         }
     
@@ -84,6 +87,7 @@ namespace UclOpenAvDome
             _speakerArray = other._speakerArray;
             _lickSpoutDefaultPosition = other._lickSpoutDefaultPosition;
             _zapit = other._zapit;
+            _rewardValves = other._rewardValves;
             _interPulseInterval = other._interPulseInterval;
         }
     
@@ -317,6 +321,26 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
+        /// Which behavior board line drives the left and which the right reward valve, such as { left: DO1, right: DO2 }
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("rewardValves", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="rewardValves")]
+        [System.ComponentModel.DescriptionAttribute("Which behavior board line drives the left and which the right reward valve, such " +
+            "as { left: DO1, right: DO2 }")]
+        public RewardValves RewardValves
+        {
+            get
+            {
+                return _rewardValves;
+            }
+            set
+            {
+                _rewardValves = value;
+            }
+        }
+    
+        /// <summary>
         /// Gap between consecutive reward pulses, in milliseconds. Must be long enough for the valve to seat before the next trigger; 0 re-triggers the instant the board closes the valve and risks merged or dropped pulses.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("interPulseInterval")]
@@ -360,6 +384,7 @@ namespace UclOpenAvDome
             stringBuilder.Append("SpeakerArray = " + _speakerArray + ", ");
             stringBuilder.Append("LickSpoutDefaultPosition = " + _lickSpoutDefaultPosition + ", ");
             stringBuilder.Append("Zapit = " + _zapit + ", ");
+            stringBuilder.Append("RewardValves = " + _rewardValves + ", ");
             stringBuilder.Append("InterPulseInterval = " + _interPulseInterval);
             return true;
         }
@@ -1995,6 +2020,104 @@ namespace UclOpenAvDome
 
 
     /// <summary>
+    /// Which behavior board line drives each side's reward valve. The workflow reads it at startup
+    ///(LoadSideRewardLine): a left reward pulses the left line, a right reward the right line, each
+    ///with that line's entry in behaviorBoard.main.pulseController.outputs. rig-control's Calibrations
+    ///page names each valve line's side from it.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute(@"Which behavior board line drives each side's reward valve. The workflow reads it at startup
+    (LoadSideRewardLine): a left reward pulses the left line, a right reward the right line, each
+    with that line's entry in behaviorBoard.main.pulseController.outputs. rig-control's Calibrations
+    page names each valve line's side from it.")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class RewardValves
+    {
+    
+        private ValveLine _left;
+    
+        private ValveLine _right;
+    
+        public RewardValves()
+        {
+        }
+    
+        protected RewardValves(RewardValves other)
+        {
+            _left = other._left;
+            _right = other._right;
+        }
+    
+        /// <summary>
+        /// The line that drives the left lick spout's reward valve
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("left", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="left")]
+        [System.ComponentModel.DescriptionAttribute("The line that drives the left lick spout\'s reward valve")]
+        public ValveLine Left
+        {
+            get
+            {
+                return _left;
+            }
+            set
+            {
+                _left = value;
+            }
+        }
+    
+        /// <summary>
+        /// The line that drives the right lick spout's reward valve
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("right", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="right")]
+        [System.ComponentModel.DescriptionAttribute("The line that drives the right lick spout\'s reward valve")]
+        public ValveLine Right
+        {
+            get
+            {
+                return _right;
+            }
+            set
+            {
+                _right = value;
+            }
+        }
+    
+        public System.IObservable<RewardValves> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new RewardValves(this)));
+        }
+    
+        public System.IObservable<RewardValves> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new RewardValves(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("Left = " + _left + ", ");
+            stringBuilder.Append("Right = " + _right);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    /// <summary>
     /// Represents configuration parameters of the RunningWheel module.
     ///Exposes wheel geometry parameters used to compute speed and distance from encoder counts.
     /// </summary>
@@ -2869,6 +2992,28 @@ namespace UclOpenAvDome
 
 
     /// <summary>
+    /// A behavior board digital output that can drive a reward valve.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+    public enum ValveLine
+    {
+    
+        [System.Runtime.Serialization.EnumMemberAttribute(Value="DO1")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DO1")]
+        DO1 = 0,
+    
+        [System.Runtime.Serialization.EnumMemberAttribute(Value="DO2")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DO2")]
+        DO2 = 1,
+    
+        [System.Runtime.Serialization.EnumMemberAttribute(Value="DO3")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DO3")]
+        DO3 = 2,
+    }
+
+
+    /// <summary>
     /// TCP endpoint of the Zapit optogenetics server (tcpServer section of the Zapit settings file).
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
@@ -3481,6 +3626,11 @@ namespace UclOpenAvDome
             return Process<PulseOutputs>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<RewardValves> source)
+        {
+            return Process<RewardValves>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<RunningWheel> source)
         {
             return Process<RunningWheel>(source);
@@ -3549,6 +3699,7 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseOutput>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseOutputs>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RewardValves>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RunningWheel>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Speaker>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpeakerArray>))]
@@ -3788,6 +3939,11 @@ namespace UclOpenAvDome
             return Process<PulseOutputs>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<RewardValves> source)
+        {
+            return Process<RewardValves>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<RunningWheel> source)
         {
             return Process<RunningWheel>(source);
@@ -3856,6 +4012,7 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseOutput>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PulseOutputs>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RewardValves>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RunningWheel>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Speaker>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpeakerArray>))]

@@ -7,8 +7,9 @@ Bonsai editor (or run it headless) to check that the code compiles.
 
 ## Reward lines and valve calibration
 
-Each reward valve (DO1 left, DO2 right) is a `RewardLine` built at startup from its `outputs` entry
-in the machine's `rig.yml`: a `FixedPulse` keeps its width and assumes the nominal 2 µl per pulse,
+Each side's reward valve is a `RewardLine` built at startup from the machine's `rig.yml`: `rewardValves`
+(`{ left: DO1, right: DO2 }`, required) says which behavior board line each side is, and that line's
+`outputs` entry how it pulses: a `FixedPulse` keeps its width and assumes the nominal 2 µl per pulse,
 a `CalibratedPulse` reads its artefact, a platform `OpenRigs.Core.Calibration.CalibrationCurve`
 written by ucl-open/coen-calibrate-valve from rig-control's Calibrations page, and fits it with the entry's `fit` model. A requested
 volume becomes `ceil(ul / largest calibrated volume)` equal pulses looked up on the inverse curve
@@ -16,9 +17,10 @@ and fired through the PulseController's `TriggerCalibratedPulse`.
 
 | Operator | Kind | Role |
 |---|---|---|
-| `LoadRewardLine` | Transform `(PulseOutput, directory) -> RewardLine` | One per line, in the `RewardLines` group. Fails at startup when the artefact is missing (naming the file and the workflow that creates it), malformed or not monotone; warns when it was measured on another machine or is older than the entry's `maxAgeDays`. |
-| `PlanReward` | Transform `((line, ul), (left, right)) -> RewardDelivery` | Plans a command on the matching line: pulse count, width, volume per pulse, whether it was clamped to the calibrated range. |
-| `RewardLine`, `RewardDelivery` | types | The line and the plan; `RewardDelivery` is what `DeliverReward.bonsai` fires and the `Logging` group writes as `RewardDelivery`, with the artefacts snapshotted as `ValveCalibrationDO1` and `ValveCalibrationDO2`. |
+| `LoadSideRewardLine` | Transform `(rig, directory) -> RewardLine` | One per side (`Side` Left or Right), in the `RewardLines` group: the line `rewardValves` names for it, loaded by `LoadRewardLine.Load`. Fails at startup when `rewardValves` is missing, gives both sides one line, or names `zapit.triggerLine`'s. |
+| `LoadRewardLine` | Transform `(PulseOutput, directory) -> RewardLine` | One line's entry. Fails at startup when the artefact is missing (naming the file and the workflow that creates it), malformed or not monotone; warns when it was measured on another machine or is older than the entry's `maxAgeDays`. |
+| `PlanReward` | Transform `((side, ul), (left, right)) -> RewardDelivery` | Plans a command (side 1 left, 2 right) on that side's line, which fires on its own DO line: pulse count, width, volume per pulse, whether it was clamped to the calibrated range. |
+| `RewardLine`, `RewardDelivery` | types | The line and the plan; `RewardDelivery` is what `DeliverReward.bonsai` fires and the `Logging` group writes as `RewardDelivery`, with the artefacts snapshotted as `ValveCalibrationLeft` and `ValveCalibrationRight`. |
 
 Calibrating: from rig-control's Calibrations page, which runs ucl-open/coen-calibrate-valve on
 this rig for the chosen line, with its board and artefact taken from `rig.yml`, and each

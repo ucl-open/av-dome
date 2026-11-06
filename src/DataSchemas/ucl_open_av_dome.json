@@ -537,6 +537,27 @@
       "title": "PulseOutputs",
       "type": "object"
     },
+    "RewardValves": {
+      "description": "Which behavior board line drives each side's reward valve. The workflow reads it at startup\n(LoadSideRewardLine): a left reward pulses the left line, a right reward the right line, each\nwith that line's entry in behaviorBoard.main.pulseController.outputs. rig-control's Calibrations\npage names each valve line's side from it.",
+      "properties": {
+        "left": {
+          "$ref": "#/$defs/ValveLine",
+          "description": "The line that drives the left lick spout's reward valve",
+          "title": "Left"
+        },
+        "right": {
+          "$ref": "#/$defs/ValveLine",
+          "description": "The line that drives the right lick spout's reward valve",
+          "title": "Right"
+        }
+      },
+      "required": [
+        "left",
+        "right"
+      ],
+      "title": "RewardValves",
+      "type": "object"
+    },
     "RunningWheel": {
       "description": "Represents configuration parameters of the RunningWheel module.\nExposes wheel geometry parameters used to compute speed and distance from encoder counts.",
       "properties": {
@@ -913,6 +934,10 @@
           "description": "Zapit optogenetics server endpoint; only contacted when the task enables optogenetics",
           "title": "Zapit"
         },
+        "rewardValves": {
+          "$ref": "#/$defs/RewardValves",
+          "description": "Which behavior board line drives the left and which the right reward valve, such as { left: DO1, right: DO2 }"
+        },
         "interPulseInterval": {
           "default": 50,
           "description": "Gap between consecutive reward pulses, in milliseconds. Must be long enough for the valve to seat before the next trigger; 0 re-triggers the instant the board closes the valve and risks merged or dropped pulses.",
@@ -931,10 +956,21 @@
         "projectionCalibration",
         "speakerArray",
         "lickSpoutDefaultPosition",
-        "zapit"
+        "zapit",
+        "rewardValves"
       ],
       "title": "UclOpenAvDomeRig",
       "type": "object"
+    },
+    "ValveLine": {
+      "description": "A behavior board digital output that can drive a reward valve.",
+      "enum": [
+        "DO1",
+        "DO2",
+        "DO3"
+      ],
+      "title": "ValveLine",
+      "type": "string"
     },
     "ZapitServer": {
       "description": "TCP endpoint of the Zapit optogenetics server (tcpServer section of the Zapit settings file).",

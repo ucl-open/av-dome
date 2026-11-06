@@ -2345,14 +2345,11 @@
             </Expression>
             <Expression xsi:type="GroupWorkflow">
               <Name>RewardLines</Name>
-              <Description>Builds the left (DO1) and right (DO2) reward lines from the rig configuration: a calibrated line reads and fits its valve calibration from the rig configuration directory, a fixed line keeps its width. The Logging group snapshots each calibration read into the experiment folder.</Description>
+              <Description>Builds the left and right reward lines from the rig configuration: rewardValves says which behavior board line each side is, and that line's entry in the outputs is loaded. A calibrated line reads and fits its valve calibration from the rig configuration directory, a fixed line keeps its width. The Logging group snapshots each calibration read into the experiment folder.</Description>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>BehaviorBoard-Main</Name>
-                  </Expression>
-                  <Expression xsi:type="MemberSelector">
-                    <Selector>Settings.PulseController.Outputs.DO1</Selector>
+                    <Name>RigConfigs</Name>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
                     <Name>RigConfigDirectory</Name>
@@ -2361,8 +2358,8 @@
                     <Combinator xsi:type="rx:Zip" />
                   </Expression>
                   <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="p1:LoadRewardLine">
-                      <p1:Line>1</p1:Line>
+                    <Combinator xsi:type="p1:LoadSideRewardLine">
+                      <p1:Side>Left</p1:Side>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
@@ -2374,10 +2371,7 @@
                     <Name>RewardLineLeft</Name>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
-                    <Name>BehaviorBoard-Main</Name>
-                  </Expression>
-                  <Expression xsi:type="MemberSelector">
-                    <Selector>Settings.PulseController.Outputs.DO2</Selector>
+                    <Name>RigConfigs</Name>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
                     <Name>RigConfigDirectory</Name>
@@ -2386,8 +2380,8 @@
                     <Combinator xsi:type="rx:Zip" />
                   </Expression>
                   <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="p1:LoadRewardLine">
-                      <p1:Line>2</p1:Line>
+                    <Combinator xsi:type="p1:LoadSideRewardLine">
+                      <p1:Side>Right</p1:Side>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="Combinator">
@@ -2400,18 +2394,16 @@
                   </Expression>
                 </Nodes>
                 <Edges>
-                  <Edge From="0" To="1" Label="Source1" />
-                  <Edge From="1" To="3" Label="Source1" />
-                  <Edge From="2" To="3" Label="Source2" />
+                  <Edge From="0" To="2" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source2" />
+                  <Edge From="2" To="3" Label="Source1" />
                   <Edge From="3" To="4" Label="Source1" />
                   <Edge From="4" To="5" Label="Source1" />
-                  <Edge From="5" To="6" Label="Source1" />
-                  <Edge From="7" To="8" Label="Source1" />
-                  <Edge From="8" To="10" Label="Source1" />
-                  <Edge From="9" To="10" Label="Source2" />
+                  <Edge From="6" To="8" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source2" />
+                  <Edge From="8" To="9" Label="Source1" />
+                  <Edge From="9" To="10" Label="Source1" />
                   <Edge From="10" To="11" Label="Source1" />
-                  <Edge From="11" To="12" Label="Source1" />
-                  <Edge From="12" To="13" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -4956,7 +4948,7 @@
               <Selector>ArtefactJson</Selector>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogDataSchema.bonsai">
-              <Name>ValveCalibrationDO1</Name>
+              <Name>ValveCalibrationLeft</Name>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>RewardLineRight</Name>
@@ -4983,7 +4975,7 @@
               <Selector>ArtefactJson</Selector>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogDataSchema.bonsai">
-              <Name>ValveCalibrationDO2</Name>
+              <Name>ValveCalibrationRight</Name>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>RewardDelivered</Name>

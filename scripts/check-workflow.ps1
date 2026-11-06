@@ -272,6 +272,25 @@ if ($Step -eq 'RigDevice') {
             else { "  FAIL  $($c[1]): $($x.GetType().Name): $($x.Message)"; $failed++ }
         }
     }
+    # Each side's reward line is the one rig.yml's rewardValves names (LoadSideRewardLine), never
+    # assumed: swapped in rig.yml, swapped in the workflow; one line for both, the Zapit TTL's line,
+    # or no rewardValves at all is refused at startup.
+    $x = New-RigYamlExpression
+    $readRig = { $E::Lambda($E::Convert($E::Call($wait.MakeGenericMethod([UclOpenAvDome.UclOpenAvDomeRig]), $x), [object])).Compile().DynamicInvoke() }
+    $sides = { param($r) (@([RewardSide]::Left, [RewardSide]::Right) | ForEach-Object { try { 'DO' + [LoadSideRewardLine]::LineOf($r, $_) } catch { $e = $_.Exception; while ($e.InnerException) { $e = $e.InnerException }; 'refused: ' + $e.Message } }) -join ' / ' }
+    $rig = & $readRig
+    $got = & $sides $rig
+    if ($got -eq 'DO1 / DO2') { "  ok    rewardValves: left DO1, right DO2 as the template says" } else { "  FAIL  rewardValves read as $got"; $failed++ }
+    $rig.RewardValves.Left = [UclOpenAvDome.ValveLine]::DO2; $rig.RewardValves.Right = [UclOpenAvDome.ValveLine]::DO1
+    $got = & $sides $rig
+    if ($got -eq 'DO2 / DO1') { "  ok    rewardValves swapped: left DO2, right DO1" } else { "  FAIL  swapped rewardValves read as $got"; $failed++ }
+    foreach ($c in @(@('both DO1', { $rig.RewardValves.Right = [UclOpenAvDome.ValveLine]::DO1; $rig.RewardValves.Left = [UclOpenAvDome.ValveLine]::DO1 }, 'to both sides'),
+                     @('left DO3, the Zapit line', { $rig.RewardValves.Left = [UclOpenAvDome.ValveLine]::DO3; $rig.RewardValves.Right = [UclOpenAvDome.ValveLine]::DO2 }, 'zapit.triggerLine'),
+                     @('no rewardValves', { $rig.RewardValves = $null }, 'rig.yml has no rewardValves'))) {
+        & $c[1]
+        $got = & $sides $rig
+        if ($got -like "refused: *$($c[2])*") { "  ok    rewardValves $($c[0]) refused: $(($got -split ' / ')[0].Substring(9))" } else { "  FAIL  rewardValves $($c[0]) read as $got"; $failed++ }
+    }
     # The experiment's Settings_Rig JSON is rig.yml as parsed, and the manifest keeps only rig.yml's hash,
     # so every key in rig.yml must reach the JSON.
     try {
