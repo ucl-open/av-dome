@@ -158,7 +158,7 @@ public class RewardDelivery
 /// </summary>
 [Combinator]
 [DefaultProperty("Line")]
-[Description("Builds a reward line from its pulse output entry in the rig configuration and the rig configuration directory. A calibrated entry reads its valve calibration artefact (a CalibrationCurve written by the platform's DispenseCalibration procedure, see CalibrateValve.bonsai) and fits it with the entry's fit model; a fixed entry keeps its width. Warns when the artefact was measured on another machine or is older than the entry's maxAgeDays. Input is a Zip of the line's output entry and the RigConfigDirectory subject.")]
+[Description("Builds a reward line from its pulse output entry in the rig configuration and the rig configuration directory. A calibrated entry reads its valve calibration artefact (a CalibrationCurve written by the platform's DispenseCalibration procedure, run from rig-control's Calibrations page by ucl-open/coen-calibrate-valve) and fits it with the entry's fit model; a fixed entry keeps its width. Warns when the artefact was measured on another machine or is older than the entry's maxAgeDays. Input is a Zip of the line's output entry and the RigConfigDirectory subject.")]
 [WorkflowElementCategory(ElementCategory.Transform)]
 public class LoadRewardLine
 {
@@ -208,7 +208,7 @@ public class LoadRewardLine
         {
             throw new InvalidOperationException(
                 "No valve calibration for reward line DO" + line + ". Expected: " + path +
-                ". Run src\\CalibrateValve.bonsai on this machine with Channel " + line + " to create it, or point the line at a FixedPulse.");
+                ". Calibrate DO" + line + " on this rig from rig-control's Calibrations page to create it, or point the line at a FixedPulse.");
         }
 
         string json = File.ReadAllText(path);
@@ -246,7 +246,7 @@ public class LoadRewardLine
         {
             throw new InvalidOperationException(
                 "The valve calibration for reward line DO" + line + " is not monotone with the " + calibratedPulse.Fit +
-                " fit, so a volume cannot be turned into a pulse width: " + path + ". Recalibrate with CalibrateValve.bonsai.");
+                " fit, so a volume cannot be turned into a pulse width: " + path + ". Recalibrate DO" + line + " from rig-control's Calibrations page.");
         }
         return new RewardLine(line, fit, path, json);
     }
