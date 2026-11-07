@@ -4926,42 +4926,22 @@
             <Expression xsi:type="SubscribeSubject">
               <Name>RewardLineLeft</Name>
             </Expression>
-            <Expression xsi:type="rx:Condition">
-              <Name>Calibrated?</Name>
-              <Workflow>
-                <Nodes>
-                  <Expression xsi:type="WorkflowInput">
-                    <Name>Source1</Name>
-                  </Expression>
-                  <Expression xsi:type="MemberSelector">
-                    <Selector>Calibrated</Selector>
-                  </Expression>
-                  <Expression xsi:type="WorkflowOutput" />
-                </Nodes>
-                <Edges>
-                  <Edge From="0" To="1" Label="Source1" />
-                  <Edge From="1" To="2" Label="Source1" />
-                </Edges>
-              </Workflow>
-            </Expression>
-            <Expression xsi:type="MemberSelector">
-              <Selector>ArtefactJson</Selector>
-            </Expression>
-            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogDataSchema.bonsai">
-              <Name>ValveCalibrationLeft</Name>
-            </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>RewardLineRight</Name>
             </Expression>
+            <Expression xsi:type="Combinator">
+              <Combinator xsi:type="rx:Merge" />
+            </Expression>
             <Expression xsi:type="rx:Condition">
-              <Name>Calibrated?</Name>
+              <Name>DO1?</Name>
+              <Description>Passes the reward line on DO1 when it is calibrated, whichever side rewardValves gives it.</Description>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="WorkflowInput">
                     <Name>Source1</Name>
                   </Expression>
-                  <Expression xsi:type="MemberSelector">
-                    <Selector>Calibrated</Selector>
+                  <Expression xsi:type="scr:ExpressionTransform">
+                    <scr:Expression>Calibrated &amp;&amp; Line == 1</scr:Expression>
                   </Expression>
                   <Expression xsi:type="WorkflowOutput" />
                 </Nodes>
@@ -4975,7 +4955,32 @@
               <Selector>ArtefactJson</Selector>
             </Expression>
             <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogDataSchema.bonsai">
-              <Name>ValveCalibrationRight</Name>
+              <Name>ValveCalibrationDO1</Name>
+            </Expression>
+            <Expression xsi:type="rx:Condition">
+              <Name>DO2?</Name>
+              <Description>Passes the reward line on DO2 when it is calibrated, whichever side rewardValves gives it.</Description>
+              <Workflow>
+                <Nodes>
+                  <Expression xsi:type="WorkflowInput">
+                    <Name>Source1</Name>
+                  </Expression>
+                  <Expression xsi:type="scr:ExpressionTransform">
+                    <scr:Expression>Calibrated &amp;&amp; Line == 2</scr:Expression>
+                  </Expression>
+                  <Expression xsi:type="WorkflowOutput" />
+                </Nodes>
+                <Edges>
+                  <Edge From="0" To="1" Label="Source1" />
+                  <Edge From="1" To="2" Label="Source1" />
+                </Edges>
+              </Workflow>
+            </Expression>
+            <Expression xsi:type="MemberSelector">
+              <Selector>ArtefactJson</Selector>
+            </Expression>
+            <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogDataSchema.bonsai">
+              <Name>ValveCalibrationDO2</Name>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>RewardDelivered</Name>
@@ -5010,7 +5015,7 @@
               <mf:TrialColumns>schemas\trial-columns.yml</mf:TrialColumns>
             </Expression>
             <Expression xsi:type="scr:ExpressionTransform">
-              <scr:Expression>new(&quot;RewardDelivered&quot; as Event, (it.Line == 1 ? &quot;Left&quot; : it.Line == 2 ? &quot;Right&quot; : &quot;DO&quot; + it.Line.ToString()) + &quot; requested=&quot; + it.RequestedUl.ToString() + &quot; pulses=&quot; + it.Count.ToString() + &quot; calibrated=&quot; + it.Calibrated.ToString() + &quot; clamped=&quot; + it.Clamped.ToString() as Detail, it.DeliveredUl as Value)</scr:Expression>
+              <scr:Expression>new(&quot;RewardDelivered&quot; as Event, it.Side.ToString() + &quot; DO&quot; + it.Line.ToString() + &quot; requested=&quot; + it.RequestedUl.ToString() + &quot; pulses=&quot; + it.Count.ToString() + &quot; calibrated=&quot; + it.Calibrated.ToString() + &quot; clamped=&quot; + it.Clamped.ToString() as Detail, it.DeliveredUl as Value)</scr:Expression>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orl:CreateAsyncEvent">
@@ -5040,22 +5045,24 @@
           </Nodes>
           <Edges>
             <Edge From="2" To="3" Label="Source1" />
-            <Edge From="4" To="5" Label="Source1" />
-            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="4" To="6" Label="Source1" />
+            <Edge From="5" To="6" Label="Source2" />
             <Edge From="6" To="7" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
             <Edge From="8" To="9" Label="Source1" />
-            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="6" To="10" Label="Source1" />
             <Edge From="10" To="11" Label="Source1" />
-            <Edge From="14" To="15" Label="Source1" />
+            <Edge From="11" To="12" Label="Source1" />
             <Edge From="15" To="16" Label="Source1" />
-            <Edge From="12" To="19" Label="Source1" />
-            <Edge From="19" To="20" Label="Source1" />
-            <Edge From="20" To="13" Label="Source1" />
-            <Edge From="13" To="21" Label="Source1" />
-            <Edge From="22" To="23" Label="Source1" />
+            <Edge From="16" To="17" Label="Source1" />
+            <Edge From="13" To="20" Label="Source1" />
+            <Edge From="20" To="21" Label="Source1" />
+            <Edge From="21" To="14" Label="Source1" />
+            <Edge From="14" To="22" Label="Source1" />
             <Edge From="23" To="24" Label="Source1" />
             <Edge From="24" To="25" Label="Source1" />
             <Edge From="25" To="26" Label="Source1" />
+            <Edge From="26" To="27" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>

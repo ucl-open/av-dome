@@ -291,6 +291,13 @@ if ($Step -eq 'RigDevice') {
         $got = & $sides $rig
         if ($got -like "refused: *$($c[2])*") { "  ok    rewardValves $($c[0]) refused: $(($got -split ' / ')[0].Substring(9))" } else { "  FAIL  rewardValves $($c[0]) read as $got"; $failed++ }
     }
+    # Each reward's RewardDelivery row names its side and the line it fired on, here swapped.
+    $d = [PlanReward]::Plan(1, 4, [RewardLine]::new(2, 40), [RewardLine]::new(1, 40), 50)
+    if ("$($d.Side) DO$($d.Line)" -eq 'Left DO2') { "  ok    a left reward on swapped lines logs Side Left, Line 2" } else { "  FAIL  a left reward on swapped lines logged $($d.Side) DO$($d.Line)"; $failed++ }
+    # Each valve calibration snapshot is named by its line and takes that line's curve, whichever side has it.
+    $snaps = [regex]::Matches((Get-Content (Join-Path $repo 'src\main.bonsai') -Raw), 'Calibrated &amp;&amp; Line == (\d)</scr:Expression>(?:(?!<Expression xsi:type="rx:Condition">)[\s\S])*?<Name>ValveCalibration(\w+)</Name>')
+    $pairs = ($snaps | ForEach-Object { "DO$($_.Groups[1].Value)=$($_.Groups[2].Value)" }) -join ' '
+    if ($pairs -eq 'DO1=DO1 DO2=DO2') { "  ok    ValveCalibrationDO1/DO2 each take their own line's curve" } else { "  FAIL  valve calibration snapshots: '$pairs', not 'DO1=DO1 DO2=DO2'"; $failed++ }
     # The experiment's Settings_Rig JSON is rig.yml as parsed, and the manifest keeps only rig.yml's hash,
     # so every key in rig.yml must reach the JSON.
     try {

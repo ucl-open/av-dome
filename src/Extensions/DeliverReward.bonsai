@@ -4,7 +4,7 @@
                  xmlns:rx="clr-namespace:Bonsai.Reactive;assembly=Bonsai.Core"
                  xmlns:p1="clr-namespace:;assembly=Extensions"
                  xmlns="https://bonsai-rx.org/2018/workflow">
-  <Description>Delivers each reward command, a (DO line, microlitres) pair, on the matching reward line: plans the pulses from the line's valve calibration (or its fixed width), fires them through TriggerCalibratedPulse with the rig's inter-pulse interval on harp time, and publishes every plan on RewardDelivered. The water counter and the RewardDelivery log in the Logging group subscribe RewardDelivered; the pulse widths and valve triggers themselves are in the behavior board's harp log.</Description>
+  <Description>Delivers each reward command, a (side, microlitres) pair with 1 the left side and 2 the right, on that side's reward line, the line rig.yml's rewardValves gives it: plans the pulses from the line's valve calibration (or its fixed width), fires them through TriggerCalibratedPulse with the rig's inter-pulse interval on harp time, and publishes every plan on RewardDelivered. The Logging group writes each plan as a RewardDelivered row of BonsaiData_Async (Detail starting with its side and line, Value the microlitres delivered), which rig-control counts as water; the pulse widths and valve triggers themselves are in the behavior board's harp log.</Description>
   <Workflow>
     <Nodes>
       <Expression xsi:type="WorkflowInput">

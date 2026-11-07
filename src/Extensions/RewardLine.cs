@@ -71,17 +71,17 @@ public class RewardLine
     /// width. Calibrated: the volume is split into n = ceil(ul / largest calibrated volume) equal
     /// pulses, each looked up on the curve. A request of zero or less gives no pulses.
     /// </summary>
-    public RewardDelivery Plan(double requestedUl, int interPulseIntervalMs)
+    public RewardDelivery Plan(RewardSide side, double requestedUl, int interPulseIntervalMs)
     {
         if (double.IsNaN(requestedUl) || requestedUl <= 0)
         {
-            return new RewardDelivery(line, 0, calibrated ? 0 : fixedWidthMs, 0, requestedUl, calibrated, false, interPulseIntervalMs);
+            return new RewardDelivery(side, line, 0, calibrated ? 0 : fixedWidthMs, 0, requestedUl, calibrated, false, interPulseIntervalMs);
         }
 
         if (!calibrated)
         {
             int pulses = (int)Math.Ceiling(requestedUl / NominalPulseVolumeUl - SplitTolerance);
-            return new RewardDelivery(line, pulses, fixedWidthMs, NominalPulseVolumeUl, requestedUl, false, false, interPulseIntervalMs);
+            return new RewardDelivery(side, line, pulses, fixedWidthMs, NominalPulseVolumeUl, requestedUl, false, false, interPulseIntervalMs);
         }
 
         int count = Math.Max(1, (int)Math.Ceiling(requestedUl / curve.MaxY - SplitTolerance));
@@ -89,13 +89,14 @@ public class RewardLine
             curve, requestedUl / count, LookupDirection.Inverse, OutOfRangePolicy.Clamp);
         int width = (int)Math.Round(lookup.Output);
         width = Math.Max(1, Math.Min(MaximumWidthMs, width));
-        return new RewardDelivery(line, count, width, lookup.EffectiveInput, requestedUl, true, lookup.Clamped, interPulseIntervalMs);
+        return new RewardDelivery(side, line, count, width, lookup.EffectiveInput, requestedUl, true, lookup.Clamped, interPulseIntervalMs);
     }
 }
 
 /// <summary>The pulses that deliver one reward on one line, and what they deliver.</summary>
 public class RewardDelivery
 {
+    readonly RewardSide side;
     readonly int line;
     readonly int count;
     readonly int widthMs;
@@ -106,8 +107,9 @@ public class RewardDelivery
     readonly int interPulseIntervalMs;
 
     /// <summary>Creates a reward delivery.</summary>
-    public RewardDelivery(int line, int count, int widthMs, double volumePerPulseUl, double requestedUl, bool calibrated, bool clamped, int interPulseIntervalMs)
+    public RewardDelivery(RewardSide side, int line, int count, int widthMs, double volumePerPulseUl, double requestedUl, bool calibrated, bool clamped, int interPulseIntervalMs)
     {
+        this.side = side;
         this.line = line;
         this.count = count;
         this.widthMs = widthMs;
@@ -117,6 +119,9 @@ public class RewardDelivery
         this.clamped = clamped;
         this.interPulseIntervalMs = interPulseIntervalMs;
     }
+
+    /// <summary>Gets the side the reward was for; rig.yml's rewardValves gave it Line.</summary>
+    public RewardSide Side { get { return side; } }
 
     /// <summary>Gets the behavior board DO line, 1 to 3.</summary>
     public int Line { get { return line; } }
@@ -358,12 +363,15 @@ public class PlanReward
     {
         return source.Select(delegate (Tuple<Tuple<int, double>, Tuple<RewardLine, RewardLine>> input)
         {
-            Tuple<int, double> command = input.Item1;
-            RewardLine selected;
-            if (command.Item1 == 1) selected = input.Item2.Item1;
-            else if (command.Item1 == 2) selected = input.Item2.Item2;
-            else throw new ArgumentException("No reward side " + command.Item1 + "; a reward command names the left (1) or the right (2) side.");
-            return selected.Plan(command.Item2, interPulseIntervalMs);
+            return Plan(input.Item1.Item1, input.Item1.Item2, input.Item2.Item1, input.Item2.Item2, interPulseIntervalMs);
         });
+    }
+
+    /// <summary>Plans one command, side 1 (left) or 2 (right); public so the check can run without a workflow.</summary>
+    public static RewardDelivery Plan(int side, double requestedUl, RewardLine left, RewardLine right, int interPulseIntervalMs)
+    {
+        if (side == 1) return left.Plan(RewardSide.Left, requestedUl, interPulseIntervalMs);
+        if (side == 2) return right.Plan(RewardSide.Right, requestedUl, interPulseIntervalMs);
+        throw new ArgumentException("No reward side " + side + "; a reward command names the left (1) or the right (2) side.");
     }
 }
