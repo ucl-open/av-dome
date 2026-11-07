@@ -4,6 +4,11 @@
 
 `PhotodiodeIndicator` (a 30° quad at azimuth 130°, elevation -22.5°, flipped every 63 ms during a stimulus) should show on the board's DIPort0 (register 32 `DigitalInputState`, bit 0) as 63 ms on, 63 ms off. On GREEN-DOME-1 it never does. All 25 experiments on the rig (4 to 6 Nov 2026, this branch and `port-pr30`, 1 s to 7 min) show DI0 pulsing at 120.0 Hz, high at most 1.1 ms, never high for more than 20 ms and never low for 50 to 80 ms: the projector's own frame flashes, the same whether or not a stimulus is on. Not a camera (they run at 50 Hz on DO0/DO1). AnalogInput0/1 are noise (0 to 12 counts): nothing plugged in. No production experiment from before the 27 Oct 2026 `MeshMap.csv` change is on the rig or on staging, so whether it ever worked here is unknown. Until it is fixed, `stimulusOnsetTime` is Bonsai's render time, not a measured onset.
 
+What the code says (7 Nov 2026):
+- The square is drawn **black** (`DrawQuad` colour 0, 0, 0) on even ticks only, over the window's `ClearColor Gray`, so it alternates black and the grey background, not black and white. Its period is `1 / (2 * visualFlickerFrequency)` from the task (the 63 ms is the node's default). Black is no light, so a sensor under it should still go quiet for half of each cycle, which DI0 never does.
+- Production's `Flush_Valves.bonsai` (Gerion, 17 Oct 2026) reads DIPort0 as the photodiode (averaged over 200 ms, high if any light) and draws test squares at azimuth -130° and +130°, elevation -22.5°. main draws one, at +130°. Which side the sensor is on is not written anywhere.
+- rig-control's Board tab (rig-control 15bc837 and later, OpenRigs.LiveView 0.1.1-coen-lab.6) shows DIPort0 live as "Photodiode": a working square shows as on/off blocks at the flicker rate.
+
 ### Needs someone at the rig (Pip's OK, never while `rig-presence.json` reads `acquiring`)
 
 - A test experiment from rig-control with stimuli on. Cover the photodiode for about 5 s, then uncover it, then decode DI0. If the pulses stop while it is covered, the sensor is live and sees the projector everywhere. If they don't stop, DI0 is not the sensor.
