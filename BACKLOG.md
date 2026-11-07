@@ -1,5 +1,15 @@
 # Backlog
 
+## 2026-11-07 The sync square does not reach the photodiode (GREEN-DOME-1)
+
+`PhotodiodeIndicator` (a 30° quad at azimuth 130°, elevation -22.5°, flipped every 63 ms during a stimulus) should show on the board's DIPort0 (register 32 `DigitalInputState`, bit 0) as 63 ms on, 63 ms off. On GREEN-DOME-1 it never does. All 25 experiments on the rig (4 to 6 Nov 2026, this branch and `port-pr30`, 1 s to 7 min) show DI0 pulsing at 120.0 Hz, high at most 1.1 ms, never high for more than 20 ms and never low for 50 to 80 ms: the projector's own frame flashes, the same whether or not a stimulus is on. Not a camera (they run at 50 Hz on DO0/DO1). AnalogInput0/1 are noise (0 to 12 counts): nothing plugged in. No production experiment from before the 27 Oct 2026 `MeshMap.csv` change is on the rig or on staging, so whether it ever worked here is unknown. Until it is fixed, `stimulusOnsetTime` is Bonsai's render time, not a measured onset.
+
+### Needs someone at the rig (Pip's OK, never while `rig-presence.json` reads `acquiring`)
+
+- A test experiment from rig-control with stimuli on. Cover the photodiode for about 5 s, then uncover it, then decode DI0. If the pulses stop while it is covered, the sensor is live and sees the projector everywhere. If they don't stop, DI0 is not the sensor.
+- See where the square lands on the dome compared with the sensor (the current `C:\RigConfigs\MeshMap.csv` against `MeshMap_old.csv`), and what threshold the photodiode's comparator is set to.
+- Report to Pip before changing any wiring, mesh or workflow.
+
 ## 2026-11-04 Workflow audit of `pip/main-switchover`
 
 The certain findings were fixed in 0078311, 97358e6, 1234f38 and d565649. NoResponse trials running the Incorrect branch as well was fixed on `main` by #35 and merged here. What is left:
