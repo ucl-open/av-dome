@@ -11,7 +11,7 @@ Each side's reward valve is a `RewardLine` built at startup from the machine's `
 (`{ left: DO1, right: DO2 }`, required) says which behavior board line each side is, and that line's
 `outputs` entry how it pulses: a `FixedPulse` keeps its width and assumes the nominal 2 µl per pulse,
 a `CalibratedPulse` reads its artefact, a platform `OpenRigs.Core.Calibration.CalibrationCurve`
-written by ucl-open/coen-calibrate-valve from rig-control's Calibrations page, and fits it with the entry's `fit` model. A requested
+written by ucl-open/coen-qc-calibrate-valve from rig-control's Calibrations page, and fits it with the entry's `fit` model. A requested
 volume becomes `ceil(ul / largest calibrated volume)` equal pulses looked up on the inverse curve
 and fired through the PulseController's `TriggerCalibratedPulse`.
 
@@ -22,7 +22,7 @@ and fired through the PulseController's `TriggerCalibratedPulse`.
 | `PlanReward` | Transform `((side, ul), (left, right)) -> RewardDelivery` | Plans a command (side 1 left, 2 right) on that side's line, which fires on its own DO line: side, line, pulse count, width, volume per pulse, whether it was clamped to the calibrated range. |
 | `RewardLine`, `RewardDelivery` | types | The line and the plan; `RewardDelivery` is what `DeliverReward.bonsai` fires, and the `Logging` group writes each one as a `RewardDelivered` row of `BonsaiData_Async`: Detail `<Side> DO<Line> requested=… pulses=… calibrated=… clamped=…` (rig-control reads the side from its first word), Value the µl delivered. Each calibrated line's artefact is snapshotted by its line, as `ValveCalibrationDO1` or `ValveCalibrationDO2`, whichever side `rewardValves` gives it; which side that was is `rewardValves` in the experiment's `Settings_Rig`. |
 
-Calibrating: from rig-control's Calibrations page, which runs ucl-open/coen-calibrate-valve on
+Calibrating: from rig-control's Calibrations page, which runs ucl-open/coen-qc-calibrate-valve on
 this rig for the chosen line, with its board and artefact taken from `rig.yml`, and each
 weight read off the balance and typed in. Then point the line at the artefact in `rig.yml`:
 `DO1: { discriminatorType: CalibratedPulse, artefact: calibration/valve-DO1.json }`.

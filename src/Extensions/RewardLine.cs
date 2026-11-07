@@ -245,7 +245,7 @@ public class LoadSideRewardLine
 /// </summary>
 [Combinator]
 [DefaultProperty("Line")]
-[Description("Builds a reward line from its pulse output entry in the rig configuration and the rig configuration directory. A calibrated entry reads its valve calibration artefact (a CalibrationCurve written by the platform's DispenseCalibration procedure, run from rig-control's Calibrations page by ucl-open/coen-calibrate-valve) and fits it with the entry's fit model; a fixed entry keeps its width. Warns when the artefact was measured on another machine or is older than the entry's maxAgeDays. Input is a Zip of the line's output entry and the RigConfigDirectory subject.")]
+[Description("Builds a reward line from its pulse output entry in the rig configuration and the rig configuration directory. A calibrated entry reads its valve calibration artefact (a CalibrationCurve written by the platform's DispenseCalibration procedure, run from rig-control's Calibrations page by ucl-open/coen-qc-calibrate-valve) and fits it with the entry's fit model; a fixed entry keeps its width. Warns when the artefact was measured on another machine or is older than the entry's maxAgeDays. Input is a Zip of the line's output entry and the RigConfigDirectory subject.")]
 [WorkflowElementCategory(ElementCategory.Transform)]
 public class LoadRewardLine
 {

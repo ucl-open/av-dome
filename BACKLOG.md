@@ -36,7 +36,7 @@ The certain findings were fixed in 0078311, 97358e6, 1234f38 and d565649. NoResp
 ### Decisions for Pip
 
 - **Analysis by task, not by folder.** Sessions no longer have a project folder (no `datasetName`): closed-loop and 4 Hz sessions sit beside the others under `sub-<mouse>`, told apart by each session's `TaskSchema`. `analysis\analysis.ipynb` still reads `Z:\AV_Dome`, `Z:\AV_Dome_4Hz_movingStim` and `Z:\AV_Dome_ClosedLoop` (production's layout).
-- **Water tile on FixedPulse lines** is nominal: ceil(µl / 2) pulses of 2 µl (`src\Extensions\RewardLine.cs`). Add a line to rig-control's water help, or calibrate the dome valves from rig-control's Calibrations page (ucl-open/coen-calibrate-valve).
+- **Water tile on FixedPulse lines** is nominal: ceil(µl / 2) pulses of 2 µl (`src\Extensions\RewardLine.cs`). Add a line to rig-control's water help, or calibrate the dome valves from rig-control's Calibrations page (ucl-open/coen-qc-calibrate-valve).
 
 ### Lab standard (coen-behaviour-box as the reference)
 
