@@ -33,6 +33,9 @@ public class TrialRow
     public int audioWaveformIndex;
     public bool optoStimulated;
     public int optoCondition;
+    public string taskType;
+    public string targetModality;
+    public bool autoRewarded;  // a miss on an auto-reward trial, rewarded at the target spout
 }
 
 [Combinator]
@@ -48,7 +51,7 @@ public class CreateTrialRow
             var trial = value.Item2.Item1;
             var speaker = value.Item2.Item3;
             var locations = value.Item2.Item4;
-            bool played = locations != null && speaker >= 0 && speaker < locations.Length;
+            bool played = trial.audioEnabled && locations != null && speaker >= 0 && speaker < locations.Length;
             var row = new TrialRow
             {
                 trialNumber = trial.trialNumber,
@@ -72,6 +75,9 @@ public class CreateTrialRow
                 audioWaveformIndex = trial.audioWaveformIdx,
                 optoStimulated = trial.OptogeneticEnabled,
                 optoCondition = trial.OptogeneticCondition,
+                taskType = trial.taskType,
+                targetModality = trial.targetModality,
+                autoRewarded = trial.autoReward && choice == "NoResponse",
             };
             return new Timestamped<TrialRow>(row, value.Item1.Seconds);
         });

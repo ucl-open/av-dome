@@ -60,3 +60,29 @@ def test_speaker_locations_reject_a_centre_entry():
                 {"azimuth": 60, "elevation": 15},
             ]
         )
+
+
+def _task(name):
+    data = yaml.safe_load((CONFIG / name).read_text())
+    return UclOpenAvDomeTaskParameters.model_validate(data["taskParameters"])
+
+
+def test_a_task_file_without_task_type_is_localization_with_moving_spouts():
+    task = _task("task.yml")
+    assert task.task_type == "localization"
+    assert all(stage.spout_movements for stage in task.training_stages)
+
+
+def test_the_discrimination_file_keeps_the_spouts_in_for_habituation():
+    task = _task("task-discrimination.yml")
+    assert task.task_type == "discrimination"
+    assert task.target_modality == "visual"
+    assert not task.training_stages[0].spout_movements
+    assert all(stage.spout_movements for stage in task.training_stages[1:])
+
+
+def test_target_modality_is_visual_or_auditory():
+    data = yaml.safe_load((CONFIG / "task-discrimination.yml").read_text())["taskParameters"]
+    UclOpenAvDomeTaskParameters.model_validate({**data, "targetModality": "auditory"})
+    with pytest.raises(ValidationError):
+        UclOpenAvDomeTaskParameters.model_validate({**data, "targetModality": "smell"})

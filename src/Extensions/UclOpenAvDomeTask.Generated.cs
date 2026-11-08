@@ -337,6 +337,24 @@ namespace UclOpenAvDomeTask
 
 
     /// <summary>
+    /// A stimulus modality.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+    public enum Modality
+    {
+    
+        [System.Runtime.Serialization.EnumMemberAttribute(Value="visual")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="visual")]
+        Visual = 0,
+    
+        [System.Runtime.Serialization.EnumMemberAttribute(Value="auditory")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="auditory")]
+        Auditory = 1,
+    }
+
+
+    /// <summary>
     /// Zapit optogenetic stimulation parameters.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
@@ -1017,6 +1035,24 @@ namespace UclOpenAvDomeTask
 
 
     /// <summary>
+    /// What the mouse answers.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+    public enum TaskType
+    {
+    
+        [System.Runtime.Serialization.EnumMemberAttribute(Value="localization")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="localization")]
+        Localization = 0,
+    
+        [System.Runtime.Serialization.EnumMemberAttribute(Value="discrimination")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="discrimination")]
+        Discrimination = 1,
+    }
+
+
+    /// <summary>
     /// One complete row of the training stage table; stages are selected by index at runtime.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
@@ -1041,10 +1077,13 @@ namespace UclOpenAvDomeTask
     
         private bool _allowRepeats;
     
+        private bool _spoutMovements;
+    
         public TrainingStage()
         {
             _trialWeights = new System.Collections.Generic.List<int>();
             _contrasts = new System.Collections.Generic.List<double>();
+            _spoutMovements = true;
         }
     
         protected TrainingStage(TrainingStage other)
@@ -1056,6 +1095,7 @@ namespace UclOpenAvDomeTask
             _rewardSizeUl = other._rewardSizeUl;
             _contrasts = other._contrasts;
             _allowRepeats = other._allowRepeats;
+            _spoutMovements = other._spoutMovements;
         }
     
         /// <summary>
@@ -1096,11 +1136,12 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Probability that a trial is automatically rewarded
+        /// Probability that a trial is an auto-reward trial: a miss on it is rewarded at the target spout
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("autoRewardProbability", Required=Newtonsoft.Json.Required.Always)]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="autoRewardProbability")]
-        [System.ComponentModel.DescriptionAttribute("Probability that a trial is automatically rewarded")]
+        [System.ComponentModel.DescriptionAttribute("Probability that a trial is an auto-reward trial: a miss on it is rewarded at the" +
+            " target spout")]
         public double AutoRewardProbability
         {
             get
@@ -1186,6 +1227,25 @@ namespace UclOpenAvDomeTask
             }
         }
     
+        /// <summary>
+        /// Whether the spouts move during trials; false keeps them in (habituation): no withdrawal and no single-spout move for a reward
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("spoutMovements")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="spoutMovements")]
+        [System.ComponentModel.DescriptionAttribute("Whether the spouts move during trials; false keeps them in (habituation): no with" +
+            "drawal and no single-spout move for a reward")]
+        public bool SpoutMovements
+        {
+            get
+            {
+                return _spoutMovements;
+            }
+            set
+            {
+                _spoutMovements = value;
+            }
+        }
+    
         public System.IObservable<TrainingStage> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new TrainingStage(this)));
@@ -1204,7 +1264,8 @@ namespace UclOpenAvDomeTask
             stringBuilder.Append("BothSpoutsProbability = " + _bothSpoutsProbability + ", ");
             stringBuilder.Append("RewardSizeUl = " + _rewardSizeUl + ", ");
             stringBuilder.Append("Contrasts = " + _contrasts + ", ");
-            stringBuilder.Append("AllowRepeats = " + _allowRepeats);
+            stringBuilder.Append("AllowRepeats = " + _allowRepeats + ", ");
+            stringBuilder.Append("SpoutMovements = " + _spoutMovements);
             return true;
         }
     
@@ -1456,16 +1517,21 @@ namespace UclOpenAvDomeTask
 
 
     /// <summary>
-    /// Task parameters for the av-dome audiovisual localisation task.
+    /// Task parameters for the av-dome audiovisual tasks: localization and discrimination.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.ComponentModel.DescriptionAttribute("Task parameters for the av-dome audiovisual localisation task.")]
+    [System.ComponentModel.DescriptionAttribute("Task parameters for the av-dome audiovisual tasks: localization and discriminatio" +
+        "n.")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
     public partial class UclOpenAvDomeTaskParameters
     {
     
         private double? _rngSeed;
+    
+        private TaskType _taskType;
+    
+        private Modality _targetModality;
     
         private double _flickerFrequency;
     
@@ -1489,6 +1555,8 @@ namespace UclOpenAvDomeTask
     
         public UclOpenAvDomeTaskParameters()
         {
+            _taskType = TaskType.Localization;
+            _targetModality = Modality.Visual;
             _flickerFrequency = 8D;
             _trialStructure = new TrialStructure();
             _visualStimulus = new VisualStimulus();
@@ -1504,6 +1572,8 @@ namespace UclOpenAvDomeTask
         protected UclOpenAvDomeTaskParameters(UclOpenAvDomeTaskParameters other)
         {
             _rngSeed = other._rngSeed;
+            _taskType = other._taskType;
+            _targetModality = other._targetModality;
             _flickerFrequency = other._flickerFrequency;
             _trialStructure = other._trialStructure;
             _visualStimulus = other._visualStimulus;
@@ -1531,6 +1601,44 @@ namespace UclOpenAvDomeTask
             set
             {
                 _rngSeed = value;
+            }
+        }
+    
+        /// <summary>
+        /// localization: the answer is the side the stimulus came from. discrimination: the answer is the modality, the left spout for targetModality and the right spout for the other; trial types 0 and 1 are then target and distractor trials
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("taskType")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="taskType")]
+        [System.ComponentModel.DescriptionAttribute("localization: the answer is the side the stimulus came from. discrimination: the " +
+            "answer is the modality, the left spout for targetModality and the right spout fo" +
+            "r the other; trial types 0 and 1 are then target and distractor trials")]
+        public TaskType TaskType
+        {
+            get
+            {
+                return _taskType;
+            }
+            set
+            {
+                _taskType = value;
+            }
+        }
+    
+        /// <summary>
+        /// Discrimination only: the modality answered at the left spout
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("targetModality")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="targetModality")]
+        [System.ComponentModel.DescriptionAttribute("Discrimination only: the modality answered at the left spout")]
+        public Modality TargetModality
+        {
+            get
+            {
+                return _targetModality;
+            }
+            set
+            {
+                _targetModality = value;
             }
         }
     
@@ -1738,6 +1846,8 @@ namespace UclOpenAvDomeTask
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("RngSeed = " + _rngSeed + ", ");
+            stringBuilder.Append("TaskType = " + _taskType + ", ");
+            stringBuilder.Append("TargetModality = " + _targetModality + ", ");
             stringBuilder.Append("FlickerFrequency = " + _flickerFrequency + ", ");
             stringBuilder.Append("TrialStructure = " + _trialStructure + ", ");
             stringBuilder.Append("VisualStimulus = " + _visualStimulus + ", ");

@@ -192,6 +192,11 @@ public class InitialiseTrial
         trialData.autoReward = drawRandomBasedOnProbability(stage.AutoRewardProbability, trialRand);  // This defines whether the current trial is automatically rewarded
         trialData.RewardSizeInUl = stage.RewardSizeUl;  // Size of rewards in ul.
 
+        trialData.spoutMovements = stage.SpoutMovements;
+        trialData.audioEnabled = true;
+        trialData.taskType = parameters.TaskType == TaskType.Discrimination ? "discrimination" : "localization";
+        trialData.targetModality = parameters.TargetModality == Modality.Auditory ? "auditory" : "visual";
+
         trialData.BothSpoutsProbability = stage.BothSpoutsProbability;
         trialData.BothSpouts = drawRandomBasedOnProbability(trialData.BothSpoutsProbability, trialRand);  // This defines whether the current trial is a BothSpouts Trial.
 
@@ -229,13 +234,16 @@ public class InitialiseTrial
             ? TrialType
             : GetWeightedRandomTrialType(stage, trialRand);
 
+        bool discrimination = parameters.TaskType == TaskType.Discrimination;
         switch (selectedTrialType)
         {
-            case 0: // Unisensory Visual
-                SetupUnisensoryVisualTrial(trialData, parameters, stage, trialRand);
+            case 0: // Unisensory Visual; in discrimination, a target trial
+                if (discrimination) SetupDiscriminationTrial(trialData, parameters, stage, trialRand, true);
+                else SetupUnisensoryVisualTrial(trialData, parameters, stage, trialRand);
                 break;
-            case 1: // Unisensory Audio
-                SetupUnisensoryAudioTrial(trialData, parameters, stage, trialRand);
+            case 1: // Unisensory Audio; in discrimination, a distractor trial
+                if (discrimination) SetupDiscriminationTrial(trialData, parameters, stage, trialRand, false);
+                else SetupUnisensoryAudioTrial(trialData, parameters, stage, trialRand);
                 break;
             case 2: // Multisensory Coherent
                 SetupMultisensoryCoherentTrial(trialData, parameters, stage, trialRand);
@@ -246,6 +254,16 @@ public class InitialiseTrial
             case 4: // Neutral
                 SetupNeutralTrial(trialData, parameters, stage, trialRand);
                 break;
+        }
+
+        if (discrimination)
+        {
+            // Coherent trials carry both modalities, so either spout is the answer.
+            if (selectedTrialType == 2) trialData.targetSide = trialRand.NextDouble() >= 0.5 ? "Right" : "Left";
+            // Neutral trials are silent: a gray screen and no sound.
+            if (selectedTrialType == 4) trialData.audioEnabled = false;
+            // Auto-reward only at the left spout, the target modality's (Gerion's discrimination task).
+            if (trialData.targetSide != "Left") trialData.autoReward = false;
         }
 
         // General Trial Settings
@@ -622,6 +640,18 @@ public class InitialiseTrial
         trial.IsRewarded = drawRandomBasedOnProbability(trial.RewardProbability, rand);
     }
 
+    // Discrimination: the answer is the modality, not the side. A target trial presents the
+    // target modality and is answered at the left spout; a distractor trial presents the other
+    // modality and is answered at the right spout. Visual-only trials are silent.
+    private void SetupDiscriminationTrial(Trial trial, UclOpenAvDomeTaskParameters parameters, TrainingStage stage, Random rand, bool isTarget)
+    {
+        bool visual = (parameters.TargetModality == Modality.Visual) == isTarget;
+        if (visual) SetupUnisensoryVisualTrial(trial, parameters, stage, rand);
+        else SetupUnisensoryAudioTrial(trial, parameters, stage, rand);
+        trial.targetSide = isTarget ? "Left" : "Right";
+        trial.audioEnabled = !visual;
+    }
+
     private void SetupMultisensoryCoherentTrial(Trial trial, UclOpenAvDomeTaskParameters parameters, TrainingStage stage, Random rand)
     {
         // For coherent trials: visual and auditory stimuli on same side
@@ -725,6 +755,10 @@ public class Trial
     public double LargeRewardProbability;  // Probability of receiving a large reward
     public bool BothSpouts;  // Bool defining if current trial is presenting both spouts (regular trial) or just the correct spout (used for initial training).
     public double BothSpoutsProbability { get; set; }  // by default only regular trials.
+    public bool spoutMovements;  // the stage's spoutMovements: false keeps the spouts in
+    public bool audioEnabled;  // false plays no sound (discrimination's visual-only and neutral trials)
+    public string taskType;  // localization or discrimination
+    public string targetModality;  // visual or auditory; the left spout's modality in discrimination
 
     public double openLoopDuration;
     public double closedLoopDuration;

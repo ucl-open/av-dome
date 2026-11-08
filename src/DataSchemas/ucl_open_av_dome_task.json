@@ -52,6 +52,15 @@
       "title": "ErrorSound",
       "type": "object"
     },
+    "Modality": {
+      "description": "A stimulus modality.",
+      "enum": [
+        "visual",
+        "auditory"
+      ],
+      "title": "Modality",
+      "type": "string"
+    },
     "OptogeneticsSettings": {
       "description": "Zapit optogenetic stimulation parameters.",
       "properties": {
@@ -236,6 +245,15 @@
       "title": "SphericalPosition",
       "type": "object"
     },
+    "TaskType": {
+      "description": "What the mouse answers.",
+      "enum": [
+        "localization",
+        "discrimination"
+      ],
+      "title": "TaskType",
+      "type": "string"
+    },
     "TrainingStage": {
       "description": "One complete row of the training stage table; stages are selected by index at runtime.",
       "properties": {
@@ -255,7 +273,7 @@
           "type": "array"
         },
         "autoRewardProbability": {
-          "description": "Probability that a trial is automatically rewarded",
+          "description": "Probability that a trial is an auto-reward trial: a miss on it is rewarded at the target spout",
           "maximum": 1,
           "minimum": 0,
           "title": "AutoRewardProbability",
@@ -285,6 +303,12 @@
         "allowRepeats": {
           "description": "Whether failed trials may be repeated in this stage",
           "title": "AllowRepeats",
+          "type": "boolean"
+        },
+        "spoutMovements": {
+          "default": true,
+          "description": "Whether the spouts move during trials; false keeps them in (habituation): no withdrawal and no single-spout move for a reward",
+          "title": "SpoutMovements",
           "type": "boolean"
         }
       },
@@ -392,7 +416,7 @@
       "type": "object"
     },
     "UclOpenAvDomeTaskParameters": {
-      "description": "Task parameters for the av-dome audiovisual localisation task.",
+      "description": "Task parameters for the av-dome audiovisual tasks: localization and discrimination.",
       "properties": {
         "rngSeed": {
           "default": null,
@@ -402,6 +426,17 @@
             "number",
             "null"
           ]
+        },
+        "taskType": {
+          "$ref": "#/$defs/TaskType",
+          "default": "localization",
+          "description": "localization: the answer is the side the stimulus came from. discrimination: the answer is the modality, the left spout for targetModality and the right spout for the other; trial types 0 and 1 are then target and distractor trials"
+        },
+        "targetModality": {
+          "$ref": "#/$defs/Modality",
+          "default": "visual",
+          "description": "Discrimination only: the modality answered at the left spout",
+          "title": "TargetModality"
         },
         "flickerFrequency": {
           "default": 8.0,

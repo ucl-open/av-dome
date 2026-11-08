@@ -112,6 +112,20 @@ class ErrorSound(BaseSchema):
     gain: Double = Field(default=1.0, ge=0, description="Playback gain of the error tone")
 
 
+class TaskType(StrEnum):
+    """What the mouse answers."""
+
+    LOCALIZATION = "localization"
+    DISCRIMINATION = "discrimination"
+
+
+class Modality(StrEnum):
+    """A stimulus modality."""
+
+    VISUAL = "visual"
+    AUDITORY = "auditory"
+
+
 class RepeatRule(StrEnum):
     """When a trial type is repeated after a failed trial."""
 
@@ -160,11 +174,15 @@ class TrainingStage(BaseSchema):
 
     label: String = Field(description="Human-readable stage name, for documentation and logs")
     trial_weights: List[Int] = Field(description="Relative draw weight per trial type, indexed by trial type")
-    auto_reward_probability: Double = Field(ge=0, le=1, description="Probability that a trial is automatically rewarded")
+    auto_reward_probability: Double = Field(ge=0, le=1, description="Probability that a trial is an auto-reward trial: a miss on it is rewarded at the target spout")
     both_spouts_probability: Double = Field(ge=0, le=1, description="Probability that both spouts are presented rather than only the correct one")
     reward_size_ul: Double = Field(ge=0, description="Reward size, in microliters; delivered as ceil(size/2) valve pulses")
     contrasts: List[Double] = Field(description="Candidate grating contrasts to draw from on visual trials")
     allow_repeats: Bool = Field(description="Whether failed trials may be repeated in this stage")
+    spout_movements: Bool = Field(
+        default=True,
+        description="Whether the spouts move during trials; false keeps them in (habituation): no withdrawal and no single-spout move for a reward",
+    )
 
     @field_validator("trial_weights")
     @classmethod
@@ -175,8 +193,16 @@ class TrainingStage(BaseSchema):
 
 
 class UclOpenAvDomeTaskParameters(TaskParameters):
-    """Task parameters for the av-dome audiovisual localisation task."""
+    """Task parameters for the av-dome audiovisual tasks: localization and discrimination."""
 
+    task_type: TaskType = Field(
+        default=TaskType.LOCALIZATION,
+        description="localization: the answer is the side the stimulus came from. discrimination: the answer is the modality, the left spout for targetModality and the right spout for the other; trial types 0 and 1 are then target and distractor trials",
+    )
+    target_modality: Modality = Field(
+        default=Modality.VISUAL,
+        description="Discrimination only: the modality answered at the left spout",
+    )
     flicker_frequency: Double = Field(
         default=8.0,
         ge=0,

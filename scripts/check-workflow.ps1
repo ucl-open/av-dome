@@ -16,6 +16,8 @@ param(
 #      refused, and every key in the template reaches the Settings_Rig JSON the experiment logs.
 #   4. Each config\task*.yml reads as the workflow reads it at Go, TaskPath is exposed and no
 #      override is applied (rig-control writes the task file; lib-open-rigs settings-files plan).
+#      InitialiseTrial draws trials from task.yml and task-discrimination.yml (both target
+#      modalities): the answer, silent trials, auto-reward only at the left spout, stage 0's spouts.
 #   5. LoadAuditoryStimulusSet on synthetic WAVs and filters: equalising matches the filter's
 #      convolution, and asymmetric taps, a wrong rate or a missing file are refused naming it;
 #      InitialiseTrial refuses a flickerFrequency other than the set's 8 Hz.
@@ -339,6 +341,50 @@ if ($Step -eq 'Checks') {
             else { "  FAIL  config\$($file.Name) has no trainingStages"; $failed++ }
         } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; "  FAIL  config\$($file.Name): $($x.Message)"; $failed++ }
     }
+    # Trials drawn by InitialiseTrial from the committed task files: what each task answers,
+    # which trials are silent, where auto-reward may go and whether the spouts move.
+    $rx = 'System.Reactive.Interfaces', 'System.Reactive.Core', 'System.Reactive.Linq' | ForEach-Object { $script:resolveMap[$_] }
+    Add-Type -ReferencedAssemblies (@($script:resolveMap['Extensions'], 'System.Core') + $rx) -TypeDefinition @'
+using System; using System.Collections.Generic; using System.Linq; using System.Reactive.Linq;
+public static class DrawTrials {
+    public static List<Trial> Draw(UclOpenAvDomeTask.UclOpenAvDomeTaskLogic task, int stage, int count) {
+        var draw = new InitialiseTrial { trainingStageId = stage, TrialType = -1 };
+        return draw.Process(Enumerable.Repeat(Tuple.Create("Correct", task), count).ToObservable()).ToEnumerable().ToList();
+    }
+}
+'@
+    function Read-Task([string]$Name) {
+        $d = (New-Object YamlDotNet.Serialization.DeserializerBuilder).Build()
+        $t = $d.Deserialize((New-Object IO.StringReader ([IO.File]::ReadAllText((Join-Path $repo "config\$Name")))), [UclOpenAvDomeTask.UclOpenAvDomeTaskLogic])
+        $t.TaskParameters.Optogenetics.Enabled = $false  # no Zapit config on this machine
+        $t
+    }
+    function Test-Trials([string]$What, $Trials, [scriptblock]$Rule) {
+        $bad = @($Trials | Where-Object { -not (& $Rule $_) })
+        if ($bad.Count -eq 0) { "  ok    $What" } else { "  FAIL  $What ($($bad.Count) of $($Trials.Count) trials, first: type $($bad[0].trialType) target $($bad[0].targetSide))"; $script:failed++ }
+    }
+    try {
+        $loc = [DrawTrials]::Draw((Read-Task 'task.yml'), 4, 300)
+        Test-Trials 'localization: every trial plays sound, moves the spouts and answers the stimulus side' $loc {
+            param($t) $t.taskType -eq 'localization' -and $t.audioEnabled -and $t.spoutMovements -and
+                ($t.trialType -ne 0 -or $t.visualAzimuth -eq 0 -or $t.targetSide -eq $(if ($t.visualAzimuth -gt 0) { 'Right' } else { 'Left' })) }
+        foreach ($modality in 'Visual', 'Auditory') {
+            $task = Read-Task 'task-discrimination.yml'
+            $task.TaskParameters.TargetModality = [UclOpenAvDomeTask.Modality]$modality
+            $visualTarget = $modality -eq 'Visual'
+            $all = [DrawTrials]::Draw($task, 3, 300)
+            Test-Trials "discrimination, $($modality.ToLower()) target: target trials answer left, distractors right, by modality" $all {
+                param($t) ($t.trialType -ne 0 -or ($t.targetSide -eq 'Left' -and $t.audioEnabled -ne $visualTarget -and ($t.visualContrast -gt 0) -eq $visualTarget)) -and
+                    ($t.trialType -ne 1 -or ($t.targetSide -eq 'Right' -and $t.audioEnabled -eq $visualTarget -and ($t.visualContrast -gt 0) -ne $visualTarget)) }
+            Test-Trials "discrimination, $($modality.ToLower()) target: neutral trials are silent" $all { param($t) $t.trialType -ne 4 -or -not $t.audioEnabled }
+            $habituation = [DrawTrials]::Draw($task, 0, 50)
+            Test-Trials "discrimination, $($modality.ToLower()) target: stage 0 auto-rewards every trial at the left spout and keeps the spouts in" $habituation {
+                param($t) $t.autoReward -and $t.targetSide -eq 'Left' -and -not $t.spoutMovements }
+            $task.TaskParameters.TrainingStages[2].AutoRewardProbability = 1.0
+            Test-Trials "discrimination, $($modality.ToLower()) target: auto-reward never goes to the right spout" ([DrawTrials]::Draw($task, 2, 300)) {
+                param($t) $t.autoReward -eq ($t.targetSide -eq 'Left') }
+        }
+    } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; "  FAIL  drawing trials: $($x.Message)"; $failed++ }
     $wf = Get-Content (Join-Path $repo 'src\main.bonsai') -Raw
     if ($wf -match '<Property Name="TaskPath"' -and $wf -notmatch 'ApplyTaskOverrides|<Name>TaskFile</Name>') { "  ok    main.bonsai takes its task file from TaskPath, with no overrides" }
     else { "  FAIL  main.bonsai does not expose TaskPath, or still applies overrides or names a TaskFile parameter"; $failed++ }

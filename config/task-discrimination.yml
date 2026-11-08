@@ -1,0 +1,95 @@
+# yaml-language-server: $schema=../src/DataSchemas/ucl_open_av_dome_task.json
+# Task parameters for the av-dome modality discrimination task (Gerion's, from ActiveExperiemntsWithDiscrimination).
+# The answer is the modality, not the side: the left spout for targetModality, the right spout for the other.
+# Trial types 0 and 1 are target and distractor trials; visual-only and neutral trials are silent.
+# The task as read at Go is written to the experiment folder as Settings\Settings_Task_<DateTime>.json.
+taskParameters:
+  taskType: discrimination
+  targetModality: visual   # visual or auditory: the modality answered at the left spout; set per mouse on the form
+  rngSeed: null            # null = draw a random seed; each seed used is a RngSeed event in BonsaiData_Async
+  flickerFrequency: 8      # Hz, pulse rate shared by both modalities; must be 8, the rate of the auditory stimulus set
+  trialStructure:
+    itiMin: 1.5            # s; Gerion's stage 0 (habituation) has no ITI: set both to 0 on the form
+    itiMax: 2.5            # s
+    quiescentMin: 0.1      # s
+    quiescentMax: 0.25     # s
+    openLoopDuration: 0.0  # s
+    closedLoopDuration: 1.5   # s
+    incorrectTimeoutDuration: 4.0   # s
+    spoutInDelay: 0.5      # s, from stimulus onset to spouts in
+  visualStimulus:
+    azimuthMin: -60        # deg, grating azimuth drawn uniformly in [min, max]
+    azimuthMax: 60         # deg
+    overwriteAzimuths: [-60, 60]   # deg, discrete grating azimuths; when set, used instead of [min, max]
+    elevationMin: 15       # deg, grating elevation drawn uniformly in [min, max]
+    elevationMax: 15       # deg
+    coherentAzimuthCap: 80 # deg, |azimuth| kept below this on coherent trials
+    gaussianWindowSigma: 20   # deg
+    orientation: 0         # deg
+    spatialFrequency: 0.066666667   # cycles/deg
+    temporalFrequency: 0   # Hz, unsigned drift rate; direction is orthogonal to orientation
+  audioStimulus:
+    speakerLocations:      # lateral positions, one drawn per audio trial; no centre entry (fixed in code); playback uses the nearest wired speaker
+      - { azimuth: -60, elevation: 15 }
+      - { azimuth: 60, elevation: 15 }
+  response:
+    thresholdLicks: 1      # net lick difference ending the response window; 1 = first lick
+    degreesPerLick: 0      # deg the grating moves per net lick; 0 = stimulus fixed
+  errorSound:
+    enabled: true
+    path: LocalFiles\error_tone.wav
+    channel: 2
+    gain: 1.0
+  reward:
+    rewardProbability: 1.0
+    largeRewardMultiplier: 1
+    largeRewardProbability: 0.0
+  repeats:
+    maxRepeats: 5
+    rulesPerType: [onFailure, onFailure, onFailure, onTimeout, onTimeout]
+  optogenetics:
+    enabled: false
+    zapitConfigPath: ""
+    stimProbability: 0.5
+    stimDelay: 0.0         # s
+    stimDuration: 2.5      # s
+    excludeRepeats: true
+    pseudorandomSelection: true
+    warmupTrials: 20
+  trainingStages:          # row index = stage id selected in the GUI; ids past the end use the last row
+    - label: Stage 0       # habituation: target trials only, every miss auto-rewarded, spouts stay in
+      trialWeights: [10, 0, 0, 0, 0]
+      autoRewardProbability: 1.0
+      bothSpoutsProbability: 1.0
+      rewardSizeUl: 3      # delivered as ceil(size/2) valve pulses
+      contrasts: [1.0]
+      allowRepeats: false
+      spoutMovements: false
+    - label: Stage 1       # target trials only, every miss auto-rewarded
+      trialWeights: [10, 0, 0, 0, 0]
+      autoRewardProbability: 1.0
+      bothSpoutsProbability: 1.0
+      rewardSizeUl: 3
+      contrasts: [1.0]
+      allowRepeats: false
+    - label: Stage 2       # distractor and coherent trials added
+      trialWeights: [10, 10, 10, 0, 0]
+      autoRewardProbability: 0.0
+      bothSpoutsProbability: 1.0
+      rewardSizeUl: 3
+      contrasts: [0.5, 1.0]
+      allowRepeats: false
+    - label: Stage 3       # conflict and neutral trials added
+      trialWeights: [10, 10, 5, 5, 1]
+      autoRewardProbability: 0.0
+      bothSpoutsProbability: 1.0
+      rewardSizeUl: 3
+      contrasts: [0.5, 1.0]
+      allowRepeats: false
+    - label: Stage 4       # as stage 3, wider contrasts (Gerion's default row)
+      trialWeights: [10, 10, 5, 5, 1]
+      autoRewardProbability: 0.0
+      bothSpoutsProbability: 1.0
+      rewardSizeUl: 3
+      contrasts: [0.5, 1.0, 2.0, 3.0]
+      allowRepeats: false
