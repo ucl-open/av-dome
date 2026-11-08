@@ -5463,8 +5463,13 @@
                           <Name>Define Speaker location</Name>
                           <Workflow>
                             <Nodes>
-                              <Expression xsi:type="SubscribeSubject">
-                                <Name>thisTrialData</Name>
+                              <Expression xsi:type="WorkflowInput">
+                                <Name>Source1</Name>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="rx:Take">
+                                  <rx:Count>1</rx:Count>
+                                </Combinator>
                               </Expression>
                               <Expression xsi:type="MemberSelector">
                                 <Selector>audioAzimuth</Selector>
@@ -5513,12 +5518,6 @@
                               <Expression xsi:type="MulticastSubject">
                                 <Name>ActiveSoundChannels</Name>
                               </Expression>
-                              <Expression xsi:type="WorkflowInput">
-                                <Name>Source1</Name>
-                              </Expression>
-                              <Expression xsi:type="Combinator">
-                                <Combinator xsi:type="rx:Sample" />
-                              </Expression>
                               <Expression xsi:type="WorkflowOutput" />
                               <Expression xsi:type="MulticastSubject">
                                 <Name>speakerIndex</Name>
@@ -5527,15 +5526,14 @@
                             <Edges>
                               <Edge From="0" To="1" Label="Source1" />
                               <Edge From="1" To="2" Label="Source1" />
-                              <Edge From="2" To="3" Label="Source2" />
-                              <Edge From="3" To="6" Label="Source1" />
-                              <Edge From="4" To="5" Label="Source1" />
-                              <Edge From="5" To="6" Label="Source2" />
-                              <Edge From="6" To="11" Label="Source1" />
-                              <Edge From="11" To="7" Label="Source1" />
-                              <Edge From="7" To="9" Label="Source1" />
-                              <Edge From="8" To="9" Label="Source2" />
-                              <Edge From="9" To="10" Label="Source1" />
+                              <Edge From="2" To="3" Label="Source1" />
+                              <Edge From="3" To="4" Label="Source2" />
+                              <Edge From="4" To="7" Label="Source1" />
+                              <Edge From="5" To="6" Label="Source1" />
+                              <Edge From="6" To="7" Label="Source2" />
+                              <Edge From="7" To="10" Label="Source1" />
+                              <Edge From="10" To="8" Label="Source1" />
+                              <Edge From="8" To="9" Label="Source1" />
                             </Edges>
                           </Workflow>
                         </Expression>
