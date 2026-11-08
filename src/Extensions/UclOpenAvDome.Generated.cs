@@ -612,6 +612,8 @@ namespace UclOpenAvDome
     
         private LiveView _liveView;
     
+        private BoardWiring _wiring;
+    
         public BehaviorBoard()
         {
         }
@@ -624,6 +626,7 @@ namespace UclOpenAvDome
             _cameraTriggerController = other._cameraTriggerController;
             _runningWheel = other._runningWheel;
             _liveView = other._liveView;
+            _wiring = other._wiring;
         }
     
         /// <summary>
@@ -740,6 +743,26 @@ namespace UclOpenAvDome
             }
         }
     
+        /// <summary>
+        /// What is plugged into each line (Pip, 7 Nov 2026): checked at Start against the lines the workflow uses (its schemas/board-lines.yml) by OpenRigs.HarpDevices.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("wiring")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="wiring")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into each line (Pip, 7 Nov 2026): checked at Start against the li" +
+            "nes the workflow uses (its schemas/board-lines.yml) by OpenRigs.HarpDevices.")]
+        public BoardWiring Wiring
+        {
+            get
+            {
+                return _wiring;
+            }
+            set
+            {
+                _wiring = value;
+            }
+        }
+    
         public System.IObservable<BehaviorBoard> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new BehaviorBoard(this)));
@@ -757,7 +780,590 @@ namespace UclOpenAvDome
             stringBuilder.Append("PulseController = " + _pulseController + ", ");
             stringBuilder.Append("CameraTriggerController = " + _cameraTriggerController + ", ");
             stringBuilder.Append("RunningWheel = " + _runningWheel + ", ");
-            stringBuilder.Append("LiveView = " + _liveView);
+            stringBuilder.Append("LiveView = " + _liveView + ", ");
+            stringBuilder.Append("Wiring = " + _wiring);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    /// <summary>
+    /// What is plugged into each line of a Harp Behavior board, by the board's own channel names. A
+    ///line left out is unknown, which is allowed only for a line no workflow on the rig uses.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute("What is plugged into each line of a Harp Behavior board, by the board\'s own chann" +
+        "el names. A\nline left out is unknown, which is allowed only for a line no workfl" +
+        "ow on the rig uses.")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class BoardWiring
+    {
+    
+        private WiredLine _dIPort0;
+    
+        private WiredLine _dIPort1;
+    
+        private WiredLine _dIPort2;
+    
+        private WiredLine _dI3;
+    
+        private WiredLine _dIO0;
+    
+        private WiredLine _dIO1;
+    
+        private WiredLine _dIO2;
+    
+        private WiredLine _dO0;
+    
+        private WiredLine _dO1;
+    
+        private WiredLine _dO2;
+    
+        private WiredLine _dO3;
+    
+        private WiredLine _dOPort0;
+    
+        private WiredLine _dOPort1;
+    
+        private WiredLine _dOPort2;
+    
+        private WiredLine _supplyPort0;
+    
+        private WiredLine _supplyPort1;
+    
+        private WiredLine _supplyPort2;
+    
+        private WiredLine _led0;
+    
+        private WiredLine _led1;
+    
+        private WiredLine _rgb0;
+    
+        private WiredLine _rgb1;
+    
+        private WiredLine _analogInput0;
+    
+        private WiredLine _analogInput1;
+    
+        public BoardWiring()
+        {
+        }
+    
+        protected BoardWiring(BoardWiring other)
+        {
+            _dIPort0 = other._dIPort0;
+            _dIPort1 = other._dIPort1;
+            _dIPort2 = other._dIPort2;
+            _dI3 = other._dI3;
+            _dIO0 = other._dIO0;
+            _dIO1 = other._dIO1;
+            _dIO2 = other._dIO2;
+            _dO0 = other._dO0;
+            _dO1 = other._dO1;
+            _dO2 = other._dO2;
+            _dO3 = other._dO3;
+            _dOPort0 = other._dOPort0;
+            _dOPort1 = other._dOPort1;
+            _dOPort2 = other._dOPort2;
+            _supplyPort0 = other._supplyPort0;
+            _supplyPort1 = other._supplyPort1;
+            _supplyPort2 = other._supplyPort2;
+            _led0 = other._led0;
+            _led1 = other._led1;
+            _rgb0 = other._rgb0;
+            _rgb1 = other._rgb1;
+            _analogInput0 = other._analogInput0;
+            _analogInput1 = other._analogInput1;
+        }
+    
+        /// <summary>
+        /// What is plugged into DIPort0 (digital input, port 0); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("DIPort0")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DIPort0")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into DIPort0 (digital input, port 0); left out when unknown.")]
+        public WiredLine DIPort0
+        {
+            get
+            {
+                return _dIPort0;
+            }
+            set
+            {
+                _dIPort0 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into DIPort1 (digital input, port 1); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("DIPort1")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DIPort1")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into DIPort1 (digital input, port 1); left out when unknown.")]
+        public WiredLine DIPort1
+        {
+            get
+            {
+                return _dIPort1;
+            }
+            set
+            {
+                _dIPort1 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into DIPort2 (digital input, port 2); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("DIPort2")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DIPort2")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into DIPort2 (digital input, port 2); left out when unknown.")]
+        public WiredLine DIPort2
+        {
+            get
+            {
+                return _dIPort2;
+            }
+            set
+            {
+                _dIPort2 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into DI3 (digital input 3); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("DI3")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DI3")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into DI3 (digital input 3); left out when unknown.")]
+        public WiredLine DI3
+        {
+            get
+            {
+                return _dI3;
+            }
+            set
+            {
+                _dI3 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into DIO0 (port 0 digital input/output); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("DIO0")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DIO0")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into DIO0 (port 0 digital input/output); left out when unknown.")]
+        public WiredLine DIO0
+        {
+            get
+            {
+                return _dIO0;
+            }
+            set
+            {
+                _dIO0 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into DIO1 (port 1 digital input/output); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("DIO1")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DIO1")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into DIO1 (port 1 digital input/output); left out when unknown.")]
+        public WiredLine DIO1
+        {
+            get
+            {
+                return _dIO1;
+            }
+            set
+            {
+                _dIO1 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into DIO2 (port 2 digital input/output); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("DIO2")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DIO2")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into DIO2 (port 2 digital input/output); left out when unknown.")]
+        public WiredLine DIO2
+        {
+            get
+            {
+                return _dIO2;
+            }
+            set
+            {
+                _dIO2 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into DO0 (digital output 0, camera trigger 0's pin); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("DO0")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DO0")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into DO0 (digital output 0, camera trigger 0\'s pin); left out whe" +
+            "n unknown.")]
+        public WiredLine DO0
+        {
+            get
+            {
+                return _dO0;
+            }
+            set
+            {
+                _dO0 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into DO1 (digital output 1, camera trigger 1's pin); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("DO1")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DO1")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into DO1 (digital output 1, camera trigger 1\'s pin); left out whe" +
+            "n unknown.")]
+        public WiredLine DO1
+        {
+            get
+            {
+                return _dO1;
+            }
+            set
+            {
+                _dO1 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into DO2 (digital output 2); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("DO2")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DO2")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into DO2 (digital output 2); left out when unknown.")]
+        public WiredLine DO2
+        {
+            get
+            {
+                return _dO2;
+            }
+            set
+            {
+                _dO2 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into DO3 (digital output 3); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("DO3")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DO3")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into DO3 (digital output 3); left out when unknown.")]
+        public WiredLine DO3
+        {
+            get
+            {
+                return _dO3;
+            }
+            set
+            {
+                _dO3 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into DOPort0 (digital output, port 0); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("DOPort0")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DOPort0")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into DOPort0 (digital output, port 0); left out when unknown.")]
+        public WiredLine DOPort0
+        {
+            get
+            {
+                return _dOPort0;
+            }
+            set
+            {
+                _dOPort0 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into DOPort1 (digital output, port 1); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("DOPort1")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DOPort1")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into DOPort1 (digital output, port 1); left out when unknown.")]
+        public WiredLine DOPort1
+        {
+            get
+            {
+                return _dOPort1;
+            }
+            set
+            {
+                _dOPort1 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into DOPort2 (digital output, port 2); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("DOPort2")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="DOPort2")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into DOPort2 (digital output, port 2); left out when unknown.")]
+        public WiredLine DOPort2
+        {
+            get
+            {
+                return _dOPort2;
+            }
+            set
+            {
+                _dOPort2 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into SupplyPort0 (port 0 supply); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("SupplyPort0")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="SupplyPort0")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into SupplyPort0 (port 0 supply); left out when unknown.")]
+        public WiredLine SupplyPort0
+        {
+            get
+            {
+                return _supplyPort0;
+            }
+            set
+            {
+                _supplyPort0 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into SupplyPort1 (port 1 supply); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("SupplyPort1")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="SupplyPort1")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into SupplyPort1 (port 1 supply); left out when unknown.")]
+        public WiredLine SupplyPort1
+        {
+            get
+            {
+                return _supplyPort1;
+            }
+            set
+            {
+                _supplyPort1 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into SupplyPort2 (port 2 supply); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("SupplyPort2")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="SupplyPort2")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into SupplyPort2 (port 2 supply); left out when unknown.")]
+        public WiredLine SupplyPort2
+        {
+            get
+            {
+                return _supplyPort2;
+            }
+            set
+            {
+                _supplyPort2 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into Led0 (LED 0); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("Led0")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Led0")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into Led0 (LED 0); left out when unknown.")]
+        public WiredLine Led0
+        {
+            get
+            {
+                return _led0;
+            }
+            set
+            {
+                _led0 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into Led1 (LED 1); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("Led1")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Led1")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into Led1 (LED 1); left out when unknown.")]
+        public WiredLine Led1
+        {
+            get
+            {
+                return _led1;
+            }
+            set
+            {
+                _led1 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into Rgb0 (RGB LED 0); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("Rgb0")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Rgb0")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into Rgb0 (RGB LED 0); left out when unknown.")]
+        public WiredLine Rgb0
+        {
+            get
+            {
+                return _rgb0;
+            }
+            set
+            {
+                _rgb0 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into Rgb1 (RGB LED 1); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("Rgb1")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Rgb1")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into Rgb1 (RGB LED 1); left out when unknown.")]
+        public WiredLine Rgb1
+        {
+            get
+            {
+                return _rgb1;
+            }
+            set
+            {
+                _rgb1 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into AnalogInput0 (analog input 0, ADC0); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("AnalogInput0")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="AnalogInput0")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into AnalogInput0 (analog input 0, ADC0); left out when unknown.")]
+        public WiredLine AnalogInput0
+        {
+            get
+            {
+                return _analogInput0;
+            }
+            set
+            {
+                _analogInput0 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into AnalogInput1 (analog input 1, ADC1); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("AnalogInput1")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="AnalogInput1")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into AnalogInput1 (analog input 1, ADC1); left out when unknown.")]
+        public WiredLine AnalogInput1
+        {
+            get
+            {
+                return _analogInput1;
+            }
+            set
+            {
+                _analogInput1 = value;
+            }
+        }
+    
+        public System.IObservable<BoardWiring> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new BoardWiring(this)));
+        }
+    
+        public System.IObservable<BoardWiring> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new BoardWiring(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("DIPort0 = " + _dIPort0 + ", ");
+            stringBuilder.Append("DIPort1 = " + _dIPort1 + ", ");
+            stringBuilder.Append("DIPort2 = " + _dIPort2 + ", ");
+            stringBuilder.Append("DI3 = " + _dI3 + ", ");
+            stringBuilder.Append("DIO0 = " + _dIO0 + ", ");
+            stringBuilder.Append("DIO1 = " + _dIO1 + ", ");
+            stringBuilder.Append("DIO2 = " + _dIO2 + ", ");
+            stringBuilder.Append("DO0 = " + _dO0 + ", ");
+            stringBuilder.Append("DO1 = " + _dO1 + ", ");
+            stringBuilder.Append("DO2 = " + _dO2 + ", ");
+            stringBuilder.Append("DO3 = " + _dO3 + ", ");
+            stringBuilder.Append("DOPort0 = " + _dOPort0 + ", ");
+            stringBuilder.Append("DOPort1 = " + _dOPort1 + ", ");
+            stringBuilder.Append("DOPort2 = " + _dOPort2 + ", ");
+            stringBuilder.Append("SupplyPort0 = " + _supplyPort0 + ", ");
+            stringBuilder.Append("SupplyPort1 = " + _supplyPort1 + ", ");
+            stringBuilder.Append("SupplyPort2 = " + _supplyPort2 + ", ");
+            stringBuilder.Append("Led0 = " + _led0 + ", ");
+            stringBuilder.Append("Led1 = " + _led1 + ", ");
+            stringBuilder.Append("Rgb0 = " + _rgb0 + ", ");
+            stringBuilder.Append("Rgb1 = " + _rgb1 + ", ");
+            stringBuilder.Append("AnalogInput0 = " + _analogInput0 + ", ");
+            stringBuilder.Append("AnalogInput1 = " + _analogInput1);
             return true;
         }
     
@@ -2212,6 +2818,24 @@ namespace UclOpenAvDome
 
 
     /// <summary>
+    /// Which side of the animal a line serves.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+    public enum Side
+    {
+    
+        [System.Runtime.Serialization.EnumMemberAttribute(Value="left")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="left")]
+        Left = 0,
+    
+        [System.Runtime.Serialization.EnumMemberAttribute(Value="right")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="right")]
+        Right = 1,
+    }
+
+
+    /// <summary>
     /// A single speaker in a spatial audio array.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
@@ -3014,6 +3638,172 @@ namespace UclOpenAvDome
 
 
     /// <summary>
+    /// What is plugged into one line of the board. A workflow's schemas/board-lines.yml says what it
+    ///uses each line for, and OpenRigs.HarpDevices compares the two at Start: device, side and targets
+    ///must agree on every line the workflow uses, or the workflow stops. part and note are for people.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute(@"What is plugged into one line of the board. A workflow's schemas/board-lines.yml says what it
+    uses each line for, and OpenRigs.HarpDevices compares the two at Start: device, side and targets
+    must agree on every line the workflow uses, or the workflow stops. part and note are for people.")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class WiredLine
+    {
+    
+        private string _device;
+    
+        private Side? _side;
+    
+        private System.Collections.Generic.List<string> _targets;
+    
+        private string _part;
+    
+        private string _note;
+    
+        public WiredLine()
+        {
+        }
+    
+        protected WiredLine(WiredLine other)
+        {
+            _device = other._device;
+            _side = other._side;
+            _targets = other._targets;
+            _part = other._part;
+            _note = other._note;
+        }
+    
+        /// <summary>
+        /// What is on the line, a word from the lab's list (wiredDevices in K:\config\device-dictionary.json).
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("device", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="device")]
+        [System.ComponentModel.DescriptionAttribute("What is on the line, a word from the lab\'s list (wiredDevices in K:\\config\\device" +
+            "-dictionary.json).")]
+        public string Device
+        {
+            get
+            {
+                return _device;
+            }
+            set
+            {
+                _device = value;
+            }
+        }
+    
+        /// <summary>
+        /// The side it serves, where that matters (a reward valve).
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("side")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="side")]
+        [System.ComponentModel.DescriptionAttribute("The side it serves, where that matters (a reward valve).")]
+        public Side? Side
+        {
+            get
+            {
+                return _side;
+            }
+            set
+            {
+                _side = value;
+            }
+        }
+    
+        /// <summary>
+        /// The rig's devices this line drives or reads, by their Kind-Instance names in this rig.yml.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("targets")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="targets")]
+        [System.ComponentModel.DescriptionAttribute("The rig\'s devices this line drives or reads, by their Kind-Instance names in this" +
+            " rig.yml.")]
+        public System.Collections.Generic.List<string> Targets
+        {
+            get
+            {
+                return _targets;
+            }
+            set
+            {
+                _targets = value;
+            }
+        }
+    
+        /// <summary>
+        /// The physical part, for people; never compared.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("part")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="part")]
+        [System.ComponentModel.DescriptionAttribute("The physical part, for people; never compared.")]
+        public string Part
+        {
+            get
+            {
+                return _part;
+            }
+            set
+            {
+                _part = value;
+            }
+        }
+    
+        /// <summary>
+        /// Anything else about the line (a cable label, a patch panel), for people; never compared.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("note")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="note")]
+        [System.ComponentModel.DescriptionAttribute("Anything else about the line (a cable label, a patch panel), for people; never co" +
+            "mpared.")]
+        public string Note
+        {
+            get
+            {
+                return _note;
+            }
+            set
+            {
+                _note = value;
+            }
+        }
+    
+        public System.IObservable<WiredLine> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new WiredLine(this)));
+        }
+    
+        public System.IObservable<WiredLine> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new WiredLine(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("Device = " + _device + ", ");
+            stringBuilder.Append("Side = " + _side + ", ");
+            stringBuilder.Append("Targets = " + _targets + ", ");
+            stringBuilder.Append("Part = " + _part + ", ");
+            stringBuilder.Append("Note = " + _note);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    /// <summary>
     /// TCP endpoint of the Zapit optogenetics server (tcpServer section of the Zapit settings file).
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
@@ -3571,6 +4361,11 @@ namespace UclOpenAvDome
             return Process<BehaviorBoard>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<BoardWiring> source)
+        {
+            return Process<BoardWiring>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<CalibratedPulse> source)
         {
             return Process<CalibratedPulse>(source);
@@ -3661,6 +4456,11 @@ namespace UclOpenAvDome
             return Process<StepperPositions>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<WiredLine> source)
+        {
+            return Process<WiredLine>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<ZapitServer> source)
         {
             return Process<ZapitServer>(source);
@@ -3688,6 +4488,7 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<UclOpenAvDomeRig>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<AudioDevice>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BehaviorBoard>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BoardWiring>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CalibratedPulse>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraTriggerController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<FixedPulse>))]
@@ -3706,6 +4507,7 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SphericalPosition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpinnakerCamera>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperPositions>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<WiredLine>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ZapitServer>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DO2>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DO3>))]
@@ -3884,6 +4686,11 @@ namespace UclOpenAvDome
             return Process<BehaviorBoard>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<BoardWiring> source)
+        {
+            return Process<BoardWiring>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<CalibratedPulse> source)
         {
             return Process<CalibratedPulse>(source);
@@ -3974,6 +4781,11 @@ namespace UclOpenAvDome
             return Process<StepperPositions>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<WiredLine> source)
+        {
+            return Process<WiredLine>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<ZapitServer> source)
         {
             return Process<ZapitServer>(source);
@@ -4001,6 +4813,7 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<UclOpenAvDomeRig>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<AudioDevice>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BehaviorBoard>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<BoardWiring>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CalibratedPulse>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<CameraTriggerController>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<FixedPulse>))]
@@ -4019,6 +4832,7 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SphericalPosition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpinnakerCamera>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperPositions>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<WiredLine>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ZapitServer>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DO2>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DO3>))]

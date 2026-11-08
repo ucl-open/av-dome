@@ -123,6 +123,19 @@
           "default": null,
           "description": "Live view settings for this board (OpenRigs.LiveView).",
           "title": "LiveView"
+        },
+        "wiring": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BoardWiring"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into each line (Pip, 7 Nov 2026): checked at Start against the lines the workflow uses (its schemas/board-lines.yml) by OpenRigs.HarpDevices.",
+          "title": "Wiring"
         }
       },
       "required": [
@@ -130,6 +143,312 @@
         "usbSerial"
       ],
       "title": "BehaviorBoard",
+      "type": "object"
+    },
+    "BoardWiring": {
+      "description": "What is plugged into each line of a Harp Behavior board, by the board's own channel names. A\nline left out is unknown, which is allowed only for a line no workflow on the rig uses.",
+      "properties": {
+        "DIPort0": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into DIPort0 (digital input, port 0); left out when unknown.",
+          "title": "DiPort0"
+        },
+        "DIPort1": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into DIPort1 (digital input, port 1); left out when unknown.",
+          "title": "DiPort1"
+        },
+        "DIPort2": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into DIPort2 (digital input, port 2); left out when unknown.",
+          "title": "DiPort2"
+        },
+        "DI3": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into DI3 (digital input 3); left out when unknown.",
+          "title": "Di3"
+        },
+        "DIO0": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into DIO0 (port 0 digital input/output); left out when unknown.",
+          "title": "Dio0"
+        },
+        "DIO1": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into DIO1 (port 1 digital input/output); left out when unknown.",
+          "title": "Dio1"
+        },
+        "DIO2": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into DIO2 (port 2 digital input/output); left out when unknown.",
+          "title": "Dio2"
+        },
+        "DO0": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into DO0 (digital output 0, camera trigger 0's pin); left out when unknown.",
+          "title": "Do0"
+        },
+        "DO1": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into DO1 (digital output 1, camera trigger 1's pin); left out when unknown.",
+          "title": "Do1"
+        },
+        "DO2": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into DO2 (digital output 2); left out when unknown.",
+          "title": "Do2"
+        },
+        "DO3": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into DO3 (digital output 3); left out when unknown.",
+          "title": "Do3"
+        },
+        "DOPort0": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into DOPort0 (digital output, port 0); left out when unknown.",
+          "title": "DoPort0"
+        },
+        "DOPort1": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into DOPort1 (digital output, port 1); left out when unknown.",
+          "title": "DoPort1"
+        },
+        "DOPort2": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into DOPort2 (digital output, port 2); left out when unknown.",
+          "title": "DoPort2"
+        },
+        "SupplyPort0": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into SupplyPort0 (port 0 supply); left out when unknown.",
+          "title": "SupplyPort0"
+        },
+        "SupplyPort1": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into SupplyPort1 (port 1 supply); left out when unknown.",
+          "title": "SupplyPort1"
+        },
+        "SupplyPort2": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into SupplyPort2 (port 2 supply); left out when unknown.",
+          "title": "SupplyPort2"
+        },
+        "Led0": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into Led0 (LED 0); left out when unknown.",
+          "title": "Led0"
+        },
+        "Led1": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into Led1 (LED 1); left out when unknown.",
+          "title": "Led1"
+        },
+        "Rgb0": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into Rgb0 (RGB LED 0); left out when unknown.",
+          "title": "Rgb0"
+        },
+        "Rgb1": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into Rgb1 (RGB LED 1); left out when unknown.",
+          "title": "Rgb1"
+        },
+        "AnalogInput0": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into AnalogInput0 (analog input 0, ADC0); left out when unknown.",
+          "title": "AnalogInput0"
+        },
+        "AnalogInput1": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into AnalogInput1 (analog input 1, ADC1); left out when unknown.",
+          "title": "AnalogInput1"
+        }
+      },
+      "title": "BoardWiring",
       "type": "object"
     },
     "CalibratedPulse": {
@@ -579,6 +898,15 @@
       "title": "RunningWheel",
       "type": "object"
     },
+    "Side": {
+      "description": "Which side of the animal a line serves.",
+      "enum": [
+        "left",
+        "right"
+      ],
+      "title": "Side",
+      "type": "string"
+    },
     "Speaker": {
       "description": "A single speaker in a spatial audio array.",
       "properties": {
@@ -971,6 +1299,81 @@
       ],
       "title": "ValveLine",
       "type": "string"
+    },
+    "WiredLine": {
+      "description": "What is plugged into one line of the board. A workflow's schemas/board-lines.yml says what it\nuses each line for, and OpenRigs.HarpDevices compares the two at Start: device, side and targets\nmust agree on every line the workflow uses, or the workflow stops. part and note are for people.",
+      "properties": {
+        "device": {
+          "description": "What is on the line, a word from the lab's list (wiredDevices in K:\\config\\device-dictionary.json).",
+          "examples": [
+            "RewardValve",
+            "CameraTrigger",
+            "Photodiode",
+            "ZapitTrigger"
+          ],
+          "title": "Device",
+          "type": "string"
+        },
+        "side": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Side"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The side it serves, where that matters (a reward valve).",
+          "title": "Side"
+        },
+        "targets": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The rig's devices this line drives or reads, by their Kind-Instance names in this rig.yml.",
+          "examples": [
+            [
+              "Camera-Face",
+              "Camera-Pupil",
+              "Camera-Body"
+            ]
+          ],
+          "title": "Targets"
+        },
+        "part": {
+          "default": null,
+          "description": "The physical part, for people; never compared.",
+          "title": "Part",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "note": {
+          "default": null,
+          "description": "Anything else about the line (a cable label, a patch panel), for people; never compared.",
+          "title": "Note",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "device"
+      ],
+      "title": "WiredLine",
+      "type": "object"
     },
     "ZapitServer": {
       "description": "TCP endpoint of the Zapit optogenetics server (tcpServer section of the Zapit settings file).",
