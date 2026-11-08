@@ -174,7 +174,7 @@ class TrainingStage(BaseSchema):
 
     label: String = Field(description="Human-readable stage name, for documentation and logs")
     trial_weights: List[Int] = Field(description="Relative draw weight per trial type, indexed by trial type")
-    auto_reward_probability: Double = Field(ge=0, le=1, description="Probability that a trial is an auto-reward trial: a miss on it is rewarded at the target spout")
+    auto_reward_probability: Double = Field(ge=0, le=1, description="Probability that a trial is an auto-reward trial: a miss on it is rewarded at the target spout, and still counts as a timeout for repeats")
     both_spouts_probability: Double = Field(ge=0, le=1, description="Probability that both spouts are presented rather than only the correct one")
     reward_size_ul: Double = Field(ge=0, description="Reward size, in microliters; delivered as ceil(size/2) valve pulses")
     contrasts: List[Double] = Field(description="Candidate grating contrasts to draw from on visual trials")

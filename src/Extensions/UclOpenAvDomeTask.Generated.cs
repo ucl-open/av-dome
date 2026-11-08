@@ -1136,12 +1136,12 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Probability that a trial is an auto-reward trial: a miss on it is rewarded at the target spout
+        /// Probability that a trial is an auto-reward trial: a miss on it is rewarded at the target spout, and still counts as a timeout for repeats
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("autoRewardProbability", Required=Newtonsoft.Json.Required.Always)]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="autoRewardProbability")]
         [System.ComponentModel.DescriptionAttribute("Probability that a trial is an auto-reward trial: a miss on it is rewarded at the" +
-            " target spout")]
+            " target spout, and still counts as a timeout for repeats")]
         public double AutoRewardProbability
         {
             get

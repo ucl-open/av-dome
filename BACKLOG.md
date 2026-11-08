@@ -1,5 +1,17 @@
 # Backlog
 
+## 2026-11-08 Independent audit of the discrimination task, auto-reward and leak fix
+
+Fixed: the discrimination ITI (his 1.5-2.5 s plus the 0.6 s more this workflow subtracts), the auto-reward description (a rewarded miss still counts as a timeout for repeats); rig-control's view labels and help (rig-control, same day). Not recommended, each kept on its merits:
+
+- **Auto-reward as a flag, outcome `NoResponse`**: the same reward-the-target path as Gerion's `AutorewardTarget`; the flag keeps the lab's three outcomes.
+- **Distractor answered at the right spout**: every Gerion stage offers both spouts; his "inaccessible spout" comments are a question for him.
+- **Coherent trials take a random side**: Gerion's C# draws the side and the stimulus independently too.
+- **Contrasts copied literally; PresentTargetSpoutOnly not gated by `spoutMovements`**: both as Gerion has them.
+- **`StartAuditoryStimulus` starting with a false value**: `AudioEnabled?` would filter it.
+- **`targetModality` "visual" on localization rows**: `taskType` says which task the row is.
+- **Open, Pip's decision**: Target Modality resets to the file's value every launch; a warning at Go when it differs from the mouse's last experiment would need rig-control to read that experiment's task file.
+
 ## 2026-11-08 Independent audit of 7 Nov work
 
 - **A calibrated reward valve on DO3 is never snapshotted.** `rewardValves` may give a side DO3 when the rig has no `zapit` on that line, but the Logging group snapshots only `ValveCalibrationDO1` and `ValveCalibrationDO2`. No rig uses DO3 for a valve today; add `ValveCalibrationDO3` if one does.

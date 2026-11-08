@@ -273,7 +273,7 @@
           "type": "array"
         },
         "autoRewardProbability": {
-          "description": "Probability that a trial is an auto-reward trial: a miss on it is rewarded at the target spout",
+          "description": "Probability that a trial is an auto-reward trial: a miss on it is rewarded at the target spout, and still counts as a timeout for repeats",
           "maximum": 1,
           "minimum": 0,
           "title": "AutoRewardProbability",

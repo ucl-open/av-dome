@@ -9,8 +9,8 @@ taskParameters:
   rngSeed: null            # null = draw a random seed; each seed used is a RngSeed event in BonsaiData_Async
   flickerFrequency: 8      # Hz, pulse rate shared by both modalities; must be 8, the rate of the auditory stimulus set
   trialStructure:
-    itiMin: 1.5            # s; Gerion's stage 0 (habituation) has no ITI: set both to 0 on the form
-    itiMax: 2.5            # s
+    itiMin: 2.1            # s; Gerion's 1.5 plus 0.6: this workflow's ITI subtracts 2.6 s (his 2.0), so 0 to 0.5 s is added as in his stages 1-4
+    itiMax: 3.1            # s; Gerion's 2.5 plus 0.6. His stage 0 (habituation) adds none: set both to 0 on the form
     quiescentMin: 0.1      # s
     quiescentMax: 0.25     # s
     openLoopDuration: 0.0  # s

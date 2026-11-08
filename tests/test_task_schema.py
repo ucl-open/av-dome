@@ -81,6 +81,15 @@ def test_the_discrimination_file_keeps_the_spouts_in_for_habituation():
     assert all(stage.spout_movements for stage in task.training_stages[1:])
 
 
+def test_the_discrimination_iti_adds_what_gerion_s_did():
+    # Gerion's ITI node waits max(ITI - 2.0, 0) after his 1.5-2.5 s draw; this workflow's waits
+    # ITI - 2.6 above 2.6 s, so the file's range is his plus 0.6 s (audit of 8 Nov 2026).
+    workflow = (CONFIG.parent / "src" / "main.bonsai").read_text(encoding="utf-8-sig")
+    assert "it &gt; 2.6 ? it - 0.1 - 0.5 - 2.0 : 0.0" in workflow
+    trial = _task("task-discrimination.yml").trial_structure
+    assert (trial.iti_min, trial.iti_max) == pytest.approx((1.5 + 0.6, 2.5 + 0.6))
+
+
 def test_target_modality_is_visual_or_auditory():
     data = yaml.safe_load((CONFIG / "task-discrimination.yml").read_text())["taskParameters"]
     UclOpenAvDomeTaskParameters.model_validate({**data, "targetModality": "auditory"})
