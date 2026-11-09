@@ -215,10 +215,13 @@ namespace UclOpenAvDomeTask
 
 
     /// <summary>
-    /// Zapit optogenetic stimulation parameters.
+    /// Zapit optogenetic stimulation parameters. Names as coen-dome-navigation's where they mean the same (Pip,
+    ///9 Nov 2026); laser_duration_seconds is a timed stimulus here, where the corridor's laserMaxSeconds is a cap.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.ComponentModel.DescriptionAttribute("Zapit optogenetic stimulation parameters.")]
+    [System.ComponentModel.DescriptionAttribute("Zapit optogenetic stimulation parameters. Names as coen-dome-navigation\'s where t" +
+        "hey mean the same (Pip,\n9 Nov 2026); laser_duration_seconds is a timed stimulus " +
+        "here, where the corridor\'s laserMaxSeconds is a cap.")]
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
     [Bonsai.CombinatorAttribute(MethodName="Generate")]
     public partial class OptogeneticsSettings
@@ -226,42 +229,42 @@ namespace UclOpenAvDomeTask
     
         private bool _enabled;
     
-        private string _zapitConfigPath;
+        private string _zapitStimConfigPath;
     
-        private double _stimProbability;
+        private double _laserOnProbability;
     
-        private double _stimDelay;
+        private double _laserDelaySeconds;
     
-        private double _stimDuration;
+        private double _laserDurationSeconds;
     
-        private bool _excludeRepeats;
+        private bool _noLaserOnRepeats;
     
-        private bool _pseudorandomSelection;
+        private bool _balancedConditions;
     
-        private int _warmupTrials;
+        private int _trialsBeforeLaser;
     
         public OptogeneticsSettings()
         {
             _enabled = false;
-            _zapitConfigPath = "";
-            _stimProbability = 0.75D;
-            _stimDelay = 0D;
-            _stimDuration = 1.5D;
-            _excludeRepeats = true;
-            _pseudorandomSelection = true;
-            _warmupTrials = 0;
+            _zapitStimConfigPath = "";
+            _laserOnProbability = 0.75D;
+            _laserDelaySeconds = 0D;
+            _laserDurationSeconds = 1.5D;
+            _noLaserOnRepeats = true;
+            _balancedConditions = true;
+            _trialsBeforeLaser = 0;
         }
     
         protected OptogeneticsSettings(OptogeneticsSettings other)
         {
             _enabled = other._enabled;
-            _zapitConfigPath = other._zapitConfigPath;
-            _stimProbability = other._stimProbability;
-            _stimDelay = other._stimDelay;
-            _stimDuration = other._stimDuration;
-            _excludeRepeats = other._excludeRepeats;
-            _pseudorandomSelection = other._pseudorandomSelection;
-            _warmupTrials = other._warmupTrials;
+            _zapitStimConfigPath = other._zapitStimConfigPath;
+            _laserOnProbability = other._laserOnProbability;
+            _laserDelaySeconds = other._laserDelaySeconds;
+            _laserDurationSeconds = other._laserDurationSeconds;
+            _noLaserOnRepeats = other._noLaserOnRepeats;
+            _balancedConditions = other._balancedConditions;
+            _trialsBeforeLaser = other._trialsBeforeLaser;
         }
     
         /// <summary>
@@ -283,129 +286,131 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Path to the Zapit YAML config listing stimulation conditions
+        /// Path to the Zapit stimulus config (the one loaded in Zapit) listing the stimulation conditions
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("zapitConfigPath")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="zapitConfigPath")]
-        [System.ComponentModel.DescriptionAttribute("Path to the Zapit YAML config listing stimulation conditions")]
-        public string ZapitConfigPath
+        [Newtonsoft.Json.JsonPropertyAttribute("zapitStimConfigPath")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="zapitStimConfigPath")]
+        [System.ComponentModel.DescriptionAttribute("Path to the Zapit stimulus config (the one loaded in Zapit) listing the stimulati" +
+            "on conditions")]
+        public string ZapitStimConfigPath
         {
             get
             {
-                return _zapitConfigPath;
+                return _zapitStimConfigPath;
             }
             set
             {
-                _zapitConfigPath = value;
+                _zapitStimConfigPath = value;
             }
         }
     
         /// <summary>
-        /// Probability that a trial receives stimulation
+        /// Probability that a trial after trials_before_laser is a laser-on trial
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("stimProbability")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="stimProbability")]
-        [System.ComponentModel.DescriptionAttribute("Probability that a trial receives stimulation")]
-        public double StimProbability
+        [Newtonsoft.Json.JsonPropertyAttribute("laserOnProbability")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="laserOnProbability")]
+        [System.ComponentModel.DescriptionAttribute("Probability that a trial after trials_before_laser is a laser-on trial")]
+        public double LaserOnProbability
         {
             get
             {
-                return _stimProbability;
+                return _laserOnProbability;
             }
             set
             {
-                _stimProbability = value;
+                _laserOnProbability = value;
             }
         }
     
         /// <summary>
-        /// Delay from trial start to stimulation onset, in seconds
+        /// Delay from the trial's start to laser onset, in seconds
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("stimDelay")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="stimDelay")]
-        [System.ComponentModel.DescriptionAttribute("Delay from trial start to stimulation onset, in seconds")]
-        public double StimDelay
+        [Newtonsoft.Json.JsonPropertyAttribute("laserDelaySeconds")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="laserDelaySeconds")]
+        [System.ComponentModel.DescriptionAttribute("Delay from the trial\'s start to laser onset, in seconds")]
+        public double LaserDelaySeconds
         {
             get
             {
-                return _stimDelay;
+                return _laserDelaySeconds;
             }
             set
             {
-                _stimDelay = value;
+                _laserDelaySeconds = value;
             }
         }
     
         /// <summary>
-        /// Stimulation duration, in seconds
+        /// How long the laser stays on, in seconds (a timed stimulus)
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("stimDuration")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="stimDuration")]
-        [System.ComponentModel.DescriptionAttribute("Stimulation duration, in seconds")]
-        public double StimDuration
+        [Newtonsoft.Json.JsonPropertyAttribute("laserDurationSeconds")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="laserDurationSeconds")]
+        [System.ComponentModel.DescriptionAttribute("How long the laser stays on, in seconds (a timed stimulus)")]
+        public double LaserDurationSeconds
         {
             get
             {
-                return _stimDuration;
+                return _laserDurationSeconds;
             }
             set
             {
-                _stimDuration = value;
+                _laserDurationSeconds = value;
             }
         }
     
         /// <summary>
-        /// Whether repeat trials are excluded from stimulation
+        /// Whether repeat trials never have the laser on
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("excludeRepeats")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="excludeRepeats")]
-        [System.ComponentModel.DescriptionAttribute("Whether repeat trials are excluded from stimulation")]
-        public bool ExcludeRepeats
+        [Newtonsoft.Json.JsonPropertyAttribute("noLaserOnRepeats")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="noLaserOnRepeats")]
+        [System.ComponentModel.DescriptionAttribute("Whether repeat trials never have the laser on")]
+        public bool NoLaserOnRepeats
         {
             get
             {
-                return _excludeRepeats;
+                return _noLaserOnRepeats;
             }
             set
             {
-                _excludeRepeats = value;
+                _noLaserOnRepeats = value;
             }
         }
     
         /// <summary>
-        /// Draw conditions from a shuffled queue rather than independently
+        /// Draw conditions from a shuffled queue, so each is used equally often, rather than independently each trial
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("pseudorandomSelection")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="pseudorandomSelection")]
-        [System.ComponentModel.DescriptionAttribute("Draw conditions from a shuffled queue rather than independently")]
-        public bool PseudorandomSelection
+        [Newtonsoft.Json.JsonPropertyAttribute("balancedConditions")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="balancedConditions")]
+        [System.ComponentModel.DescriptionAttribute("Draw conditions from a shuffled queue, so each is used equally often, rather than" +
+            " independently each trial")]
+        public bool BalancedConditions
         {
             get
             {
-                return _pseudorandomSelection;
+                return _balancedConditions;
             }
             set
             {
-                _pseudorandomSelection = value;
+                _balancedConditions = value;
             }
         }
     
         /// <summary>
-        /// Trials at session start with no stimulation (counted by TrialCount, repeats included)
+        /// Trials at the experiment's start with no laser-on trial among them (counted by TrialCount, repeats included)
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("warmupTrials")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="warmupTrials")]
-        [System.ComponentModel.DescriptionAttribute("Trials at session start with no stimulation (counted by TrialCount, repeats inclu" +
-            "ded)")]
-        public int WarmupTrials
+        [Newtonsoft.Json.JsonPropertyAttribute("trialsBeforeLaser")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="trialsBeforeLaser")]
+        [System.ComponentModel.DescriptionAttribute("Trials at the experiment\'s start with no laser-on trial among them (counted by Tr" +
+            "ialCount, repeats included)")]
+        public int TrialsBeforeLaser
         {
             get
             {
-                return _warmupTrials;
+                return _trialsBeforeLaser;
             }
             set
             {
-                _warmupTrials = value;
+                _trialsBeforeLaser = value;
             }
         }
     
@@ -422,13 +427,13 @@ namespace UclOpenAvDomeTask
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("Enabled = " + _enabled + ", ");
-            stringBuilder.Append("ZapitConfigPath = " + _zapitConfigPath + ", ");
-            stringBuilder.Append("StimProbability = " + _stimProbability + ", ");
-            stringBuilder.Append("StimDelay = " + _stimDelay + ", ");
-            stringBuilder.Append("StimDuration = " + _stimDuration + ", ");
-            stringBuilder.Append("ExcludeRepeats = " + _excludeRepeats + ", ");
-            stringBuilder.Append("PseudorandomSelection = " + _pseudorandomSelection + ", ");
-            stringBuilder.Append("WarmupTrials = " + _warmupTrials);
+            stringBuilder.Append("ZapitStimConfigPath = " + _zapitStimConfigPath + ", ");
+            stringBuilder.Append("LaserOnProbability = " + _laserOnProbability + ", ");
+            stringBuilder.Append("LaserDelaySeconds = " + _laserDelaySeconds + ", ");
+            stringBuilder.Append("LaserDurationSeconds = " + _laserDurationSeconds + ", ");
+            stringBuilder.Append("NoLaserOnRepeats = " + _noLaserOnRepeats + ", ");
+            stringBuilder.Append("BalancedConditions = " + _balancedConditions + ", ");
+            stringBuilder.Append("TrialsBeforeLaser = " + _trialsBeforeLaser);
             return true;
         }
     

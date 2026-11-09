@@ -46,13 +46,13 @@ taskParameters:
     rulesPerType: [onFailure, onFailure, onFailure, onTimeout, onTimeout]
   optogenetics:
     enabled: true
-    zapitConfigPath: C:\Users\CoenLabUsers\zapit\experimental_configs\avdome_main_initialstim.yml
-    stimProbability: 0.5
-    stimDelay: 0.0         # s
-    stimDuration: 2.5      # s
-    excludeRepeats: true
-    pseudorandomSelection: true
-    warmupTrials: 20
+    zapitStimConfigPath: C:\Users\CoenLabUsers\zapit\experimental_configs\avdome_main_initialstim.yml
+    laserOnProbability: 0.5
+    laserDelaySeconds: 0.0         # s
+    laserDurationSeconds: 2.5      # s
+    noLaserOnRepeats: true
+    balancedConditions: true
+    trialsBeforeLaser: 20
   trainingStages:          # row index = stage id selected in the GUI; ids past the end use the last row
     - label: Stage 0       # habituation, coherent only, single spout half the time, no repeats
       trialWeights: [0, 0, 10, 0, 0]

@@ -34,7 +34,7 @@ public class InitialiseTrial
     private int currentRepeatCount = 0;
 
     // Trials drawn so far this experiment: the next trial's number is one more. Trials drawn
-    // while fewer than optogenetics.warmupTrials came before are never stimulated.
+    // while fewer than optogenetics.trialsBeforeLaser came before are never stimulated.
     private int trialsDrawn = 0;
 
     private static List<int> _zapitConditions = new List<int>();
@@ -64,7 +64,7 @@ public class InitialiseTrial
                 repeatTrial.RepeatCount = currentRepeatCount;
                 // The copy carries the original trial's optogenetic draw; clear it unless
                 // repeats may be stimulated, in which case the same condition is presented again.
-                if (parameters.Optogenetics.ExcludeRepeats)
+                if (parameters.Optogenetics.NoLaserOnRepeats)
                 {
                     ClearOptogeneticParameters(repeatTrial);
                 }
@@ -73,7 +73,7 @@ public class InitialiseTrial
 
             if (parameters.Optogenetics.Enabled)
             {
-                LoadZapitConfigIfNeeded(parameters.Optogenetics.ZapitConfigPath);
+                LoadZapitConfigIfNeeded(parameters.Optogenetics.ZapitStimConfigPath);
             }
 
             // Generate new trial
@@ -392,9 +392,9 @@ public class InitialiseTrial
         if (!optogenetics.Enabled)
             return;
 
-        if (trialsDrawn < optogenetics.WarmupTrials)
+        if (trialsDrawn < optogenetics.TrialsBeforeLaser)
         {
-            Console.WriteLine("Optogenetics warmup: trial " + (trialsDrawn + 1) + "/" + optogenetics.WarmupTrials + " - no stimulation");
+            Console.WriteLine("Optogenetics warmup: trial " + (trialsDrawn + 1) + "/" + optogenetics.TrialsBeforeLaser + " - no stimulation");
             return;
         }
         // Check if Zapit conditions are available
@@ -405,12 +405,12 @@ public class InitialiseTrial
         }
 
         // Roll for stimulation
-        if (rand.NextDouble() < optogenetics.StimProbability)
+        if (rand.NextDouble() < optogenetics.LaserOnProbability)
         {
             trialData.OptogeneticEnabled = true;
 
             // Pseudorandom condition selection
-            if (optogenetics.PseudorandomSelection)
+            if (optogenetics.BalancedConditions)
             {
                 trialData.OptogeneticCondition = GetPseudorandomCondition(rand);
             }
@@ -420,8 +420,8 @@ public class InitialiseTrial
             }
 
             // Set timing parameters from config
-            trialData.OptogeneticDelay = optogenetics.StimDelay;
-            trialData.OptogeneticDuration = optogenetics.StimDuration;
+            trialData.OptogeneticDelay = optogenetics.LaserDelaySeconds;
+            trialData.OptogeneticDuration = optogenetics.LaserDurationSeconds;
             trialData.OptogeneticPower = 0; // Will be set by Zapit config
         }
     }

@@ -28,7 +28,7 @@
       "type": "string"
     },
     "OptogeneticsSettings": {
-      "description": "Zapit optogenetic stimulation parameters.",
+      "description": "Zapit optogenetic stimulation parameters. Names as coen-dome-navigation's where they mean the same (Pip,\n9 Nov 2026); laser_duration_seconds is a timed stimulus here, where the corridor's laserMaxSeconds is a cap.",
       "properties": {
         "enabled": {
           "default": false,
@@ -36,52 +36,52 @@
           "title": "Enabled",
           "type": "boolean"
         },
-        "zapitConfigPath": {
+        "zapitStimConfigPath": {
           "default": "",
-          "description": "Path to the Zapit YAML config listing stimulation conditions",
-          "title": "ZapitConfigPath",
+          "description": "Path to the Zapit stimulus config (the one loaded in Zapit) listing the stimulation conditions",
+          "title": "ZapitStimConfigPath",
           "type": "string"
         },
-        "stimProbability": {
+        "laserOnProbability": {
           "default": 0.75,
-          "description": "Probability that a trial receives stimulation",
+          "description": "Probability that a trial after trials_before_laser is a laser-on trial",
           "maximum": 1,
           "minimum": 0,
-          "title": "StimProbability",
+          "title": "LaserOnProbability",
           "type": "number"
         },
-        "stimDelay": {
+        "laserDelaySeconds": {
           "default": 0.0,
-          "description": "Delay from trial start to stimulation onset, in seconds",
+          "description": "Delay from the trial's start to laser onset, in seconds",
           "minimum": 0,
-          "title": "StimDelay",
+          "title": "LaserDelaySeconds",
           "type": "number"
         },
-        "stimDuration": {
+        "laserDurationSeconds": {
           "default": 1.5,
-          "description": "Stimulation duration, in seconds",
+          "description": "How long the laser stays on, in seconds (a timed stimulus)",
           "minimum": 0,
-          "title": "StimDuration",
+          "title": "LaserDurationSeconds",
           "type": "number"
         },
-        "excludeRepeats": {
+        "noLaserOnRepeats": {
           "default": true,
-          "description": "Whether repeat trials are excluded from stimulation",
-          "title": "ExcludeRepeats",
+          "description": "Whether repeat trials never have the laser on",
+          "title": "NoLaserOnRepeats",
           "type": "boolean"
         },
-        "pseudorandomSelection": {
+        "balancedConditions": {
           "default": true,
-          "description": "Draw conditions from a shuffled queue rather than independently",
-          "title": "PseudorandomSelection",
+          "description": "Draw conditions from a shuffled queue, so each is used equally often, rather than independently each trial",
+          "title": "BalancedConditions",
           "type": "boolean"
         },
-        "warmupTrials": {
+        "trialsBeforeLaser": {
           "default": 0,
-          "description": "Trials at session start with no stimulation (counted by TrialCount, repeats included)",
+          "description": "Trials at the experiment's start with no laser-on trial among them (counted by TrialCount, repeats included)",
           "maximum": 2147483647,
           "minimum": -2147483648,
-          "title": "WarmupTrials",
+          "title": "TrialsBeforeLaser",
           "type": "integer"
         }
       },

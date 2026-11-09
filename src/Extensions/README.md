@@ -68,7 +68,7 @@ server code in `zapit/+zapit/+interfaces/@TCPserver`.
   `StartStimulus` with the trial's `OptogeneticCondition`, `OptogeneticDuration` and
   `OptogeneticDelay` (Zapit times the delay and duration itself; `HardwareTriggered` comes from
   the rig YAML `zapit` block, see the timing model below). Repeat trials copy the original trial's
-  draw, so with `optogenetics.excludeRepeats: false` a repeat presents the same condition again;
+  draw, so with `optogenetics.noLaserOnRepeats: false` a repeat presents the same condition again;
   with `true` (the default) repeats are never stimulated.
   Every reply is logged to `Zapit.csv` alongside `BonsaiData_Trial` on the same Harp clock.
 - `../ZapitDemo.bonsai`: standalone connectivity check against a running Zapit, no rig hardware

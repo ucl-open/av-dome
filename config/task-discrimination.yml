@@ -49,13 +49,13 @@ taskParameters:
     rulesPerType: [onFailure, onFailure, onFailure, onTimeout, onTimeout]
   optogenetics:
     enabled: false
-    zapitConfigPath: ""
-    stimProbability: 0.5
-    stimDelay: 0.0         # s
-    stimDuration: 2.5      # s
-    excludeRepeats: true
-    pseudorandomSelection: true
-    warmupTrials: 20
+    zapitStimConfigPath: ""
+    laserOnProbability: 0.5
+    laserDelaySeconds: 0.0         # s
+    laserDurationSeconds: 2.5      # s
+    noLaserOnRepeats: true
+    balancedConditions: true
+    trialsBeforeLaser: 20
   trainingStages:          # row index = stage id selected in the GUI; ids past the end use the last row
     - label: Stage 0       # habituation: target trials only, every miss auto-rewarded, spouts stay in
       trialWeights: [10, 0, 0, 0, 0]

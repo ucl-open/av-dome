@@ -48,22 +48,22 @@ The same rows are written to `src/zapit-demo.csv`.
 This runs the real trial draw (`InitialiseTrial`) and the same Zapit wiring as `main.bonsai`, but with timers instead of the behaviour, so it works on any PC with a rig YAML.
 
 1. Make sure `C:\RigConfigs\<MachineName>.yml` exists on the PC you run it on or change the path (copy `config/rig-template.yml` and rename it if you are not on a rig PC). Its `zapit:` block sets host, port and `hardwareTriggered`.
-2. Edit `config/zapit-test.yml`: set `zapitConfigPath` to the stim config file you loaded in step 1. Bonsai reads the condition numbers from it. Everything else matches `task-localization.yml` except `optogenetics.enabled: true`.
+2. Edit `config/zapit-test.yml`: set `zapitStimConfigPath` to the stim config file you loaded in step 1. Bonsai reads the condition numbers from it. Everything else matches `task-localization.yml` except `optogenetics.enabled: true`.
 3. Open `src/ZapitTrialTest.bonsai`, open visualizers on `ZapitReplies` and on the `Trial` group, and Start.
 
-Ten trials are drawn, one every two seconds. Each trial line shows `(trialType, IsRepeat, OptogeneticEnabled, OptogeneticCondition, OptogeneticDuration, OptogeneticDelay)`. With the default `stimProbability: 0.75` about three quarters of trials are opto trials. For every opto trial a `StartStimulus` reply must follow whose `value` equals that trial's `OptogeneticCondition` and whose `laserOn` is 1. Non-opto trials produce no reply. In MATLAB, Zapit prints or logs each stimulus as it would in an experiment.
+Ten trials are drawn, one every two seconds. Each trial line shows `(trialType, IsRepeat, OptogeneticEnabled, OptogeneticCondition, OptogeneticDuration, OptogeneticDelay)`. With the default `laserOnProbability: 0.75` about three quarters of trials are opto trials. For every opto trial a `StartStimulus` reply must follow whose `value` equals that trial's `OptogeneticCondition` and whose `laserOn` is 1. Non-opto trials produce no reply. In MATLAB, Zapit prints or logs each stimulus as it would in an experiment.
 
 If the rig YAML has `hardwareTriggered: true`, each armed reply pulses the behavior board DO line named by `zapit.triggerLine` (DO3), for `pulseWidths.PulseDO3` milliseconds, and the `TriggerPulse` visualizer shows the line number. The workflow therefore needs the behavior board on the port in the rig YAML; connect DO3 to the Zapit DAQ trigger input to see the laser fire on the TTL.
 
 **Pass:** every opto trial has a matching reply, conditions agree, no `error=True`.
 
-**Fail modes:** console warning "Optogenetics enabled but no Zapit conditions available": the `zapitConfigPath` is wrong or the file has no `stimLocationsNN` entries. Replies show `value=255` or `error=True`: Zapit refused `sendSamples`, check the MATLAB window (missing or incorrect config loaded).
+**Fail modes:** console warning "Optogenetics enabled but no Zapit conditions available": the `zapitStimConfigPath` is wrong or the file has no `stimLocationsNN` entries. Replies show `value=255` or `error=True`: Zapit refused `sendSamples`, check the MATLAB window (missing or incorrect config loaded).
 
 ## Step 4: dummy experiment on the rig, `src/main.bonsai`
 
 With Zapit still in simulated mode (or with the laser shutter closed):
 
-1. In `config/task-localization.yml` set `optogenetics.enabled: true` and `zapitConfigPath` as in step 3.
+1. In `config/task-localization.yml` set `optogenetics.enabled: true` and `zapitStimConfigPath` as in step 3.
 2. In the rig YAML set `zapit.hardwareTriggered` to `false` for the first run.
 3. Run a normal short experiment from `main.bonsai`. The workflow stops at startup with a clear error if Zapit is unreachable or has no config loaded.
 4. In the experiment folder compare `Zapit.csv` and `BonsaiData\BonsaiData_Trial_*.csv`. `Zapit.csv` columns: `Seconds` (Harp clock), `command` (1 = StartStimulus, 2 and 4 = the startup queries), `value` (condition presented), `laserOn`, `isError`, `serverDatenum` (Zapit PC clock). Every `BonsaiData_Trial` row with `optoStimulated = True` must have a `command = 1` row in `Zapit.csv` with the same condition, a fraction of a second later.
