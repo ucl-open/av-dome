@@ -9,7 +9,7 @@ Fixed: the discrimination ITI (his 1.5-2.5 s plus the 0.6 s more this workflow s
 - **Coherent trials take a random side**: Gerion's C# draws the side and the stimulus independently too.
 - **Contrasts copied literally; PresentTargetSpoutOnly not gated by `spoutMovements`**: both as Gerion has them.
 - **`StartAuditoryStimulus` starting with a false value**: `AudioEnabled?` would filter it.
-- **`targetModality` "visual" on localization rows**: `taskType` says which task the row is.
+- **`targetModality` "visual" on localization rows**: moot since 9 Nov 2026, when `taskType` and `targetModality` left the trial log (task-file copies, in the manifest).
 - **Open, Pip's decision**: Target Modality resets to the file's value every launch; a warning at Go when it differs from the mouse's last experiment would need rig-control to read that experiment's task file.
 
 ## 2026-11-08 Independent audit of 7 Nov work

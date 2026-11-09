@@ -31,10 +31,7 @@ public class TrialRow
     public double audioAzimuth;  // the speaker that played, after snapping to the nearest wired one
     public double audioElevation;
     public int audioWaveformIndex;
-    public bool optoStimulated;
-    public int optoCondition;
-    public string taskType;
-    public string targetModality;
+    public int optoCondition;  // 0 when not stimulated (Zapit numbers conditions from 1)
     public bool autoRewarded;  // a miss on an auto-reward trial, rewarded at the target spout
 }
 
@@ -73,10 +70,7 @@ public class CreateTrialRow
                 audioAzimuth = played ? locations[speaker].X : double.NaN,
                 audioElevation = played ? locations[speaker].Y : double.NaN,
                 audioWaveformIndex = trial.audioWaveformIdx,
-                optoStimulated = trial.OptogeneticEnabled,
                 optoCondition = trial.OptogeneticCondition,
-                taskType = trial.taskType,
-                targetModality = trial.targetModality,
                 autoRewarded = trial.autoReward && choice == "NoResponse",
             };
             return new Timestamped<TrialRow>(row, value.Item1.Seconds);
