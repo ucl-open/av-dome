@@ -2519,7 +2519,7 @@
       <Expression xsi:type="ExternalizedMapping">
         <Property Name="SubjectId" Description="The mouse; the launch's own, from rig-control." />
         <Property Name="SessionId" Description="The session number; the launch's own, from rig-control." />
-        <Property Name="TaskPath" Description="The task file read at Go: rig-control's copy of the one chosen at launch, with the form's edits (lib-open-rigs settings-files plan); from the editor, config\task.yml." />
+        <Property Name="TaskPath" Description="The task file read at Go: rig-control's copy of the one chosen at launch, with the form's edits (lib-open-rigs settings-files plan); from the editor, config\task-localization.yml." />
       </Expression>
       <Expression xsi:type="GroupWorkflow">
         <Name>Initialization</Name>
@@ -2724,7 +2724,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="StringProperty">
-                <Value>..\config\task.yml</Value>
+                <Value>..\config\task-localization.yml</Value>
               </Combinator>
             </Expression>
             <Expression xsi:type="Combinator">
@@ -2833,7 +2833,7 @@
               </Combinator>
             </Expression>
             <Expression xsi:type="ExternalizedMapping">
-              <Property Name="Value" DisplayName="TaskPath" Description="The task file read at Go: rig-control's copy of the one chosen at launch, with the form's edits; from the editor, config\task.yml." />
+              <Property Name="Value" DisplayName="TaskPath" Description="The task file read at Go: rig-control's copy of the one chosen at launch, with the form's edits; from the editor, config\task-localization.yml." />
             </Expression>
           </Nodes>
           <Edges>
@@ -2886,7 +2886,7 @@
           <Nodes>
             <Expression xsi:type="Annotation">
               <Name>Read task configuration</Name>
-              <Text><![CDATA[At Go: the task file named by TaskPath is read, as rig-control wrote it at Go (the file chosen at launch, with the form's edits and any null rngSeed drawn, checked against the task schema; lib-open-rigs settings-files plan), then published as TaskConfig and written to the experiment as Settings\Settings_Task_<DateTime>.json. Nothing is read before Go. From the editor TaskPath is config\task.yml, as it is.]]></Text>
+              <Text><![CDATA[At Go: the task file named by TaskPath is read, as rig-control wrote it at Go (the file chosen at launch, with the form's edits and any null rngSeed drawn, checked against the task schema; lib-open-rigs settings-files plan), then published as TaskConfig and written to the experiment as Settings\Settings_Task_<DateTime>.json. Nothing is read before Go. From the editor TaskPath is config\task-localization.yml, as it is.]]></Text>
             </Expression>
             <Expression xsi:type="SubscribeSubject">
               <Name>TaskFilePath</Name>

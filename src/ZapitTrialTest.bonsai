@@ -13,7 +13,7 @@
     <Nodes>
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="io:ReadAllText">
-          <io:Path>..\config\task-zapit-test.yml</io:Path>
+          <io:Path>..\config\zapit-test.yml</io:Path>
         </Combinator>
       </Expression>
       <Expression xsi:type="p1:DeserializeFromYaml">

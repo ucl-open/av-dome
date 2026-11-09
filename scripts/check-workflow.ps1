@@ -16,7 +16,7 @@ param(
 #      refused, and every key in the template reaches the Settings_Rig JSON the experiment logs.
 #   4. Each config\task*.yml reads as the workflow reads it at Go, TaskPath is exposed and no
 #      override is applied (rig-control writes the task file; lib-open-rigs settings-files plan).
-#      InitialiseTrial draws trials from task.yml and task-discrimination.yml (both target
+#      InitialiseTrial draws trials from task-localization.yml and task-discrimination.yml (both target
 #      modalities): the answer, silent trials, auto-reward only at the left spout, stage 0's spouts.
 #   5. LoadAuditoryStimulusSet on synthetic WAVs and filters: equalising matches the filter's
 #      convolution, and asymmetric taps, a wrong rate or a missing file are refused naming it;
@@ -364,7 +364,7 @@ public static class DrawTrials {
         if ($bad.Count -eq 0) { "  ok    $What" } else { "  FAIL  $What ($($bad.Count) of $($Trials.Count) trials, first: type $($bad[0].trialType) target $($bad[0].targetSide))"; $script:failed++ }
     }
     try {
-        $loc = [DrawTrials]::Draw((Read-Task 'task.yml'), 4, 300)
+        $loc = [DrawTrials]::Draw((Read-Task 'task-localization.yml'), 4, 300)
         Test-Trials 'localization: every trial plays sound, moves the spouts and answers the stimulus side' $loc {
             param($t) $t.taskType -eq 'localization' -and $t.audioEnabled -and $t.spoutMovements -and
                 ($t.trialType -ne 0 -or $t.visualAzimuth -eq 0 -or $t.targetSide -eq $(if ($t.visualAzimuth -gt 0) { 'Right' } else { 'Left' })) }

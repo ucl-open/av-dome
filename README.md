@@ -12,7 +12,7 @@ The workflow has no window of its own. It runs under rig-control (Coen-Lab/rig-c
 | `ManualRewardUl` | 3 | Microlitres `RewardLeft` and `RewardRight` deliver before Go, taken live; after Go a manual reward is the current trial's size |
 | `StepSize` | 150 | Motor steps per spout nudge, taken live |
 
-The task's own settings (reward sizes, inter-trial intervals, optogenetics and the rest) are the task file's. rig-control writes it (lib-open-rigs settings-files plan): the file chosen at launch from `config\task*.yml`, with the fields edited on the Experiment page and any null `rngSeed` drawn, checked against `src\DataSchemas\ucl_open_av_dome_task.json`, at the path it passes as `TaskPath`, which the workflow reads at Go. From the editor `TaskPath` is `config\task.yml` as it is.
+The task's own settings (reward sizes, inter-trial intervals, optogenetics and the rest) are the task file's. rig-control writes it (lib-open-rigs settings-files plan): the file chosen at launch from `config\task*.yml`, with the fields edited on the Experiment page and any null `rngSeed` drawn, checked against `src\DataSchemas\ucl_open_av_dome_task.json`, at the path it passes as `TaskPath`, which the workflow reads at Go. From the editor `TaskPath` is `config\task-localization.yml` as it is.
 
 Commands, while ready or recording: `RewardLeft` and `RewardRight` (a flush), `SpoutsHome`, `SpoutsIn`, `SpoutsOut`, `SaveSpoutPositions` (to `<rig config>\calibration\LickSpoutPositions\<SubjectId>.csv`), and the nudges `LeftUp`, `LeftDown`, `RightUp`, `RightDown`, `LeftFront`, `LeftBack`, `RightFront`, `RightBack`, `BaseLeft`, `BaseRight`.
 

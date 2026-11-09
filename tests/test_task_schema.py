@@ -68,7 +68,7 @@ def _task(name):
 
 
 def test_a_task_file_without_task_type_is_localization_with_moving_spouts():
-    task = _task("task.yml")
+    task = _task("task-localization.yml")
     assert task.task_type == "localization"
     assert all(stage.spout_movements for stage in task.training_stages)
 
