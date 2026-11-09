@@ -268,6 +268,7 @@ public class InitialiseTrial
 
         // General Trial Settings
         trialData.trialType = selectedTrialType;
+        trialData.trialTypeName = TrialTypeName(selectedTrialType, discrimination, parameters.TargetModality);
         trialData.IsRepeat = false;
         trialData.RepeatCount = 0;
         SetupOptogeneticParameters(trialData, parameters, trialRand);
@@ -280,6 +281,23 @@ public class InitialiseTrial
         trialData.audioWaveformIdx = trialRand.Next(AuditoryStimulusSet.WaveformCount);
 
         return trialData;
+    }
+
+    // The trial type as the trial log writes it, in words for what was shown (Pip, 9 Nov 2026: text,
+    // each task's own values; coen-dome-navigation writes auditory, visual or audiovisual). In
+    // discrimination 0 and 1 are the target and the other modality alone, so they name the modality
+    // shown; the number stays inside, where it picks the stage's weights and repeat rules.
+    public static string TrialTypeName(int trialType, bool discrimination, Modality targetModality)
+    {
+        switch (trialType)
+        {
+            case 0: return discrimination && targetModality == Modality.Auditory ? "auditory" : "visual";
+            case 1: return discrimination && targetModality == Modality.Auditory ? "visual" : "auditory";
+            case 2: return "audiovisualCoherent";
+            case 3: return "audiovisualConflict";
+            case 4: return "neutral";
+            default: return "";
+        }
     }
 
     // Gets a random trial type based on the weighted distribution
@@ -737,6 +755,7 @@ public class Trial
     // TrialStructure
     public int trialNumber;  // the trial's number in the experiment, from 1 (repeats count)
     public int trialType;
+    public string trialTypeName;  // the trial log's trialType: visual, auditory, audiovisualCoherent, audiovisualConflict or neutral
     public double RewardProbability;  // Probability of reward delivery for this trial (used for random reward assignment in conflict and neutral trials)
     public bool IsRewarded;
     // Trial repetition tracking

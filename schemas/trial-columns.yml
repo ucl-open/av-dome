@@ -22,9 +22,9 @@ trialNumber:
   formerly: [TrialCnt]
   description: The trial's number in the experiment, from 1.
 trialType:
-  type: int
-  values: {0: Visual, 1: Audio, 2: AVCoherent, 3: AVConflict, 4: Neutral}
-  description: The kind of trial, as InitialiseTrial.cs draws it.
+  type: string
+  values: [visual, auditory, audiovisualCoherent, audiovisualConflict, neutral]
+  description: What the trial showed, in words (InitialiseTrial.TrialTypeName) - one modality alone, both on the same side (coherent) or opposite sides (conflict), or neutral (grey screen; a centre sound in localization, silent in discrimination). In discrimination the target modality's trials and the other modality's say which they showed; targetModality says which is the target. Until 9 Nov 2026 it was a code, 0 Visual (discrimination - target), 1 Audio (distractor), 2 AVCoherent, 3 AVConflict, 4 Neutral; those experiments' manifests carry that meaning.
 target:
   type: string
   values: [Left, Right]

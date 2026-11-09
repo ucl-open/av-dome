@@ -2929,7 +2929,7 @@
               </Combinator>
             </Expression>
             <Expression xsi:type="MemberSelector">
-              <Selector>trialType</Selector>
+              <Selector>trialTypeName</Selector>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:ReportMetric">

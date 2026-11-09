@@ -13,7 +13,7 @@ using System.Reactive.Linq;
 public class TrialRow
 {
     public int trialNumber;
-    public int trialType;
+    public string trialType;  // in words: what was shown (InitialiseTrial.TrialTypeName)
     public string target;
     public string choice;
     public string outcome;
@@ -55,7 +55,7 @@ public class CreateTrialRow
             var row = new TrialRow
             {
                 trialNumber = trial.trialNumber,
-                trialType = trial.trialType,
+                trialType = trial.trialTypeName,
                 target = trial.targetSide,
                 choice = choice,
                 outcome = choice == "NoResponse" ? "NoResponse" : choice == trial.targetSide ? "Correct" : "Incorrect",

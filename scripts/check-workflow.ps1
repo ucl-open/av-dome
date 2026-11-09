@@ -368,6 +368,9 @@ public static class DrawTrials {
         Test-Trials 'localization: every trial plays sound, moves the spouts and answers the stimulus side' $loc {
             param($t) $t.taskType -eq 'localization' -and $t.audioEnabled -and $t.spoutMovements -and
                 ($t.trialType -ne 0 -or $t.visualAzimuth -eq 0 -or $t.targetSide -eq $(if ($t.visualAzimuth -gt 0) { 'Right' } else { 'Left' })) }
+        # The trial log's trialType is in words (Pip, 9 Nov 2026): what the trial showed.
+        $names = 'visual', 'auditory', 'audiovisualCoherent', 'audiovisualConflict', 'neutral'
+        Test-Trials 'localization: each trial type is logged by its name' $loc { param($t) $t.trialTypeName -ceq $names[$t.trialType] }
         foreach ($modality in 'Visual', 'Auditory') {
             $task = Read-Task 'task-discrimination.yml'
             $task.TaskParameters.TargetModality = [UclOpenAvDomeTask.Modality]$modality
@@ -377,6 +380,8 @@ public static class DrawTrials {
                 param($t) ($t.trialType -ne 0 -or ($t.targetSide -eq 'Left' -and $t.audioEnabled -ne $visualTarget -and ($t.visualContrast -gt 0) -eq $visualTarget)) -and
                     ($t.trialType -ne 1 -or ($t.targetSide -eq 'Right' -and $t.audioEnabled -eq $visualTarget -and ($t.visualContrast -gt 0) -ne $visualTarget)) }
             Test-Trials "discrimination, $($modality.ToLower()) target: neutral trials are silent" $all { param($t) $t.trialType -ne 4 -or -not $t.audioEnabled }
+            Test-Trials "discrimination, $($modality.ToLower()) target: a one-modality trial is logged as the modality it showed" $all {
+                param($t) if ($t.trialType -gt 1) { $t.trialTypeName -ceq $names[$t.trialType] } else { $t.trialTypeName -ceq $(if ($t.visualContrast -gt 0) { 'visual' } else { 'auditory' }) } }
             $habituation = [DrawTrials]::Draw($task, 0, 50)
             Test-Trials "discrimination, $($modality.ToLower()) target: stage 0 auto-rewards every trial at the left spout and keeps the spouts in" $habituation {
                 param($t) $t.autoReward -and $t.targetSide -eq 'Left' -and -not $t.spoutMovements }
