@@ -1648,7 +1648,7 @@
                           <Name>TaskConfig</Name>
                         </Expression>
                         <Expression xsi:type="MemberSelector">
-                          <Selector>TaskParameters.ErrorSound.Path</Selector>
+                          <Selector>TaskParameters.Punishment.Sound.Path</Selector>
                         </Expression>
                         <Expression xsi:type="PropertyMapping">
                           <PropertyMappings>
@@ -2169,7 +2169,7 @@
                           <Name>TaskConfig</Name>
                         </Expression>
                         <Expression xsi:type="MemberSelector">
-                          <Selector>TaskParameters.ErrorSound.Channel</Selector>
+                          <Selector>TaskParameters.Punishment.Sound.Channel</Selector>
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="rx:Take">
@@ -2188,7 +2188,7 @@
                           <Name>TaskConfig</Name>
                         </Expression>
                         <Expression xsi:type="MemberSelector">
-                          <Selector>TaskParameters.ErrorSound.Gain</Selector>
+                          <Selector>TaskParameters.Punishment.Sound.Gain</Selector>
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="rx:Take">
@@ -2223,7 +2223,7 @@
                           <Name>TaskConfig</Name>
                         </Expression>
                         <Expression xsi:type="MemberSelector">
-                          <Selector>TaskParameters.ErrorSound.Channel</Selector>
+                          <Selector>TaskParameters.Punishment.Sound.Channel</Selector>
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="rx:Zip" />
@@ -2573,7 +2573,7 @@
                   <Minimum>0</Minimum>
                 </Parameter>
                 <Parameter>
-                  <Name>StepSize</Name>
+                  <Name>SpoutStepSize</Name>
                   <Value>150</Value>
                   <Description>Motor steps each spout nudge command moves, taken live while ready.</Description>
                   <Minimum>1</Minimum>
@@ -2607,43 +2607,43 @@
                 </Command>
                 <Command>
                   <Name>LeftUp</Name>
-                  <Description>Nudge the left spout up by StepSize.</Description>
+                  <Description>Nudge the left spout up by SpoutStepSize.</Description>
                 </Command>
                 <Command>
                   <Name>LeftDown</Name>
-                  <Description>Nudge the left spout down by StepSize.</Description>
+                  <Description>Nudge the left spout down by SpoutStepSize.</Description>
                 </Command>
                 <Command>
                   <Name>RightUp</Name>
-                  <Description>Nudge the right spout up by StepSize.</Description>
+                  <Description>Nudge the right spout up by SpoutStepSize.</Description>
                 </Command>
                 <Command>
                   <Name>RightDown</Name>
-                  <Description>Nudge the right spout down by StepSize.</Description>
+                  <Description>Nudge the right spout down by SpoutStepSize.</Description>
                 </Command>
                 <Command>
                   <Name>LeftFront</Name>
-                  <Description>Nudge the left spout forward by StepSize.</Description>
+                  <Description>Nudge the left spout forward by SpoutStepSize.</Description>
                 </Command>
                 <Command>
                   <Name>LeftBack</Name>
-                  <Description>Nudge the left spout back by StepSize.</Description>
+                  <Description>Nudge the left spout back by SpoutStepSize.</Description>
                 </Command>
                 <Command>
                   <Name>RightFront</Name>
-                  <Description>Nudge the right spout forward by StepSize.</Description>
+                  <Description>Nudge the right spout forward by SpoutStepSize.</Description>
                 </Command>
                 <Command>
                   <Name>RightBack</Name>
-                  <Description>Nudge the right spout back by StepSize.</Description>
+                  <Description>Nudge the right spout back by SpoutStepSize.</Description>
                 </Command>
                 <Command>
                   <Name>BaseLeft</Name>
-                  <Description>Nudge the spout base left by StepSize.</Description>
+                  <Description>Nudge the spout base left by SpoutStepSize.</Description>
                 </Command>
                 <Command>
                   <Name>BaseRight</Name>
-                  <Description>Nudge the spout base right by StepSize.</Description>
+                  <Description>Nudge the spout base right by SpoutStepSize.</Description>
                 </Command>
               </Commands>
             </Expression>
@@ -2767,7 +2767,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:OnParameterSet">
-                <orcl:Name>StepSize</orcl:Name>
+                <orcl:Name>SpoutStepSize</orcl:Name>
               </Combinator>
             </Expression>
             <Expression xsi:type="scr:ExpressionTransform">
@@ -2985,7 +2985,7 @@
       </Expression>
       <Expression xsi:type="GroupWorkflow">
         <Name>Commands</Name>
-        <Description>The controller's commands, while ready or recording: rewards (flushes) on either spout, the spouts home, in and out, nudging each spout and the base by StepSize, and saving this mouse's spout positions. The valve and stepper logic is the old GUI's; only its sources changed, from buttons to OnCommand.</Description>
+        <Description>The controller's commands, while ready or recording: rewards (flushes) on either spout, the spouts home, in and out, nudging each spout and the base by SpoutStepSize, and saving this mouse's spout positions. The valve and stepper logic is the old GUI's; only its sources changed, from buttons to OnCommand.</Description>
         <Workflow>
           <Nodes>
             <Expression xsi:type="Annotation">
@@ -6316,7 +6316,7 @@ Item2.Item2 as autoReward) </scr:Expression>
                                 <Name>TaskConfig</Name>
                               </Expression>
                               <Expression xsi:type="MemberSelector">
-                                <Selector>TaskParameters.ErrorSound.Enabled</Selector>
+                                <Selector>TaskParameters.Punishment.Sound.Enabled</Selector>
                               </Expression>
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="rx:Take">

@@ -23,7 +23,6 @@ class TrialStructure(BaseSchema):
     quiescent_max: Double = Field(default=0.25, ge=0, description="Upper bound of the uniformly drawn quiescent period, in seconds")
     open_loop_duration: Double = Field(default=0.0, ge=0, description="Open-loop period after stimulus onset, in seconds")
     closed_loop_duration: Double = Field(default=1.5, ge=0, description="Closed-loop response period, in seconds")
-    incorrect_timeout_duration: Double = Field(default=4.0, ge=0, description="Timeout after an incorrect response, in seconds")
     spout_in_delay: Double = Field(default=0.5, ge=0, description="Delay from stimulus onset to moving the response spouts in, in seconds")
 
 
@@ -103,13 +102,22 @@ class ResponseSettings(BaseSchema):
     degrees_per_lick: Double = Field(default=0.0, description="Degrees the grating azimuth moves per net lick difference; 0 keeps the stimulus fixed")
 
 
-class ErrorSound(BaseSchema):
-    """Auditory error feedback played on incorrect responses."""
+class PunishmentSound(BaseSchema):
+    """The error sound played on an incorrect response."""
 
-    enabled: Bool = Field(default=False, description="Whether an error tone plays on incorrect responses")
-    path: String = Field(default="LocalFiles\\error_tone.wav", description="Wav file of the error tone")
-    channel: Int = Field(default=2, ge=0, description="Mixer output channel the error tone plays on")
-    gain: Double = Field(default=1.0, ge=0, description="Playback gain of the error tone")
+    enabled: Bool = Field(default=False, description="Whether the error sound plays on incorrect responses")
+    path: String = Field(default="LocalFiles\\error_tone.wav", description="Wav file of the error sound")
+    channel: Int = Field(default=2, ge=0, description="Mixer output channel the error sound plays on")
+    gain: Double = Field(default=1.0, ge=0, description="Playback gain of the error sound")
+
+
+class Punishment(BaseSchema):
+    """What an error costs, as the lab's tasks name it (the trial log's punishSound and punishTimeoutSeconds):
+    the timeout after an incorrect response or a miss (a miss on an auto-reward trial is rewarded instead), and
+    the error sound on an incorrect response."""
+
+    timeout_seconds: Double = Field(default=4.0, ge=0, description="Timeout after an incorrect response or a miss, in seconds")
+    sound: PunishmentSound = Field(default=PunishmentSound(), description="The error sound on an incorrect response")
 
 
 class TaskType(StrEnum):
@@ -203,16 +211,11 @@ class UclOpenAvDomeTaskParameters(TaskParameters):
         default=Modality.VISUAL,
         description="Discrimination only: the modality answered at the left spout",
     )
-    flicker_frequency: Double = Field(
-        default=8.0,
-        ge=0,
-        description="Pulse rate shared by both modalities, in Hz: the grating gates on and off at this rate; must be 8, the pulse rate of the auditory stimulus set (calibration\\AuditoryStimuli)",
-    )
     trial_structure: TrialStructure = Field(description="Timing parameters of the trial state machine")
     visual_stimulus: VisualStimulus = Field(description="Grating stimulus parameters")
     audio_stimulus: AudioStimulus = Field(description="Auditory stimulus parameters")
     response: ResponseSettings = Field(description="Lick-accumulation response rule")
-    error_sound: ErrorSound = Field(description="Auditory error feedback on incorrect responses")
+    punishment: Punishment = Field(description="The timeout and error sound an error costs")
     reward: RewardSettings = Field(description="Reward delivery parameters")
     repeats: RepeatSettings = Field(description="Trial repetition policy")
     optogenetics: OptogeneticsSettings = Field(description="Zapit optogenetic stimulation parameters")

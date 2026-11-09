@@ -197,146 +197,6 @@ namespace UclOpenAvDomeTask
 
 
     /// <summary>
-    /// Auditory error feedback played on incorrect responses.
-    /// </summary>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
-    [System.ComponentModel.DescriptionAttribute("Auditory error feedback played on incorrect responses.")]
-    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
-    [Bonsai.CombinatorAttribute(MethodName="Generate")]
-    public partial class ErrorSound
-    {
-    
-        private bool _enabled;
-    
-        private string _path;
-    
-        private int _channel;
-    
-        private double _gain;
-    
-        public ErrorSound()
-        {
-            _enabled = false;
-            _path = "LocalFiles\\error_tone.wav";
-            _channel = 2;
-            _gain = 1D;
-        }
-    
-        protected ErrorSound(ErrorSound other)
-        {
-            _enabled = other._enabled;
-            _path = other._path;
-            _channel = other._channel;
-            _gain = other._gain;
-        }
-    
-        /// <summary>
-        /// Whether an error tone plays on incorrect responses
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("enabled")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="enabled")]
-        [System.ComponentModel.DescriptionAttribute("Whether an error tone plays on incorrect responses")]
-        public bool Enabled
-        {
-            get
-            {
-                return _enabled;
-            }
-            set
-            {
-                _enabled = value;
-            }
-        }
-    
-        /// <summary>
-        /// Wav file of the error tone
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("path")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="path")]
-        [System.ComponentModel.DescriptionAttribute("Wav file of the error tone")]
-        public string Path
-        {
-            get
-            {
-                return _path;
-            }
-            set
-            {
-                _path = value;
-            }
-        }
-    
-        /// <summary>
-        /// Mixer output channel the error tone plays on
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("channel")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="channel")]
-        [System.ComponentModel.DescriptionAttribute("Mixer output channel the error tone plays on")]
-        public int Channel
-        {
-            get
-            {
-                return _channel;
-            }
-            set
-            {
-                _channel = value;
-            }
-        }
-    
-        /// <summary>
-        /// Playback gain of the error tone
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("gain")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="gain")]
-        [System.ComponentModel.DescriptionAttribute("Playback gain of the error tone")]
-        public double Gain
-        {
-            get
-            {
-                return _gain;
-            }
-            set
-            {
-                _gain = value;
-            }
-        }
-    
-        public System.IObservable<ErrorSound> Generate()
-        {
-            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new ErrorSound(this)));
-        }
-    
-        public System.IObservable<ErrorSound> Generate<TSource>(System.IObservable<TSource> source)
-        {
-            return System.Reactive.Linq.Observable.Select(source, _ => new ErrorSound(this));
-        }
-    
-        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
-        {
-            stringBuilder.Append("Enabled = " + _enabled + ", ");
-            stringBuilder.Append("Path = " + _path + ", ");
-            stringBuilder.Append("Channel = " + _channel + ", ");
-            stringBuilder.Append("Gain = " + _gain);
-            return true;
-        }
-    
-        public override string ToString()
-        {
-            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
-            stringBuilder.Append(GetType().Name);
-            stringBuilder.Append(" { ");
-            if (PrintMembers(stringBuilder))
-            {
-                stringBuilder.Append(" ");
-            }
-            stringBuilder.Append("}");
-            return stringBuilder.ToString();
-        }
-    }
-
-
-    /// <summary>
     /// A stimulus modality.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
@@ -569,6 +429,246 @@ namespace UclOpenAvDomeTask
             stringBuilder.Append("ExcludeRepeats = " + _excludeRepeats + ", ");
             stringBuilder.Append("PseudorandomSelection = " + _pseudorandomSelection + ", ");
             stringBuilder.Append("WarmupTrials = " + _warmupTrials);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    /// <summary>
+    /// What an error costs, as the lab's tasks name it (the trial log's punishSound and punishTimeoutSeconds):
+    ///the timeout after an incorrect response or a miss (a miss on an auto-reward trial is rewarded instead), and
+    ///the error sound on an incorrect response.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute("What an error costs, as the lab\'s tasks name it (the trial log\'s punishSound and " +
+        "punishTimeoutSeconds):\nthe timeout after an incorrect response or a miss (a miss" +
+        " on an auto-reward trial is rewarded instead), and\nthe error sound on an incorre" +
+        "ct response.")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class Punishment
+    {
+    
+        private double _timeoutSeconds;
+    
+        private PunishmentSound _sound;
+    
+        public Punishment()
+        {
+            _timeoutSeconds = 4D;
+            _sound = new PunishmentSound();
+        }
+    
+        protected Punishment(Punishment other)
+        {
+            _timeoutSeconds = other._timeoutSeconds;
+            _sound = other._sound;
+        }
+    
+        /// <summary>
+        /// Timeout after an incorrect response or a miss, in seconds
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("timeoutSeconds")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="timeoutSeconds")]
+        [System.ComponentModel.DescriptionAttribute("Timeout after an incorrect response or a miss, in seconds")]
+        public double TimeoutSeconds
+        {
+            get
+            {
+                return _timeoutSeconds;
+            }
+            set
+            {
+                _timeoutSeconds = value;
+            }
+        }
+    
+        /// <summary>
+        /// The error sound on an incorrect response
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("sound")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="sound")]
+        [System.ComponentModel.DescriptionAttribute("The error sound on an incorrect response")]
+        public PunishmentSound Sound
+        {
+            get
+            {
+                return _sound;
+            }
+            set
+            {
+                _sound = value;
+            }
+        }
+    
+        public System.IObservable<Punishment> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new Punishment(this)));
+        }
+    
+        public System.IObservable<Punishment> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new Punishment(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("TimeoutSeconds = " + _timeoutSeconds + ", ");
+            stringBuilder.Append("Sound = " + _sound);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    /// <summary>
+    /// The error sound played on an incorrect response.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute("The error sound played on an incorrect response.")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class PunishmentSound
+    {
+    
+        private bool _enabled;
+    
+        private string _path;
+    
+        private int _channel;
+    
+        private double _gain;
+    
+        public PunishmentSound()
+        {
+            _enabled = false;
+            _path = "LocalFiles\\error_tone.wav";
+            _channel = 2;
+            _gain = 1D;
+        }
+    
+        protected PunishmentSound(PunishmentSound other)
+        {
+            _enabled = other._enabled;
+            _path = other._path;
+            _channel = other._channel;
+            _gain = other._gain;
+        }
+    
+        /// <summary>
+        /// Whether the error sound plays on incorrect responses
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("enabled")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="enabled")]
+        [System.ComponentModel.DescriptionAttribute("Whether the error sound plays on incorrect responses")]
+        public bool Enabled
+        {
+            get
+            {
+                return _enabled;
+            }
+            set
+            {
+                _enabled = value;
+            }
+        }
+    
+        /// <summary>
+        /// Wav file of the error sound
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("path")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="path")]
+        [System.ComponentModel.DescriptionAttribute("Wav file of the error sound")]
+        public string Path
+        {
+            get
+            {
+                return _path;
+            }
+            set
+            {
+                _path = value;
+            }
+        }
+    
+        /// <summary>
+        /// Mixer output channel the error sound plays on
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("channel")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="channel")]
+        [System.ComponentModel.DescriptionAttribute("Mixer output channel the error sound plays on")]
+        public int Channel
+        {
+            get
+            {
+                return _channel;
+            }
+            set
+            {
+                _channel = value;
+            }
+        }
+    
+        /// <summary>
+        /// Playback gain of the error sound
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("gain")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="gain")]
+        [System.ComponentModel.DescriptionAttribute("Playback gain of the error sound")]
+        public double Gain
+        {
+            get
+            {
+                return _gain;
+            }
+            set
+            {
+                _gain = value;
+            }
+        }
+    
+        public System.IObservable<PunishmentSound> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new PunishmentSound(this)));
+        }
+    
+        public System.IObservable<PunishmentSound> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new PunishmentSound(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("Enabled = " + _enabled + ", ");
+            stringBuilder.Append("Path = " + _path + ", ");
+            stringBuilder.Append("Channel = " + _channel + ", ");
+            stringBuilder.Append("Gain = " + _gain);
             return true;
         }
     
@@ -1306,8 +1406,6 @@ namespace UclOpenAvDomeTask
     
         private double _closedLoopDuration;
     
-        private double _incorrectTimeoutDuration;
-    
         private double _spoutInDelay;
     
         public TrialStructure()
@@ -1318,7 +1416,6 @@ namespace UclOpenAvDomeTask
             _quiescentMax = 0.25D;
             _openLoopDuration = 0D;
             _closedLoopDuration = 1.5D;
-            _incorrectTimeoutDuration = 4D;
             _spoutInDelay = 0.5D;
         }
     
@@ -1330,7 +1427,6 @@ namespace UclOpenAvDomeTask
             _quiescentMax = other._quiescentMax;
             _openLoopDuration = other._openLoopDuration;
             _closedLoopDuration = other._closedLoopDuration;
-            _incorrectTimeoutDuration = other._incorrectTimeoutDuration;
             _spoutInDelay = other._spoutInDelay;
         }
     
@@ -1443,24 +1539,6 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Timeout after an incorrect response, in seconds
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("incorrectTimeoutDuration")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="incorrectTimeoutDuration")]
-        [System.ComponentModel.DescriptionAttribute("Timeout after an incorrect response, in seconds")]
-        public double IncorrectTimeoutDuration
-        {
-            get
-            {
-                return _incorrectTimeoutDuration;
-            }
-            set
-            {
-                _incorrectTimeoutDuration = value;
-            }
-        }
-    
-        /// <summary>
         /// Delay from stimulus onset to moving the response spouts in, in seconds
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("spoutInDelay")]
@@ -1496,7 +1574,6 @@ namespace UclOpenAvDomeTask
             stringBuilder.Append("QuiescentMax = " + _quiescentMax + ", ");
             stringBuilder.Append("OpenLoopDuration = " + _openLoopDuration + ", ");
             stringBuilder.Append("ClosedLoopDuration = " + _closedLoopDuration + ", ");
-            stringBuilder.Append("IncorrectTimeoutDuration = " + _incorrectTimeoutDuration + ", ");
             stringBuilder.Append("SpoutInDelay = " + _spoutInDelay);
             return true;
         }
@@ -1533,8 +1610,6 @@ namespace UclOpenAvDomeTask
     
         private Modality _targetModality;
     
-        private double _flickerFrequency;
-    
         private TrialStructure _trialStructure;
     
         private VisualStimulus _visualStimulus;
@@ -1543,7 +1618,7 @@ namespace UclOpenAvDomeTask
     
         private ResponseSettings _response;
     
-        private ErrorSound _errorSound;
+        private Punishment _punishment;
     
         private RewardSettings _reward;
     
@@ -1557,12 +1632,11 @@ namespace UclOpenAvDomeTask
         {
             _taskType = TaskType.Localization;
             _targetModality = Modality.Visual;
-            _flickerFrequency = 8D;
             _trialStructure = new TrialStructure();
             _visualStimulus = new VisualStimulus();
             _audioStimulus = new AudioStimulus();
             _response = new ResponseSettings();
-            _errorSound = new ErrorSound();
+            _punishment = new Punishment();
             _reward = new RewardSettings();
             _repeats = new RepeatSettings();
             _optogenetics = new OptogeneticsSettings();
@@ -1574,12 +1648,11 @@ namespace UclOpenAvDomeTask
             _rngSeed = other._rngSeed;
             _taskType = other._taskType;
             _targetModality = other._targetModality;
-            _flickerFrequency = other._flickerFrequency;
             _trialStructure = other._trialStructure;
             _visualStimulus = other._visualStimulus;
             _audioStimulus = other._audioStimulus;
             _response = other._response;
-            _errorSound = other._errorSound;
+            _punishment = other._punishment;
             _reward = other._reward;
             _repeats = other._repeats;
             _optogenetics = other._optogenetics;
@@ -1639,26 +1712,6 @@ namespace UclOpenAvDomeTask
             set
             {
                 _targetModality = value;
-            }
-        }
-    
-        /// <summary>
-        /// Pulse rate shared by both modalities, in Hz: the grating gates on and off at this rate; must be 8, the pulse rate of the auditory stimulus set (calibration\AuditoryStimuli)
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("flickerFrequency")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="flickerFrequency")]
-        [System.ComponentModel.DescriptionAttribute("Pulse rate shared by both modalities, in Hz: the grating gates on and off at this" +
-            " rate; must be 8, the pulse rate of the auditory stimulus set (calibration\\Audit" +
-            "oryStimuli)")]
-        public double FlickerFrequency
-        {
-            get
-            {
-                return _flickerFrequency;
-            }
-            set
-            {
-                _flickerFrequency = value;
             }
         }
     
@@ -1739,21 +1792,21 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Auditory error feedback on incorrect responses
+        /// The timeout and error sound an error costs
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("errorSound", Required=Newtonsoft.Json.Required.Always)]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="errorSound")]
-        [System.ComponentModel.DescriptionAttribute("Auditory error feedback on incorrect responses")]
-        public ErrorSound ErrorSound
+        [Newtonsoft.Json.JsonPropertyAttribute("punishment", Required=Newtonsoft.Json.Required.Always)]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="punishment")]
+        [System.ComponentModel.DescriptionAttribute("The timeout and error sound an error costs")]
+        public Punishment Punishment
         {
             get
             {
-                return _errorSound;
+                return _punishment;
             }
             set
             {
-                _errorSound = value;
+                _punishment = value;
             }
         }
     
@@ -1848,12 +1901,11 @@ namespace UclOpenAvDomeTask
             stringBuilder.Append("RngSeed = " + _rngSeed + ", ");
             stringBuilder.Append("TaskType = " + _taskType + ", ");
             stringBuilder.Append("TargetModality = " + _targetModality + ", ");
-            stringBuilder.Append("FlickerFrequency = " + _flickerFrequency + ", ");
             stringBuilder.Append("TrialStructure = " + _trialStructure + ", ");
             stringBuilder.Append("VisualStimulus = " + _visualStimulus + ", ");
             stringBuilder.Append("AudioStimulus = " + _audioStimulus + ", ");
             stringBuilder.Append("Response = " + _response + ", ");
-            stringBuilder.Append("ErrorSound = " + _errorSound + ", ");
+            stringBuilder.Append("Punishment = " + _punishment + ", ");
             stringBuilder.Append("Reward = " + _reward + ", ");
             stringBuilder.Append("Repeats = " + _repeats + ", ");
             stringBuilder.Append("Optogenetics = " + _optogenetics + ", ");
@@ -2188,14 +2240,19 @@ namespace UclOpenAvDomeTask
             return Process<AudioStimulus>(source);
         }
 
-        public System.IObservable<string> Process(System.IObservable<ErrorSound> source)
-        {
-            return Process<ErrorSound>(source);
-        }
-
         public System.IObservable<string> Process(System.IObservable<OptogeneticsSettings> source)
         {
             return Process<OptogeneticsSettings>(source);
+        }
+
+        public System.IObservable<string> Process(System.IObservable<Punishment> source)
+        {
+            return Process<Punishment>(source);
+        }
+
+        public System.IObservable<string> Process(System.IObservable<PunishmentSound> source)
+        {
+            return Process<PunishmentSound>(source);
         }
 
         public System.IObservable<string> Process(System.IObservable<RepeatSettings> source)
@@ -2249,8 +2306,9 @@ namespace UclOpenAvDomeTask
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<UclOpenAvDomeTaskLogic>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<AudioStimulus>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ErrorSound>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<OptogeneticsSettings>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Punishment>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PunishmentSound>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RepeatSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ResponseSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RewardSettings>))]
@@ -2318,14 +2376,19 @@ namespace UclOpenAvDomeTask
             return Process<AudioStimulus>(source);
         }
 
-        public System.IObservable<string> Process(System.IObservable<ErrorSound> source)
-        {
-            return Process<ErrorSound>(source);
-        }
-
         public System.IObservable<string> Process(System.IObservable<OptogeneticsSettings> source)
         {
             return Process<OptogeneticsSettings>(source);
+        }
+
+        public System.IObservable<string> Process(System.IObservable<Punishment> source)
+        {
+            return Process<Punishment>(source);
+        }
+
+        public System.IObservable<string> Process(System.IObservable<PunishmentSound> source)
+        {
+            return Process<PunishmentSound>(source);
         }
 
         public System.IObservable<string> Process(System.IObservable<RepeatSettings> source)
@@ -2379,8 +2442,9 @@ namespace UclOpenAvDomeTask
     [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Transform)]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<UclOpenAvDomeTaskLogic>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<AudioStimulus>))]
-    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ErrorSound>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<OptogeneticsSettings>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<Punishment>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<PunishmentSound>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RepeatSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ResponseSettings>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<RewardSettings>))]

@@ -132,12 +132,6 @@ public class InitialiseTrial
             throw new InvalidOperationException(
                 "speakerLocations must not have an azimuth-0 entry; the centre sound is fixed in code.");
         }
-        if (parameters.FlickerFrequency != AuditoryStimulusSet.PulseRateHz)
-        {
-            throw new InvalidOperationException(
-                "flickerFrequency is " + parameters.FlickerFrequency + " Hz, but the auditory stimulus set pulses at " +
-                AuditoryStimulusSet.PulseRateHz + " Hz; set flickerFrequency to " + AuditoryStimulusSet.PulseRateHz + ".");
-        }
         configChecked = true;
     }
 
@@ -210,7 +204,8 @@ public class InitialiseTrial
         trialData.ITI = drawRandomUniformFromRange(parameters.TrialStructure.ItiMin, parameters.TrialStructure.ItiMax, trialRand);
         trialData.Quiescent = drawRandomUniformFromRange(parameters.TrialStructure.QuiescentMin, parameters.TrialStructure.QuiescentMax, trialRand);
         trialData.SpoutINDelay = parameters.TrialStructure.SpoutInDelay;
-        trialData.IncorrectTimeoutDuration = parameters.TrialStructure.IncorrectTimeoutDuration;
+        trialData.IncorrectTimeoutDuration = parameters.Punishment.TimeoutSeconds;
+        trialData.punishSoundEnabled = parameters.Punishment.Sound.Enabled;
         trialData.openLoopDuration = parameters.TrialStructure.OpenLoopDuration;
         trialData.closedLoopDuration = parameters.TrialStructure.ClosedLoopDuration;
 
@@ -221,9 +216,10 @@ public class InitialiseTrial
         trialData.visualOrientation = parameters.VisualStimulus.Orientation;
         trialData.visualSpatialFrequency = parameters.VisualStimulus.SpatialFrequency;
         trialData.visualTemporalFrequency = parameters.VisualStimulus.TemporalFrequency;
-        // One task-level pulse rate: the grating gates at it and the audio wav is generated to match
-        trialData.visualFlickerFrequency = parameters.FlickerFrequency;
-        trialData.audioFlickerFrequency = parameters.FlickerFrequency;
+        // One pulse rate: the auditory stimulus set's, which the grating gates at too (it was the task's
+        // flickerFrequency, which could only ever be this; Pip, 9 Nov 2026)
+        trialData.visualFlickerFrequency = AuditoryStimulusSet.PulseRateHz;
+        trialData.audioFlickerFrequency = AuditoryStimulusSet.PulseRateHz;
 
         // define random phase of grating:
         trialData.visualPhase = 2 * Math.PI * trialRand.NextDouble();
@@ -765,7 +761,8 @@ public class Trial
     public double ITI;
     public double Quiescent;
     public double SpoutINDelay;  // in seconds. Relative to stimulus onset when to move response spouts IN
-    public double IncorrectTimeoutDuration;  // in seconds
+    public double IncorrectTimeoutDuration;  // in seconds: the task's punishment.timeoutSeconds
+    public bool punishSoundEnabled;  // the task's punishment.sound.enabled
     public double autoRewardProbability;  // probability of automatically rewarding the trial (for early training stages)
     public bool autoReward;  // Bool defining if current trial is autoRewarded or not
     public bool largeReward;  // Bool defining if current trial is autoRewarded or not

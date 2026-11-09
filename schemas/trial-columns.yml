@@ -52,14 +52,11 @@ rewardSizeUl:
   type: double
   unit: ul
   formerly: [rewardSize]
-  description: Microlitres a reward on this trial gives. What was delivered is RewardDelivered in BonsaiData_Async.
+  description: Microlitres a reward on this trial gives, the stage's rewardSizeUl times reward.largeRewardMultiplier on a large-reward trial (largeReward said which until 9 Nov 2026). What was delivered is RewardDelivered in BonsaiData_Async.
 bothSpouts:
   type: bool
   formerly: [BothSpouts]
   description: True when both spouts were offered (otherwise only the correct one).
-largeReward:
-  type: bool
-  description: True when this trial's reward is the large one.
 repeatCount:
   type: int
   description: How many times in a row the trial has been repeated, 0 for a new draw.
@@ -67,7 +64,14 @@ itiSeconds:
   type: double
   unit: s
   formerly: [itiDuration]
-  description: Gap from this trial's outcome to the next trial, plus the error timeout after an error.
+  description: The inter-trial interval drawn before this trial (the last trial's draw, which the drink time comes out of), NaN on the first. Until 9 Nov 2026 it was the interval after the trial.
+punishSound:
+  type: bool
+  description: True when the error sound played - an incorrect choice, with the task's punishment.sound enabled.
+punishTimeoutSeconds:
+  type: double
+  unit: s
+  description: The timeout after this trial - the task's punishment.timeoutSeconds after an incorrect choice or a miss that was not auto-rewarded; 0 otherwise.
 visualAzimuth:
   type: double
   unit: deg

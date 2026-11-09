@@ -18,40 +18,6 @@
       "title": "AudioStimulus",
       "type": "object"
     },
-    "ErrorSound": {
-      "description": "Auditory error feedback played on incorrect responses.",
-      "properties": {
-        "enabled": {
-          "default": false,
-          "description": "Whether an error tone plays on incorrect responses",
-          "title": "Enabled",
-          "type": "boolean"
-        },
-        "path": {
-          "default": "LocalFiles\\error_tone.wav",
-          "description": "Wav file of the error tone",
-          "title": "Path",
-          "type": "string"
-        },
-        "channel": {
-          "default": 2,
-          "description": "Mixer output channel the error tone plays on",
-          "maximum": 2147483647,
-          "minimum": -2147483648,
-          "title": "Channel",
-          "type": "integer"
-        },
-        "gain": {
-          "default": 1.0,
-          "description": "Playback gain of the error tone",
-          "minimum": 0,
-          "title": "Gain",
-          "type": "number"
-        }
-      },
-      "title": "ErrorSound",
-      "type": "object"
-    },
     "Modality": {
       "description": "A stimulus modality.",
       "enum": [
@@ -120,6 +86,65 @@
         }
       },
       "title": "OptogeneticsSettings",
+      "type": "object"
+    },
+    "Punishment": {
+      "description": "What an error costs, as the lab's tasks name it (the trial log's punishSound and punishTimeoutSeconds):\nthe timeout after an incorrect response or a miss (a miss on an auto-reward trial is rewarded instead), and\nthe error sound on an incorrect response.",
+      "properties": {
+        "timeoutSeconds": {
+          "default": 4.0,
+          "description": "Timeout after an incorrect response or a miss, in seconds",
+          "minimum": 0,
+          "title": "TimeoutSeconds",
+          "type": "number"
+        },
+        "sound": {
+          "$ref": "#/$defs/PunishmentSound",
+          "default": {
+            "enabled": false,
+            "path": "LocalFiles\\error_tone.wav",
+            "channel": 2,
+            "gain": 1.0
+          },
+          "description": "The error sound on an incorrect response",
+          "title": "Sound"
+        }
+      },
+      "title": "Punishment",
+      "type": "object"
+    },
+    "PunishmentSound": {
+      "description": "The error sound played on an incorrect response.",
+      "properties": {
+        "enabled": {
+          "default": false,
+          "description": "Whether the error sound plays on incorrect responses",
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "path": {
+          "default": "LocalFiles\\error_tone.wav",
+          "description": "Wav file of the error sound",
+          "title": "Path",
+          "type": "string"
+        },
+        "channel": {
+          "default": 2,
+          "description": "Mixer output channel the error sound plays on",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "title": "Channel",
+          "type": "integer"
+        },
+        "gain": {
+          "default": 1.0,
+          "description": "Playback gain of the error sound",
+          "minimum": 0,
+          "title": "Gain",
+          "type": "number"
+        }
+      },
+      "title": "PunishmentSound",
       "type": "object"
     },
     "RepeatRule": {
@@ -369,13 +394,6 @@
           "title": "ClosedLoopDuration",
           "type": "number"
         },
-        "incorrectTimeoutDuration": {
-          "default": 4.0,
-          "description": "Timeout after an incorrect response, in seconds",
-          "minimum": 0,
-          "title": "IncorrectTimeoutDuration",
-          "type": "number"
-        },
         "spoutInDelay": {
           "default": 0.5,
           "description": "Delay from stimulus onset to moving the response spouts in, in seconds",
@@ -438,13 +456,6 @@
           "description": "Discrimination only: the modality answered at the left spout",
           "title": "TargetModality"
         },
-        "flickerFrequency": {
-          "default": 8.0,
-          "description": "Pulse rate shared by both modalities, in Hz: the grating gates on and off at this rate; must be 8, the pulse rate of the auditory stimulus set (calibration\\AuditoryStimuli)",
-          "minimum": 0,
-          "title": "FlickerFrequency",
-          "type": "number"
-        },
         "trialStructure": {
           "$ref": "#/$defs/TrialStructure",
           "description": "Timing parameters of the trial state machine"
@@ -462,9 +473,9 @@
           "description": "Lick-accumulation response rule",
           "title": "Response"
         },
-        "errorSound": {
-          "$ref": "#/$defs/ErrorSound",
-          "description": "Auditory error feedback on incorrect responses"
+        "punishment": {
+          "$ref": "#/$defs/Punishment",
+          "description": "The timeout and error sound an error costs"
         },
         "reward": {
           "$ref": "#/$defs/RewardSettings",
@@ -495,7 +506,7 @@
         "visualStimulus",
         "audioStimulus",
         "response",
-        "errorSound",
+        "punishment",
         "reward",
         "repeats",
         "optogenetics",

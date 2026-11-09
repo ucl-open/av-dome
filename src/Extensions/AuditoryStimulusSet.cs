@@ -21,7 +21,7 @@ public class AuditoryStimulusSet
     /// <summary>Number of waveforms in the set, filtered_pink_pulse_train_0.wav to _99.wav.</summary>
     public const int WaveformCount = 100;
 
-    /// <summary>Pulse rate the set was generated at, in Hz; the task's flickerFrequency must equal it.</summary>
+    /// <summary>Pulse rate the set was generated at, in Hz; the grating flickers at it too.</summary>
     public const double PulseRateHz = 8;
 
     readonly Mat[] raw;

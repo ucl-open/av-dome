@@ -19,8 +19,8 @@ param(
 #      InitialiseTrial draws trials from task-localization.yml and task-discrimination.yml (both target
 #      modalities): the answer, silent trials, auto-reward only at the left spout, stage 0's spouts.
 #   5. LoadAuditoryStimulusSet on synthetic WAVs and filters: equalising matches the filter's
-#      convolution, and asymmetric taps, a wrong rate or a missing file are refused naming it;
-#      InitialiseTrial refuses a flickerFrequency other than the set's 8 Hz.
+#      convolution, and asymmetric taps, a wrong rate or a missing file are refused naming it.
+#   Step 4 also builds trial rows from made-up trials: itiSeconds, punishSound, punishTimeoutSeconds.
 # Needs the environment set up (.bonsai\Setup.ps1: .bonsai\Packages). Exit 0 when all pass.
 $ErrorActionPreference = 'Stop'
 $self = $MyInvocation.MyCommand.Path
@@ -390,6 +390,29 @@ public static class DrawTrials {
                 param($t) $t.autoReward -eq ($t.targetSide -eq 'Left') }
         }
     } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; "  FAIL  drawing trials: $($x.Message)"; $failed++ }
+    # CreateTrialRow (Pip, 9 Nov 2026): itiSeconds is the interval drawn before the trial (the last
+    # trial's, NaN on the first); the timeout follows an incorrect choice or a miss not auto-rewarded;
+    # the error sound only an incorrect choice.
+    try {
+        Add-Type -ReferencedAssemblies (@($script:resolveMap['Extensions'], $script:resolveMap['Bonsai.Harp'], $script:resolveMap['OpenTK'], 'System.Core') + $rx) -TypeDefinition @'
+using System; using System.Collections.Generic; using System.Linq; using System.Reactive.Linq; using Bonsai.Harp; using OpenTK;
+public static class RowsFor {
+    static Tuple<Timestamped<string>, Tuple<Trial, double, int, Vector3[]>> In(string choice, double iti, bool auto) {
+        var t = new Trial { targetSide = "Left", ITI = iti, IncorrectTimeoutDuration = 4.0, punishSoundEnabled = true, autoReward = auto };
+        return Tuple.Create(new Timestamped<string>(choice, 1.0), Tuple.Create(t, 0.5, -1, new Vector3[0]));
+    }
+    public static List<TrialRow> Build() {
+        var inputs = new[] { In("Right", 3.0, false), In("NoResponse", 5.0, true), In("NoResponse", 7.0, false), In("Left", 9.0, false) };
+        return new CreateTrialRow().Process(inputs.ToObservable()).ToEnumerable().Select(r => r.Value).ToList();
+    }
+}
+'@
+        $rows = [RowsFor]::Build()
+        $got = ($rows | ForEach-Object { "$($_.outcome) $($_.itiSeconds) $($_.punishSound) $($_.punishTimeoutSeconds)" }) -join '; '
+        $want = 'Incorrect NaN True 4; NoResponse 3 False 0; NoResponse 5 False 4; Correct 7 False 0'
+        if ($got -eq $want) { "  ok    trial rows: itiSeconds the last trial's, the timeout and error sound where ApplyConsequences gives them" }
+        else { "  FAIL  trial rows: $got (expected $want)"; $failed++ }
+    } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; "  FAIL  building trial rows: $($x.Message)"; $failed++ }
     $wf = Get-Content (Join-Path $repo 'src\main.bonsai') -Raw
     if ($wf -match '<Property Name="TaskPath"' -and $wf -notmatch 'ApplyTaskOverrides|<Name>TaskFile</Name>') { "  ok    main.bonsai takes its task file from TaskPath, with no overrides" }
     else { "  FAIL  main.bonsai does not expose TaskPath, or still applies overrides or names a TaskFile parameter"; $failed++ }
@@ -466,18 +489,6 @@ if ($Step -eq 'Audio') {
         if ($e -and $e.Message.Contains($case[2])) { $lines += "  ok    LoadAuditoryStimulusSet refuses $($case[0])" }
         else { $lines += "  FAIL  LoadAuditoryStimulusSet on $($case[0]): $(if ($e) { $e.Message } else { 'accepted' })"; $failed++ }
     }
-    # InitialiseTrial's first-trial check: flickerFrequency must be the set's pulse rate.
-    $p = New-Object UclOpenAvDomeTask.UclOpenAvDomeTaskParameters
-    $p.VisualStimulus = New-Object UclOpenAvDomeTask.VisualStimulus
-    $p.AudioStimulus = New-Object UclOpenAvDomeTask.AudioStimulus
-    $p.AudioStimulus.SpeakerLocations = New-Object 'System.Collections.Generic.List[UclOpenAvDomeTask.SphericalPosition]'
-    $check = [InitialiseTrial].GetMethod('EnsureConfigChecked', [Reflection.BindingFlags]'Instance,NonPublic')
-    $p.FlickerFrequency = 4
-    $e = Get-Refusal { $null = $check.Invoke((New-Object InitialiseTrial), [object[]]@($p.PSObject.BaseObject)) }
-    $p.FlickerFrequency = 8
-    $e8 = Get-Refusal { $null = $check.Invoke((New-Object InitialiseTrial), [object[]]@($p.PSObject.BaseObject)) }
-    if ($e -and $e.Message.Contains('flickerFrequency is 4') -and -not $e8) { $lines += "  ok    InitialiseTrial refuses a flickerFrequency other than the stimulus set's 8 Hz" }
-    else { $lines += "  FAIL  flickerFrequency check: 4 Hz $(if ($e) { $e.Message } else { 'accepted' }); 8 Hz $(if ($e8) { $e8.Message } else { 'accepted' })"; $failed++ }
     [Console]::SetOut((New-Object IO.StreamWriter ([Console]::OpenStandardOutput()) -Property @{ AutoFlush = $true }))
     $lines
     exit $(if ($failed) { 1 } else { 0 })
@@ -509,7 +520,7 @@ if ($LASTEXITCODE -ne 0) { "  FAILED"; $bad++ }
 "4. The task files, TaskPath and the spout positions path..."
 & { $ErrorActionPreference = 'Continue'; & powershell -NoProfile -ExecutionPolicy Bypass -File $self -Step Checks 2>&1 | ForEach-Object { "$_" } }
 if ($LASTEXITCODE -ne 0) { "  FAILED"; $bad++ }
-"5. The auditory stimulus set and the flickerFrequency check, on synthetic files..."
+"5. The auditory stimulus set, on synthetic files..."
 & { $ErrorActionPreference = 'Continue'; & powershell -NoProfile -ExecutionPolicy Bypass -File $self -Step Audio 2>&1 | ForEach-Object { "$_" } }
 if ($LASTEXITCODE -ne 0) { "  FAILED"; $bad++ }
 if ($bad) { "check-workflow: $bad step(s) failed."; exit 1 }
