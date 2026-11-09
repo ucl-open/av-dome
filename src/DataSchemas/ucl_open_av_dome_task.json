@@ -352,53 +352,53 @@
     "TrialStructure": {
       "description": "Timing parameters of the trial state machine.",
       "properties": {
-        "itiMin": {
+        "itiMinSeconds": {
           "default": 4.0,
           "description": "Lower bound of the uniformly drawn inter-trial interval, in seconds",
           "minimum": 0,
-          "title": "ItiMin",
+          "title": "ItiMinSeconds",
           "type": "number"
         },
-        "itiMax": {
+        "itiMaxSeconds": {
           "default": 5.0,
           "description": "Upper bound of the uniformly drawn inter-trial interval, in seconds",
           "minimum": 0,
-          "title": "ItiMax",
+          "title": "ItiMaxSeconds",
           "type": "number"
         },
-        "quiescentMin": {
+        "quiescentMinSeconds": {
           "default": 0.1,
           "description": "Lower bound of the uniformly drawn quiescent period, in seconds",
           "minimum": 0,
-          "title": "QuiescentMin",
+          "title": "QuiescentMinSeconds",
           "type": "number"
         },
-        "quiescentMax": {
+        "quiescentMaxSeconds": {
           "default": 0.25,
           "description": "Upper bound of the uniformly drawn quiescent period, in seconds",
           "minimum": 0,
-          "title": "QuiescentMax",
+          "title": "QuiescentMaxSeconds",
           "type": "number"
         },
-        "openLoopDuration": {
+        "openLoopSeconds": {
           "default": 0.0,
           "description": "Open-loop period after stimulus onset, in seconds",
           "minimum": 0,
-          "title": "OpenLoopDuration",
+          "title": "OpenLoopSeconds",
           "type": "number"
         },
-        "closedLoopDuration": {
+        "closedLoopSeconds": {
           "default": 1.5,
           "description": "Closed-loop response period, in seconds",
           "minimum": 0,
-          "title": "ClosedLoopDuration",
+          "title": "ClosedLoopSeconds",
           "type": "number"
         },
-        "spoutInDelay": {
+        "spoutInDelaySeconds": {
           "default": 0.5,
           "description": "Delay from stimulus onset to moving the response spouts in, in seconds",
           "minimum": 0,
-          "title": "SpoutInDelay",
+          "title": "SpoutInDelaySeconds",
           "type": "number"
         }
       },
@@ -518,23 +518,23 @@
     "VisualStimulus": {
       "description": "Grating stimulus parameters common to all trials; contrast is set per training stage.",
       "properties": {
-        "azimuthMin": {
+        "azimuthMinDeg": {
           "default": -60.0,
           "description": "Lower bound of the uniformly drawn grating azimuth, in degrees",
           "maximum": 180,
           "minimum": -180,
-          "title": "AzimuthMin",
+          "title": "AzimuthMinDeg",
           "type": "number"
         },
-        "azimuthMax": {
+        "azimuthMaxDeg": {
           "default": 60.0,
           "description": "Upper bound of the uniformly drawn grating azimuth, in degrees",
           "maximum": 180,
           "minimum": -180,
-          "title": "AzimuthMax",
+          "title": "AzimuthMaxDeg",
           "type": "number"
         },
-        "overwriteAzimuths": {
+        "fixedAzimuthsDeg": {
           "anyOf": [
             {
               "items": {
@@ -547,56 +547,56 @@
             }
           ],
           "default": null,
-          "description": "Discrete grating azimuths, in degrees; when set and non-empty, every trial draws from this list (filtered to the trial's side, capped on coherent trials) instead of [azimuthMin, azimuthMax]",
-          "title": "OverwriteAzimuths"
+          "description": "Discrete grating azimuths, in degrees; when set and non-empty, every trial draws from this list (filtered to the trial's side, capped on coherent trials) instead of [azimuthMinDeg, azimuthMaxDeg]",
+          "title": "FixedAzimuthsDeg"
         },
-        "elevationMin": {
+        "elevationMinDeg": {
           "default": 15.0,
           "description": "Lower bound of the uniformly drawn grating elevation, in degrees",
           "maximum": 90,
           "minimum": -90,
-          "title": "ElevationMin",
+          "title": "ElevationMinDeg",
           "type": "number"
         },
-        "elevationMax": {
+        "elevationMaxDeg": {
           "default": 15.0,
           "description": "Upper bound of the uniformly drawn grating elevation, in degrees",
           "maximum": 90,
           "minimum": -90,
-          "title": "ElevationMax",
+          "title": "ElevationMaxDeg",
           "type": "number"
         },
-        "coherentAzimuthCap": {
+        "coherentAzimuthCapDeg": {
           "default": 80.0,
           "description": "On coherent trials the grating azimuth magnitude is kept below this cap, in degrees",
           "maximum": 180,
           "minimum": 0,
-          "title": "CoherentAzimuthCap",
+          "title": "CoherentAzimuthCapDeg",
           "type": "number"
         },
-        "gaussianWindowSigma": {
+        "gaussianWindowSigmaDeg": {
           "default": 20.0,
           "description": "Sigma of the Gaussian aperture window, in degrees",
-          "title": "GaussianWindowSigma",
+          "title": "GaussianWindowSigmaDeg",
           "type": "number"
         },
-        "orientation": {
+        "orientationDeg": {
           "default": 0.0,
-          "description": "Grating stripe orientation, in degrees; drift direction is orthogonal to it (orientation + 90 degrees)",
-          "title": "Orientation",
+          "description": "Grating stripe orientation, in degrees; drift direction is orthogonal to it (orientationDeg + 90 degrees)",
+          "title": "OrientationDeg",
           "type": "number"
         },
-        "spatialFrequency": {
+        "spatialFrequencyCpd": {
           "default": 0.066666667,
           "description": "Grating spatial frequency, in cycles per degree",
-          "title": "SpatialFrequency",
+          "title": "SpatialFrequencyCpd",
           "type": "number"
         },
-        "temporalFrequency": {
+        "temporalFrequencyHz": {
           "default": 0.0,
-          "description": "Unsigned grating drift rate, in Hz, drifting orthogonal to orientation (orientation + 90 degrees); 0 is static",
+          "description": "Unsigned grating drift rate, in Hz, drifting orthogonal to orientationDeg (orientationDeg + 90 degrees); 0 is static",
           "minimum": 0,
-          "title": "TemporalFrequency",
+          "title": "TemporalFrequencyHz",
           "type": "number"
         }
       },

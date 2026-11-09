@@ -7,24 +7,24 @@
 taskParameters:
   rngSeed: null            # null = draw a random seed; each seed used is a RngSeed event in BonsaiData_Async
   trialStructure:
-    itiMin: 4.0            # s
-    itiMax: 5.0            # s
-    quiescentMin: 0.1      # s
-    quiescentMax: 0.25     # s
-    openLoopDuration: 0.0  # s
-    closedLoopDuration: 1.5   # s
-    spoutInDelay: 0.5      # s, from stimulus onset to spouts in
+    itiMinSeconds: 4.0            # s
+    itiMaxSeconds: 5.0            # s
+    quiescentMinSeconds: 0.1      # s
+    quiescentMaxSeconds: 0.25     # s
+    openLoopSeconds: 0.0  # s
+    closedLoopSeconds: 1.5   # s
+    spoutInDelaySeconds: 0.5      # s, from stimulus onset to spouts in
   visualStimulus:
-    azimuthMin: -60        # deg, grating azimuth drawn uniformly in [min, max]
-    azimuthMax: 60         # deg
-    overwriteAzimuths: [-60, 60]   # deg, discrete grating azimuths; when set, used instead of [min, max]
-    elevationMin: 15       # deg, grating elevation drawn uniformly in [min, max]
-    elevationMax: 15       # deg
-    coherentAzimuthCap: 80 # deg, |azimuth| kept below this on coherent trials
-    gaussianWindowSigma: 20   # deg
-    orientation: 0         # deg
-    spatialFrequency: 0.066666667   # cycles/deg
-    temporalFrequency: 0   # Hz, unsigned drift rate; direction is orthogonal to orientation
+    azimuthMinDeg: -60        # deg, grating azimuth drawn uniformly in [min, max]
+    azimuthMaxDeg: 60         # deg
+    fixedAzimuthsDeg: [-60, 60]   # deg, discrete grating azimuths; when set, used instead of [min, max]
+    elevationMinDeg: 15       # deg, grating elevation drawn uniformly in [min, max]
+    elevationMaxDeg: 15       # deg
+    coherentAzimuthCapDeg: 80 # deg, |azimuth| kept below this on coherent trials
+    gaussianWindowSigmaDeg: 20   # deg
+    orientationDeg: 0         # deg
+    spatialFrequencyCpd: 0.066666667   # cycles/deg
+    temporalFrequencyHz: 0   # Hz, unsigned drift rate; direction is orthogonal to orientation
   audioStimulus:
     speakerLocations:      # lateral positions, one drawn per audio trial; no centre entry (fixed in code); playback uses the nearest wired speaker
       - { azimuth: -60, elevation: 15 }

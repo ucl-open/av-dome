@@ -2914,7 +2914,7 @@
       </Expression>
       <Expression xsi:type="GroupWorkflow">
         <Name>Status</Name>
-        <Description>The current trial's facts, reported to the controller as metrics (ReportMetric; the latest value of each is in status), named as BonsaiData_Trial's columns: target, trialType, visualAzimuth, audioAzimuth (as drawn; the row has the speaker that played) and rewardSizeUl. Counts, water, licks and performance are not computed here: rig-control computes them from BonsaiData_Trial, BonsaiData_Async and the LicketySplit lick files (register 32). Also sets RewardUl, the size a manual reward uses.</Description>
+        <Description>The current trial's facts, reported to the controller as metrics (ReportMetric; the latest value of each is in status), named as BonsaiData_Trial's columns: target, trialType, visualAzimuthDeg, audioAzimuthDeg (as drawn; the row has the speaker that played) and rewardSizeUl. Counts, water, licks and performance are not computed here: rig-control computes them from BonsaiData_Trial, BonsaiData_Async and the LicketySplit lick files (register 32). Also sets RewardUl, the size a manual reward uses.</Description>
         <Workflow>
           <Nodes>
             <Expression xsi:type="SubscribeSubject">
@@ -2941,7 +2941,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:ReportMetric">
-                <orcl:Name>visualAzimuth</orcl:Name>
+                <orcl:Name>visualAzimuthDeg</orcl:Name>
               </Combinator>
             </Expression>
             <Expression xsi:type="MemberSelector">
@@ -2949,7 +2949,7 @@
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="orcl:ReportMetric">
-                <orcl:Name>audioAzimuth</orcl:Name>
+                <orcl:Name>audioAzimuthDeg</orcl:Name>
               </Combinator>
             </Expression>
             <Expression xsi:type="MemberSelector">

@@ -1399,165 +1399,165 @@ namespace UclOpenAvDomeTask
     public partial class TrialStructure
     {
     
-        private double _itiMin;
+        private double _itiMinSeconds;
     
-        private double _itiMax;
+        private double _itiMaxSeconds;
     
-        private double _quiescentMin;
+        private double _quiescentMinSeconds;
     
-        private double _quiescentMax;
+        private double _quiescentMaxSeconds;
     
-        private double _openLoopDuration;
+        private double _openLoopSeconds;
     
-        private double _closedLoopDuration;
+        private double _closedLoopSeconds;
     
-        private double _spoutInDelay;
+        private double _spoutInDelaySeconds;
     
         public TrialStructure()
         {
-            _itiMin = 4D;
-            _itiMax = 5D;
-            _quiescentMin = 0.1D;
-            _quiescentMax = 0.25D;
-            _openLoopDuration = 0D;
-            _closedLoopDuration = 1.5D;
-            _spoutInDelay = 0.5D;
+            _itiMinSeconds = 4D;
+            _itiMaxSeconds = 5D;
+            _quiescentMinSeconds = 0.1D;
+            _quiescentMaxSeconds = 0.25D;
+            _openLoopSeconds = 0D;
+            _closedLoopSeconds = 1.5D;
+            _spoutInDelaySeconds = 0.5D;
         }
     
         protected TrialStructure(TrialStructure other)
         {
-            _itiMin = other._itiMin;
-            _itiMax = other._itiMax;
-            _quiescentMin = other._quiescentMin;
-            _quiescentMax = other._quiescentMax;
-            _openLoopDuration = other._openLoopDuration;
-            _closedLoopDuration = other._closedLoopDuration;
-            _spoutInDelay = other._spoutInDelay;
+            _itiMinSeconds = other._itiMinSeconds;
+            _itiMaxSeconds = other._itiMaxSeconds;
+            _quiescentMinSeconds = other._quiescentMinSeconds;
+            _quiescentMaxSeconds = other._quiescentMaxSeconds;
+            _openLoopSeconds = other._openLoopSeconds;
+            _closedLoopSeconds = other._closedLoopSeconds;
+            _spoutInDelaySeconds = other._spoutInDelaySeconds;
         }
     
         /// <summary>
         /// Lower bound of the uniformly drawn inter-trial interval, in seconds
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("itiMin")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="itiMin")]
+        [Newtonsoft.Json.JsonPropertyAttribute("itiMinSeconds")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="itiMinSeconds")]
         [System.ComponentModel.DescriptionAttribute("Lower bound of the uniformly drawn inter-trial interval, in seconds")]
-        public double ItiMin
+        public double ItiMinSeconds
         {
             get
             {
-                return _itiMin;
+                return _itiMinSeconds;
             }
             set
             {
-                _itiMin = value;
+                _itiMinSeconds = value;
             }
         }
     
         /// <summary>
         /// Upper bound of the uniformly drawn inter-trial interval, in seconds
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("itiMax")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="itiMax")]
+        [Newtonsoft.Json.JsonPropertyAttribute("itiMaxSeconds")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="itiMaxSeconds")]
         [System.ComponentModel.DescriptionAttribute("Upper bound of the uniformly drawn inter-trial interval, in seconds")]
-        public double ItiMax
+        public double ItiMaxSeconds
         {
             get
             {
-                return _itiMax;
+                return _itiMaxSeconds;
             }
             set
             {
-                _itiMax = value;
+                _itiMaxSeconds = value;
             }
         }
     
         /// <summary>
         /// Lower bound of the uniformly drawn quiescent period, in seconds
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("quiescentMin")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="quiescentMin")]
+        [Newtonsoft.Json.JsonPropertyAttribute("quiescentMinSeconds")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="quiescentMinSeconds")]
         [System.ComponentModel.DescriptionAttribute("Lower bound of the uniformly drawn quiescent period, in seconds")]
-        public double QuiescentMin
+        public double QuiescentMinSeconds
         {
             get
             {
-                return _quiescentMin;
+                return _quiescentMinSeconds;
             }
             set
             {
-                _quiescentMin = value;
+                _quiescentMinSeconds = value;
             }
         }
     
         /// <summary>
         /// Upper bound of the uniformly drawn quiescent period, in seconds
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("quiescentMax")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="quiescentMax")]
+        [Newtonsoft.Json.JsonPropertyAttribute("quiescentMaxSeconds")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="quiescentMaxSeconds")]
         [System.ComponentModel.DescriptionAttribute("Upper bound of the uniformly drawn quiescent period, in seconds")]
-        public double QuiescentMax
+        public double QuiescentMaxSeconds
         {
             get
             {
-                return _quiescentMax;
+                return _quiescentMaxSeconds;
             }
             set
             {
-                _quiescentMax = value;
+                _quiescentMaxSeconds = value;
             }
         }
     
         /// <summary>
         /// Open-loop period after stimulus onset, in seconds
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("openLoopDuration")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="openLoopDuration")]
+        [Newtonsoft.Json.JsonPropertyAttribute("openLoopSeconds")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="openLoopSeconds")]
         [System.ComponentModel.DescriptionAttribute("Open-loop period after stimulus onset, in seconds")]
-        public double OpenLoopDuration
+        public double OpenLoopSeconds
         {
             get
             {
-                return _openLoopDuration;
+                return _openLoopSeconds;
             }
             set
             {
-                _openLoopDuration = value;
+                _openLoopSeconds = value;
             }
         }
     
         /// <summary>
         /// Closed-loop response period, in seconds
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("closedLoopDuration")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="closedLoopDuration")]
+        [Newtonsoft.Json.JsonPropertyAttribute("closedLoopSeconds")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="closedLoopSeconds")]
         [System.ComponentModel.DescriptionAttribute("Closed-loop response period, in seconds")]
-        public double ClosedLoopDuration
+        public double ClosedLoopSeconds
         {
             get
             {
-                return _closedLoopDuration;
+                return _closedLoopSeconds;
             }
             set
             {
-                _closedLoopDuration = value;
+                _closedLoopSeconds = value;
             }
         }
     
         /// <summary>
         /// Delay from stimulus onset to moving the response spouts in, in seconds
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("spoutInDelay")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="spoutInDelay")]
+        [Newtonsoft.Json.JsonPropertyAttribute("spoutInDelaySeconds")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="spoutInDelaySeconds")]
         [System.ComponentModel.DescriptionAttribute("Delay from stimulus onset to moving the response spouts in, in seconds")]
-        public double SpoutInDelay
+        public double SpoutInDelaySeconds
         {
             get
             {
-                return _spoutInDelay;
+                return _spoutInDelaySeconds;
             }
             set
             {
-                _spoutInDelay = value;
+                _spoutInDelaySeconds = value;
             }
         }
     
@@ -1573,13 +1573,13 @@ namespace UclOpenAvDomeTask
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
-            stringBuilder.Append("ItiMin = " + _itiMin + ", ");
-            stringBuilder.Append("ItiMax = " + _itiMax + ", ");
-            stringBuilder.Append("QuiescentMin = " + _quiescentMin + ", ");
-            stringBuilder.Append("QuiescentMax = " + _quiescentMax + ", ");
-            stringBuilder.Append("OpenLoopDuration = " + _openLoopDuration + ", ");
-            stringBuilder.Append("ClosedLoopDuration = " + _closedLoopDuration + ", ");
-            stringBuilder.Append("SpoutInDelay = " + _spoutInDelay);
+            stringBuilder.Append("ItiMinSeconds = " + _itiMinSeconds + ", ");
+            stringBuilder.Append("ItiMaxSeconds = " + _itiMaxSeconds + ", ");
+            stringBuilder.Append("QuiescentMinSeconds = " + _quiescentMinSeconds + ", ");
+            stringBuilder.Append("QuiescentMaxSeconds = " + _quiescentMaxSeconds + ", ");
+            stringBuilder.Append("OpenLoopSeconds = " + _openLoopSeconds + ", ");
+            stringBuilder.Append("ClosedLoopSeconds = " + _closedLoopSeconds + ", ");
+            stringBuilder.Append("SpoutInDelaySeconds = " + _spoutInDelaySeconds);
             return true;
         }
     
@@ -1944,236 +1944,236 @@ namespace UclOpenAvDomeTask
     public partial class VisualStimulus
     {
     
-        private double _azimuthMin;
+        private double _azimuthMinDeg;
     
-        private double _azimuthMax;
+        private double _azimuthMaxDeg;
     
-        private System.Collections.Generic.List<double> _overwriteAzimuths;
+        private System.Collections.Generic.List<double> _fixedAzimuthsDeg;
     
-        private double _elevationMin;
+        private double _elevationMinDeg;
     
-        private double _elevationMax;
+        private double _elevationMaxDeg;
     
-        private double _coherentAzimuthCap;
+        private double _coherentAzimuthCapDeg;
     
-        private double _gaussianWindowSigma;
+        private double _gaussianWindowSigmaDeg;
     
-        private double _orientation;
+        private double _orientationDeg;
     
-        private double _spatialFrequency;
+        private double _spatialFrequencyCpd;
     
-        private double _temporalFrequency;
+        private double _temporalFrequencyHz;
     
         public VisualStimulus()
         {
-            _azimuthMin = -60D;
-            _azimuthMax = 60D;
-            _elevationMin = 15D;
-            _elevationMax = 15D;
-            _coherentAzimuthCap = 80D;
-            _gaussianWindowSigma = 20D;
-            _orientation = 0D;
-            _spatialFrequency = 0.066666667D;
-            _temporalFrequency = 0D;
+            _azimuthMinDeg = -60D;
+            _azimuthMaxDeg = 60D;
+            _elevationMinDeg = 15D;
+            _elevationMaxDeg = 15D;
+            _coherentAzimuthCapDeg = 80D;
+            _gaussianWindowSigmaDeg = 20D;
+            _orientationDeg = 0D;
+            _spatialFrequencyCpd = 0.066666667D;
+            _temporalFrequencyHz = 0D;
         }
     
         protected VisualStimulus(VisualStimulus other)
         {
-            _azimuthMin = other._azimuthMin;
-            _azimuthMax = other._azimuthMax;
-            _overwriteAzimuths = other._overwriteAzimuths;
-            _elevationMin = other._elevationMin;
-            _elevationMax = other._elevationMax;
-            _coherentAzimuthCap = other._coherentAzimuthCap;
-            _gaussianWindowSigma = other._gaussianWindowSigma;
-            _orientation = other._orientation;
-            _spatialFrequency = other._spatialFrequency;
-            _temporalFrequency = other._temporalFrequency;
+            _azimuthMinDeg = other._azimuthMinDeg;
+            _azimuthMaxDeg = other._azimuthMaxDeg;
+            _fixedAzimuthsDeg = other._fixedAzimuthsDeg;
+            _elevationMinDeg = other._elevationMinDeg;
+            _elevationMaxDeg = other._elevationMaxDeg;
+            _coherentAzimuthCapDeg = other._coherentAzimuthCapDeg;
+            _gaussianWindowSigmaDeg = other._gaussianWindowSigmaDeg;
+            _orientationDeg = other._orientationDeg;
+            _spatialFrequencyCpd = other._spatialFrequencyCpd;
+            _temporalFrequencyHz = other._temporalFrequencyHz;
         }
     
         /// <summary>
         /// Lower bound of the uniformly drawn grating azimuth, in degrees
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("azimuthMin")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="azimuthMin")]
+        [Newtonsoft.Json.JsonPropertyAttribute("azimuthMinDeg")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="azimuthMinDeg")]
         [System.ComponentModel.DescriptionAttribute("Lower bound of the uniformly drawn grating azimuth, in degrees")]
-        public double AzimuthMin
+        public double AzimuthMinDeg
         {
             get
             {
-                return _azimuthMin;
+                return _azimuthMinDeg;
             }
             set
             {
-                _azimuthMin = value;
+                _azimuthMinDeg = value;
             }
         }
     
         /// <summary>
         /// Upper bound of the uniformly drawn grating azimuth, in degrees
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("azimuthMax")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="azimuthMax")]
+        [Newtonsoft.Json.JsonPropertyAttribute("azimuthMaxDeg")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="azimuthMaxDeg")]
         [System.ComponentModel.DescriptionAttribute("Upper bound of the uniformly drawn grating azimuth, in degrees")]
-        public double AzimuthMax
+        public double AzimuthMaxDeg
         {
             get
             {
-                return _azimuthMax;
+                return _azimuthMaxDeg;
             }
             set
             {
-                _azimuthMax = value;
+                _azimuthMaxDeg = value;
             }
         }
     
         /// <summary>
-        /// Discrete grating azimuths, in degrees; when set and non-empty, every trial draws from this list (filtered to the trial's side, capped on coherent trials) instead of [azimuthMin, azimuthMax]
+        /// Discrete grating azimuths, in degrees; when set and non-empty, every trial draws from this list (filtered to the trial's side, capped on coherent trials) instead of [azimuthMinDeg, azimuthMaxDeg]
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
-        [Newtonsoft.Json.JsonPropertyAttribute("overwriteAzimuths")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="overwriteAzimuths")]
+        [Newtonsoft.Json.JsonPropertyAttribute("fixedAzimuthsDeg")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="fixedAzimuthsDeg")]
         [System.ComponentModel.DescriptionAttribute("Discrete grating azimuths, in degrees; when set and non-empty, every trial draws " +
             "from this list (filtered to the trial\'s side, capped on coherent trials) instead" +
-            " of [azimuthMin, azimuthMax]")]
-        public System.Collections.Generic.List<double> OverwriteAzimuths
+            " of [azimuthMinDeg, azimuthMaxDeg]")]
+        public System.Collections.Generic.List<double> FixedAzimuthsDeg
         {
             get
             {
-                return _overwriteAzimuths;
+                return _fixedAzimuthsDeg;
             }
             set
             {
-                _overwriteAzimuths = value;
+                _fixedAzimuthsDeg = value;
             }
         }
     
         /// <summary>
         /// Lower bound of the uniformly drawn grating elevation, in degrees
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("elevationMin")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="elevationMin")]
+        [Newtonsoft.Json.JsonPropertyAttribute("elevationMinDeg")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="elevationMinDeg")]
         [System.ComponentModel.DescriptionAttribute("Lower bound of the uniformly drawn grating elevation, in degrees")]
-        public double ElevationMin
+        public double ElevationMinDeg
         {
             get
             {
-                return _elevationMin;
+                return _elevationMinDeg;
             }
             set
             {
-                _elevationMin = value;
+                _elevationMinDeg = value;
             }
         }
     
         /// <summary>
         /// Upper bound of the uniformly drawn grating elevation, in degrees
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("elevationMax")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="elevationMax")]
+        [Newtonsoft.Json.JsonPropertyAttribute("elevationMaxDeg")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="elevationMaxDeg")]
         [System.ComponentModel.DescriptionAttribute("Upper bound of the uniformly drawn grating elevation, in degrees")]
-        public double ElevationMax
+        public double ElevationMaxDeg
         {
             get
             {
-                return _elevationMax;
+                return _elevationMaxDeg;
             }
             set
             {
-                _elevationMax = value;
+                _elevationMaxDeg = value;
             }
         }
     
         /// <summary>
         /// On coherent trials the grating azimuth magnitude is kept below this cap, in degrees
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("coherentAzimuthCap")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="coherentAzimuthCap")]
+        [Newtonsoft.Json.JsonPropertyAttribute("coherentAzimuthCapDeg")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="coherentAzimuthCapDeg")]
         [System.ComponentModel.DescriptionAttribute("On coherent trials the grating azimuth magnitude is kept below this cap, in degre" +
             "es")]
-        public double CoherentAzimuthCap
+        public double CoherentAzimuthCapDeg
         {
             get
             {
-                return _coherentAzimuthCap;
+                return _coherentAzimuthCapDeg;
             }
             set
             {
-                _coherentAzimuthCap = value;
+                _coherentAzimuthCapDeg = value;
             }
         }
     
         /// <summary>
         /// Sigma of the Gaussian aperture window, in degrees
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("gaussianWindowSigma")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="gaussianWindowSigma")]
+        [Newtonsoft.Json.JsonPropertyAttribute("gaussianWindowSigmaDeg")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="gaussianWindowSigmaDeg")]
         [System.ComponentModel.DescriptionAttribute("Sigma of the Gaussian aperture window, in degrees")]
-        public double GaussianWindowSigma
+        public double GaussianWindowSigmaDeg
         {
             get
             {
-                return _gaussianWindowSigma;
+                return _gaussianWindowSigmaDeg;
             }
             set
             {
-                _gaussianWindowSigma = value;
+                _gaussianWindowSigmaDeg = value;
             }
         }
     
         /// <summary>
-        /// Grating stripe orientation, in degrees; drift direction is orthogonal to it (orientation + 90 degrees)
+        /// Grating stripe orientation, in degrees; drift direction is orthogonal to it (orientationDeg + 90 degrees)
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("orientation")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="orientation")]
+        [Newtonsoft.Json.JsonPropertyAttribute("orientationDeg")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="orientationDeg")]
         [System.ComponentModel.DescriptionAttribute("Grating stripe orientation, in degrees; drift direction is orthogonal to it (orie" +
-            "ntation + 90 degrees)")]
-        public double Orientation
+            "ntationDeg + 90 degrees)")]
+        public double OrientationDeg
         {
             get
             {
-                return _orientation;
+                return _orientationDeg;
             }
             set
             {
-                _orientation = value;
+                _orientationDeg = value;
             }
         }
     
         /// <summary>
         /// Grating spatial frequency, in cycles per degree
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("spatialFrequency")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="spatialFrequency")]
+        [Newtonsoft.Json.JsonPropertyAttribute("spatialFrequencyCpd")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="spatialFrequencyCpd")]
         [System.ComponentModel.DescriptionAttribute("Grating spatial frequency, in cycles per degree")]
-        public double SpatialFrequency
+        public double SpatialFrequencyCpd
         {
             get
             {
-                return _spatialFrequency;
+                return _spatialFrequencyCpd;
             }
             set
             {
-                _spatialFrequency = value;
+                _spatialFrequencyCpd = value;
             }
         }
     
         /// <summary>
-        /// Unsigned grating drift rate, in Hz, drifting orthogonal to orientation (orientation + 90 degrees); 0 is static
+        /// Unsigned grating drift rate, in Hz, drifting orthogonal to orientationDeg (orientationDeg + 90 degrees); 0 is static
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("temporalFrequency")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="temporalFrequency")]
-        [System.ComponentModel.DescriptionAttribute("Unsigned grating drift rate, in Hz, drifting orthogonal to orientation (orientati" +
-            "on + 90 degrees); 0 is static")]
-        public double TemporalFrequency
+        [Newtonsoft.Json.JsonPropertyAttribute("temporalFrequencyHz")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="temporalFrequencyHz")]
+        [System.ComponentModel.DescriptionAttribute("Unsigned grating drift rate, in Hz, drifting orthogonal to orientationDeg (orient" +
+            "ationDeg + 90 degrees); 0 is static")]
+        public double TemporalFrequencyHz
         {
             get
             {
-                return _temporalFrequency;
+                return _temporalFrequencyHz;
             }
             set
             {
-                _temporalFrequency = value;
+                _temporalFrequencyHz = value;
             }
         }
     
@@ -2189,16 +2189,16 @@ namespace UclOpenAvDomeTask
     
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
-            stringBuilder.Append("AzimuthMin = " + _azimuthMin + ", ");
-            stringBuilder.Append("AzimuthMax = " + _azimuthMax + ", ");
-            stringBuilder.Append("OverwriteAzimuths = " + _overwriteAzimuths + ", ");
-            stringBuilder.Append("ElevationMin = " + _elevationMin + ", ");
-            stringBuilder.Append("ElevationMax = " + _elevationMax + ", ");
-            stringBuilder.Append("CoherentAzimuthCap = " + _coherentAzimuthCap + ", ");
-            stringBuilder.Append("GaussianWindowSigma = " + _gaussianWindowSigma + ", ");
-            stringBuilder.Append("Orientation = " + _orientation + ", ");
-            stringBuilder.Append("SpatialFrequency = " + _spatialFrequency + ", ");
-            stringBuilder.Append("TemporalFrequency = " + _temporalFrequency);
+            stringBuilder.Append("AzimuthMinDeg = " + _azimuthMinDeg + ", ");
+            stringBuilder.Append("AzimuthMaxDeg = " + _azimuthMaxDeg + ", ");
+            stringBuilder.Append("FixedAzimuthsDeg = " + _fixedAzimuthsDeg + ", ");
+            stringBuilder.Append("ElevationMinDeg = " + _elevationMinDeg + ", ");
+            stringBuilder.Append("ElevationMaxDeg = " + _elevationMaxDeg + ", ");
+            stringBuilder.Append("CoherentAzimuthCapDeg = " + _coherentAzimuthCapDeg + ", ");
+            stringBuilder.Append("GaussianWindowSigmaDeg = " + _gaussianWindowSigmaDeg + ", ");
+            stringBuilder.Append("OrientationDeg = " + _orientationDeg + ", ");
+            stringBuilder.Append("SpatialFrequencyCpd = " + _spatialFrequencyCpd + ", ");
+            stringBuilder.Append("TemporalFrequencyHz = " + _temporalFrequencyHz);
             return true;
         }
     

@@ -72,28 +72,33 @@ punishTimeoutSeconds:
   type: double
   unit: s
   description: The timeout after this trial - the task's punishment.timeoutSeconds after an incorrect choice or a miss that was not auto-rewarded; 0 otherwise.
-visualAzimuth:
+visualAzimuthDeg:
   type: double
   unit: deg
+  formerly: [visualAzimuth]
   description: Grating azimuth.
-visualElevation:
+visualElevationDeg:
   type: double
   unit: deg
+  formerly: [visualElevation]
   description: Grating elevation.
 visualContrast:
   type: double
   description: Grating contrast, 0 to 1.
-visualPhase:
+visualPhaseRad:
   type: double
   unit: rad
+  formerly: [visualPhase]
   description: Grating phase.
-audioAzimuth:
+audioAzimuthDeg:
   type: double
   unit: deg
+  formerly: [audioAzimuth]
   description: Azimuth of the speaker that played, after snapping to the nearest wired one; NaN when none played.
-audioElevation:
+audioElevationDeg:
   type: double
   unit: deg
+  formerly: [audioElevation]
   description: Elevation of the speaker that played; NaN when none played.
 audioWaveformIndex:
   type: int

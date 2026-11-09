@@ -19,36 +19,36 @@ def test_committed_task_files_validate(path):
 @pytest.mark.parametrize("path", TASK_FILES, ids=lambda path: path.name)
 def test_committed_task_files_use_the_discrete_azimuths(path):
     data = yaml.safe_load(path.read_text())
-    assert data["taskParameters"]["visualStimulus"]["overwriteAzimuths"] == [-60, 60]
+    assert data["taskParameters"]["visualStimulus"]["fixedAzimuthsDeg"] == [-60, 60]
 
 
 def test_overwrite_azimuths_default_keeps_the_uniform_range():
-    assert VisualStimulus().overwrite_azimuths is None
+    assert VisualStimulus().fixed_azimuths_deg is None
 
 
 def test_overwrite_azimuths_empty_list_keeps_the_uniform_range():
-    assert VisualStimulus(overwriteAzimuths=[]).overwrite_azimuths == []
+    assert VisualStimulus(fixedAzimuthsDeg=[]).fixed_azimuths_deg == []
 
 
 def test_overwrite_azimuths_set_alongside_min_max():
-    visual = VisualStimulus(azimuthMin=-30, azimuthMax=30, overwriteAzimuths=[-60, 60])
-    assert visual.overwrite_azimuths == [-60, 60]
+    visual = VisualStimulus(azimuthMinDeg=-30, azimuthMaxDeg=30, fixedAzimuthsDeg=[-60, 60])
+    assert visual.fixed_azimuths_deg == [-60, 60]
 
 
 @pytest.mark.parametrize("values", [[60], [-60], [0], [-60, 0]])
 def test_overwrite_azimuths_needs_both_sides(values):
-    with pytest.raises(ValidationError, match="overwrite_azimuths needs a value"):
-        VisualStimulus(overwriteAzimuths=values)
+    with pytest.raises(ValidationError, match="fixed_azimuths_deg needs a value"):
+        VisualStimulus(fixedAzimuthsDeg=values)
 
 
 def test_overwrite_azimuths_respects_the_coherent_cap():
     with pytest.raises(ValidationError, match="right-side"):
-        VisualStimulus(overwriteAzimuths=[-60, 100], coherentAzimuthCap=80)
+        VisualStimulus(fixedAzimuthsDeg=[-60, 100], coherentAzimuthCapDeg=80)
 
 
 def test_overwrite_azimuths_rejects_out_of_range():
     with pytest.raises(ValidationError, match="outside"):
-        VisualStimulus(overwriteAzimuths=[-60, 60, 200])
+        VisualStimulus(fixedAzimuthsDeg=[-60, 60, 200])
 
 
 def test_speaker_locations_reject_a_centre_entry():
@@ -87,7 +87,7 @@ def test_the_discrimination_iti_adds_what_gerion_s_did():
     workflow = (CONFIG.parent / "src" / "main.bonsai").read_text(encoding="utf-8-sig")
     assert "it &gt; 2.6 ? it - 0.1 - 0.5 - 2.0 : 0.0" in workflow
     trial = _task("task-discrimination.yml").trial_structure
-    assert (trial.iti_min, trial.iti_max) == pytest.approx((1.5 + 0.6, 2.5 + 0.6))
+    assert (trial.iti_min_seconds, trial.iti_max_seconds) == pytest.approx((1.5 + 0.6, 2.5 + 0.6))
 
 
 def test_target_modality_is_visual_or_auditory():

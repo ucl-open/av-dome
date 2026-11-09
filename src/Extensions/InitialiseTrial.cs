@@ -112,19 +112,19 @@ public class InitialiseTrial
     {
         if (configChecked) return;
         var visual = parameters.VisualStimulus;
-        var azimuths = visual.OverwriteAzimuths;
+        var azimuths = visual.FixedAzimuthsDeg;
         if (azimuths != null && azimuths.Count > 0)
         {
-            double cap = visual.CoherentAzimuthCap;
+            double cap = visual.CoherentAzimuthCapDeg;
             if (azimuths.Any(azimuth => azimuth < -180 || azimuth > 180))
             {
-                throw new InvalidOperationException("overwriteAzimuths values must be within [-180, 180].");
+                throw new InvalidOperationException("fixedAzimuthsDeg values must be within [-180, 180].");
             }
             if (!azimuths.Any(azimuth => azimuth > 0 && azimuth <= cap) ||
                 !azimuths.Any(azimuth => azimuth < 0 && azimuth >= -cap))
             {
                 throw new InvalidOperationException(
-                    "overwriteAzimuths needs a value on each side within coherentAzimuthCap (" + cap + ").");
+                    "fixedAzimuthsDeg needs a value on each side within coherentAzimuthCapDeg (" + cap + ").");
             }
         }
         if (parameters.AudioStimulus.SpeakerLocations.Any(location => location.Azimuth == 0))
@@ -201,21 +201,21 @@ public class InitialiseTrial
         trialData.RewardSizeInUl = trialData.largeReward ? stage.RewardSizeUl * trialData.LargeRewardMultiplier : stage.RewardSizeUl;
 
         // Trial structure timings
-        trialData.ITI = drawRandomUniformFromRange(parameters.TrialStructure.ItiMin, parameters.TrialStructure.ItiMax, trialRand);
-        trialData.Quiescent = drawRandomUniformFromRange(parameters.TrialStructure.QuiescentMin, parameters.TrialStructure.QuiescentMax, trialRand);
-        trialData.SpoutINDelay = parameters.TrialStructure.SpoutInDelay;
+        trialData.ITI = drawRandomUniformFromRange(parameters.TrialStructure.ItiMinSeconds, parameters.TrialStructure.ItiMaxSeconds, trialRand);
+        trialData.Quiescent = drawRandomUniformFromRange(parameters.TrialStructure.QuiescentMinSeconds, parameters.TrialStructure.QuiescentMaxSeconds, trialRand);
+        trialData.SpoutINDelay = parameters.TrialStructure.SpoutInDelaySeconds;
         trialData.IncorrectTimeoutDuration = parameters.Punishment.TimeoutSeconds;
         trialData.punishSoundEnabled = parameters.Punishment.Sound.Enabled;
-        trialData.openLoopDuration = parameters.TrialStructure.OpenLoopDuration;
-        trialData.closedLoopDuration = parameters.TrialStructure.ClosedLoopDuration;
+        trialData.openLoopDuration = parameters.TrialStructure.OpenLoopSeconds;
+        trialData.closedLoopDuration = parameters.TrialStructure.ClosedLoopSeconds;
 
         // Stimulus parameters common to all trial types; positions are drawn per trial in the
-        // setup methods (visual from overwriteAzimuths or the configured region, audio from
+        // setup methods (visual from fixedAzimuthsDeg or the configured region, audio from
         // speakerLocations or the fixed centre)
-        trialData.visualGaussianWindowSigma = parameters.VisualStimulus.GaussianWindowSigma;
-        trialData.visualOrientation = parameters.VisualStimulus.Orientation;
-        trialData.visualSpatialFrequency = parameters.VisualStimulus.SpatialFrequency;
-        trialData.visualTemporalFrequency = parameters.VisualStimulus.TemporalFrequency;
+        trialData.visualGaussianWindowSigma = parameters.VisualStimulus.GaussianWindowSigmaDeg;
+        trialData.visualOrientation = parameters.VisualStimulus.OrientationDeg;
+        trialData.visualSpatialFrequency = parameters.VisualStimulus.SpatialFrequencyCpd;
+        trialData.visualTemporalFrequency = parameters.VisualStimulus.TemporalFrequencyHz;
         // One pulse rate: the auditory stimulus set's, which the grating gates at too (it was the task's
         // flickerFrequency, which could only ever be this; Pip, 9 Nov 2026)
         trialData.visualFlickerFrequency = AuditoryStimulusSet.PulseRateHz;
@@ -491,24 +491,24 @@ public class InitialiseTrial
     }
 
     // Draws a visual position from the configured dome region and writes it to the trial.
-    // With overwriteAzimuths set, the azimuth is drawn from that list instead (see
+    // With fixedAzimuthsDeg set, the azimuth is drawn from that list instead (see
     // DrawOverwriteAzimuth). Otherwise it is drawn uniformly; when side restriction is requested,
-    // from the side's subrange, capped at coherentAzimuthCap, and an empty subrange falls back
+    // from the side's subrange, capped at coherentAzimuthCapDeg, and an empty subrange falls back
     // to +-60 with a console warning.
     private void DrawVisualPosition(Trial trial, VisualStimulus visual, Random rand, bool restrictSide, bool isRightSide, bool applyCap)
     {
-        if (visual.OverwriteAzimuths != null && visual.OverwriteAzimuths.Count > 0)
+        if (visual.FixedAzimuthsDeg != null && visual.FixedAzimuthsDeg.Count > 0)
         {
             trial.visualAzimuth = DrawOverwriteAzimuth(visual, rand, restrictSide, isRightSide, applyCap);
-            trial.visualElevation = drawRandomUniformFromRange(visual.ElevationMin, visual.ElevationMax, rand);
+            trial.visualElevation = drawRandomUniformFromRange(visual.ElevationMinDeg, visual.ElevationMaxDeg, rand);
             return;
         }
 
-        double azimuthMin = visual.AzimuthMin;
-        double azimuthMax = visual.AzimuthMax;
+        double azimuthMin = visual.AzimuthMinDeg;
+        double azimuthMax = visual.AzimuthMaxDeg;
         if (restrictSide)
         {
-            double cap = applyCap ? visual.CoherentAzimuthCap : 180.0;
+            double cap = applyCap ? visual.CoherentAzimuthCapDeg : 180.0;
             if (isRightSide)
             {
                 azimuthMin = Math.Max(azimuthMin, 0.0);
@@ -523,35 +523,35 @@ public class InitialiseTrial
             {
                 Console.WriteLine("Warning: no visual azimuth range on the requested side; falling back to +-60");
                 trial.visualAzimuth = isRightSide ? 60.0 : -60.0;
-                trial.visualElevation = drawRandomUniformFromRange(visual.ElevationMin, visual.ElevationMax, rand);
+                trial.visualElevation = drawRandomUniformFromRange(visual.ElevationMinDeg, visual.ElevationMaxDeg, rand);
                 return;
             }
         }
         trial.visualAzimuth = drawRandomUniformFromRange(azimuthMin, azimuthMax, rand);
-        trial.visualElevation = drawRandomUniformFromRange(visual.ElevationMin, visual.ElevationMax, rand);
+        trial.visualElevation = drawRandomUniformFromRange(visual.ElevationMinDeg, visual.ElevationMaxDeg, rand);
     }
 
-    // Draws one azimuth from overwriteAzimuths, filtered to the requested side (strictly positive or
-    // negative) and, with applyCap, to |azimuth| <= coherentAzimuthCap. EnsureConfigChecked refuses
+    // Draws one azimuth from fixedAzimuthsDeg, filtered to the requested side (strictly positive or
+    // negative) and, with applyCap, to |azimuth| <= coherentAzimuthCapDeg. EnsureConfigChecked refuses
     // a list without a usable value on each side, so the throw is a backstop.
     private double DrawOverwriteAzimuth(VisualStimulus visual, Random rand, bool restrictSide, bool isRightSide, bool applyCap)
     {
         var candidates = new List<double>();
-        foreach (var azimuth in visual.OverwriteAzimuths)
+        foreach (var azimuth in visual.FixedAzimuthsDeg)
         {
             if (restrictSide)
             {
                 if (isRightSide ? azimuth <= 0 : azimuth >= 0) continue;
-                if (applyCap && Math.Abs(azimuth) > visual.CoherentAzimuthCap) continue;
+                if (applyCap && Math.Abs(azimuth) > visual.CoherentAzimuthCapDeg) continue;
             }
             candidates.Add(azimuth);
         }
         if (candidates.Count == 0)
         {
             throw new InvalidOperationException(string.Format(
-                "overwriteAzimuths has no value on the {0} side{1}.",
+                "fixedAzimuthsDeg has no value on the {0} side{1}.",
                 isRightSide ? "right" : "left",
-                applyCap ? " within coherentAzimuthCap" : string.Empty));
+                applyCap ? " within coherentAzimuthCapDeg" : string.Empty));
         }
         return candidates[rand.Next(candidates.Count)];
     }
@@ -674,7 +674,7 @@ public class InitialiseTrial
         bool isRightSide = rand.NextDouble() >= 0.5;
         trial.targetSide = isRightSide ? "Right" : "Left";
 
-        // Draw visual position on the chosen side, capped at coherentAzimuthCap
+        // Draw visual position on the chosen side, capped at coherentAzimuthCapDeg
         DrawVisualPosition(trial, parameters.VisualStimulus, rand, true, isRightSide, true);
 
         // Set non-zero contrast

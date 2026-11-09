@@ -25,12 +25,12 @@ public class TrialRow
     public double itiSeconds;  // the interval drawn before this trial (the last trial's), NaN on the first
     public bool punishSound;  // the error sound played: Incorrect, with punishment.sound enabled
     public double punishTimeoutSeconds;  // the timeout after this trial: Incorrect, or a miss not auto-rewarded; else 0
-    public double visualAzimuth;
-    public double visualElevation;
+    public double visualAzimuthDeg;
+    public double visualElevationDeg;
     public double visualContrast;
-    public double visualPhase;
-    public double audioAzimuth;  // the speaker that played, after snapping to the nearest wired one
-    public double audioElevation;
+    public double visualPhaseRad;
+    public double audioAzimuthDeg;  // the speaker that played, after snapping to the nearest wired one
+    public double audioElevationDeg;
     public int audioWaveformIndex;
     public int laserCondition;  // 0 when not stimulated (Zapit numbers conditions from 1)
     public bool autoRewarded;  // a miss on an auto-reward trial, rewarded at the target spout
@@ -78,12 +78,12 @@ public class CreateTrialRow
             itiSeconds = previousIti,
             punishSound = outcome == "Incorrect" && trial.punishSoundEnabled,
             punishTimeoutSeconds = timedOut ? trial.IncorrectTimeoutDuration : 0.0,
-            visualAzimuth = trial.visualAzimuth,
-            visualElevation = trial.visualElevation,
+            visualAzimuthDeg = trial.visualAzimuth,
+            visualElevationDeg = trial.visualElevation,
             visualContrast = trial.visualContrast,
-            visualPhase = trial.visualPhase,
-            audioAzimuth = played ? locations[speaker].X : double.NaN,
-            audioElevation = played ? locations[speaker].Y : double.NaN,
+            visualPhaseRad = trial.visualPhase,
+            audioAzimuthDeg = played ? locations[speaker].X : double.NaN,
+            audioElevationDeg = played ? locations[speaker].Y : double.NaN,
             audioWaveformIndex = trial.audioWaveformIdx,
             laserCondition = trial.OptogeneticCondition,
             autoRewarded = trial.autoReward && choice == "NoResponse",

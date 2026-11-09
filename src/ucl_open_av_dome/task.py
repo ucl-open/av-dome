@@ -17,55 +17,55 @@ TRIAL_TYPE_COUNT = 5
 class TrialStructure(BaseSchema):
     """Timing parameters of the trial state machine."""
 
-    iti_min: Double = Field(default=4.0, ge=0, description="Lower bound of the uniformly drawn inter-trial interval, in seconds")
-    iti_max: Double = Field(default=5.0, ge=0, description="Upper bound of the uniformly drawn inter-trial interval, in seconds")
-    quiescent_min: Double = Field(default=0.1, ge=0, description="Lower bound of the uniformly drawn quiescent period, in seconds")
-    quiescent_max: Double = Field(default=0.25, ge=0, description="Upper bound of the uniformly drawn quiescent period, in seconds")
-    open_loop_duration: Double = Field(default=0.0, ge=0, description="Open-loop period after stimulus onset, in seconds")
-    closed_loop_duration: Double = Field(default=1.5, ge=0, description="Closed-loop response period, in seconds")
-    spout_in_delay: Double = Field(default=0.5, ge=0, description="Delay from stimulus onset to moving the response spouts in, in seconds")
+    iti_min_seconds: Double = Field(default=4.0, ge=0, description="Lower bound of the uniformly drawn inter-trial interval, in seconds")
+    iti_max_seconds: Double = Field(default=5.0, ge=0, description="Upper bound of the uniformly drawn inter-trial interval, in seconds")
+    quiescent_min_seconds: Double = Field(default=0.1, ge=0, description="Lower bound of the uniformly drawn quiescent period, in seconds")
+    quiescent_max_seconds: Double = Field(default=0.25, ge=0, description="Upper bound of the uniformly drawn quiescent period, in seconds")
+    open_loop_seconds: Double = Field(default=0.0, ge=0, description="Open-loop period after stimulus onset, in seconds")
+    closed_loop_seconds: Double = Field(default=1.5, ge=0, description="Closed-loop response period, in seconds")
+    spout_in_delay_seconds: Double = Field(default=0.5, ge=0, description="Delay from stimulus onset to moving the response spouts in, in seconds")
 
 
 class VisualStimulus(BaseSchema):
     """Grating stimulus parameters common to all trials; contrast is set per training stage."""
 
-    azimuth_min: Double = Field(default=-60.0, ge=-180, le=180, description="Lower bound of the uniformly drawn grating azimuth, in degrees")
-    azimuth_max: Double = Field(default=60.0, ge=-180, le=180, description="Upper bound of the uniformly drawn grating azimuth, in degrees")
-    overwrite_azimuths: Optional[List[Double]] = Field(
+    azimuth_min_deg: Double = Field(default=-60.0, ge=-180, le=180, description="Lower bound of the uniformly drawn grating azimuth, in degrees")
+    azimuth_max_deg: Double = Field(default=60.0, ge=-180, le=180, description="Upper bound of the uniformly drawn grating azimuth, in degrees")
+    fixed_azimuths_deg: Optional[List[Double]] = Field(
         default=None,
-        description="Discrete grating azimuths, in degrees; when set and non-empty, every trial draws from this list (filtered to the trial's side, capped on coherent trials) instead of [azimuthMin, azimuthMax]",
+        description="Discrete grating azimuths, in degrees; when set and non-empty, every trial draws from this list (filtered to the trial's side, capped on coherent trials) instead of [azimuthMinDeg, azimuthMaxDeg]",
     )
-    elevation_min: Double = Field(default=15.0, ge=-90, le=90, description="Lower bound of the uniformly drawn grating elevation, in degrees")
-    elevation_max: Double = Field(default=15.0, ge=-90, le=90, description="Upper bound of the uniformly drawn grating elevation, in degrees")
-    coherent_azimuth_cap: Double = Field(default=80.0, ge=0, le=180, description="On coherent trials the grating azimuth magnitude is kept below this cap, in degrees")
-    gaussian_window_sigma: Double = Field(default=20.0, description="Sigma of the Gaussian aperture window, in degrees")
-    orientation: Double = Field(default=0.0, description="Grating stripe orientation, in degrees; drift direction is orthogonal to it (orientation + 90 degrees)")
-    spatial_frequency: Double = Field(default=0.066666667, description="Grating spatial frequency, in cycles per degree")
-    temporal_frequency: Double = Field(default=0.0, ge=0, description="Unsigned grating drift rate, in Hz, drifting orthogonal to orientation (orientation + 90 degrees); 0 is static")
+    elevation_min_deg: Double = Field(default=15.0, ge=-90, le=90, description="Lower bound of the uniformly drawn grating elevation, in degrees")
+    elevation_max_deg: Double = Field(default=15.0, ge=-90, le=90, description="Upper bound of the uniformly drawn grating elevation, in degrees")
+    coherent_azimuth_cap_deg: Double = Field(default=80.0, ge=0, le=180, description="On coherent trials the grating azimuth magnitude is kept below this cap, in degrees")
+    gaussian_window_sigma_deg: Double = Field(default=20.0, description="Sigma of the Gaussian aperture window, in degrees")
+    orientation_deg: Double = Field(default=0.0, description="Grating stripe orientation, in degrees; drift direction is orthogonal to it (orientationDeg + 90 degrees)")
+    spatial_frequency_cpd: Double = Field(default=0.066666667, description="Grating spatial frequency, in cycles per degree")
+    temporal_frequency_hz: Double = Field(default=0.0, ge=0, description="Unsigned grating drift rate, in Hz, drifting orthogonal to orientationDeg (orientationDeg + 90 degrees); 0 is static")
 
     @model_validator(mode="after")
     def _bounds_ordered(self) -> "VisualStimulus":
-        if self.azimuth_max < self.azimuth_min:
-            raise ValueError("azimuth_max must be >= azimuth_min")
-        if self.elevation_max < self.elevation_min:
-            raise ValueError("elevation_max must be >= elevation_min")
+        if self.azimuth_max_deg < self.azimuth_min_deg:
+            raise ValueError("azimuth_max_deg must be >= azimuth_min_deg")
+        if self.elevation_max_deg < self.elevation_min_deg:
+            raise ValueError("elevation_max_deg must be >= elevation_min_deg")
         return self
 
     @model_validator(mode="after")
     def _overwrite_azimuths_cover_both_sides(self) -> "VisualStimulus":
         # Coherent and conflict trials draw from one side each, so a list needs a usable value on
         # both. InitialiseTrial.cs repeats this check, since Bonsai loads the YAML without pydantic.
-        values = self.overwrite_azimuths
+        values = self.fixed_azimuths_deg
         if not values:
             return self
         for value in values:
             if not -180 <= value <= 180:
-                raise ValueError(f"overwrite_azimuths value {value} is outside [-180, 180]")
-        cap = self.coherent_azimuth_cap
+                raise ValueError(f"fixed_azimuths_deg value {value} is outside [-180, 180]")
+        cap = self.coherent_azimuth_cap_deg
         if not any(0 < value <= cap for value in values):
-            raise ValueError(f"overwrite_azimuths needs a value in (0, {cap}] (coherent_azimuth_cap) for right-side trials")
+            raise ValueError(f"fixed_azimuths_deg needs a value in (0, {cap}] (coherent_azimuth_cap_deg) for right-side trials")
         if not any(-cap <= value < 0 for value in values):
-            raise ValueError(f"overwrite_azimuths needs a value in [-{cap}, 0) (coherent_azimuth_cap) for left-side trials")
+            raise ValueError(f"fixed_azimuths_deg needs a value in [-{cap}, 0) (coherent_azimuth_cap_deg) for left-side trials")
         return self
 
 
