@@ -19,7 +19,7 @@ public class CreateStartStimulus
         StartDelay = 0;
     }
 
-    [Description("Condition index in the Zapit stimulus config, 1 to 254. 0 lets Zapit draw a random condition; the reply reports which one was presented.")]
+    [Description("Condition index in the Zapit conditions file, 1 to 254. 0 lets Zapit draw a random condition; the reply reports which one was presented.")]
     public int ConditionNumber { get; set; }
 
     [Description("True fires the laser. False moves the galvos with the laser off (a sham trial).")]
@@ -34,7 +34,7 @@ public class CreateStartStimulus
     [Description("Stimulus duration in seconds. 0 leaves the duration unset, so the stimulus plays until a StopStimulus command.")]
     public double StimDuration { get; set; }
 
-    [Description("Laser power in mW. 0 leaves the power unset, so Zapit uses the value in its stimulus config.")]
+    [Description("Laser power in mW. 0 leaves the power unset, so Zapit uses the value in its conditions file.")]
     public double LaserPower { get; set; }
 
     [Description("Delay from command receipt to stimulus onset, in seconds. Zapit only honours it when StimDuration is set.")]

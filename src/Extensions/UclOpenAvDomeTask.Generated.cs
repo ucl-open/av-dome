@@ -229,7 +229,7 @@ namespace UclOpenAvDomeTask
     
         private bool _enabled;
     
-        private string _zapitStimConfigPath;
+        private string _zapitConditionsPath;
     
         private double _laserOnProbability;
     
@@ -246,7 +246,7 @@ namespace UclOpenAvDomeTask
         public OptogeneticsSettings()
         {
             _enabled = false;
-            _zapitStimConfigPath = "";
+            _zapitConditionsPath = "";
             _laserOnProbability = 0.75D;
             _laserDelaySeconds = 0D;
             _laserDurationSeconds = 1.5D;
@@ -258,7 +258,7 @@ namespace UclOpenAvDomeTask
         protected OptogeneticsSettings(OptogeneticsSettings other)
         {
             _enabled = other._enabled;
-            _zapitStimConfigPath = other._zapitStimConfigPath;
+            _zapitConditionsPath = other._zapitConditionsPath;
             _laserOnProbability = other._laserOnProbability;
             _laserDelaySeconds = other._laserDelaySeconds;
             _laserDurationSeconds = other._laserDurationSeconds;
@@ -286,21 +286,21 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Path to the Zapit stimulus config (the one loaded in Zapit) listing the stimulation conditions
+        /// Path to the Zapit conditions file (the one loaded in Zapit) listing the stimulation conditions
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("zapitStimConfigPath")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="zapitStimConfigPath")]
-        [System.ComponentModel.DescriptionAttribute("Path to the Zapit stimulus config (the one loaded in Zapit) listing the stimulati" +
+        [Newtonsoft.Json.JsonPropertyAttribute("zapitConditionsPath")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="zapitConditionsPath")]
+        [System.ComponentModel.DescriptionAttribute("Path to the Zapit conditions file (the one loaded in Zapit) listing the stimulati" +
             "on conditions")]
-        public string ZapitStimConfigPath
+        public string ZapitConditionsPath
         {
             get
             {
-                return _zapitStimConfigPath;
+                return _zapitConditionsPath;
             }
             set
             {
-                _zapitStimConfigPath = value;
+                _zapitConditionsPath = value;
             }
         }
     
@@ -427,7 +427,7 @@ namespace UclOpenAvDomeTask
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("Enabled = " + _enabled + ", ");
-            stringBuilder.Append("ZapitStimConfigPath = " + _zapitStimConfigPath + ", ");
+            stringBuilder.Append("ZapitConditionsPath = " + _zapitConditionsPath + ", ");
             stringBuilder.Append("LaserOnProbability = " + _laserOnProbability + ", ");
             stringBuilder.Append("LaserDelaySeconds = " + _laserDelaySeconds + ", ");
             stringBuilder.Append("LaserDurationSeconds = " + _laserDurationSeconds + ", ");

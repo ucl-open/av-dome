@@ -40,10 +40,10 @@ server code in `zapit/+zapit/+interfaces/@TCPserver`.
 - Zapit 0.12.0 or newer, started with `tcpServer.enable: true` in its settings YAML.
 - Default endpoint `localhost:1488`. If Zapit runs on a separate PC, set `tcpServer.IP` there to that
   PC's address and put the same address in the rig YAML.
-- A stimulus configuration must be loaded before the experiment starts; the workflow checks this on
+- A conditions file must be loaded before the experiment starts; the workflow checks this on
   connect and stops with an error otherwise.
 - For a dry run without hardware: `start_zapit('simulated', true)`, then
-  `hZP.applyUnityStereotaxicCalib` and load any example stim config.
+  `hZP.applyUnityStereotaxicCalib` and load any example conditions file.
 
 ### Operators
 
@@ -94,4 +94,4 @@ Two modes, selected per rig by `zapit.hardwareTriggered` in the rig YAML.
   visual and auditory onset by the same round trip as above; arming earlier in the trial is the next
   step if a zero lag is required. Requires a cable from that DO line to the Zapit DAQ trigger input.
 
-Laser power and ramp-down are not sent: they come from the stimulus config loaded in Zapit.
+Laser power and ramp-down are not sent: they come from the conditions file loaded in Zapit.

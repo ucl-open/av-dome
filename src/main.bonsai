@@ -4855,7 +4855,7 @@
                           <Name>Timestamp</Name>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
-                          <LogName>Zapit</LogName>
+                          <LogName>BonsaiData_ZapitReplies</LogName>
                           <Selector />
                           <Extension>csv</Extension>
                         </Expression>

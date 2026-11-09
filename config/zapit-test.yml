@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=../src/DataSchemas/ucl_open_av_dome_task.json
 # Task config for src/ZapitTrialTest.bonsai: identical to task-localization.yml except optogenetics is enabled.
-# Edit zapitStimConfigPath to the stimulus config file that is loaded in Zapit, then follow docs/zapit-testing.md.
+# Edit zapitConditionsPath to the conditions file that is loaded in Zapit, then follow docs/zapit-testing.md.
 # Task parameters for the av-dome audiovisual localisation task.
 # Loaded by src/main.bonsai at startup and published as the TaskConfig subject.
 # The task as read at Go is written to the experiment folder as Settings\Settings_Task_<DateTime>.json.
@@ -48,7 +48,7 @@ taskParameters:
     rulesPerType: [onFailure, onFailure, onFailure, onTimeout, onTimeout]
   optogenetics:
     enabled: true
-    zapitStimConfigPath: C:\Users\CoenLabUsers\zapit\examples\example_stimulus_config_files\left_right_pair.yml # EDIT: the stim config file loaded in Zapit
+    zapitConditionsPath: C:\Users\CoenLabUsers\zapit\examples\example_stimulus_config_files\left_right_pair.yml # EDIT: the conditions file file loaded in Zapit
     laserOnProbability: 1
     laserDelaySeconds: 0.0         # s
     laserDurationSeconds: 1.5      # s

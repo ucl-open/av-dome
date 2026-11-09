@@ -98,9 +98,10 @@ audioElevation:
 audioWaveformIndex:
   type: int
   description: Index into the auditory stimulus set (calibration\AuditoryStimuli).
-optoCondition:
+laserCondition:
   type: int
-  description: The Zapit condition stimulated, 0 when none (Zapit numbers conditions from 1). Until 9 Nov 2026 optoStimulated also said whether there was stimulation; it was always optoCondition > 0.
+  formerly: [optoCondition]
+  description: The Zapit condition stimulated, 0 when none (Zapit numbers conditions from 1). Until 9 Nov 2026 optoStimulated also said whether there was stimulation; it was always laserCondition > 0.
 autoRewarded:
   type: bool
   description: True when a miss on an auto-reward trial was rewarded at the target spout.

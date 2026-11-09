@@ -64,7 +64,7 @@
         </Workflow>
       </Expression>
       <Expression xsi:type="Format">
-        <Format>Zapit has no stimulus configuration loaded (IsStimConfigLoaded returned {0}). Load a stim config in Zapit, then restart the workflow.</Format>
+        <Format>Zapit has no conditions file loaded (IsStimConfigLoaded returned {0}). Load a conditions file in Zapit, then restart the workflow.</Format>
         <Selector>Value</Selector>
       </Expression>
       <Expression xsi:type="Combinator">

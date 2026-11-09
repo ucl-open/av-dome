@@ -46,7 +46,7 @@ taskParameters:
     rulesPerType: [onFailure, onFailure, onFailure, onTimeout, onTimeout]
   optogenetics:
     enabled: true
-    zapitStimConfigPath: C:\Users\CoenLabUsers\zapit\experimental_configs\avdome_main_initialstim.yml
+    zapitConditionsPath: C:\Users\CoenLabUsers\zapit\experimental_configs\avdome_main_initialstim.yml
     laserOnProbability: 0.5
     laserDelaySeconds: 0.0         # s
     laserDurationSeconds: 2.5      # s

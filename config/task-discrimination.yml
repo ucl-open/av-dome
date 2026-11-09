@@ -49,7 +49,7 @@ taskParameters:
     rulesPerType: [onFailure, onFailure, onFailure, onTimeout, onTimeout]
   optogenetics:
     enabled: false
-    zapitStimConfigPath: ""
+    zapitConditionsPath: ""
     laserOnProbability: 0.5
     laserDelaySeconds: 0.0         # s
     laserDurationSeconds: 2.5      # s

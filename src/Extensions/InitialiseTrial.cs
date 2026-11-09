@@ -73,7 +73,7 @@ public class InitialiseTrial
 
             if (parameters.Optogenetics.Enabled)
             {
-                LoadZapitConfigIfNeeded(parameters.Optogenetics.ZapitStimConfigPath);
+                LoadZapitConfigIfNeeded(parameters.Optogenetics.ZapitConditionsPath);
             }
 
             // Generate new trial

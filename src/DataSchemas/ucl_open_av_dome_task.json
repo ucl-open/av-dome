@@ -36,10 +36,10 @@
           "title": "Enabled",
           "type": "boolean"
         },
-        "zapitStimConfigPath": {
+        "zapitConditionsPath": {
           "default": "",
-          "description": "Path to the Zapit stimulus config (the one loaded in Zapit) listing the stimulation conditions",
-          "title": "ZapitStimConfigPath",
+          "description": "Path to the Zapit conditions file (the one loaded in Zapit) listing the stimulation conditions",
+          "title": "ZapitConditionsPath",
           "type": "string"
         },
         "laserOnProbability": {

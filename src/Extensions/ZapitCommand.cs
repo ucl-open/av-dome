@@ -75,7 +75,7 @@ public class ZapitCommand
     /// <summary>Stimulus duration in seconds. Null or zero plays until StopStimulus.</summary>
     public float? StimDuration { get; set; }
 
-    /// <summary>Laser power in mW. Null uses the value in the Zapit stimulus config.</summary>
+    /// <summary>Laser power in mW. Null uses the value in the Zapit conditions file.</summary>
     public float? LaserPower { get; set; }
 
     /// <summary>Delay before onset in seconds. Only honoured by Zapit when StimDuration is set.</summary>

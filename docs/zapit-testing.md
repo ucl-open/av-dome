@@ -9,7 +9,7 @@ How to check, step by step, that Bonsai can drive Zapit before the first optogen
 - If Zapit runs on a **different PC** from Bonsai: in MATLAB run `zapit.interfaces.getIPaddress`, put that address in `tcpServer.IP` in the Zapit settings, and in the rig YAML (`C:\RigConfigs\<MachineName>.yml`) under `zapit: host:`. Same PC: leave both at the default (`localhost` / `127.0.0.1`). Port stays `1488` unless you changed it in Zapit.
 - Zapit accepts **one client at a time**. Close any other Zapit client (MATLAB, Python, another Bonsai) before testing. `hZP.tcpServer.isClientConnected` in MATLAB shows whether one is attached.
 
-## Step 1: start Zapit with a stimulus config
+## Step 1: start Zapit with a conditions file
 
 In MATLAB, simulated mode is enough for steps 1 to 3 and safe for step 4:
 
@@ -18,7 +18,7 @@ start_zapit('simulated', true)     % creates hZP in the base workspace without t
 hZP.applyUnityStereotaxicCalib     % stands in for a real calibration so stimuli can be sent
 ```
 
-Load your own stimulus config through the Zapit GUI (File, Load stim config). Note the full path of the file you loaded; step 3 needs it.
+Load your own conditions file through the Zapit GUI (File, Load conditions file). Note the full path of the file you loaded; step 3 needs it.
 
 ## Step 2: connectivity, `src/ZapitDemo.bonsai`
 
@@ -28,7 +28,7 @@ Within five seconds you should see, in order:
 
 | Reply | Meaning |
 |---|---|
-| `IsStimConfigLoaded, value=1` | Zapit has a stim config |
+| `IsStimConfigLoaded, value=1` | Zapit has a conditions file |
 | `GetNumConditions, value=N` | N conditions in that config |
 | `StartStimulus, value=3, laserOn=1` | Zapit presented condition 3 |
 | `GetState, value=1` | Zapit is stimulating (0 idle, 2 ramp-down) |
@@ -40,7 +40,7 @@ The same rows are written to `src/zapit-demo.csv`.
 
 **Fail modes:**
 - the workflow stops immediately with "Could not connect to Zapit at host:port": Zapit is not running, `tcpServer.enable` is false, or wrong host/port.
-- It stops with "Zapit has no stimulus configuration loaded": redo step 1.
+- It stops with "Zapit has no conditions file loaded": redo step 1.
 - A reply times out after five seconds: another client may already be connected to Zapit.
 
 ## Step 3: trial logic without the rig, `src/ZapitTrialTest.bonsai`
@@ -48,7 +48,7 @@ The same rows are written to `src/zapit-demo.csv`.
 This runs the real trial draw (`InitialiseTrial`) and the same Zapit wiring as `main.bonsai`, but with timers instead of the behaviour, so it works on any PC with a rig YAML.
 
 1. Make sure `C:\RigConfigs\<MachineName>.yml` exists on the PC you run it on or change the path (copy `config/rig-template.yml` and rename it if you are not on a rig PC). Its `zapit:` block sets host, port and `hardwareTriggered`.
-2. Edit `config/zapit-test.yml`: set `zapitStimConfigPath` to the stim config file you loaded in step 1. Bonsai reads the condition numbers from it. Everything else matches `task-localization.yml` except `optogenetics.enabled: true`.
+2. Edit `config/zapit-test.yml`: set `zapitConditionsPath` to the conditions file file you loaded in step 1. Bonsai reads the condition numbers from it. Everything else matches `task-localization.yml` except `optogenetics.enabled: true`.
 3. Open `src/ZapitTrialTest.bonsai`, open visualizers on `ZapitReplies` and on the `Trial` group, and Start.
 
 Ten trials are drawn, one every two seconds. Each trial line shows `(trialType, IsRepeat, OptogeneticEnabled, OptogeneticCondition, OptogeneticDuration, OptogeneticDelay)`. With the default `laserOnProbability: 0.75` about three quarters of trials are opto trials. For every opto trial a `StartStimulus` reply must follow whose `value` equals that trial's `OptogeneticCondition` and whose `laserOn` is 1. Non-opto trials produce no reply. In MATLAB, Zapit prints or logs each stimulus as it would in an experiment.
@@ -57,13 +57,13 @@ If the rig YAML has `hardwareTriggered: true`, each armed reply pulses the behav
 
 **Pass:** every opto trial has a matching reply, conditions agree, no `error=True`.
 
-**Fail modes:** console warning "Optogenetics enabled but no Zapit conditions available": the `zapitStimConfigPath` is wrong or the file has no `stimLocationsNN` entries. Replies show `value=255` or `error=True`: Zapit refused `sendSamples`, check the MATLAB window (missing or incorrect config loaded).
+**Fail modes:** console warning "Optogenetics enabled but no Zapit conditions available": the `zapitConditionsPath` is wrong or the file has no `stimLocationsNN` entries. Replies show `value=255` or `error=True`: Zapit refused `sendSamples`, check the MATLAB window (missing or incorrect config loaded).
 
 ## Step 4: dummy experiment on the rig, `src/main.bonsai`
 
 With Zapit still in simulated mode (or with the laser shutter closed):
 
-1. In `config/task-localization.yml` set `optogenetics.enabled: true` and `zapitStimConfigPath` as in step 3.
+1. In `config/task-localization.yml` set `optogenetics.enabled: true` and `zapitConditionsPath` as in step 3.
 2. In the rig YAML set `zapit.hardwareTriggered` to `false` for the first run.
 3. Run a normal short experiment from `main.bonsai`. The workflow stops at startup with a clear error if Zapit is unreachable or has no config loaded.
 4. In the experiment folder compare `Zapit.csv` and `BonsaiData\BonsaiData_Trial_*.csv`. `Zapit.csv` columns: `Seconds` (Harp clock), `command` (1 = StartStimulus, 2 and 4 = the startup queries), `value` (condition presented), `laserOn`, `isError`, `serverDatenum` (Zapit PC clock). Every `BonsaiData_Trial` row with `optoStimulated = True` must have a `command = 1` row in `Zapit.csv` with the same condition, a fraction of a second later.

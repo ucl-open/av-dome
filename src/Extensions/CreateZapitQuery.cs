@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Reactive.Linq;
 
 [Combinator]
-[Description("Emits a read-only Zapit query each time an input arrives: whether a stimulus config is loaded, the current state, or the number of conditions. The answer arrives in the Value field of the reply.")]
+[Description("Emits a read-only Zapit query each time an input arrives: whether a conditions file is loaded, the current state, or the number of conditions. The answer arrives in the Value field of the reply.")]
 [WorkflowElementCategory(ElementCategory.Transform)]
 public class CreateZapitQuery
 {

@@ -170,7 +170,7 @@ class OptogeneticsSettings(BaseSchema):
     9 Nov 2026); laser_duration_seconds is a timed stimulus here, where the corridor's laserMaxSeconds is a cap."""
 
     enabled: Bool = Field(default=False, description="Whether optogenetic stimulation is enabled")
-    zapit_stim_config_path: String = Field(default="", description="Path to the Zapit stimulus config (the one loaded in Zapit) listing the stimulation conditions")
+    zapit_conditions_path: String = Field(default="", description="Path to the Zapit conditions file (the one loaded in Zapit) listing the stimulation conditions")
     laser_on_probability: Double = Field(default=0.75, ge=0, le=1, description="Probability that a trial after trials_before_laser is a laser-on trial")
     laser_delay_seconds: Double = Field(default=0.0, ge=0, description="Delay from the trial's start to laser onset, in seconds")
     laser_duration_seconds: Double = Field(default=1.5, ge=0, description="How long the laser stays on, in seconds (a timed stimulus)")
