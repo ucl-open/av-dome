@@ -84,4 +84,4 @@ Connect behavior board DO3 to the Zapit DAQ trigger input, set `zapit.hardwareTr
 
 ### Optional: measure the laser directly
 
-To record actual onset and offset in either mode, and to check that every DO3 pulse produced a stimulus and that sham trials stayed dark, wire the laser analog output from the Zapit DAQ into a free behavior board analog input (ADC0 or ADC1, if not already used for a photodiode). The board already samples both inputs at 1 kHz into its log on the Harp clock, so no workflow change is needed.
+To record actual onset and offset in either mode, and to check that every DO3 pulse produced a stimulus and that laser-off trials stayed dark, wire the laser analog output from the Zapit DAQ into a free behavior board analog input (ADC0 or ADC1, if not already used for a photodiode). The board already samples both inputs at 1 kHz into its log on the Harp clock, so no workflow change is needed.

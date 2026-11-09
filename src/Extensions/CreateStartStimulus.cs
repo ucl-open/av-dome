@@ -22,7 +22,7 @@ public class CreateStartStimulus
     [Description("Condition index in the Zapit conditions file, 1 to 254. 0 lets Zapit draw a random condition; the reply reports which one was presented.")]
     public int ConditionNumber { get; set; }
 
-    [Description("True fires the laser. False moves the galvos with the laser off (a sham trial).")]
+    [Description("True fires the laser. False moves the galvos with the laser off (a laser-off trial).")]
     public bool LaserOn { get; set; }
 
     [Description("True makes the Zapit DAQ wait for a TTL trigger; false starts the stimulus as soon as Zapit receives the command.")]
