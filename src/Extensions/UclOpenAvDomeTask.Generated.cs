@@ -241,8 +241,6 @@ namespace UclOpenAvDomeTask
     
         private bool _noLaserOnRepeats;
     
-        private bool _balancedConditions;
-    
         private int _trialsBeforeLaser;
     
         public OptogeneticsSettings()
@@ -253,7 +251,6 @@ namespace UclOpenAvDomeTask
             _laserDurationSeconds = 1.5D;
             _laserToStimulusSeconds = 0.5D;
             _noLaserOnRepeats = true;
-            _balancedConditions = true;
             _trialsBeforeLaser = 0;
         }
     
@@ -266,7 +263,6 @@ namespace UclOpenAvDomeTask
             _laserDurationSeconds = other._laserDurationSeconds;
             _laserToStimulusSeconds = other._laserToStimulusSeconds;
             _noLaserOnRepeats = other._noLaserOnRepeats;
-            _balancedConditions = other._balancedConditions;
             _trialsBeforeLaser = other._trialsBeforeLaser;
         }
     
@@ -402,25 +398,6 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Draw conditions from a shuffled queue, so each is used equally often, rather than independently each trial
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("balancedConditions")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="balancedConditions")]
-        [System.ComponentModel.DescriptionAttribute("Draw conditions from a shuffled queue, so each is used equally often, rather than" +
-            " independently each trial")]
-        public bool BalancedConditions
-        {
-            get
-            {
-                return _balancedConditions;
-            }
-            set
-            {
-                _balancedConditions = value;
-            }
-        }
-    
-        /// <summary>
         /// Trials at the experiment's start with no laser-on trial among them (counted by TrialCount, repeats included)
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("trialsBeforeLaser")]
@@ -458,7 +435,6 @@ namespace UclOpenAvDomeTask
             stringBuilder.Append("LaserDurationSeconds = " + _laserDurationSeconds + ", ");
             stringBuilder.Append("LaserToStimulusSeconds = " + _laserToStimulusSeconds + ", ");
             stringBuilder.Append("NoLaserOnRepeats = " + _noLaserOnRepeats + ", ");
-            stringBuilder.Append("BalancedConditions = " + _balancedConditions + ", ");
             stringBuilder.Append("TrialsBeforeLaser = " + _trialsBeforeLaser);
             return true;
         }

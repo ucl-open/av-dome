@@ -138,6 +138,15 @@ def test_laser_to_stimulus_is_the_task_s_and_sets_the_wait(path):
     assert '<Property Name="DueSeconds" Selector="TaskParameters.Optogenetics.LaserToStimulusSeconds" />' in workflow
 
 
+def test_each_laser_on_trial_draws_its_condition_at_random():
+    # Pip, 10 Nov 2026: balancedConditions (always true) dropped; a shuffled queue made a site unlikely to follow
+    # itself and the end of each cycle predictable, which confounds trial-history analyses.
+    schema = (CONFIG.parent / "src" / "DataSchemas" / "ucl_open_av_dome_task.json").read_text(encoding="utf-8")
+    assert "balancedConditions" not in schema and "pseudorandomSelection" not in schema
+    source = (CONFIG.parent / "src" / "Extensions" / "InitialiseTrial.cs").read_text(encoding="utf-8-sig")
+    assert "_conditionQueue" not in source and "_zapitConditions[rand.Next(_zapitConditions.Count)]" in source
+
+
 def test_target_modality_is_visual_or_auditory():
     data = yaml.safe_load((CONFIG / "task-discrimination.yml").read_text())["taskParameters"]
     UclOpenAvDomeTaskParameters.model_validate({**data, "targetModality": "auditory"})

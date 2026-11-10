@@ -95,12 +95,6 @@
           "title": "NoLaserOnRepeats",
           "type": "boolean"
         },
-        "balancedConditions": {
-          "default": true,
-          "description": "Draw conditions from a shuffled queue, so each is used equally often, rather than independently each trial",
-          "title": "BalancedConditions",
-          "type": "boolean"
-        },
         "trialsBeforeLaser": {
           "default": 0,
           "description": "Trials at the experiment's start with no laser-on trial among them (counted by TrialCount, repeats included)",

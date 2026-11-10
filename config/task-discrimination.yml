@@ -55,7 +55,6 @@ taskParameters:
     laserDurationSeconds: 2.5      # s
     laserToStimulusSeconds: 0.5    # s, laser on to the stimulus sequence (the stimulus ~0.1-0.25 s later); every trial
     noLaserOnRepeats: true
-    balancedConditions: true
     trialsBeforeLaser: 20
   trainingStages:          # row index = stage id selected in the GUI; ids past the end use the last row
     - label: Stage 0       # habituation: target trials only, every miss auto-rewarded, spouts stay in

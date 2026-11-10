@@ -38,8 +38,6 @@ public class InitialiseTrial
     private int trialsDrawn = 0;
 
     private static List<int> _zapitConditions = new List<int>();
-    private static List<int> _conditionQueue = new List<int>();
-    private static int _currentConditionIndex = 0;
     private static DateTime _zapitConfigLastLoaded = DateTime.MinValue;
 
     public IObservable<Trial> Process(IObservable<Tuple<string, UclOpenAvDomeTaskLogic>> source)
@@ -416,15 +414,8 @@ public class InitialiseTrial
         {
             trialData.OptogeneticEnabled = true;
 
-            // Pseudorandom condition selection
-            if (optogenetics.BalancedConditions)
-            {
-                trialData.OptogeneticCondition = GetPseudorandomCondition(rand);
-            }
-            else
-            {
-                trialData.OptogeneticCondition = _zapitConditions[rand.Next(_zapitConditions.Count)];
-            }
+            // A random condition, independently of every other trial: a shuffled queue made a site unlikely to follow itself and the end of each cycle predictable, which confounds trial-history analyses (Pip, 10 Nov 2026)
+            trialData.OptogeneticCondition = _zapitConditions[rand.Next(_zapitConditions.Count)];
 
             // Set timing parameters from config
             trialData.OptogeneticDuration = optogenetics.LaserDurationSeconds;
@@ -438,40 +429,6 @@ public class InitialiseTrial
         trialData.OptogeneticCondition = 0;
         trialData.OptogeneticDuration = 0;
         trialData.OptogeneticPower = 0;
-    }
-
-    private int GetPseudorandomCondition(Random rand)
-    {
-        // Initialize or refill the condition queue when empty
-        if (_conditionQueue.Count == 0)
-        {
-            _conditionQueue.AddRange(_zapitConditions);
-
-            // Shuffle using Fisher-Yates
-            int n = _conditionQueue.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = rand.Next(n + 1);
-                int temp = _conditionQueue[k];
-                _conditionQueue[k] = _conditionQueue[n];
-                _conditionQueue[n] = temp;
-            }
-
-            _currentConditionIndex = 0;
-        }
-
-        // Get next condition from shuffled queue
-        int selectedCondition = _conditionQueue[_currentConditionIndex];
-        _currentConditionIndex++;
-
-        // Clear queue when exhausted
-        if (_currentConditionIndex >= _conditionQueue.Count)
-        {
-            _conditionQueue.Clear();
-        }
-
-        return selectedCondition;
     }
 
     private static List<double> NonZero(List<double> values)
