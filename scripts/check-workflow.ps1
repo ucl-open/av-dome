@@ -5,8 +5,8 @@ param(
 )
 # Checks a change to src\ without the rig and without opening Bonsai: no window, no device.
 #   1. Compiles src\Extensions under C# 5, the language Bonsai compiles it with.
-#   2. Builds every workflow that reads rig.yml (main, CalibrateValve, CameraFrameMonitor,
-#      ZapitTrialTest) with Bonsai's own expression builders, as Bonsai does at Start before it
+#   2. Builds every workflow that reads rig.yml (main, CalibrateValve, CameraFrameMonitor)
+#      with Bonsai's own expression builders, as Bonsai does at Start before it
 #      subscribes anything: every type, selector, include, subject and mapping. Each is built
 #      against config\rig-template.yml filled in as a rig's, with every node that reads rig.yml
 #      pointed at that copy, and for main.bonsai what RecordHarpDevices made from it, what
@@ -27,7 +27,7 @@ $self = $MyInvocation.MyCommand.Path
 $repo = Split-Path -Parent (Split-Path -Parent $self)
 $bin = Join-Path ([IO.Path]::GetTempPath()) 'av-dome-check'
 $bonsaiDir = Join-Path $repo '.bonsai'
-$workflows = 'main.bonsai', 'CalibrateValve.bonsai', 'CameraFrameMonitor.bonsai', 'ZapitTrialTest.bonsai'
+$workflows = 'main.bonsai', 'CalibrateValve.bonsai', 'CameraFrameMonitor.bonsai'
 
 function Initialize-Assemblies {
     [xml]$cfg = Get-Content (Join-Path $bonsaiDir 'Bonsai.config') -Raw

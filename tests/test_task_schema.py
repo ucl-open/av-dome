@@ -90,7 +90,7 @@ def test_the_discrimination_iti_adds_what_gerion_s_did():
     assert (trial.iti_min_seconds, trial.iti_max_seconds) == pytest.approx((1.5 + 0.6, 2.5 + 0.6))
 
 
-@pytest.mark.parametrize("path", TASK_FILES + [CONFIG / "zapit-test.yml"], ids=lambda p: p.name)
+@pytest.mark.parametrize("path", TASK_FILES, ids=lambda p: p.name)
 def test_rig_control_keeps_the_zapit_file(path):
     # rig-control copies a task field ending in ConfigPath beside the task file at Go (taskfile.keep_files):
     # renamed zapitConditionsPath on 9 Nov 2026, the file stopped being kept (audit, 10 Nov 2026).

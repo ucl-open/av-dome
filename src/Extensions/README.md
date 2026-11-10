@@ -65,16 +65,12 @@ server code in `zapit/+zapit/+interfaces/@TCPserver`.
 - `main.bonsai` wiring: the `Zapit` group under `HardwareDevices` connects only when the task YAML
   has `optogenetics.useZapit: true`, with `Host`/`Port` mapped from the rig YAML `zapit` block. In
   `StimuliPresentation`, trials whose `OptogeneticEnabled` flag was drawn true send one
-  `StartStimulus` with the trial's `OptogeneticCondition`, `OptogeneticDuration` and
-  `OptogeneticDelay` (Zapit times the delay and duration itself; `HardwareTriggered` comes from
+  `StartStimulus` with the trial's `OptogeneticCondition`, `OptogeneticDuration`,
+  `OptogeneticDelay` and `OptogeneticPower` (the task's `laserPowerMw`) (Zapit times the delay and duration itself; `HardwareTriggered` comes from
   the rig YAML `zapit` block, see the timing model below). Repeat trials copy the original trial's
   draw, so with `optogenetics.noLaserOnRepeats: false` a repeat presents the same condition again;
   with `true` (the default) repeats are never stimulated.
-  Every reply is logged to `Zapit.csv` alongside `BonsaiData_Trial` on the same Harp clock.
-- `../ZapitDemo.bonsai`: standalone connectivity check against a running Zapit, no rig hardware
-  needed. Prints and logs every reply.
-- `../ZapitTrialTest.bonsai`: the trial draw and Zapit wiring of `main.bonsai` driven by timers, for
-  testing against Zapit without the rig. Step-by-step lab guide in `../../docs/zapit-testing.md`.
+  Every reply is logged to `BonsaiData\BonsaiData_ZapitReplies` alongside `BonsaiData_Trial` on the same Harp clock.
 
 ### Timing model
 
