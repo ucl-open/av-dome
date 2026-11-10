@@ -202,7 +202,7 @@ class TrainingStage(BaseSchema):
     """One complete row of the training stage table; stages are selected by index at runtime."""
 
     label: String = Field(description="Human-readable stage name, for documentation and logs")
-    trial_weights: List[Int] = Field(description="Relative draw weight per trial type, indexed by trial type")
+    trial_weights: List[Int] = Field(description="Relative draw weight per trial type, indexed by trial type: each new trial draws its type at random with these as relative chances, independently of every other trial (repeats copy the trial they repeat)")
     auto_reward_probability: Double = Field(ge=0, le=1, description="Probability that a trial is an auto-reward trial: a miss on it is rewarded at the target spout, and still counts as a timeout for repeats")
     both_spouts_probability: Double = Field(ge=0, le=1, description="Probability that both spouts are presented rather than only the correct one")
     reward_size_ul: Double = Field(ge=0, description="Reward size, in microliters; delivered as ceil(size/2) valve pulses")

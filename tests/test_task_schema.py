@@ -147,6 +147,13 @@ def test_each_laser_on_trial_draws_its_condition_at_random():
     assert "_conditionQueue" not in source and "_zapitConditions[rand.Next(_zapitConditions.Count)]" in source
 
 
+def test_each_trial_type_is_drawn_at_random_by_weight():
+    # Pip, 10 Nov 2026: trial types were dealt from shuffled blocks of the weights, which made a type unlikely to follow
+    # itself and each block's end predictable; now each new trial draws its type independently, weighted by trialWeights.
+    source = (CONFIG.parent / "src" / "Extensions" / "InitialiseTrial.cs").read_text(encoding="utf-8-sig")
+    assert "shuffledTrialSequence" not in source and "int draw = random.Next(total);" in source
+
+
 def test_target_modality_is_visual_or_auditory():
     data = yaml.safe_load((CONFIG / "task-discrimination.yml").read_text())["taskParameters"]
     UclOpenAvDomeTaskParameters.model_validate({**data, "targetModality": "auditory"})

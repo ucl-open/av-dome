@@ -25,10 +25,6 @@ public class InitialiseTrial
     private Random trialRand;
     private int rngSeedUsed;
 
-    // Track if we need to shuffle the trial order for true randomization
-    private List<int> shuffledTrialSequence;
-    private int currentTrialIndex = 0;
-
     // Trial repetition tracking
     private Trial lastTrial = null;
     private int currentRepeatCount = 0;
@@ -301,43 +297,25 @@ public class InitialiseTrial
         }
     }
 
-    // Gets a random trial type based on the weighted distribution
-    // Now using the Fisher-Yates shuffle to ensure balanced distribution
+    // A trial type drawn at random, weighted by the stage's trialWeights, independently of every other trial. It was a
+    // shuffled block of the weights, which made a type unlikely to follow itself and the end of each block predictable,
+    // confounding trial-history analyses (Pip, 10 Nov 2026).
     private int GetWeightedRandomTrialType(TrainingStage stage, Random random)
     {
-        // If we've run through all trials in the block or haven't initialized yet,
-        // generate a new shuffled sequence ensuring proper proportions
-        if (shuffledTrialSequence == null || currentTrialIndex >= shuffledTrialSequence.Count)
+        var trialWeights = stage.TrialWeights;
+        int total = 0;
+        foreach (var weight in trialWeights) total += Math.Max(weight, 0);
+        if (total <= 0)
         {
-            // Generate a list with trial types in the correct proportion
-            shuffledTrialSequence = new List<int>();
-
-            // Add trial types according to their weights
-            var trialWeights = stage.TrialWeights;
-            for (int type = 0; type < trialWeights.Count; type++)
-            {
-                for (int count = 0; count < trialWeights[type]; count++)
-                {
-                    shuffledTrialSequence.Add(type);
-                }
-            }
-
-            // Shuffle the sequence using Fisher-Yates algorithm
-            int n = shuffledTrialSequence.Count;
-            while (n > 1)
-            {
-                n--;
-                int k = random.Next(n + 1);
-                int temp = shuffledTrialSequence[k];
-                shuffledTrialSequence[k] = shuffledTrialSequence[n];
-                shuffledTrialSequence[n] = temp;
-            }
-
-            currentTrialIndex = 0;
+            throw new InvalidOperationException("The training stage '" + stage.Label + "' has no trial type with a weight above 0 in trialWeights.");
         }
-
-        // Get the next trial type from the shuffled sequence
-        return shuffledTrialSequence[currentTrialIndex++];
+        int draw = random.Next(total);
+        for (int type = 0; type < trialWeights.Count; type++)
+        {
+            draw -= Math.Max(trialWeights[type], 0);
+            if (draw < 0) return type;
+        }
+        return trialWeights.Count - 1;
     }
 
     private void LoadZapitConfigIfNeeded(string configPath)

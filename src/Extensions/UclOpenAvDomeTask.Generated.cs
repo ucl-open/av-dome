@@ -1224,12 +1224,14 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Relative draw weight per trial type, indexed by trial type
+        /// Relative draw weight per trial type, indexed by trial type: each new trial draws its type at random with these as relative chances, independently of every other trial (repeats copy the trial they repeat)
         /// </summary>
         [System.Xml.Serialization.XmlIgnoreAttribute()]
         [Newtonsoft.Json.JsonPropertyAttribute("trialWeights", Required=Newtonsoft.Json.Required.Always)]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="trialWeights")]
-        [System.ComponentModel.DescriptionAttribute("Relative draw weight per trial type, indexed by trial type")]
+        [System.ComponentModel.DescriptionAttribute("Relative draw weight per trial type, indexed by trial type: each new trial draws " +
+            "its type at random with these as relative chances, independently of every other " +
+            "trial (repeats copy the trial they repeat)")]
         public System.Collections.Generic.List<int> TrialWeights
         {
             get

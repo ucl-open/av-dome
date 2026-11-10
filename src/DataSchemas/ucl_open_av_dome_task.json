@@ -318,7 +318,7 @@
           "type": "string"
         },
         "trialWeights": {
-          "description": "Relative draw weight per trial type, indexed by trial type",
+          "description": "Relative draw weight per trial type, indexed by trial type: each new trial draws its type at random with these as relative chances, independently of every other trial (repeats copy the trial they repeat)",
           "items": {
             "maximum": 2147483647,
             "minimum": -2147483648,
