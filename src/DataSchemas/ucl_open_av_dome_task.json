@@ -387,14 +387,14 @@
       "properties": {
         "itiMinSeconds": {
           "default": 4.0,
-          "description": "Lower bound of the uniformly drawn inter-trial interval, in seconds",
+          "description": "Lower bound of the uniformly drawn inter-trial interval, in seconds, from the outcome (after any punishment timeout) to the next stimulus. It includes 2 s to drink, 0.1 s to arm Zapit and optogenetics.laserToStimulusSeconds, so a draw shorter than 2.1 s plus laserToStimulusSeconds runs as that",
           "minimum": 0,
           "title": "ItiMinSeconds",
           "type": "number"
         },
         "itiMaxSeconds": {
           "default": 5.0,
-          "description": "Upper bound of the uniformly drawn inter-trial interval, in seconds",
+          "description": "Upper bound of the uniformly drawn inter-trial interval, in seconds; it includes 2 s to drink, 0.1 s to arm Zapit and optogenetics.laserToStimulusSeconds (itiMinSeconds)",
           "minimum": 0,
           "title": "ItiMaxSeconds",
           "type": "number"

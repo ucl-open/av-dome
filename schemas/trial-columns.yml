@@ -64,7 +64,7 @@ itiSeconds:
   type: double
   unit: s
   formerly: [itiDuration]
-  description: The inter-trial interval drawn before this trial (the last trial's draw, which the drink time comes out of), NaN on the first. Until 9 Nov 2026 it was the interval after the trial.
+  description: The inter-trial interval drawn before this trial (the last trial's draw), NaN on the first. It ran from the last trial's outcome, after any punishment timeout, to this trial's stimulus, and includes 2 s to drink, 0.1 s to arm Zapit and the task's laserToStimulusSeconds, so a draw shorter than 2.1 s plus laserToStimulusSeconds ran as that. Until 9 Nov 2026 it was the interval after the trial.
 punishSound:
   type: bool
   description: True when the error sound played - an incorrect choice, with the task's punishment.sound enabled.

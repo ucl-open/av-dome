@@ -17,8 +17,16 @@ TRIAL_TYPE_COUNT = 5
 class TrialStructure(BaseSchema):
     """Timing parameters of the trial state machine."""
 
-    iti_min_seconds: Double = Field(default=4.0, ge=0, description="Lower bound of the uniformly drawn inter-trial interval, in seconds")
-    iti_max_seconds: Double = Field(default=5.0, ge=0, description="Upper bound of the uniformly drawn inter-trial interval, in seconds")
+    iti_min_seconds: Double = Field(
+        default=4.0,
+        ge=0,
+        description="Lower bound of the uniformly drawn inter-trial interval, in seconds, from the outcome (after any punishment timeout) to the next stimulus. It includes 2 s to drink, 0.1 s to arm Zapit and optogenetics.laserToStimulusSeconds, so a draw shorter than 2.1 s plus laserToStimulusSeconds runs as that",
+    )
+    iti_max_seconds: Double = Field(
+        default=5.0,
+        ge=0,
+        description="Upper bound of the uniformly drawn inter-trial interval, in seconds; it includes 2 s to drink, 0.1 s to arm Zapit and optogenetics.laserToStimulusSeconds (itiMinSeconds)",
+    )
     quiescent_min_seconds: Double = Field(default=0.1, ge=0, description="Lower bound of a quiescent period drawn per trial, in seconds. Not used: the workflow has no quiescent wait, so changing it changes nothing (BACKLOG)")
     quiescent_max_seconds: Double = Field(default=0.25, ge=0, description="Upper bound of a quiescent period drawn per trial, in seconds. Not used: the workflow has no quiescent wait, so changing it changes nothing (BACKLOG)")
     open_loop_seconds: Double = Field(default=0.0, ge=0, description="Open-loop period after stimulus onset, in seconds")

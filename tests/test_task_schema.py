@@ -96,6 +96,19 @@ def test_the_discrimination_iti_adds_what_gerion_s_did():
     assert (trial.iti_min_seconds, trial.iti_max_seconds) == pytest.approx((1.5 + lead, 2.5 + lead))
 
 
+def test_the_iti_descriptions_say_what_comes_out_of_the_draw():
+    # Audit, 10 Nov 2026, round 5: the task fields and the itiSeconds meaning (copied into every manifest) said only
+    # "the drawn interval" (the column, "which the drink time comes out of"), while the ITI expression above takes
+    # 2 s to drink, 0.1 s to arm and laserToStimulusSeconds out of it and runs a shorter draw as their sum.
+    from ucl_open_av_dome.task import TrialStructure
+
+    fields = TrialStructure.model_fields
+    columns = yaml.safe_load((CONFIG.parent / "schemas" / "trial-columns.yml").read_text(encoding="utf-8"))
+    for text in (fields["iti_min_seconds"].description, columns["itiSeconds"]["description"]):
+        assert "2 s to drink" in text and "0.1 s to arm Zapit" in text and "laserToStimulusSeconds" in text
+        assert "shorter than 2.1 s plus laserToStimulusSeconds" in text
+
+
 @pytest.mark.parametrize("path", TASK_FILES, ids=lambda p: p.name)
 def test_rig_control_keeps_the_zapit_file(path):
     # rig-control copies a task field ending in ConfigPath beside the task file at Go (taskfile.keep_files):

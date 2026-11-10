@@ -1,5 +1,13 @@
 # Backlog
 
+## 2026-11-10 Independent audit, round 5 of 5 (the 9-10 Nov naming and laser work)
+
+Fixed: `src\Extensions\README.md`'s Zapit wiring and timing model described the graph before the open-rigs branch: StartStimulus sent "in StimuliPresentation" "at stimulus onset", the trigger written "when Zapit's reply confirms it is armed", the laser lagging the stimulus, and power "not sent". Traced by node index: `ArmZapit`, HarpDelay 0.1 s, `StartLaser` (no wait for the reply), HarpDelay `laserToStimulusSeconds`, `ExecuteTrial`; the laser leads the stimulus and `laserPowerMw` goes with each StartStimulus. Rewritten. `itiMinSeconds`, `itiMaxSeconds` and the `itiSeconds` column (its meaning goes into every manifest) now say the draw runs from the outcome (after any timeout) to the next stimulus and includes 2 s to drink, 0.1 s to arm and `laserToStimulusSeconds`, a shorter draw running as their sum, as rig-control's form already said (test).
+
+### For Pip
+
+- **The laser ends on a timer, not at the outcome.** `laserDurationSeconds` (2.5 s in both task files) runs from the trigger, so at `laserToStimulusSeconds` 0.5 it covers the first 2.0 s after the stimulus whatever the mouse does; the corridor stops its laser at the outcome. Which one this task wants is an experiment-design choice (raised in round 4, not decided).
+
 ## 2026-11-10 Independent audit, round 4 of 5 (the 9-10 Nov naming and laser work)
 
 Fixed: `laserToStimulusSeconds` said the stimulus comes "a further 0.1-0.25 s" after the wait and that it is not exact as the corridor's. ExecuteTrial has no quiescent wait: StimuliPresentation goes from the trial straight to `StartAuditoryStimulus`, where `stimulusOnsetTime` is stamped, with no delay node between (test), so the stimulus is commanded within a few ms of the wait's end; 0.1-0.25 s was the unused quiescent draw. Description, both task files' comments, ExecuteTrial's description ("the quiescent wait") and the Opto lead item corrected. `quiescentMin/MaxSeconds` and `rewardProbability` now say they are not used (no node reads `Quiescent`, `RewardProbability` or `IsRewarded`; Correct? rewards every correct response); wiring or dropping them stays Tom's (Design questions). The Never-read item no longer says `autoReward` changes nothing. `trialsBeforeLaser` counts as `trialNumber` does, not "by TrialCount".

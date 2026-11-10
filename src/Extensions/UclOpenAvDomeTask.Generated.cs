@@ -1444,11 +1444,11 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Lower bound of the uniformly drawn inter-trial interval, in seconds
+        /// Lower bound of the uniformly drawn inter-trial interval, in seconds, from the outcome (after any punishment timeout) to the next stimulus. It includes 2 s to drink, 0.1 s to arm Zapit and optogenetics.laserToStimulusSeconds, so a draw shorter than 2.1 s plus laserToStimulusSeconds runs as that
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("itiMinSeconds")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="itiMinSeconds")]
-        [System.ComponentModel.DescriptionAttribute("Lower bound of the uniformly drawn inter-trial interval, in seconds")]
+        [System.ComponentModel.DescriptionAttribute(@"Lower bound of the uniformly drawn inter-trial interval, in seconds, from the outcome (after any punishment timeout) to the next stimulus. It includes 2 s to drink, 0.1 s to arm Zapit and optogenetics.laserToStimulusSeconds, so a draw shorter than 2.1 s plus laserToStimulusSeconds runs as that")]
         public double ItiMinSeconds
         {
             get
@@ -1462,11 +1462,13 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Upper bound of the uniformly drawn inter-trial interval, in seconds
+        /// Upper bound of the uniformly drawn inter-trial interval, in seconds; it includes 2 s to drink, 0.1 s to arm Zapit and optogenetics.laserToStimulusSeconds (itiMinSeconds)
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("itiMaxSeconds")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="itiMaxSeconds")]
-        [System.ComponentModel.DescriptionAttribute("Upper bound of the uniformly drawn inter-trial interval, in seconds")]
+        [System.ComponentModel.DescriptionAttribute("Upper bound of the uniformly drawn inter-trial interval, in seconds; it includes " +
+            "2 s to drink, 0.1 s to arm Zapit and optogenetics.laserToStimulusSeconds (itiMin" +
+            "Seconds)")]
         public double ItiMaxSeconds
         {
             get

@@ -63,31 +63,35 @@ server code in `zapit/+zapit/+interfaces/@TCPserver`.
   BehaviorSubjects declared by the host workflow, so per-trial scopes completing never close the
   connection.
 - `main.bonsai` wiring: the `Zapit` group under `HardwareDevices` connects only when the task YAML
-  has `optogenetics.useZapit: true`, with `Host`/`Port` mapped from the rig YAML `zapit` block. In
-  `StimuliPresentation`, trials whose `OptogeneticEnabled` flag was drawn true send one
-  `StartStimulus` with the trial's `OptogeneticCondition`, `OptogeneticDuration`,
-  and `OptogeneticPower` (the task's `laserPowerMw`) (Zapit times the duration itself; `HardwareTriggered` comes from
-  the rig YAML `zapit` block, see the timing model below). Repeat trials copy the original trial's
-  draw, so with `optogenetics.noLaserOnRepeats: false` a repeat presents the same condition again;
-  with `true` (the default) repeats are never stimulated.
+  has `optogenetics.useZapit: true`, with `Host`/`Port` mapped from the rig YAML `zapit` block, and
+  stops the experiment at startup when Zapit's `GetNumConditions` differs from the task's Zapit file
+  (`CheckZapitConditionCount`). In `TrialLoop`, before each trial, `ArmZapit` sends one
+  `StartStimulus` on a trial whose `OptogeneticEnabled` was drawn true, with the trial's
+  `OptogeneticCondition`, `OptogeneticDuration` (the task's `laserDurationSeconds`; Zapit times it
+  itself) and `OptogeneticPower` (the task's `laserPowerMw`), `HardwareTriggered` from the rig YAML
+  `zapit` block; laser-off trials send nothing. Repeat trials copy the original trial's draw, so
+  with `optogenetics.noLaserOnRepeats: false` a repeat presents the same condition again; with
+  `true` (the default) repeats are never stimulated.
   Every reply is logged to `BonsaiData\BonsaiData_ZapitReplies` alongside `BonsaiData_Trial` on the same Harp clock.
 
 ### Timing model
 
-Two modes, selected per rig by `zapit.hardwareTriggered` in the rig YAML.
+Every trial runs `ArmZapit`, a 0.1 s wait, `StartLaser` (which pulses `zapit.triggerLine` on every
+trial, laser on or off), then a wait of the task's `optogenetics.laserToStimulusSeconds`, then
+`ExecuteTrial`, which commands the stimulus at once (`stimulusOnsetTime`). So the laser leads the
+stimulus. Two modes, selected per rig by `zapit.hardwareTriggered` in the rig YAML:
 
-- **Software timed** (`hardwareTriggered: false`): the command is sent at stimulus onset and Zapit
-  starts the waveform on receipt, plus `StartDelay`. Onset is the TCP round trip plus Zapit's DAQ
-  write after the visual and auditory onset, typically a few tens of milliseconds, and is known only
-  from Zapit's reply time.
-- **TTL triggered** (`hardwareTriggered: true`): the same command carries the `hardwareTriggered`
-  flag, so Zapit loads the waveforms and waits for its DAQ trigger input. When Zapit's reply
-  confirms it is armed, the workflow writes `zapit.triggerLine` to the behavior board `TriggerPulse`
-  subject, which pulses that DO line with the width in `pulseWidths` (DO3, 5 ms in the template).
+- **TTL triggered** (`hardwareTriggered: true`): the command carries the `hardwareTriggered` flag,
+  so Zapit loads the waveforms and waits for its DAQ trigger input; `StartLaser` writes
+  `zapit.triggerLine` to the behavior board `TriggerPulse` subject 0.1 s after the command, without
+  waiting for Zapit's reply (BACKLOG, For Pip), and the board pulses that DO line for its width in
+  rig.yml's `outputs` (3000 ms on BLUE-OPTO-2, 5 ms in the template). Laser onset is the TTL edge,
+  in the behavior board's Harp log, `laserToStimulusSeconds` before `stimulusOnsetTime`.
   `RewardCounter` counts only DO1 and DO2 pulses, so the trigger never registers as water.
-  Laser onset is then the TTL edge, recorded on the Harp clock in the behavior board log, so the
-  exact onset is known per trial. The arming still happens at stimulus onset, so the laser lags the
-  visual and auditory onset by the same round trip as above; arming earlier in the trial is the next
-  step if a zero lag is required. Requires a cable from that DO line to the Zapit DAQ trigger input.
+  Requires a cable from that DO line to the Zapit DAQ trigger input.
+- **Software timed** (`hardwareTriggered: false`): Zapit starts the waveform when the command
+  arrives, about 0.1 s before the trigger pulse plus the TCP round trip and Zapit's DAQ write, so
+  about `laserToStimulusSeconds` + 0.1 s before the stimulus; onset is known only from Zapit's reply time.
 
-Laser power and ramp-down are not sent: they come from the conditions file loaded in Zapit.
+Laser power is sent with each `StartStimulus` (the task's `laserPowerMw`, overriding the conditions
+file's); the ramp-down comes from the conditions file loaded in Zapit.
