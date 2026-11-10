@@ -82,6 +82,13 @@
           "title": "LaserDurationSeconds",
           "type": "number"
         },
+        "laserToStimulusSeconds": {
+          "default": 0.5,
+          "description": "From laser on (the trial's trigger) to the start of the trial's stimulus sequence, in seconds, on every trial whether the laser is on or not; the stimulus itself comes about 0.1-0.25 s later, varying by trial (stimulusOnsetTime is the true onset). The corridor's laserToStimulusSeconds is exact; this one is not",
+          "minimum": 0,
+          "title": "LaserToStimulusSeconds",
+          "type": "number"
+        },
         "noLaserOnRepeats": {
           "default": true,
           "description": "Whether repeat trials never have the laser on",

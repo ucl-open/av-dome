@@ -50,6 +50,7 @@ taskParameters:
     laserPowerMw: 3.0              # mW on laser-on trials, every condition (avdome_main_initialstim.yml's laserPowerInMW, BLUE-OPTO-2, 10 Nov 2026)
     laserOnProbability: 0.5
     laserDurationSeconds: 2.5      # s
+    laserToStimulusSeconds: 0.5    # s, laser on to the stimulus sequence (the stimulus ~0.1-0.25 s later); every trial
     noLaserOnRepeats: true
     balancedConditions: true
     trialsBeforeLaser: 20

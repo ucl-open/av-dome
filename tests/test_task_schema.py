@@ -128,6 +128,16 @@ def test_the_laser_delay_is_gone():
     assert "OptogeneticDelay" not in (CONFIG.parent / "src" / "main.bonsai").read_text(encoding="utf-8-sig")
 
 
+@pytest.mark.parametrize("path", TASK_FILES, ids=lambda p: p.name)
+def test_laser_to_stimulus_is_the_task_s_and_sets_the_wait(path):
+    # Pip, 10 Nov 2026: the fixed 0.5 s wait between the laser's trigger and ExecuteTrial is the task's
+    # laserToStimulusSeconds (0.5 keeps the timing), on every trial.
+    opto = yaml.safe_load(path.read_text())["taskParameters"]["optogenetics"]
+    assert opto["laserToStimulusSeconds"] == 0.5
+    workflow = (CONFIG.parent / "src" / "main.bonsai").read_text(encoding="utf-8-sig")
+    assert '<Property Name="DueSeconds" Selector="TaskParameters.Optogenetics.LaserToStimulusSeconds" />' in workflow
+
+
 def test_target_modality_is_visual_or_auditory():
     data = yaml.safe_load((CONFIG / "task-discrimination.yml").read_text())["taskParameters"]
     UclOpenAvDomeTaskParameters.model_validate({**data, "targetModality": "auditory"})

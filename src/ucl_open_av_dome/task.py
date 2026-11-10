@@ -188,6 +188,7 @@ class OptogeneticsSettings(BaseSchema):
     )
     laser_on_probability: Double = Field(default=0.75, ge=0, le=1, description="Probability that a trial after trials_before_laser is a laser-on trial")
     laser_duration_seconds: Double = Field(default=1.5, ge=0, description="How long the laser stays on, in seconds (a timed stimulus)")
+    laser_to_stimulus_seconds: Double = Field(default=0.5, ge=0, description="From laser on (the trial's trigger) to the start of the trial's stimulus sequence, in seconds, on every trial whether the laser is on or not; the stimulus itself comes about 0.1-0.25 s later, varying by trial (stimulusOnsetTime is the true onset). The corridor's laserToStimulusSeconds is exact; this one is not")
     no_laser_on_repeats: Bool = Field(default=True, description="Whether repeat trials never have the laser on")
     balanced_conditions: Bool = Field(default=True, description="Draw conditions from a shuffled queue, so each is used equally often, rather than independently each trial")
     trials_before_laser: Int = Field(default=0, ge=0, description="Trials at the experiment's start with no laser-on trial among them (counted by TrialCount, repeats included)")

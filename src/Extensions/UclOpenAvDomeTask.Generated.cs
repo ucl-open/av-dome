@@ -237,6 +237,8 @@ namespace UclOpenAvDomeTask
     
         private double _laserDurationSeconds;
     
+        private double _laserToStimulusSeconds;
+    
         private bool _noLaserOnRepeats;
     
         private bool _balancedConditions;
@@ -249,6 +251,7 @@ namespace UclOpenAvDomeTask
             _zapitConfigPath = "";
             _laserOnProbability = 0.75D;
             _laserDurationSeconds = 1.5D;
+            _laserToStimulusSeconds = 0.5D;
             _noLaserOnRepeats = true;
             _balancedConditions = true;
             _trialsBeforeLaser = 0;
@@ -261,6 +264,7 @@ namespace UclOpenAvDomeTask
             _laserPowerMw = other._laserPowerMw;
             _laserOnProbability = other._laserOnProbability;
             _laserDurationSeconds = other._laserDurationSeconds;
+            _laserToStimulusSeconds = other._laserToStimulusSeconds;
             _noLaserOnRepeats = other._noLaserOnRepeats;
             _balancedConditions = other._balancedConditions;
             _trialsBeforeLaser = other._trialsBeforeLaser;
@@ -362,6 +366,24 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
+        /// From laser on (the trial's trigger) to the start of the trial's stimulus sequence, in seconds, on every trial whether the laser is on or not; the stimulus itself comes about 0.1-0.25 s later, varying by trial (stimulusOnsetTime is the true onset). The corridor's laserToStimulusSeconds is exact; this one is not
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("laserToStimulusSeconds")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="laserToStimulusSeconds")]
+        [System.ComponentModel.DescriptionAttribute(@"From laser on (the trial's trigger) to the start of the trial's stimulus sequence, in seconds, on every trial whether the laser is on or not; the stimulus itself comes about 0.1-0.25 s later, varying by trial (stimulusOnsetTime is the true onset). The corridor's laserToStimulusSeconds is exact; this one is not")]
+        public double LaserToStimulusSeconds
+        {
+            get
+            {
+                return _laserToStimulusSeconds;
+            }
+            set
+            {
+                _laserToStimulusSeconds = value;
+            }
+        }
+    
+        /// <summary>
         /// Whether repeat trials never have the laser on
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("noLaserOnRepeats")]
@@ -434,6 +456,7 @@ namespace UclOpenAvDomeTask
             stringBuilder.Append("LaserPowerMw = " + _laserPowerMw + ", ");
             stringBuilder.Append("LaserOnProbability = " + _laserOnProbability + ", ");
             stringBuilder.Append("LaserDurationSeconds = " + _laserDurationSeconds + ", ");
+            stringBuilder.Append("LaserToStimulusSeconds = " + _laserToStimulusSeconds + ", ");
             stringBuilder.Append("NoLaserOnRepeats = " + _noLaserOnRepeats + ", ");
             stringBuilder.Append("BalancedConditions = " + _balancedConditions + ", ");
             stringBuilder.Append("TrialsBeforeLaser = " + _trialsBeforeLaser);
