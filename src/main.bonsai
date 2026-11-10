@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<WorkflowBuilder Version="2.9.0"
+<WorkflowBuilder Version="2.9.1"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xmlns:p1="clr-namespace:;assembly=Extensions"
                  xmlns:p2="clr-namespace:UclOpenAvDome;assembly=Extensions"
@@ -2068,7 +2068,7 @@
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="io:CsvReader">
-                          <io:FileName>C:\RigConfigs\SpeakerCalibration\Speaker_000_FIR_filter.csv</io:FileName>
+                          <io:FileName>C:\RigConfigs\SpeakerCalibration\Speaker_001_FIR_filter.csv</io:FileName>
                           <io:ScanPattern>%f</io:ScanPattern>
                           <io:SkipRows>1</io:SkipRows>
                         </Expression>
@@ -2143,7 +2143,7 @@
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="p1:ChannelActivation">
                             <p1:Channels>
-                              <p1:int>0</p1:int>
+                              <p1:int>1</p1:int>
                             </p1:Channels>
                             <p1:Gain>
                               <p1:double>1</p1:double>
@@ -2305,7 +2305,7 @@
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="dsp:FirFilter">
                             <dsp:Anchor>0</dsp:Anchor>
-                            <dsp:Kernel>0,-1.36E-07,-3.37E-07,-1.08E-07,-1.89E-07,5.065E-06,7.376E-06,-7.57E-07,-1.177E-05,-1.8473E-05,-1.264E-06,1.5643E-05,9.379E-06,-4.39E-07,3.6342E-05,1.8949E-05,-9.9912E-05,-4.5718E-05,6.6667E-05,6.9131E-05,9.238E-06,-7.6379E-05,4.0976E-05,3.657E-06,-0.00017001,-7.99E-07,0.000230875,0.000183539,-0.000108699,-0.00015136,-0.000235476,-0.000292678,0.000320442,0.000601378,0.000179129,-0.000408907,-0.000442713,6.9601E-05,0.000266883,-0.000218107,-0.000633393,0.00092913,0.000599063,-0.001186341,0.001309873,0.000711906,-0.002539347,-0.000954633,0.000428081,0.001569681,0.002072222,-0.00040469,-0.001324259,-0.001367712,-0.001119049,0.001217565,0.00204705,-0.000222627,-0.001470617,-0.000220031,0.00108786,3.7281E-05,-0.000417031,0.00188847,-0.001313099,-0.003727528,0.001396711,0.001793161,0.00046268,0.000697762,0.000523254,0.000783799,-0.0017698,-0.002803865,-0.003398083,0.002659498,0.006924046,-0.00336246,-0.001613983,0.004565317,0.001337448,-0.002476292,-0.008718901,-0.002533492,0.001970163,0.004349419,0.01564217,0.002802464,-0.01408997,-0.01194645,-0.003932427,0.009863163,0.009169235,-0.003014962,-0.000651998,0.00508762,-0.001431792,-0.005944098,-0.005794993,-0.003275499,0.009952893,0.009038511,-0.005856681,-0.011225,0.001670679,0.01696133,-0.002029775,-0.008673759,-0.002540187,-0.007578103,0.01159265,-0.007141871,-0.00910576,0.03060134,-0.002469984,-0.005635545,0.0103214,-0.03193246,-0.01637087,0.01615958,0.007785107,0.007746451,0.02098331,0.02283235,-0.004984386,-0.02901064,-0.09020652,-0.2192184,0.8473704,-0.2192184,-0.09020652,-0.02901064,-0.004984386,0.02283235,0.02098331,0.007746451,0.007785107,0.01615958,-0.01637087,-0.03193246,0.0103214,-0.005635545,-0.002469984,0.03060134,-0.00910576,-0.007141871,0.01159265,-0.007578103,-0.002540187,-0.008673759,-0.002029775,0.01696133,0.001670679,-0.011225,-0.005856681,0.009038511,0.009952893,-0.003275499,-0.005794993,-0.005944098,-0.001431792,0.00508762,-0.000651998,-0.003014962,0.009169235,0.009863163,-0.003932427,-0.01194645,-0.01408997,0.002802464,0.01564217,0.004349419,0.001970163,-0.002533492,-0.008718901,-0.002476292,0.001337448,0.004565317,-0.001613983,-0.00336246,0.006924046,0.002659498,-0.003398083,-0.002803865,-0.0017698,0.000783799,0.000523254,0.000697762,0.00046268,0.001793161,0.001396711,-0.003727528,-0.001313099,0.00188847,-0.000417031,3.7281E-05,0.00108786,-0.000220031,-0.001470617,-0.000222627,0.00204705,0.001217565,-0.001119049,-0.001367712,-0.001324259,-0.00040469,0.002072222,0.001569681,0.000428081,-0.000954633,-0.002539347,0.000711906,0.001309873,-0.001186341,0.000599063,0.00092913,-0.000633393,-0.000218107,0.000266883,6.9601E-05,-0.000442713,-0.000408907,0.000179129,0.000601378,0.000320442,-0.000292678,-0.000235476,-0.00015136,-0.000108699,0.000183539,0.000230875,-7.99E-07,-0.00017001,3.657E-06,4.0976E-05,-7.6379E-05,9.238E-06,6.9131E-05,6.6667E-05,-4.5718E-05,-9.9912E-05,1.8949E-05,3.6342E-05,-4.39E-07,9.379E-06,1.5643E-05,-1.264E-06,-1.8473E-05,-1.177E-05,-7.57E-07,7.376E-06,5.065E-06,-1.89E-07,-1.08E-07,-3.37E-07,-1.36E-07,0</dsp:Kernel>
+                            <dsp:Kernel>0,4.7E-08,1.154E-06,-2.076E-06,-1.722E-06,1.17E-05,-1.4776E-05,-1.3188E-05,4.2298E-05,-1.6315E-05,-3.22E-05,2.4086E-05,2.4426E-05,3.9093E-05,-0.000118967,-8.7546E-05,0.00021525,6.6528E-05,-0.000169878,-2.298E-05,9.3782E-05,-5.6629E-05,-6.2758E-05,0.000108385,1.1072E-05,-4.6444E-05,7.8673E-05,-6.49E-05,-0.000308132,0.000494876,0.000358266,-0.001164568,0.000378073,0.000812632,-0.000981534,7.6479E-05,0.000578514,0.001120291,-0.001268406,-0.002900032,0.003508712,0.001036631,-0.003153429,0.002129841,-0.000289979,-0.001678652,0.00190359,-0.000142874,-0.000906952,-0.000227603,0.000150623,0.001406972,5.3729E-05,-0.002650084,0.000963957,0.003987992,-0.003485177,-0.003023837,0.004495821,-0.001253641,-0.004992489,0.008852083,0.007608187,-0.01842491,-0.00611305,0.02077981,-0.001982018,-0.01054297,0.005500925,0.001204349,-0.002277777,-0.003125771,0.004798448,0.002931341,-0.01233616,0.009725605,0.01251181,-0.0218838,-0.008494301,0.02275979,0.008911223,-0.01864406,-0.005461465,0.01368931,-0.00807551,-0.005684614,0.02019121,-0.002177451,-0.02744851,0.01169069,0.03662194,-0.03159975,-0.03231063,0.04626095,0.000792843,-0.02698283,0.0245627,-0.007922879,-0.01649271,0.01474254,0.01084255,-0.004834156,-0.03102049,0.01321055,0.03544996,-0.02151893,-0.006056316,0.005700161,-0.0195354,0.01189964,0.03074726,-0.02313619,-0.04214842,0.04430675,0.03652684,-0.05827624,-0.007686173,0.05591464,-0.01675372,-0.06709502,0.04418761,0.06621348,-0.09342121,-0.01032904,0.1140603,0.04813165,-0.06821024,-0.7563047,1.635387,-0.7563047,-0.06821024,0.04813165,0.1140603,-0.01032904,-0.09342121,0.06621348,0.04418761,-0.06709502,-0.01675372,0.05591464,-0.007686173,-0.05827624,0.03652684,0.04430675,-0.04214842,-0.02313619,0.03074726,0.01189964,-0.0195354,0.005700161,-0.006056316,-0.02151893,0.03544996,0.01321055,-0.03102049,-0.004834156,0.01084255,0.01474254,-0.01649271,-0.007922879,0.0245627,-0.02698283,0.000792843,0.04626095,-0.03231063,-0.03159975,0.03662194,0.01169069,-0.02744851,-0.002177451,0.02019121,-0.005684614,-0.00807551,0.01368931,-0.005461465,-0.01864406,0.008911223,0.02275979,-0.008494301,-0.0218838,0.01251181,0.009725605,-0.01233616,0.002931341,0.004798448,-0.003125771,-0.002277777,0.001204349,0.005500925,-0.01054297,-0.001982018,0.02077981,-0.00611305,-0.01842491,0.007608187,0.008852083,-0.004992489,-0.001253641,0.004495821,-0.003023837,-0.003485177,0.003987992,0.000963957,-0.002650084,5.3729E-05,0.001406972,0.000150623,-0.000227603,-0.000906952,-0.000142874,0.00190359,-0.001678652,-0.000289979,0.002129841,-0.003153429,0.001036631,0.003508712,-0.002900032,-0.001268406,0.001120291,0.000578514,7.6479E-05,-0.000981534,0.000812632,0.000378073,-0.001164568,0.000358266,0.000494876,-0.000308132,-6.49E-05,7.8673E-05,-4.6444E-05,1.1072E-05,0.000108385,-6.2758E-05,-5.6629E-05,9.3782E-05,-2.298E-05,-0.000169878,6.6528E-05,0.00021525,-8.7546E-05,-0.000118967,3.9093E-05,2.4426E-05,2.4086E-05,-3.22E-05,-1.6315E-05,4.2298E-05,-1.3188E-05,-1.4776E-05,1.17E-05,-1.722E-06,-2.076E-06,1.154E-06,4.7E-08,0</dsp:Kernel>
                           </Combinator>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
@@ -2807,7 +2807,7 @@
             </Expression>
             <Expression xsi:type="gui:ButtonBuilder">
               <gui:Name>StartExperiment</gui:Name>
-              <gui:Enabled>true</gui:Enabled>
+              <gui:Enabled>false</gui:Enabled>
               <gui:Visible>true</gui:Visible>
               <gui:Text>Start</gui:Text>
             </Expression>
@@ -2874,7 +2874,7 @@
             </Expression>
             <Expression xsi:type="gui:ComboBoxBuilder">
               <gui:Name>Mouse ID</gui:Name>
-              <gui:Enabled>false</gui:Enabled>
+              <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
               <gui:Items>
                 <gui:string>Dummy</gui:string>
@@ -2899,7 +2899,7 @@
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:ComboBoxBuilder">
               <gui:Name>Training</gui:Name>
-              <gui:Enabled>false</gui:Enabled>
+              <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
               <gui:Items>
                 <gui:string>Stage 0</gui:string>
@@ -2940,7 +2940,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>00:37:01</gui:Text>
+              <gui:Text>00:01:10</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -2965,7 +2965,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>345</gui:Text>
+              <gui:Text>0</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -2989,7 +2989,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>Left</gui:Text>
+              <gui:Text>Right</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -3039,7 +3039,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>1</gui:Text>
+              <gui:Text>2</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -3089,7 +3089,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>-60</gui:Text>
+              <gui:Text>60</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -3139,7 +3139,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>471</gui:Text>
+              <gui:Text>0</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -3223,7 +3223,7 @@
             <Expression xsi:type="gui:LabelBuilder">
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>48.83</gui:Text>
+              <gui:Text>0.00</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:GroupBoxBuilder">
@@ -3452,7 +3452,7 @@
               <gui:Name>BLANK</gui:Name>
               <gui:Enabled>true</gui:Enabled>
               <gui:Visible>true</gui:Visible>
-              <gui:Text>3600,11100,13200,12000,10800;</gui:Text>
+              <gui:Text>0,0,0,0,0;</gui:Text>
             </Expression>
             <Expression xsi:type="VisualizerMapping" />
             <Expression xsi:type="gui:ButtonBuilder">
@@ -3712,7 +3712,7 @@
               </PropertyMappings>
             </Expression>
             <Expression xsi:type="gui:GroupBoxBuilder">
-              <gui:Enabled>true</gui:Enabled>
+              <gui:Enabled>false</gui:Enabled>
               <gui:Visible>true</gui:Visible>
               <gui:Text>Spout Position</gui:Text>
             </Expression>
@@ -3769,7 +3769,7 @@
               </PropertyMappings>
             </Expression>
             <Expression xsi:type="gui:GroupBoxBuilder">
-              <gui:Enabled>true</gui:Enabled>
+              <gui:Enabled>false</gui:Enabled>
               <gui:Visible>true</gui:Visible>
               <gui:Text>Flush Valves</gui:Text>
             </Expression>
@@ -6834,7 +6834,7 @@ Item4 as ExposureTime)</scr:Expression>
                                             <Property Name="FileName" />
                                           </Expression>
                                           <Expression xsi:type="io:CsvWriter">
-                                            <io:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\VideoData_Camera1.csv</io:FileName>
+                                            <io:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 4_date-2026-11-04T13-29-52\Cameras\VideoData_Camera1.csv</io:FileName>
                                             <io:Append>false</io:Append>
                                             <io:Overwrite>true</io:Overwrite>
                                             <io:Suffix>None</io:Suffix>
@@ -6928,7 +6928,7 @@ Item4 as ExposureTime)</scr:Expression>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
-                                        <cv:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\VideoData_Camera1.avi</cv:FileName>
+                                        <cv:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 4_date-2026-11-04T13-29-52\Cameras\VideoData_Camera1.avi</cv:FileName>
                                         <cv:Suffix>None</cv:Suffix>
                                         <cv:Buffered>true</cv:Buffered>
                                         <cv:Overwrite>false</cv:Overwrite>
@@ -7070,7 +7070,7 @@ Item4 as ExposureTime)</scr:Expression>
                                             <Property Name="FileName" />
                                           </Expression>
                                           <Expression xsi:type="io:CsvWriter">
-                                            <io:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\VideoData_Camera2.csv</io:FileName>
+                                            <io:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 4_date-2026-11-04T13-29-52\Cameras\VideoData_Camera2.csv</io:FileName>
                                             <io:Append>false</io:Append>
                                             <io:Overwrite>true</io:Overwrite>
                                             <io:Suffix>None</io:Suffix>
@@ -7164,7 +7164,7 @@ Item4 as ExposureTime)</scr:Expression>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
-                                        <cv:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\VideoData_Camera2.avi</cv:FileName>
+                                        <cv:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 4_date-2026-11-04T13-29-52\Cameras\VideoData_Camera2.avi</cv:FileName>
                                         <cv:Suffix>None</cv:Suffix>
                                         <cv:Buffered>true</cv:Buffered>
                                         <cv:Overwrite>true</cv:Overwrite>
@@ -7306,7 +7306,7 @@ Item4 as ExposureTime)</scr:Expression>
                                             <Property Name="FileName" />
                                           </Expression>
                                           <Expression xsi:type="io:CsvWriter">
-                                            <io:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\VideoData_Camera3.csv</io:FileName>
+                                            <io:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 4_date-2026-11-04T13-29-52\Cameras\VideoData_Camera3.csv</io:FileName>
                                             <io:Append>false</io:Append>
                                             <io:Overwrite>true</io:Overwrite>
                                             <io:Suffix>None</io:Suffix>
@@ -7400,7 +7400,7 @@ Item4 as ExposureTime)</scr:Expression>
                                     </Expression>
                                     <Expression xsi:type="Combinator">
                                       <Combinator xsi:type="cv:VideoWriter">
-                                        <cv:FileName>C:\data\AV_Dome\sub-GN014\ses-Stage 4_date-2026-10-28T15-25-48\Cameras\VideoData_Camera3.avi</cv:FileName>
+                                        <cv:FileName>C:\data\AV_Dome\sub-Dummy\ses-Stage 4_date-2026-11-04T13-29-52\Cameras\VideoData_Camera3.avi</cv:FileName>
                                         <cv:Suffix>None</cv:Suffix>
                                         <cv:Buffered>true</cv:Buffered>
                                         <cv:Overwrite>true</cv:Overwrite>
@@ -8060,10 +8060,10 @@ Item4 as ExposureTime)</scr:Expression>
                     <Combinator xsi:type="p1:InitialiseTrial">
                       <p1:trainingStageId>4</p1:trainingStageId>
                       <p1:TrialType>-1</p1:TrialType>
-                      <p1:WasCorrect>true</p1:WasCorrect>
-                      <p1:WasTimeout>false</p1:WasTimeout>
+                      <p1:WasCorrect>false</p1:WasCorrect>
+                      <p1:WasTimeout>true</p1:WasTimeout>
                       <p1:SeedOffset>1</p1:SeedOffset>
-                      <p1:TrialNumber>344</p1:TrialNumber>
+                      <p1:TrialNumber>10</p1:TrialNumber>
                     </Combinator>
                   </Expression>
                   <Expression xsi:type="WorkflowOutput" />
@@ -8863,7 +8863,7 @@ Item4 as ExposureTime)</scr:Expression>
                         </Expression>
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="gl:CreateVector3">
-                            <gl:X>-60</gl:X>
+                            <gl:X>60</gl:X>
                             <gl:Y>15</gl:Y>
                             <gl:Z>0</gl:Z>
                           </Combinator>
@@ -9153,17 +9153,17 @@ Item4 as ExposureTime)</scr:Expression>
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="BonVision:Primitives.DrawGratings.bonsai">
-                          <LocationX>60</LocationX>
-                          <LocationY>15</LocationY>
+                          <LocationX>0</LocationX>
+                          <LocationY>0</LocationY>
                           <Layer>0</Layer>
                           <ExtentX>100</ExtentX>
                           <ExtentY>100</ExtentY>
                           <SpatialFrequency>0.06666667</SpatialFrequency>
                           <TemporalFrequency>0</TemporalFrequency>
-                          <Phase>298.032227</Phase>
+                          <Phase>85.51527</Phase>
                           <Angle>0</Angle>
                           <SquareWave>false</SquareWave>
-                          <Contrast>0.5</Contrast>
+                          <Contrast>0</Contrast>
                           <DutyCycle xsi:nil="true" />
                           <Radius>1</Radius>
                           <Aperture>0.4</Aperture>
@@ -9574,6 +9574,36 @@ Item4 as ExposureTime)</scr:Expression>
 Item2.Item1 as targetSide,
 Item2.Item2 as autoReward) </scr:Expression>
                   </Expression>
+                  <Expression xsi:type="Annotation">
+                    <Name>AUTO REWARDS WERE HANDLED INCORRECTLY didn't have the time to fix, so removed for now to get it working</Name>
+                    <Text><![CDATA[AUTO REWARDS WERE HANDLED INCORRECTLY didn't have the time to fix, so removed for now to get it working]]></Text>
+                  </Expression>
+                  <Expression xsi:type="rx:Condition">
+                    <Name>NotMiss?</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="MemberSelector">
+                          <Selector>Response</Selector>
+                        </Expression>
+                        <Expression xsi:type="Equal">
+                          <Operand xsi:type="StringProperty">
+                            <Value>NoResponse</Value>
+                          </Operand>
+                        </Expression>
+                        <Expression xsi:type="BitwiseNot" />
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
+                        <Edge From="2" To="3" Label="Source1" />
+                        <Edge From="3" To="4" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
                   <Expression xsi:type="rx:Condition">
                     <Name>Correct?</Name>
                     <Workflow>
@@ -9641,82 +9671,6 @@ Item2.Item2 as autoReward) </scr:Expression>
                       </Edges>
                     </Workflow>
                   </Expression>
-                  <Expression xsi:type="rx:Condition">
-                    <Name>AutoReward?</Name>
-                    <Workflow>
-                      <Nodes>
-                        <Expression xsi:type="WorkflowInput">
-                          <Name>Source1</Name>
-                        </Expression>
-                        <Expression xsi:type="MemberSelector">
-                          <Selector>autoReward</Selector>
-                        </Expression>
-                        <Expression xsi:type="WorkflowOutput" />
-                      </Nodes>
-                      <Edges>
-                        <Edge From="0" To="1" Label="Source1" />
-                        <Edge From="1" To="2" Label="Source1" />
-                      </Edges>
-                    </Workflow>
-                  </Expression>
-                  <Expression xsi:type="rx:Sink">
-                    <Name>RewardResponseSide</Name>
-                    <Workflow>
-                      <Nodes>
-                        <Expression xsi:type="WorkflowInput">
-                          <Name>Source1</Name>
-                        </Expression>
-                        <Expression xsi:type="MemberSelector">
-                          <Selector>Response</Selector>
-                        </Expression>
-                        <Expression xsi:type="MulticastSubject">
-                          <Name>RewardSide</Name>
-                        </Expression>
-                        <Expression xsi:type="WorkflowOutput" />
-                      </Nodes>
-                      <Edges>
-                        <Edge From="0" To="1" Label="Source1" />
-                        <Edge From="1" To="2" Label="Source1" />
-                        <Edge From="2" To="3" Label="Source1" />
-                      </Edges>
-                    </Workflow>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="StringProperty">
-                      <Value>IncorrectAutoRewarded</Value>
-                    </Combinator>
-                  </Expression>
-                  <Expression xsi:type="Combinator">
-                    <Combinator xsi:type="rx:Merge" />
-                  </Expression>
-                  <Expression xsi:type="Annotation">
-                    <Name>Give animal time to drink</Name>
-                    <Text><![CDATA[Give animal time to drink]]></Text>
-                  </Expression>
-                  <Expression xsi:type="IncludeWorkflow" Path="Extensions\HarpDelay.bonsai">
-                    <DueSeconds>2</DueSeconds>
-                  </Expression>
-                  <Expression xsi:type="IncludeWorkflow" Path="Extensions\WithdrawSpouts.bonsai" />
-                  <Expression xsi:type="rx:Condition">
-                    <Name>NotAutoReward?</Name>
-                    <Workflow>
-                      <Nodes>
-                        <Expression xsi:type="WorkflowInput">
-                          <Name>Source1</Name>
-                        </Expression>
-                        <Expression xsi:type="MemberSelector">
-                          <Selector>autoReward</Selector>
-                        </Expression>
-                        <Expression xsi:type="BitwiseNot" />
-                        <Expression xsi:type="WorkflowOutput" />
-                      </Nodes>
-                      <Edges>
-                        <Edge From="0" To="1" Label="Source1" />
-                        <Edge From="1" To="2" Label="Source1" />
-                        <Edge From="2" To="3" Label="Source1" />
-                      </Edges>
-                    </Workflow>
-                  </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="Extensions\WithdrawSpouts.bonsai" />
                   <Expression xsi:type="rx:SelectMany">
                     <Name>PlayErrorSound</Name>
@@ -9745,6 +9699,20 @@ Item2.Item2 as autoReward) </scr:Expression>
                         <Edge From="3" To="4" Label="Source1" />
                       </Edges>
                     </Workflow>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>trial</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>IncorrectTimeoutDuration</Selector>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="DueSeconds" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="IncludeWorkflow" Path="Extensions\HarpDelay.bonsai">
+                    <DueSeconds>2</DueSeconds>
                   </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="StringProperty">
@@ -9776,6 +9744,20 @@ Item2.Item2 as autoReward) </scr:Expression>
                     </Workflow>
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="Extensions\WithdrawSpouts.bonsai" />
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>trial</Name>
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>IncorrectTimeoutDuration</Selector>
+                  </Expression>
+                  <Expression xsi:type="PropertyMapping">
+                    <PropertyMappings>
+                      <Property Name="DueSeconds" />
+                    </PropertyMappings>
+                  </Expression>
+                  <Expression xsi:type="IncludeWorkflow" Path="Extensions\HarpDelay.bonsai">
+                    <DueSeconds>2</DueSeconds>
+                  </Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="StringProperty">
                       <Value>NoResponse</Value>
@@ -9784,6 +9766,14 @@ Item2.Item2 as autoReward) </scr:Expression>
                   <Expression xsi:type="Combinator">
                     <Combinator xsi:type="rx:Merge" />
                   </Expression>
+                  <Expression xsi:type="Annotation">
+                    <Name>Give animal time to drink</Name>
+                    <Text><![CDATA[Give animal time to drink]]></Text>
+                  </Expression>
+                  <Expression xsi:type="IncludeWorkflow" Path="Extensions\HarpDelay.bonsai">
+                    <DueSeconds>2</DueSeconds>
+                  </Expression>
+                  <Expression xsi:type="IncludeWorkflow" Path="Extensions\WithdrawSpouts.bonsai" />
                   <Expression xsi:type="SubscribeSubject">
                     <Name>trial</Name>
                   </Expression>
@@ -9817,8 +9807,16 @@ Item2.Item2 as autoReward) </scr:Expression>
                         <Expression xsi:type="MemberSelector">
                           <Selector>Item2.ITI</Selector>
                         </Expression>
+                        <Expression xsi:type="Annotation">
+                          <Name>All part of ITI but need to be applied elsewhere</Name>
+                          <Text><![CDATA[All part of ITI but need to be applied elsewhere]]></Text>
+                        </Expression>
+                        <Expression xsi:type="Annotation">
+                          <Name>0.1 and 0.5 for zapit and 2 for time to drink</Name>
+                          <Text><![CDATA[0.1 and 0.5 for zapit and 2 for time to drink]]></Text>
+                        </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
-                          <scr:Expression>it -0.1</scr:Expression>
+                          <scr:Expression>it -0.1 -0.5 - 2.0</scr:Expression>
                         </Expression>
                         <Expression xsi:type="PropertyMapping">
                           <PropertyMappings>
@@ -9826,7 +9824,7 @@ Item2.Item2 as autoReward) </scr:Expression>
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="Extensions\HarpDelay.bonsai">
-                          <DueSeconds>4.75408554778159</DueSeconds>
+                          <DueSeconds>4.3385810976096346</DueSeconds>
                         </Expression>
                         <Expression xsi:type="WorkflowOutput" />
                       </Nodes>
@@ -9834,12 +9832,14 @@ Item2.Item2 as autoReward) </scr:Expression>
                         <Edge From="0" To="1" Label="Source1" />
                         <Edge From="1" To="2" Label="Source1" />
                         <Edge From="3" To="4" Label="Source1" />
-                        <Edge From="4" To="9" Label="Source1" />
+                        <Edge From="4" To="11" Label="Source1" />
                         <Edge From="5" To="6" Label="Source1" />
-                        <Edge From="6" To="7" Label="Source1" />
+                        <Edge From="6" To="9" Label="Source1" />
                         <Edge From="7" To="8" Label="Source1" />
                         <Edge From="8" To="9" Label="Source2" />
                         <Edge From="9" To="10" Label="Source1" />
+                        <Edge From="10" To="11" Label="Source2" />
+                        <Edge From="11" To="12" Label="Source1" />
                       </Edges>
                     </Workflow>
                   </Expression>
@@ -9855,33 +9855,37 @@ Item2.Item2 as autoReward) </scr:Expression>
                   <Edge From="1" To="2" Label="Source1" />
                   <Edge From="2" To="3" Label="Source2" />
                   <Edge From="3" To="4" Label="Source1" />
-                  <Edge From="4" To="5" Label="Source1" />
-                  <Edge From="4" To="8" Label="Source1" />
-                  <Edge From="4" To="20" Label="Source1" />
-                  <Edge From="5" To="6" Label="Source1" />
+                  <Edge From="4" To="6" Label="Source1" />
+                  <Edge From="4" To="18" Label="Source1" />
+                  <Edge From="5" To="6" Label="Source2" />
                   <Edge From="6" To="7" Label="Source1" />
-                  <Edge From="7" To="12" Label="Source1" />
+                  <Edge From="6" To="10" Label="Source1" />
+                  <Edge From="7" To="8" Label="Source1" />
                   <Edge From="8" To="9" Label="Source1" />
-                  <Edge From="8" To="16" Label="Source1" />
-                  <Edge From="9" To="10" Label="Source1" />
+                  <Edge From="9" To="25" Label="Source1" />
                   <Edge From="10" To="11" Label="Source1" />
-                  <Edge From="11" To="12" Label="Source2" />
-                  <Edge From="12" To="14" Label="Source1" />
-                  <Edge From="13" To="14" Label="Source2" />
+                  <Edge From="11" To="12" Label="Source1" />
+                  <Edge From="12" To="16" Label="Source1" />
+                  <Edge From="13" To="14" Label="Source1" />
                   <Edge From="14" To="15" Label="Source1" />
-                  <Edge From="15" To="23" Label="Source1" />
+                  <Edge From="15" To="16" Label="Source2" />
                   <Edge From="16" To="17" Label="Source1" />
-                  <Edge From="17" To="18" Label="Source1" />
+                  <Edge From="17" To="25" Label="Source2" />
                   <Edge From="18" To="19" Label="Source1" />
-                  <Edge From="19" To="23" Label="Source2" />
+                  <Edge From="19" To="23" Label="Source1" />
                   <Edge From="20" To="21" Label="Source1" />
                   <Edge From="21" To="22" Label="Source1" />
-                  <Edge From="22" To="23" Label="Source3" />
-                  <Edge From="23" To="25" Label="Source1" />
-                  <Edge From="24" To="25" Label="Source2" />
-                  <Edge From="25" To="26" Label="Source1" />
-                  <Edge From="26" To="27" Label="Source1" />
+                  <Edge From="22" To="23" Label="Source2" />
+                  <Edge From="23" To="24" Label="Source1" />
+                  <Edge From="24" To="25" Label="Source3" />
+                  <Edge From="25" To="27" Label="Source1" />
+                  <Edge From="26" To="27" Label="Source2" />
                   <Edge From="27" To="28" Label="Source1" />
+                  <Edge From="28" To="30" Label="Source1" />
+                  <Edge From="29" To="30" Label="Source2" />
+                  <Edge From="30" To="31" Label="Source1" />
+                  <Edge From="31" To="32" Label="Source1" />
+                  <Edge From="32" To="33" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
