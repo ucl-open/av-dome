@@ -5472,7 +5472,7 @@
             </Expression>
             <Expression xsi:type="rx:SelectMany">
               <Name>ExecuteTrial</Name>
-              <Description>One trial: the quiescent wait, the stimulus (visual, auditory or both), the response window on the lick detectors, the consequences (reward, error sound, timeout) and the inter-trial interval; ends with the trial's response data. Each trial's stimulusOnsetTime (stamped as StartAuditoryStimulus fires) and speakerIndex (the wired speaker SpatialLookup chose) are its own subjects; BuildTrialRow makes the trial's row when Response decides the choice and publishes it to TrialRow.</Description>
+              <Description>One trial: the stimulus (visual, auditory or both) at once, with no quiescent wait, the response window on the lick detectors, the consequences (reward, error sound, timeout) and the inter-trial interval; ends with the trial's response data. Each trial's stimulusOnsetTime (stamped as StartAuditoryStimulus fires) and speakerIndex (the wired speaker SpatialLookup chose) are its own subjects; BuildTrialRow makes the trial's row when Response decides the choice and publishes it to TrialRow.</Description>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="WorkflowInput">

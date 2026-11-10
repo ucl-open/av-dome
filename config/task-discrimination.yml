@@ -10,8 +10,8 @@ taskParameters:
   trialStructure:
     itiMinSeconds: 2.1            # s; Gerion's 1.5 plus 0.6: this workflow's ITI subtracts 2.1 s plus laserToStimulusSeconds (his 2.0), so 0 to 0.5 s is added as in his stages 1-4
     itiMaxSeconds: 3.1            # s; Gerion's 2.5 plus 0.6. His stage 0 (habituation) adds none: set both to 0 on the form
-    quiescentMinSeconds: 0.1      # s
-    quiescentMaxSeconds: 0.25     # s
+    quiescentMinSeconds: 0.1      # s, not used: no quiescent wait in this workflow
+    quiescentMaxSeconds: 0.25     # s, not used
     openLoopSeconds: 0.0  # s
     closedLoopSeconds: 1.5   # s
     stimulusToSpoutsInSeconds: 0.5   # s, from stimulus onset to spouts in
@@ -41,7 +41,7 @@ taskParameters:
       channel: 2
       gain: 1.0
   reward:
-    rewardProbability: 1.0
+    rewardProbability: 1.0        # not used: every correct response is rewarded
     largeRewardMultiplier: 1
     largeRewardProbability: 0.0
   repeats:
@@ -53,7 +53,7 @@ taskParameters:
     laserPowerMw: null             # mW on laser-on trials, every condition; required with optogenetics on
     laserOnProbability: 0.5
     laserDurationSeconds: 2.5      # s
-    laserToStimulusSeconds: 0.5    # s, laser on to the stimulus sequence (the stimulus ~0.1-0.25 s later); every trial
+    laserToStimulusSeconds: 0.5    # s, laser trigger to the stimulus (stimulusOnsetTime); every trial
     noLaserOnRepeats: true
     trialsBeforeLaser: 20
   trainingStages:          # row index = stage id selected in the GUI; ids past the end use the last row

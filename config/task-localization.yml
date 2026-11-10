@@ -7,8 +7,8 @@ taskParameters:
   trialStructure:
     itiMinSeconds: 4.0            # s
     itiMaxSeconds: 5.0            # s
-    quiescentMinSeconds: 0.1      # s
-    quiescentMaxSeconds: 0.25     # s
+    quiescentMinSeconds: 0.1      # s, not used: no quiescent wait in this workflow
+    quiescentMaxSeconds: 0.25     # s, not used
     openLoopSeconds: 0.0  # s
     closedLoopSeconds: 1.5   # s
     stimulusToSpoutsInSeconds: 0.5   # s, from stimulus onset to spouts in
@@ -38,7 +38,7 @@ taskParameters:
       channel: 2
       gain: 1.0
   reward:
-    rewardProbability: 1.0
+    rewardProbability: 1.0        # not used: every correct response is rewarded
     largeRewardMultiplier: 1
     largeRewardProbability: 0.0
   repeats:
@@ -50,7 +50,7 @@ taskParameters:
     laserPowerMw: 3.0              # mW on laser-on trials, every condition (avdome_main_initialstim.yml's laserPowerInMW, BLUE-OPTO-2, 10 Nov 2026)
     laserOnProbability: 0.5
     laserDurationSeconds: 2.5      # s
-    laserToStimulusSeconds: 0.5    # s, laser on to the stimulus sequence (the stimulus ~0.1-0.25 s later); every trial
+    laserToStimulusSeconds: 0.5    # s, laser trigger to the stimulus (stimulusOnsetTime); every trial
     noLaserOnRepeats: true
     trialsBeforeLaser: 20
   trainingStages:          # row index = stage id selected in the GUI; ids past the end use the last row

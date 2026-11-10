@@ -363,11 +363,11 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// From the trial's laser trigger (zapit.triggerLine) to the start of the trial's stimulus sequence, in seconds, on every trial, laser on or off and with or without Zapit; the stimulus itself comes about 0.1-0.25 s later, varying by trial (stimulusOnsetTime is the true onset). On a rig without hardware triggering the laser starts when Zapit gets the command, 0.1 s before the trigger. The corridor's laserToStimulusSeconds is exact; this one is not
+        /// From the trial's laser trigger (zapit.triggerLine) to the trial's stimulus, in seconds, on every trial, laser on or off and with or without Zapit: Bonsai waits this long on the Harp clock after the trigger, then commands the stimulus (stimulusOnsetTime, within a few ms; the screen and sound card add their own latency). On a rig without hardware triggering the laser starts when Zapit gets the command, 0.1 s before the trigger
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("laserToStimulusSeconds")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="laserToStimulusSeconds")]
-        [System.ComponentModel.DescriptionAttribute(@"From the trial's laser trigger (zapit.triggerLine) to the start of the trial's stimulus sequence, in seconds, on every trial, laser on or off and with or without Zapit; the stimulus itself comes about 0.1-0.25 s later, varying by trial (stimulusOnsetTime is the true onset). On a rig without hardware triggering the laser starts when Zapit gets the command, 0.1 s before the trigger. The corridor's laserToStimulusSeconds is exact; this one is not")]
+        [System.ComponentModel.DescriptionAttribute(@"From the trial's laser trigger (zapit.triggerLine) to the trial's stimulus, in seconds, on every trial, laser on or off and with or without Zapit: Bonsai waits this long on the Harp clock after the trigger, then commands the stimulus (stimulusOnsetTime, within a few ms; the screen and sound card add their own latency). On a rig without hardware triggering the laser starts when Zapit gets the command, 0.1 s before the trigger")]
         public double LaserToStimulusSeconds
         {
             get
@@ -399,12 +399,12 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Trials at the experiment's start with no laser-on trial among them (counted by TrialCount, repeats included)
+        /// Trials at the experiment's start with no laser-on trial among them (repeats included, as in trialNumber)
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("trialsBeforeLaser")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="trialsBeforeLaser")]
-        [System.ComponentModel.DescriptionAttribute("Trials at the experiment\'s start with no laser-on trial among them (counted by Tr" +
-            "ialCount, repeats included)")]
+        [System.ComponentModel.DescriptionAttribute("Trials at the experiment\'s start with no laser-on trial among them (repeats inclu" +
+            "ded, as in trialNumber)")]
         public int TrialsBeforeLaser
         {
             get
@@ -941,11 +941,12 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Probability that a correct response is rewarded
+        /// Meant as the probability that a correct response is rewarded. Not used: every correct response is rewarded, whatever its value (BACKLOG)
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("rewardProbability")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="rewardProbability")]
-        [System.ComponentModel.DescriptionAttribute("Probability that a correct response is rewarded")]
+        [System.ComponentModel.DescriptionAttribute("Meant as the probability that a correct response is rewarded. Not used: every cor" +
+            "rect response is rewarded, whatever its value (BACKLOG)")]
         public double RewardProbability
         {
             get
@@ -1479,11 +1480,12 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Lower bound of the uniformly drawn quiescent period, in seconds
+        /// Lower bound of a quiescent period drawn per trial, in seconds. Not used: the workflow has no quiescent wait, so changing it changes nothing (BACKLOG)
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("quiescentMinSeconds")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="quiescentMinSeconds")]
-        [System.ComponentModel.DescriptionAttribute("Lower bound of the uniformly drawn quiescent period, in seconds")]
+        [System.ComponentModel.DescriptionAttribute("Lower bound of a quiescent period drawn per trial, in seconds. Not used: the work" +
+            "flow has no quiescent wait, so changing it changes nothing (BACKLOG)")]
         public double QuiescentMinSeconds
         {
             get
@@ -1497,11 +1499,12 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Upper bound of the uniformly drawn quiescent period, in seconds
+        /// Upper bound of a quiescent period drawn per trial, in seconds. Not used: the workflow has no quiescent wait, so changing it changes nothing (BACKLOG)
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("quiescentMaxSeconds")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="quiescentMaxSeconds")]
-        [System.ComponentModel.DescriptionAttribute("Upper bound of the uniformly drawn quiescent period, in seconds")]
+        [System.ComponentModel.DescriptionAttribute("Upper bound of a quiescent period drawn per trial, in seconds. Not used: the work" +
+            "flow has no quiescent wait, so changing it changes nothing (BACKLOG)")]
         public double QuiescentMaxSeconds
         {
             get

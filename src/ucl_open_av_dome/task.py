@@ -19,8 +19,8 @@ class TrialStructure(BaseSchema):
 
     iti_min_seconds: Double = Field(default=4.0, ge=0, description="Lower bound of the uniformly drawn inter-trial interval, in seconds")
     iti_max_seconds: Double = Field(default=5.0, ge=0, description="Upper bound of the uniformly drawn inter-trial interval, in seconds")
-    quiescent_min_seconds: Double = Field(default=0.1, ge=0, description="Lower bound of the uniformly drawn quiescent period, in seconds")
-    quiescent_max_seconds: Double = Field(default=0.25, ge=0, description="Upper bound of the uniformly drawn quiescent period, in seconds")
+    quiescent_min_seconds: Double = Field(default=0.1, ge=0, description="Lower bound of a quiescent period drawn per trial, in seconds. Not used: the workflow has no quiescent wait, so changing it changes nothing (BACKLOG)")
+    quiescent_max_seconds: Double = Field(default=0.25, ge=0, description="Upper bound of a quiescent period drawn per trial, in seconds. Not used: the workflow has no quiescent wait, so changing it changes nothing (BACKLOG)")
     open_loop_seconds: Double = Field(default=0.0, ge=0, description="Open-loop period after stimulus onset, in seconds")
     closed_loop_seconds: Double = Field(default=1.5, ge=0, description="Closed-loop response period, in seconds")
     stimulus_to_spouts_in_seconds: Double = Field(
@@ -92,7 +92,7 @@ class AudioStimulus(BaseSchema):
 class RewardSettings(BaseSchema):
     """Reward delivery parameters; per-stage reward size lives in the training stage table."""
 
-    reward_probability: Double = Field(default=1.0, ge=0, le=1, description="Probability that a correct response is rewarded")
+    reward_probability: Double = Field(default=1.0, ge=0, le=1, description="Meant as the probability that a correct response is rewarded. Not used: every correct response is rewarded, whatever its value (BACKLOG)")
     large_reward_multiplier: Double = Field(default=1.0, ge=0, description="Reward size multiplier applied on large-reward trials")
     large_reward_probability: Double = Field(default=0.0, ge=0, le=1, description="Probability that a trial is a large-reward trial")
 
@@ -196,9 +196,9 @@ class OptogeneticsSettings(BaseSchema):
     )
     laser_on_probability: Double = Field(default=0.75, ge=0, le=1, description="Probability that a trial after trials_before_laser is a laser-on trial")
     laser_duration_seconds: Double = Field(default=1.5, ge=0, description="How long the laser stays on, in seconds (a timed stimulus)")
-    laser_to_stimulus_seconds: Double = Field(default=0.5, ge=0, description="From the trial's laser trigger (zapit.triggerLine) to the start of the trial's stimulus sequence, in seconds, on every trial, laser on or off and with or without Zapit; the stimulus itself comes about 0.1-0.25 s later, varying by trial (stimulusOnsetTime is the true onset). On a rig without hardware triggering the laser starts when Zapit gets the command, 0.1 s before the trigger. The corridor's laserToStimulusSeconds is exact; this one is not")
+    laser_to_stimulus_seconds: Double = Field(default=0.5, ge=0, description="From the trial's laser trigger (zapit.triggerLine) to the trial's stimulus, in seconds, on every trial, laser on or off and with or without Zapit: Bonsai waits this long on the Harp clock after the trigger, then commands the stimulus (stimulusOnsetTime, within a few ms; the screen and sound card add their own latency). On a rig without hardware triggering the laser starts when Zapit gets the command, 0.1 s before the trigger")
     no_laser_on_repeats: Bool = Field(default=True, description="Whether repeat trials never have the laser on")
-    trials_before_laser: Int = Field(default=0, ge=0, description="Trials at the experiment's start with no laser-on trial among them (counted by TrialCount, repeats included)")
+    trials_before_laser: Int = Field(default=0, ge=0, description="Trials at the experiment's start with no laser-on trial among them (repeats included, as in trialNumber)")
 
     @model_validator(mode="after")
     def _power_when_on(self) -> "OptogeneticsSettings":

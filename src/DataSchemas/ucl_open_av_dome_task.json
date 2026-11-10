@@ -84,7 +84,7 @@
         },
         "laserToStimulusSeconds": {
           "default": 0.5,
-          "description": "From the trial's laser trigger (zapit.triggerLine) to the start of the trial's stimulus sequence, in seconds, on every trial, laser on or off and with or without Zapit; the stimulus itself comes about 0.1-0.25 s later, varying by trial (stimulusOnsetTime is the true onset). On a rig without hardware triggering the laser starts when Zapit gets the command, 0.1 s before the trigger. The corridor's laserToStimulusSeconds is exact; this one is not",
+          "description": "From the trial's laser trigger (zapit.triggerLine) to the trial's stimulus, in seconds, on every trial, laser on or off and with or without Zapit: Bonsai waits this long on the Harp clock after the trigger, then commands the stimulus (stimulusOnsetTime, within a few ms; the screen and sound card add their own latency). On a rig without hardware triggering the laser starts when Zapit gets the command, 0.1 s before the trigger",
           "minimum": 0,
           "title": "LaserToStimulusSeconds",
           "type": "number"
@@ -97,7 +97,7 @@
         },
         "trialsBeforeLaser": {
           "default": 0,
-          "description": "Trials at the experiment's start with no laser-on trial among them (counted by TrialCount, repeats included)",
+          "description": "Trials at the experiment's start with no laser-on trial among them (repeats included, as in trialNumber)",
           "maximum": 2147483647,
           "minimum": -2147483648,
           "title": "TrialsBeforeLaser",
@@ -246,7 +246,7 @@
       "properties": {
         "rewardProbability": {
           "default": 1.0,
-          "description": "Probability that a correct response is rewarded",
+          "description": "Meant as the probability that a correct response is rewarded. Not used: every correct response is rewarded, whatever its value (BACKLOG)",
           "maximum": 1,
           "minimum": 0,
           "title": "RewardProbability",
@@ -401,14 +401,14 @@
         },
         "quiescentMinSeconds": {
           "default": 0.1,
-          "description": "Lower bound of the uniformly drawn quiescent period, in seconds",
+          "description": "Lower bound of a quiescent period drawn per trial, in seconds. Not used: the workflow has no quiescent wait, so changing it changes nothing (BACKLOG)",
           "minimum": 0,
           "title": "QuiescentMinSeconds",
           "type": "number"
         },
         "quiescentMaxSeconds": {
           "default": 0.25,
-          "description": "Upper bound of the uniformly drawn quiescent period, in seconds",
+          "description": "Upper bound of a quiescent period drawn per trial, in seconds. Not used: the workflow has no quiescent wait, so changing it changes nothing (BACKLOG)",
           "minimum": 0,
           "title": "QuiescentMaxSeconds",
           "type": "number"
