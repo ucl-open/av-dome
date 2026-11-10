@@ -356,7 +356,7 @@ public static class DrawTrials {
     function Read-Task([string]$Name) {
         $d = (New-Object YamlDotNet.Serialization.DeserializerBuilder).Build()
         $t = $d.Deserialize((New-Object IO.StringReader ([IO.File]::ReadAllText((Join-Path $repo "config\$Name")))), [UclOpenAvDomeTask.UclOpenAvDomeTaskLogic])
-        $t.TaskParameters.Optogenetics.Enabled = $false  # no Zapit config on this machine
+        $t.TaskParameters.Optogenetics.UseZapit = $false  # no Zapit config on this machine
         $t
     }
     function Test-Trials([string]$What, $Trials, [scriptblock]$Rule) {

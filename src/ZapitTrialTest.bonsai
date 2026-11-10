@@ -89,7 +89,7 @@
               <Name>TaskConfig</Name>
             </Expression>
             <Expression xsi:type="MemberSelector">
-              <Selector>TaskParameters.Optogenetics.Enabled</Selector>
+              <Selector>TaskParameters.Optogenetics.UseZapit</Selector>
             </Expression>
             <Expression xsi:type="Combinator">
               <Combinator xsi:type="rx:Take">

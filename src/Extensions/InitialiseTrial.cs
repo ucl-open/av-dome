@@ -71,7 +71,7 @@ public class InitialiseTrial
                 return repeatTrial;
             }
 
-            if (parameters.Optogenetics.Enabled)
+            if (parameters.Optogenetics.UseZapit)
             {
                 LoadZapitConfigIfNeeded(parameters.Optogenetics.ZapitConfigPath);
             }
@@ -133,10 +133,10 @@ public class InitialiseTrial
                 "speakerLocations must not have an azimuth-0 entry; the centre sound is fixed in code.");
         }
         var optogenetics = parameters.Optogenetics;
-        if (optogenetics.Enabled && (!(optogenetics.LaserPowerMw > 0) || double.IsInfinity(optogenetics.LaserPowerMw.Value)))
+        if (optogenetics.UseZapit && (!(optogenetics.LaserPowerMw > 0) || double.IsInfinity(optogenetics.LaserPowerMw.Value)))
         {
             throw new InvalidOperationException(string.Format(
-                "optogenetics.laserPowerMw must be a power in mW above 0 when optogenetics is on; got {0}.",
+                "optogenetics.laserPowerMw must be a power in mW above 0 when useZapit is on; got {0}.",
                 optogenetics.LaserPowerMw.HasValue ? optogenetics.LaserPowerMw.Value.ToString() : "nothing"));
         }
         configChecked = true;
@@ -394,9 +394,9 @@ public class InitialiseTrial
         // Default: no optogenetic stimulation
         ClearOptogeneticParameters(trialData);
 
-        // Check if optogenetics is enabled
+        // Only when Zapit runs this experiment (useZapit)
         var optogenetics = parameters.Optogenetics;
-        if (!optogenetics.Enabled)
+        if (!optogenetics.UseZapit)
             return;
 
         if (trialsDrawn < optogenetics.TrialsBeforeLaser)
@@ -407,7 +407,7 @@ public class InitialiseTrial
         // Check if Zapit conditions are available
         if (_zapitConditions.Count == 0)
         {
-            Console.WriteLine("Warning: Optogenetics enabled but no Zapit conditions available");
+            Console.WriteLine("Warning: useZapit is on but no Zapit conditions are available");
             return;
         }
 

@@ -101,7 +101,7 @@ def test_rig_control_keeps_the_zapit_file(path):
 def test_laser_power_is_required_with_optogenetics_on():
     # Pip, 10 Nov 2026: av-dome sends and logs laserPowerMw as coen-dome-navigation does, required when on.
     data = yaml.safe_load((CONFIG / "task-discrimination.yml").read_text())["taskParameters"]
-    on = {**data["optogenetics"], "enabled": True}
+    on = {**data["optogenetics"], "useZapit": True}
     with pytest.raises(ValidationError, match="laser_power_mw is not set"):
         UclOpenAvDomeTaskParameters.model_validate({**data, "optogenetics": on})
     with pytest.raises(ValidationError):
@@ -111,7 +111,7 @@ def test_laser_power_is_required_with_optogenetics_on():
     import json
     schema = json.loads((CONFIG.parent / "src" / "DataSchemas" / "ucl_open_av_dome_task.json").read_text(encoding="utf-8"))
     rule = schema["$defs"]["OptogeneticsSettings"]
-    assert rule["if"]["properties"]["enabled"] == {"const": True} and rule["then"]["required"] == ["laserPowerMw"]
+    assert rule["if"]["properties"]["useZapit"] == {"const": True} and rule["then"]["required"] == ["laserPowerMw"]
 
 
 def test_the_trial_row_logs_the_power_sent():

@@ -63,7 +63,7 @@ server code in `zapit/+zapit/+interfaces/@TCPserver`.
   BehaviorSubjects declared by the host workflow, so per-trial scopes completing never close the
   connection.
 - `main.bonsai` wiring: the `Zapit` group under `HardwareDevices` connects only when the task YAML
-  has `optogenetics.enabled: true`, with `Host`/`Port` mapped from the rig YAML `zapit` block. In
+  has `optogenetics.useZapit: true`, with `Host`/`Port` mapped from the rig YAML `zapit` block. In
   `StimuliPresentation`, trials whose `OptogeneticEnabled` flag was drawn true send one
   `StartStimulus` with the trial's `OptogeneticCondition`, `OptogeneticDuration` and
   `OptogeneticDelay` (Zapit times the delay and duration itself; `HardwareTriggered` comes from

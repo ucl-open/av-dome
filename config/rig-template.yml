@@ -165,7 +165,7 @@ rewardValves: { left: DO1, right: DO2 }
 interPulseInterval: 50   # ms between consecutive reward pulses; must let the valve seat
 
 # Zapit optogenetics server (tcpServer section of the Zapit settings file). Only contacted
-# when the task YAML sets optogenetics.enabled: true, so non-opto rigs can leave the defaults.
+# when the task YAML sets optogenetics.useZapit: true, so non-opto rigs can leave the defaults.
 zapit:
   host: 127.0.0.1         # PC running Zapit; 127.0.0.1 when Zapit runs on this rig PC
   port: 1488

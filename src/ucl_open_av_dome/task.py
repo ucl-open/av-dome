@@ -174,12 +174,12 @@ class OptogeneticsSettings(BaseSchema):
     # that lists properties (as coen-dome-navigation's).
     model_config = ConfigDict(
         json_schema_extra={
-            "if": {"properties": {"enabled": {"const": True}}, "required": ["enabled"], "additionalProperties": True},
+            "if": {"properties": {"useZapit": {"const": True}}, "required": ["useZapit"], "additionalProperties": True},
             "then": {"properties": {"laserPowerMw": {"type": "number"}}, "required": ["laserPowerMw"], "additionalProperties": True},
         }
     )
 
-    enabled: Bool = Field(default=False, description="Whether optogenetic stimulation is enabled")
+    use_zapit: Bool = Field(default=False, description="Whether Zapit runs this experiment: every trial sends it a condition, laser on or off, and rig-control checks Zapit is answering before Go")
     zapit_config_path: String = Field(default="", description="Path to the Zapit conditions file (the one loaded in Zapit) listing the stimulation conditions. Named ...ConfigPath so rig-control keeps a copy beside the task file at Go")
     laser_power_mw: Optional[Double] = Field(
         default=None,
@@ -195,8 +195,8 @@ class OptogeneticsSettings(BaseSchema):
 
     @model_validator(mode="after")
     def _power_when_on(self) -> "OptogeneticsSettings":
-        if self.enabled and self.laser_power_mw is None:
-            raise ValueError("optogenetics is enabled but laser_power_mw is not set")
+        if self.use_zapit and self.laser_power_mw is None:
+            raise ValueError("use_zapit is on but laser_power_mw is not set")
         return self
 
 class TrainingStage(BaseSchema):

@@ -32,19 +32,19 @@
       "if": {
         "additionalProperties": true,
         "properties": {
-          "enabled": {
+          "useZapit": {
             "const": true
           }
         },
         "required": [
-          "enabled"
+          "useZapit"
         ]
       },
       "properties": {
-        "enabled": {
+        "useZapit": {
           "default": false,
-          "description": "Whether optogenetic stimulation is enabled",
-          "title": "Enabled",
+          "description": "Whether Zapit runs this experiment: every trial sends it a condition, laser on or off, and rig-control checks Zapit is answering before Go",
+          "title": "UseZapit",
           "type": "boolean"
         },
         "zapitConfigPath": {
