@@ -8,7 +8,7 @@ taskParameters:
   targetModality: visual   # visual or auditory: the modality answered at the left spout; set per mouse on the form
   rngSeed: null            # null = draw a random seed; each seed used is a RngSeed event in BonsaiData_Async
   trialStructure:
-    itiMinSeconds: 2.1            # s; Gerion's 1.5 plus 0.6: this workflow's ITI subtracts 2.6 s (his 2.0), so 0 to 0.5 s is added as in his stages 1-4
+    itiMinSeconds: 2.1            # s; Gerion's 1.5 plus 0.6: this workflow's ITI subtracts 2.1 s plus laserToStimulusSeconds (his 2.0), so 0 to 0.5 s is added as in his stages 1-4
     itiMaxSeconds: 3.1            # s; Gerion's 2.5 plus 0.6. His stage 0 (habituation) adds none: set both to 0 on the form
     quiescentMinSeconds: 0.1      # s
     quiescentMaxSeconds: 0.25     # s

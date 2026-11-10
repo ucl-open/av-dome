@@ -411,6 +411,21 @@ public static class DrawTrials {
         $drawn = @($all | Where-Object OptogeneticEnabled | ForEach-Object OptogeneticCondition | Select-Object -Unique)
         if ($drawn.Count -eq 2) { "  ok    optogenetics: every condition in the Zapit file is drawn" } else { "  FAIL  optogenetics: conditions drawn: $($drawn -join ', ') (expected 1 and 2)"; $failed++ }
         if ($missing -match 'not found') { "  ok    optogenetics: a missing Zapit file stops the experiment" } else { "  FAIL  optogenetics: a missing Zapit file: $missing"; $failed++ }
+        # Audit, 10 Nov 2026, round 2: Zapit numbers conditions by position, so a file numbered with a gap is
+        # refused, and Zapit's GetNumConditions answer must match the task's file (CheckZapitConditionCount).
+        $gap = Join-Path $bin 'zapit-gap.yml'
+        [IO.File]::WriteAllText($gap, "stimLocations01:`n  ML: [-2, 2]`nstimLocations03:`n  ML: [0, 0]`n")
+        $gapped = try { $null = [InitialiseTrial]::ReadZapitConditions($gap); 'not refused' } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; $x.Message }
+        if ($gapped -match 'exactly 1 to 2') { "  ok    optogenetics: a Zapit file numbered with a gap is refused" } else { "  FAIL  optogenetics: a Zapit file numbered 1, 3: $gapped"; $failed++ }
+        $opto.ZapitConfigPath = $zapit
+        function Get-CountCheck([int]$Value, [bool]$IsError) {
+            $reply = New-Object ZapitReply
+            $reply.Command = [ZapitCommandType]::GetNumConditions; $reply.Value = $Value; $reply.IsError = $IsError
+            try { [CheckZapitConditionCount]::Check($reply, $task); 'passed' } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; $x.Message }
+        }
+        $same = Get-CountCheck 2 $false; $more = Get-CountCheck 3 $false; $erred = Get-CountCheck 2 $true
+        if ($same -eq 'passed' -and $more -match 'Zapit has 3 conditions loaded' -and $erred -match 'with an error') { "  ok    optogenetics: Zapit's loaded condition count must match the task's Zapit file" }
+        else { "  FAIL  optogenetics: Zapit's condition count against the file: same '$same', more '$more', error '$erred'"; $failed++ }
     } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; "  FAIL  optogenetics draws: $($x.Message)"; $failed++ }
     # CreateTrialRow (Pip, 9 Nov 2026): itiSeconds is the interval drawn before the trial (the last
     # trial's, NaN on the first); the timeout follows an incorrect choice or a miss not auto-rewarded;

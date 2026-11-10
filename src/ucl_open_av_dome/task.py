@@ -177,7 +177,13 @@ class OptogeneticsSettings(BaseSchema):
     model_config = ConfigDict(
         json_schema_extra={
             "if": {"properties": {"useZapit": {"const": True}}, "required": ["useZapit"], "additionalProperties": True},
-            "then": {"properties": {"laserPowerMw": {"type": "number"}}, "required": ["laserPowerMw"], "additionalProperties": True},
+            # zapitConfigPath too (audit, 10 Nov 2026, round 2): the form said to set it first, but an empty one
+            # passed rig-control and stopped the experiment at its first trial.
+            "then": {
+                "properties": {"zapitConfigPath": {"minLength": 1}, "laserPowerMw": {"type": "number"}},
+                "required": ["laserPowerMw"],
+                "additionalProperties": True,
+            },
         }
     )
 
@@ -198,6 +204,8 @@ class OptogeneticsSettings(BaseSchema):
     def _power_when_on(self) -> "OptogeneticsSettings":
         if self.use_zapit and self.laser_power_mw is None:
             raise ValueError("use_zapit is on but laser_power_mw is not set")
+        if self.use_zapit and not self.zapit_config_path:
+            raise ValueError("use_zapit is on but zapit_config_path is empty")
         return self
 
 class TrainingStage(BaseSchema):

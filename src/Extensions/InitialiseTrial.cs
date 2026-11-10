@@ -321,7 +321,9 @@ public class InitialiseTrial
         return trialWeights.Count - 1;
     }
 
-    private static List<int> ReadZapitConditions(string configPath)
+    // The condition numbers in the Zapit file, sorted: always 1 to N. Zapit numbers conditions by their position in
+    // the file, so a gap or a repeat would send the wrong site's number (audit, 10 Nov 2026, round 2; as the corridor's).
+    public static List<int> ReadZapitConditions(string configPath)
     {
         if (string.IsNullOrEmpty(configPath))
         {
@@ -359,6 +361,15 @@ public class InitialiseTrial
             throw new InvalidOperationException("The Zapit file '" + configPath + "' lists no condition (no stimLocationsNN entry).");
         }
         conditions.Sort();
+        for (int i = 0; i < conditions.Count; i++)
+        {
+            if (conditions[i] != i + 1)
+            {
+                throw new InvalidOperationException("The Zapit file '" + configPath + "' numbers its conditions " +
+                    string.Join(", ", conditions) + ". They must be exactly 1 to " + conditions.Count +
+                    ", with no gaps or repeats, because Zapit numbers conditions by their position in the file.");
+            }
+        }
         return conditions;
     }
 

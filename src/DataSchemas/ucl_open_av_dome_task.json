@@ -107,6 +107,9 @@
       "then": {
         "additionalProperties": true,
         "properties": {
+          "zapitConfigPath": {
+            "minLength": 1
+          },
           "laserPowerMw": {
             "type": "number"
           }

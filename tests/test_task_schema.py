@@ -83,11 +83,17 @@ def test_the_discrimination_file_keeps_the_spouts_in_for_habituation():
 
 def test_the_discrimination_iti_adds_what_gerion_s_did():
     # Gerion's ITI node waits max(ITI - 2.0, 0) after his 1.5-2.5 s draw; this workflow's waits
-    # ITI - 2.6 above 2.6 s, so the file's range is his plus 0.6 s (audit of 8 Nov 2026).
+    # ITI - 0.1 - laserToStimulusSeconds - 2.0, so the file's range is his plus 0.6 s at the files'
+    # 0.5 s (audit of 8 Nov 2026). The wait it subtracts is the task's own since 10 Nov 2026 (round 2):
+    # it was a typed 0.5 after laserToStimulusSeconds became the task's, so any other value changed the ITI.
     workflow = (CONFIG.parent / "src" / "main.bonsai").read_text(encoding="utf-8-sig")
-    assert "it &gt; 2.6 ? it - 0.1 - 0.5 - 2.0 : 0.0" in workflow
-    trial = _task("task-discrimination.yml").trial_structure
-    assert (trial.iti_min_seconds, trial.iti_max_seconds) == pytest.approx((1.5 + 0.6, 2.5 + 0.6))
+    assert "it.Item1 &gt; 2.1 + it.Item2 ? it.Item1 - 0.1 - it.Item2 - 2.0 : 0.0" in workflow
+    iti = workflow.index("it.Item1 &gt; 2.1 + it.Item2")
+    assert "TaskParameters.Optogenetics.LaserToStimulusSeconds" in workflow[iti : iti + 3000]
+    task = _task("task-discrimination.yml")
+    trial = task.trial_structure
+    lead = 0.1 + task.optogenetics.laser_to_stimulus_seconds
+    assert (trial.iti_min_seconds, trial.iti_max_seconds) == pytest.approx((1.5 + lead, 2.5 + lead))
 
 
 @pytest.mark.parametrize("path", TASK_FILES, ids=lambda p: p.name)
@@ -101,7 +107,7 @@ def test_rig_control_keeps_the_zapit_file(path):
 def test_laser_power_is_required_with_optogenetics_on():
     # Pip, 10 Nov 2026: av-dome sends and logs laserPowerMw as coen-dome-navigation does, required when on.
     data = yaml.safe_load((CONFIG / "task-discrimination.yml").read_text())["taskParameters"]
-    on = {**data["optogenetics"], "useZapit": True}
+    on = {**data["optogenetics"], "useZapit": True, "zapitConfigPath": "C:\\zapit\\conditions.yml"}
     with pytest.raises(ValidationError, match="laser_power_mw is not set"):
         UclOpenAvDomeTaskParameters.model_validate({**data, "optogenetics": on})
     with pytest.raises(ValidationError):
@@ -112,6 +118,25 @@ def test_laser_power_is_required_with_optogenetics_on():
     schema = json.loads((CONFIG.parent / "src" / "DataSchemas" / "ucl_open_av_dome_task.json").read_text(encoding="utf-8"))
     rule = schema["$defs"]["OptogeneticsSettings"]
     assert rule["if"]["properties"]["useZapit"] == {"const": True} and rule["then"]["required"] == ["laserPowerMw"]
+
+
+def test_zapit_needs_its_file_in_the_model_and_the_schema():
+    # Audit, 10 Nov 2026, round 2: an empty zapitConfigPath with Zapit ticked passed rig-control's schema check and
+    # stopped the experiment at its first trial; the form says to set it first, and the corridor's schema refuses it.
+    data = yaml.safe_load((CONFIG / "task-discrimination.yml").read_text())["taskParameters"]
+    on = {**data["optogenetics"], "useZapit": True, "laserPowerMw": 2.0, "zapitConfigPath": ""}
+    with pytest.raises(ValidationError, match="zapit_config_path is empty"):
+        UclOpenAvDomeTaskParameters.model_validate({**data, "optogenetics": on})
+    jsonschema = pytest.importorskip("jsonschema")
+    import json
+    schema = json.loads((CONFIG.parent / "src" / "DataSchemas" / "ucl_open_av_dome_task.json").read_text(encoding="utf-8"))
+    task = yaml.safe_load((CONFIG / "task-discrimination.yml").read_text())
+    task["taskParameters"]["optogenetics"] = on
+    assert not jsonschema.Draft202012Validator(schema).is_valid(task)
+    task["taskParameters"]["optogenetics"] = {**on, "zapitConfigPath": "C:\\zapit\\conditions.yml"}
+    assert jsonschema.Draft202012Validator(schema).is_valid(task)
+    task["taskParameters"]["optogenetics"] = {**on, "useZapit": False}
+    assert jsonschema.Draft202012Validator(schema).is_valid(task)
 
 
 def test_the_trial_row_logs_the_power_sent():

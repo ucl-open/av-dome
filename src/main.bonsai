@@ -1377,7 +1377,7 @@
                   </Expression>
                   <Expression xsi:type="GroupWorkflow">
                     <Name>Zapit</Name>
-                    <Description>Connects to the Zapit optogenetics server only when the task YAML enables optogenetics. Commands arrive on ZapitCommands, replies leave on ZapitReplies.</Description>
+                    <Description>Connects to the Zapit optogenetics server only when the task YAML enables optogenetics. Commands arrive on ZapitCommands, replies leave on ZapitReplies. The experiment stops at startup if Zapit's loaded file has a different number of conditions from the task's Zapit file (CheckZapitConditionCount), since Zapit presents whatever it has at each condition number.</Description>
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="SubscribeSubject">
@@ -1427,11 +1427,52 @@
                                 <ReceiveTimeout>5000</ReceiveTimeout>
                               </Expression>
                               <Expression xsi:type="WorkflowOutput" />
+                              <Expression xsi:type="SubscribeSubject">
+                                <Name>ZapitReplies</Name>
+                              </Expression>
+                              <Expression xsi:type="rx:Condition">
+                                <Name>ConditionCountReply?</Name>
+                                <Description>Zapit's answer to the startup GetNumConditions query (Zapit.bonsai sends it on connecting).</Description>
+                                <Workflow>
+                                  <Nodes>
+                                    <Expression xsi:type="WorkflowInput">
+                                      <Name>Source1</Name>
+                                    </Expression>
+                                    <Expression xsi:type="scr:ExpressionTransform">
+                                      <scr:Expression>CommandCode == 4</scr:Expression>
+                                    </Expression>
+                                    <Expression xsi:type="WorkflowOutput" />
+                                  </Nodes>
+                                  <Edges>
+                                    <Edge From="0" To="1" Label="Source1" />
+                                    <Edge From="1" To="2" Label="Source1" />
+                                  </Edges>
+                                </Workflow>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="rx:Take">
+                                  <rx:Count>1</rx:Count>
+                                </Combinator>
+                              </Expression>
+                              <Expression xsi:type="SubscribeSubject">
+                                <Name>TaskConfig</Name>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="rx:Zip" />
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="p1:CheckZapitConditionCount" />
+                              </Expression>
                             </Nodes>
                             <Edges>
                               <Edge From="1" To="2" Label="Source1" />
                               <Edge From="2" To="3" Label="Source1" />
                               <Edge From="3" To="4" Label="Source1" />
+                              <Edge From="5" To="6" Label="Source1" />
+                              <Edge From="6" To="7" Label="Source1" />
+                              <Edge From="7" To="9" Label="Source1" />
+                              <Edge From="8" To="9" Label="Source2" />
+                              <Edge From="9" To="10" Label="Source1" />
                             </Edges>
                           </Workflow>
                         </Expression>
@@ -6447,11 +6488,11 @@ Item2.Item2 as autoReward) </scr:Expression>
                                 <Text><![CDATA[All part of ITI but need to be applied elsewhere]]></Text>
                               </Expression>
                               <Expression xsi:type="Annotation">
-                                <Name>0.1 and 0.5 for zapit and 2 for time to drink</Name>
-                                <Text><![CDATA[0.1 and 0.5 for zapit and 2 for time to drink]]></Text>
+                                <Name>0.1 and laserToStimulusSeconds for zapit and 2 for time to drink</Name>
+                                <Text><![CDATA[0.1 s after arming Zapit, the task's optogenetics.laserToStimulusSeconds before ExecuteTrial (0.5 in both task files) and 2 s to drink come out of the drawn ITI]]></Text>
                               </Expression>
                               <Expression xsi:type="scr:ExpressionTransform">
-                                <scr:Expression>it &gt; 2.6 ? it - 0.1 - 0.5 - 2.0 : 0.0</scr:Expression>
+                                <scr:Expression>it.Item1 &gt; 2.1 + it.Item2 ? it.Item1 - 0.1 - it.Item2 - 2.0 : 0.0</scr:Expression>
                               </Expression>
                               <Expression xsi:type="PropertyMapping">
                                 <PropertyMappings>
@@ -6462,6 +6503,15 @@ Item2.Item2 as autoReward) </scr:Expression>
                                 <DueSeconds>4.3385810976096346</DueSeconds>
                               </Expression>
                               <Expression xsi:type="WorkflowOutput" />
+                              <Expression xsi:type="SubscribeSubject">
+                                <Name>TaskConfig</Name>
+                              </Expression>
+                              <Expression xsi:type="MemberSelector">
+                                <Selector>TaskParameters.Optogenetics.LaserToStimulusSeconds</Selector>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="rx:Zip" />
+                              </Expression>
                             </Nodes>
                             <Edges>
                               <Edge From="0" To="1" Label="Source1" />
@@ -6469,7 +6519,10 @@ Item2.Item2 as autoReward) </scr:Expression>
                               <Edge From="3" To="4" Label="Source1" />
                               <Edge From="4" To="11" Label="Source1" />
                               <Edge From="5" To="6" Label="Source1" />
-                              <Edge From="6" To="9" Label="Source1" />
+                              <Edge From="6" To="15" Label="Source1" />
+                              <Edge From="13" To="14" Label="Source1" />
+                              <Edge From="14" To="15" Label="Source2" />
+                              <Edge From="15" To="9" Label="Source1" />
                               <Edge From="7" To="8" Label="Source1" />
                               <Edge From="8" To="9" Label="Source2" />
                               <Edge From="9" To="10" Label="Source1" />
