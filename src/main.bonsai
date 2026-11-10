@@ -5213,7 +5213,6 @@
                     <PropertyMappings>
                       <Property Name="ConditionNumber" Selector="OptogeneticCondition" />
                       <Property Name="StimDuration" Selector="OptogeneticDuration" />
-                      <Property Name="StartDelay" Selector="OptogeneticDelay" />
                       <Property Name="LaserPower" Selector="OptogeneticPower" />
                     </PropertyMappings>
                   </Expression>
@@ -5376,7 +5375,6 @@
                       <PropertyMappings>
                         <Property Name="ConditionNumber" Selector="OptogeneticCondition" />
                         <Property Name="StimDuration" Selector="OptogeneticDuration" />
-                        <Property Name="StartDelay" Selector="OptogeneticDelay" />
                       </PropertyMappings>
                     </Builder>
                   </Expression>

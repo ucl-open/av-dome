@@ -6,7 +6,7 @@ Fixed: `zapitConfigPath` again (renamed `zapitConditionsPath` on 9 Nov, rig-cont
 
 - **Speaker positions keep `SphericalPosition`'s `azimuth`/`elevation`**: an open-rigs type whose descriptions say degrees.
 - **Internal Trial fields keep old names** (`visualAzimuth`, `openLoopDuration`, `Optogenetic*`): only recorded names, task fields and metrics are the lab's.
-- **Laser timing names unlike the corridor's**: `laserDelaySeconds` counts from the trial's start, the corridor's lead from its first pip; `laserDurationSeconds` is timed, the corridor's `laserMaxSeconds` a cap.
+- **Laser timing names unlike the corridor's**: `laserDurationSeconds` is timed, the corridor's `laserMaxSeconds` a cap. (`laserDelaySeconds`, 0 in every task file since it was added as `stimDelay` on 24 Sep 2026, was dropped the same night, Pip.)
 - **`degreesPerLick`, `thresholdLicks`**: a rate and a count, read correctly as they are.
 - **`test_the_committed_schema_is_the_model_s` failing**: open-rigs' upstream description of `WiredLine.device`, unrelated; regenerate when the open-rigs pin moves.
 - **Legacy variants** (`schemas\session.yml`, `main_ClosedLoop.bonsai`, `main_NabbefeldG.bonsai`, `TrialTypeInitialise.cs`): untouched on purpose.
@@ -54,7 +54,7 @@ The certain findings were fixed in 0078311, 97358e6, 1234f38 and d565649. NoResp
 ### Design questions for Tom
 
 - **Zapit TTL on every trial.** `StartLaser`'s `HardwareTriggeredOptoTrial?` condition is wrapped in `Disable`, so every trial sends `Zapit.TriggerLine` into `TriggerPulse` (5 ms on DO3). Was the disable a test leftover? The fix is removing the `Disable` wrapper. Also: `StartLaser` pulses a fixed 0.1 s after `ArmZapit` without waiting for Zapit's reply on `ZapitReplies`, so a slow arm misses its pulse and the next trial's pulse fires it; and a disabled `CreateStartStimulus` to `ZapitCommands` path sits inside `StartLaser`.
-- **Opto lead.** ArmZapit, HarpDelay 0.1 s, StartLaser, HarpDelay 0.5 s, ExecuteTrial: the laser leads the stimulus by about 0.6 s while `OptogeneticDelay` is logged as 0. Intended? Both delays are typed into `TrialLoop`, not read from the task file.
+- **Opto lead.** ArmZapit, HarpDelay 0.1 s, StartLaser, HarpDelay 0.5 s, ExecuteTrial: the laser leads the stimulus by about 0.6 s (the task's delay field, always 0, was dropped 10 Nov 2026). Intended? Both delays are typed into `TrialLoop`, not read from the task file.
 - **Visual stimulus ends on a 1.5 s timer** (`gl:Timer` `PT1.5S`), not on the response; the response-driven `StopStimuli` multicast is disabled (as on `main`). A `closedLoopSeconds` under 1.5 s rewards while the grating is still on.
 - **Durations typed into the graph** rather than the task file: the 1.5 s stimulus timer, the 2 s drink delay and the ITI arithmetic (`ITI - 0.1 - 0.5 - 2.0`, #35, clamped at 0 since 5 Nov 2026, so an ITI under 2.6 s runs as 2.6 s) in `ApplyConsequences`, and the 0.1 s and 0.5 s opto delays. Move them to `task.py` or document them there.
 - **Never-read task fields.** `rewardProbability`/`IsRewarded`, `Quiescent`, `audioElevation` (playback snaps to the nearest wired speaker, elevation fixed at 15) and, since #35, `autoReward`/`autoRewardProbability` are drawn but change nothing; since 5 Nov 2026 none of them is a `BonsaiData_Trial` column (the row has the speaker that played). Wire them or drop them from `src\ucl_open_av_dome\task.py` and regenerate (`uv run python src\ucl_open_av_dome\regenerate.py`). #35 also notes the ITI pieces in `ApplyConsequences` "need to be applied elsewhere".

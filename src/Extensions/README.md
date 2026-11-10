@@ -66,7 +66,7 @@ server code in `zapit/+zapit/+interfaces/@TCPserver`.
   has `optogenetics.useZapit: true`, with `Host`/`Port` mapped from the rig YAML `zapit` block. In
   `StimuliPresentation`, trials whose `OptogeneticEnabled` flag was drawn true send one
   `StartStimulus` with the trial's `OptogeneticCondition`, `OptogeneticDuration`,
-  `OptogeneticDelay` and `OptogeneticPower` (the task's `laserPowerMw`) (Zapit times the delay and duration itself; `HardwareTriggered` comes from
+  and `OptogeneticPower` (the task's `laserPowerMw`) (Zapit times the duration itself; `HardwareTriggered` comes from
   the rig YAML `zapit` block, see the timing model below). Repeat trials copy the original trial's
   draw, so with `optogenetics.noLaserOnRepeats: false` a repeat presents the same condition again;
   with `true` (the default) repeats are never stimulated.

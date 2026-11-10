@@ -121,6 +121,13 @@ def test_the_trial_row_logs_the_power_sent():
     assert '<Property Name="LaserPower" Selector="OptogeneticPower" />' in workflow
 
 
+def test_the_laser_delay_is_gone():
+    # Pip, 10 Nov 2026: laserDelaySeconds (stimDelay) was 0 in every task file since 24 Sep 2026; dropped.
+    schema = (CONFIG.parent / "src" / "DataSchemas" / "ucl_open_av_dome_task.json").read_text(encoding="utf-8")
+    assert "laserDelaySeconds" not in schema and "stimDelay" not in schema
+    assert "OptogeneticDelay" not in (CONFIG.parent / "src" / "main.bonsai").read_text(encoding="utf-8-sig")
+
+
 def test_target_modality_is_visual_or_auditory():
     data = yaml.safe_load((CONFIG / "task-discrimination.yml").read_text())["taskParameters"]
     UclOpenAvDomeTaskParameters.model_validate({**data, "targetModality": "auditory"})

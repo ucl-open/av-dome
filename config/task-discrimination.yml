@@ -52,7 +52,6 @@ taskParameters:
     zapitConfigPath: ""
     laserPowerMw: null             # mW on laser-on trials, every condition; required with optogenetics on
     laserOnProbability: 0.5
-    laserDelaySeconds: 0.0         # s
     laserDurationSeconds: 2.5      # s
     noLaserOnRepeats: true
     balancedConditions: true

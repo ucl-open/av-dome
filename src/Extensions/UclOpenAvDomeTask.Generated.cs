@@ -235,8 +235,6 @@ namespace UclOpenAvDomeTask
     
         private double _laserOnProbability;
     
-        private double _laserDelaySeconds;
-    
         private double _laserDurationSeconds;
     
         private bool _noLaserOnRepeats;
@@ -250,7 +248,6 @@ namespace UclOpenAvDomeTask
             _useZapit = false;
             _zapitConfigPath = "";
             _laserOnProbability = 0.75D;
-            _laserDelaySeconds = 0D;
             _laserDurationSeconds = 1.5D;
             _noLaserOnRepeats = true;
             _balancedConditions = true;
@@ -263,7 +260,6 @@ namespace UclOpenAvDomeTask
             _zapitConfigPath = other._zapitConfigPath;
             _laserPowerMw = other._laserPowerMw;
             _laserOnProbability = other._laserOnProbability;
-            _laserDelaySeconds = other._laserDelaySeconds;
             _laserDurationSeconds = other._laserDurationSeconds;
             _noLaserOnRepeats = other._noLaserOnRepeats;
             _balancedConditions = other._balancedConditions;
@@ -344,24 +340,6 @@ namespace UclOpenAvDomeTask
             set
             {
                 _laserOnProbability = value;
-            }
-        }
-    
-        /// <summary>
-        /// Delay from the trial's start to laser onset, in seconds
-        /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("laserDelaySeconds")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="laserDelaySeconds")]
-        [System.ComponentModel.DescriptionAttribute("Delay from the trial\'s start to laser onset, in seconds")]
-        public double LaserDelaySeconds
-        {
-            get
-            {
-                return _laserDelaySeconds;
-            }
-            set
-            {
-                _laserDelaySeconds = value;
             }
         }
     
@@ -455,7 +433,6 @@ namespace UclOpenAvDomeTask
             stringBuilder.Append("ZapitConfigPath = " + _zapitConfigPath + ", ");
             stringBuilder.Append("LaserPowerMw = " + _laserPowerMw + ", ");
             stringBuilder.Append("LaserOnProbability = " + _laserOnProbability + ", ");
-            stringBuilder.Append("LaserDelaySeconds = " + _laserDelaySeconds + ", ");
             stringBuilder.Append("LaserDurationSeconds = " + _laserDurationSeconds + ", ");
             stringBuilder.Append("NoLaserOnRepeats = " + _noLaserOnRepeats + ", ");
             stringBuilder.Append("BalancedConditions = " + _balancedConditions + ", ");

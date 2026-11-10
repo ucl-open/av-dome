@@ -427,7 +427,6 @@ public class InitialiseTrial
             }
 
             // Set timing parameters from config
-            trialData.OptogeneticDelay = optogenetics.LaserDelaySeconds;
             trialData.OptogeneticDuration = optogenetics.LaserDurationSeconds;
             trialData.OptogeneticPower = optogenetics.LaserPowerMw.Value; // sent with StartStimulus, overriding the Zapit config's power
         }
@@ -437,7 +436,6 @@ public class InitialiseTrial
     {
         trialData.OptogeneticEnabled = false;
         trialData.OptogeneticCondition = 0;
-        trialData.OptogeneticDelay = 0;
         trialData.OptogeneticDuration = 0;
         trialData.OptogeneticPower = 0;
     }
@@ -806,7 +804,6 @@ public class Trial
     // Optogenetics
     public bool OptogeneticEnabled;
     public int OptogeneticCondition;
-    public double OptogeneticDelay;
     public double OptogeneticDuration;
     public double OptogeneticPower;  // laser power sent with StartStimulus, in mW (the task's laserPowerMw); 0 on laser-off trials
 

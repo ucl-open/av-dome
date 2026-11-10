@@ -75,13 +75,6 @@
           "title": "LaserOnProbability",
           "type": "number"
         },
-        "laserDelaySeconds": {
-          "default": 0.0,
-          "description": "Delay from the trial's start to laser onset, in seconds",
-          "minimum": 0,
-          "title": "LaserDelaySeconds",
-          "type": "number"
-        },
         "laserDurationSeconds": {
           "default": 1.5,
           "description": "How long the laser stays on, in seconds (a timed stimulus)",

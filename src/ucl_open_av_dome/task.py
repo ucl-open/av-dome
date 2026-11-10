@@ -187,7 +187,6 @@ class OptogeneticsSettings(BaseSchema):
         description="Laser power on laser-on trials, in mW, the same for every condition: sent to Zapit with each StartStimulus (overriding the conditions file's power) and logged as laserPowerMw (0 on laser-off trials). Required with optogenetics on",
     )
     laser_on_probability: Double = Field(default=0.75, ge=0, le=1, description="Probability that a trial after trials_before_laser is a laser-on trial")
-    laser_delay_seconds: Double = Field(default=0.0, ge=0, description="Delay from the trial's start to laser onset, in seconds")
     laser_duration_seconds: Double = Field(default=1.5, ge=0, description="How long the laser stays on, in seconds (a timed stimulus)")
     no_laser_on_repeats: Bool = Field(default=True, description="Whether repeat trials never have the laser on")
     balanced_conditions: Bool = Field(default=True, description="Draw conditions from a shuffled queue, so each is used equally often, rather than independently each trial")
