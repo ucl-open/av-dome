@@ -4,9 +4,11 @@
 
 Fixed: `src\Extensions\README.md`'s Zapit wiring and timing model described the graph before the open-rigs branch: StartStimulus sent "in StimuliPresentation" "at stimulus onset", the trigger written "when Zapit's reply confirms it is armed", the laser lagging the stimulus, and power "not sent". Traced by node index: `ArmZapit`, HarpDelay 0.1 s, `StartLaser` (no wait for the reply), HarpDelay `laserToStimulusSeconds`, `ExecuteTrial`; the laser leads the stimulus and `laserPowerMw` goes with each StartStimulus. Rewritten. `itiMinSeconds`, `itiMaxSeconds` and the `itiSeconds` column (its meaning goes into every manifest) now say the draw runs from the outcome (after any timeout) to the next stimulus and includes 2 s to drink, 0.1 s to arm and `laserToStimulusSeconds`, a shorter draw running as their sum, as rig-control's form already said (test).
 
-### For Pip
+### Decided by Pip after round 5 (10 Nov 2026)
 
-- **The laser ends on a timer, not at the outcome.** `laserDurationSeconds` (2.5 s in both task files) runs from the trigger, so at `laserToStimulusSeconds` 0.5 it covers the first 2.0 s after the stimulus whatever the mouse does; the corridor stops its laser at the outcome. Which one this task wants is an experiment-design choice (raised in round 4, not decided).
+- **ArmZapit waits for Zapit to arm the trial, as the corridor's.** A laser-on trial goes on only once Zapit's StartStimulus reply says it armed the trial's condition with the laser on (`CheckZapitArmed`; `ZapitClient` fails after 5 s without an answer), and any Zapit error reply stops the experiment (`ConnectZapit`'s `ZapitError?`). Laser-on trials therefore start Zapit's round trip (tens of ms) later after their ITI than laser-off trials, which send nothing. Checked: build check, `check-workflow.ps1` step 4 (the operator), `tests\test_workflow.py` (the wiring); untried against a running Zapit.
+- **Real mice need a hardware-triggered rig, as in the corridor.** `ConnectZapit` stops an optogenetics experiment with any mouse but `test` when rig.yml has `zapit.hardwareTriggered: false` (BLUE-OPTO-1 today).
+- **The laser stays timed.** `laserDurationSeconds` (2.5 s from the trigger) runs whatever the mouse does; the corridor's stops at the outcome. Kept as this task's design.
 
 ## 2026-11-10 Independent audit, round 4 of 5 (the 9-10 Nov naming and laser work)
 
@@ -32,7 +34,7 @@ Fixed: nothing checked that Zapit had the task's Zapit file loaded. The workflow
 
 ### For Pip
 
-- **ArmZapit does not wait for Zapit to be armed.** It sends StartStimulus and StartLaser raises the trigger 0.1 s later whatever Zapit has answered; the corridor waits for Zapit's reply confirming the condition and laser state before its trial starts. A slow arm would leave a laser-on trial dark while its row gives `laserPowerMw > 0`. Needs a run against Zapit on BLUE-OPTO-2 to measure the arm time before changing the trial's timing.
+- Done after round 5 (Pip, 10 Nov 2026; above), with the next item. **ArmZapit does not wait for Zapit to be armed.** It sends StartStimulus and StartLaser raises the trigger 0.1 s later whatever Zapit has answered; the corridor waits for Zapit's reply confirming the condition and laser state before its trial starts. A slow arm would leave a laser-on trial dark while its row gives `laserPowerMw > 0`. Needs a run against Zapit on BLUE-OPTO-2 to measure the arm time before changing the trial's timing.
 - **Zapit error replies are logged, not acted on.** A refused StartStimulus is in `BonsaiData_ZapitReplies` but the trial runs and logs its power; the corridor stops the experiment on any error reply. Same decision as above, as it changes what a run does when Zapit misbehaves.
 
 Not recommended, each kept on its merits:
@@ -46,7 +48,7 @@ Fixed: a Zapit file that is missing, unreadable or lists no condition stops the 
 
 ### For Pip
 
-- **Optogenetics on a rig without hardware triggering.** BLUE-OPTO-1's rig.yml has `zapit.hardwareTriggered: false`, so Zapit starts the laser when ArmZapit's command arrives, about 0.1 s before StartLaser's trigger plus Zapit's latency, with no onset in the Harp log. coen-dome-navigation refuses this for any mouse but `test`; this branch runs it. Refuse it here too, or keep it for BLUE-OPTO-1's mice.
+- Done after round 5 (Pip, 10 Nov 2026: refused for any mouse but `test`; above). **Optogenetics on a rig without hardware triggering.** BLUE-OPTO-1's rig.yml has `zapit.hardwareTriggered: false`, so Zapit starts the laser when ArmZapit's command arrives, about 0.1 s before StartLaser's trigger plus Zapit's latency, with no onset in the Harp log. coen-dome-navigation refuses this for any mouse but `test`; this branch runs it. Refuse it here too, or keep it for BLUE-OPTO-1's mice.
 
 Not recommended, each kept on its merits:
 

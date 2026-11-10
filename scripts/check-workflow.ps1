@@ -426,6 +426,17 @@ public static class DrawTrials {
         $same = Get-CountCheck 2 $false; $more = Get-CountCheck 3 $false; $erred = Get-CountCheck 2 $true
         if ($same -eq 'passed' -and $more -match 'Zapit has 3 conditions loaded' -and $erred -match 'with an error') { "  ok    optogenetics: Zapit's loaded condition count must match the task's Zapit file" }
         else { "  FAIL  optogenetics: Zapit's condition count against the file: same '$same', more '$more', error '$erred'"; $failed++ }
+        # Pip, 10 Nov 2026: ArmZapit waits for Zapit's StartStimulus reply and stops unless it armed the trial's
+        # condition with the laser on (CheckZapitArmed), as the corridor's does.
+        function Get-ArmCheck([int]$Value, [int]$LaserOn, [bool]$IsError) {
+            $reply = New-Object ZapitReply
+            $reply.Command = [ZapitCommandType]::StartStimulus; $reply.Value = $Value; $reply.LaserOn = $LaserOn; $reply.IsError = $IsError
+            $trial = New-Object Trial; $trial.trialNumber = 21; $trial.OptogeneticEnabled = $true; $trial.OptogeneticCondition = 2
+            try { [CheckZapitArmed]::Check($reply, $trial); 'passed' } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; $x.Message }
+        }
+        $armed = Get-ArmCheck 2 1 $false; $other = Get-ArmCheck 1 1 $false; $dark = Get-ArmCheck 2 0 $false; $refused = Get-ArmCheck 2 1 $true
+        if ($armed -eq 'passed' -and $other -match 'armed condition 1' -and $dark -match 'laserOn 0' -and $refused -match 'refused') { "  ok    optogenetics: a laser-on trial goes on only once Zapit armed its condition with the laser on" }
+        else { "  FAIL  optogenetics: Zapit's arming reply: armed '$armed', other condition '$other', laser off '$dark', error '$refused'"; $failed++ }
     } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; "  FAIL  optogenetics draws: $($x.Message)"; $failed++ }
     # CreateTrialRow (Pip, 9 Nov 2026): itiSeconds is the interval drawn before the trial (the last
     # trial's, NaN on the first); the timeout follows an incorrect choice or a miss not auto-rewarded;

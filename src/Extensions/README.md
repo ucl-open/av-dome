@@ -65,33 +65,38 @@ server code in `zapit/+zapit/+interfaces/@TCPserver`.
 - `main.bonsai` wiring: the `Zapit` group under `HardwareDevices` connects only when the task YAML
   has `optogenetics.useZapit: true`, with `Host`/`Port` mapped from the rig YAML `zapit` block, and
   stops the experiment at startup when Zapit's `GetNumConditions` differs from the task's Zapit file
-  (`CheckZapitConditionCount`). In `TrialLoop`, before each trial, `ArmZapit` sends one
-  `StartStimulus` on a trial whose `OptogeneticEnabled` was drawn true, with the trial's
-  `OptogeneticCondition`, `OptogeneticDuration` (the task's `laserDurationSeconds`; Zapit times it
-  itself) and `OptogeneticPower` (the task's `laserPowerMw`), `HardwareTriggered` from the rig YAML
-  `zapit` block; laser-off trials send nothing. Repeat trials copy the original trial's draw, so
+  (`CheckZapitConditionCount`), on any error reply from Zapit, and when a mouse other than `test`
+  runs optogenetics on a rig without hardware triggering (as the corridor's, Pip 10 Nov 2026). In
+  `TrialLoop`, before each trial, `ArmZapit` sends one `StartStimulus` on a trial whose
+  `OptogeneticEnabled` was drawn true, with the trial's `OptogeneticCondition`,
+  `OptogeneticDuration` (the task's `laserDurationSeconds`; Zapit times it itself) and
+  `OptogeneticPower` (the task's `laserPowerMw`), `HardwareTriggered` from the rig YAML `zapit`
+  block, and goes on only once Zapit answers that it armed that condition with the laser on
+  (`CheckZapitArmed`; `ZapitClient` fails after 5 s without an answer); laser-off trials send
+  nothing. Repeat trials copy the original trial's draw, so
   with `optogenetics.noLaserOnRepeats: false` a repeat presents the same condition again; with
   `true` (the default) repeats are never stimulated.
   Every reply is logged to `BonsaiData\BonsaiData_ZapitReplies` alongside `BonsaiData_Trial` on the same Harp clock.
 
 ### Timing model
 
-Every trial runs `ArmZapit`, a 0.1 s wait, `StartLaser` (which pulses `zapit.triggerLine` on every
+Every trial runs `ArmZapit` (on a laser-on trial, the round trip to Zapit, tens of ms, so laser-on
+trials start that much later after their ITI than laser-off trials), a 0.1 s wait, `StartLaser` (which pulses `zapit.triggerLine` on every
 trial, laser on or off), then a wait of the task's `optogenetics.laserToStimulusSeconds`, then
 `ExecuteTrial`, which commands the stimulus at once (`stimulusOnsetTime`). So the laser leads the
 stimulus. Two modes, selected per rig by `zapit.hardwareTriggered` in the rig YAML:
 
 - **TTL triggered** (`hardwareTriggered: true`): the command carries the `hardwareTriggered` flag,
   so Zapit loads the waveforms and waits for its DAQ trigger input; `StartLaser` writes
-  `zapit.triggerLine` to the behavior board `TriggerPulse` subject 0.1 s after the command, without
-  waiting for Zapit's reply (BACKLOG, For Pip), and the board pulses that DO line for its width in
+  `zapit.triggerLine` to the behavior board `TriggerPulse` subject 0.1 s after Zapit confirms it is
+  armed, and the board pulses that DO line for its width in
   rig.yml's `outputs` (3000 ms on BLUE-OPTO-2, 5 ms in the template). Laser onset is the TTL edge,
   in the behavior board's Harp log, `laserToStimulusSeconds` before `stimulusOnsetTime`.
   `RewardCounter` counts only DO1 and DO2 pulses, so the trigger never registers as water.
   Requires a cable from that DO line to the Zapit DAQ trigger input.
-- **Software timed** (`hardwareTriggered: false`): Zapit starts the waveform when the command
-  arrives, about 0.1 s before the trigger pulse plus the TCP round trip and Zapit's DAQ write, so
-  about `laserToStimulusSeconds` + 0.1 s before the stimulus; onset is known only from Zapit's reply time.
+- **Software timed** (`hardwareTriggered: false`, `test` mice only): Zapit starts the waveform
+  when the command arrives, before its answer, so a little over `laserToStimulusSeconds` + 0.1 s
+  before the stimulus; onset is known only from Zapit's reply time.
 
 Laser power is sent with each `StartStimulus` (the task's `laserPowerMw`, overriding the conditions
 file's); the ramp-down comes from the conditions file loaded in Zapit.

@@ -1377,7 +1377,7 @@
                   </Expression>
                   <Expression xsi:type="GroupWorkflow">
                     <Name>Zapit</Name>
-                    <Description>Connects to the Zapit optogenetics server only when the task YAML enables optogenetics. Commands arrive on ZapitCommands, replies leave on ZapitReplies. The experiment stops at startup if Zapit's loaded file has a different number of conditions from the task's Zapit file (CheckZapitConditionCount), since Zapit presents whatever it has at each condition number.</Description>
+                    <Description>Connects to the Zapit optogenetics server only when the task YAML enables optogenetics. Commands arrive on ZapitCommands, replies leave on ZapitReplies. The experiment stops at startup if Zapit's loaded file has a different number of conditions from the task's Zapit file (CheckZapitConditionCount), since Zapit presents whatever it has at each condition number; on any error reply from Zapit; and when a mouse other than test runs optogenetics on a rig without hardware triggering (Pip, 10 Nov 2026, as the corridor's).</Description>
                     <Workflow>
                       <Nodes>
                         <Expression xsi:type="SubscribeSubject">
@@ -1463,6 +1463,70 @@
                               <Expression xsi:type="Combinator">
                                 <Combinator xsi:type="p1:CheckZapitConditionCount" />
                               </Expression>
+                              <Expression xsi:type="SubscribeSubject">
+                                <Name>ZapitReplies</Name>
+                              </Expression>
+                              <Expression xsi:type="rx:Condition">
+                                <Name>ZapitError?</Name>
+                                <Description>Any error reply from Zapit stops the experiment, as the corridor's does (Pip, 10 Nov 2026): a refused StartStimulus or a failed query. Carrying on would log trials as stimulated that were not.</Description>
+                                <Workflow>
+                                  <Nodes>
+                                    <Expression xsi:type="WorkflowInput">
+                                      <Name>Source1</Name>
+                                    </Expression>
+                                    <Expression xsi:type="scr:ExpressionTransform">
+                                      <scr:Expression>IsError</scr:Expression>
+                                    </Expression>
+                                    <Expression xsi:type="WorkflowOutput" />
+                                  </Nodes>
+                                  <Edges>
+                                    <Edge From="0" To="1" Label="Source1" />
+                                    <Edge From="1" To="2" Label="Source1" />
+                                  </Edges>
+                                </Workflow>
+                              </Expression>
+                              <Expression xsi:type="Format">
+                                <Format>Zapit answered {0} with an error (reply value {1}, laserOn {2}). Check the MATLAB window: is the conditions file the task file names (zapitConfigPath) loaded in Zapit, is Zapit calibrated, and is the DAQ working?</Format>
+                                <Selector>Command,Value,LaserOn</Selector>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="p1:ThrowError" />
+                              </Expression>
+                              <Expression xsi:type="SubscribeSubject">
+                                <Name>RigConfigs</Name>
+                              </Expression>
+                              <Expression xsi:type="SubscribeSubject">
+                                <Name>SubjectId</Name>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="rx:Zip" />
+                              </Expression>
+                              <Expression xsi:type="rx:Condition">
+                                <Name>SoftwareTriggeredRealMouse?</Name>
+                                <Description>A rig without hardware triggering (rig.yml zapit.hardwareTriggered false) starts the laser when the command reaches Zapit, with no onset in the Harp log. It is only for test mice, as in the corridor (Pip, 10 Nov 2026): an optogenetics experiment with any other mouse stops here.</Description>
+                                <Workflow>
+                                  <Nodes>
+                                    <Expression xsi:type="WorkflowInput">
+                                      <Name>Source1</Name>
+                                    </Expression>
+                                    <Expression xsi:type="scr:ExpressionTransform">
+                                      <scr:Expression>!Item1.Zapit.HardwareTriggered &amp;&amp; !Item2.ToLowerInvariant().StartsWith("test")</scr:Expression>
+                                    </Expression>
+                                    <Expression xsi:type="WorkflowOutput" />
+                                  </Nodes>
+                                  <Edges>
+                                    <Edge From="0" To="1" Label="Source1" />
+                                    <Edge From="1" To="2" Label="Source1" />
+                                  </Edges>
+                                </Workflow>
+                              </Expression>
+                              <Expression xsi:type="Format">
+                                <Format>Optogenetics with a real mouse ({0}) needs a hardware-triggered rig, and this rig's rig.yml has zapit.hardwareTriggered false. Cable the trigger line to the Zapit DAQ trigger input and set hardwareTriggered: true in rig.yml. Rigs without hardware triggering are for test mice only.</Format>
+                                <Selector>Item2</Selector>
+                              </Expression>
+                              <Expression xsi:type="Combinator">
+                                <Combinator xsi:type="p1:ThrowError" />
+                              </Expression>
                             </Nodes>
                             <Edges>
                               <Edge From="1" To="2" Label="Source1" />
@@ -1473,6 +1537,14 @@
                               <Edge From="7" To="9" Label="Source1" />
                               <Edge From="8" To="9" Label="Source2" />
                               <Edge From="9" To="10" Label="Source1" />
+                              <Edge From="11" To="12" Label="Source1" />
+                              <Edge From="12" To="13" Label="Source1" />
+                              <Edge From="13" To="14" Label="Source1" />
+                              <Edge From="15" To="17" Label="Source1" />
+                              <Edge From="16" To="17" Label="Source2" />
+                              <Edge From="17" To="18" Label="Source1" />
+                              <Edge From="18" To="19" Label="Source1" />
+                              <Edge From="19" To="20" Label="Source1" />
                             </Edges>
                           </Workflow>
                         </Expression>
@@ -5212,7 +5284,7 @@
             </Expression>
             <Expression xsi:type="rx:SelectMany">
               <Name>ArmZapit</Name>
-              <Description>Sends Zapit the stimulus command for a laser-on trial (condition, duration, power, hardware-triggered or not); laser-off trials send nothing and pass straight through. Without hardware triggering Zapit starts the laser on receipt, 0.1 s before StartLaser's trigger.</Description>
+              <Description>Sends Zapit the stimulus command for a laser-on trial (condition, duration, power, hardware-triggered or not) and passes only once Zapit has answered that it armed that condition with the laser on (CheckZapitArmed stops the experiment otherwise; ZapitClient fails after 5 s without an answer), as the corridor's ArmZapit does (Pip, 10 Nov 2026). Laser-off trials send nothing and pass straight through. Without hardware triggering Zapit starts the laser on receipt, before its answer and StartLaser's trigger.</Description>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="WorkflowInput">
@@ -5316,6 +5388,57 @@
                     <Combinator xsi:type="rx:Sample" />
                   </Expression>
                   <Expression xsi:type="WorkflowOutput" />
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>ZapitReplies</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Skip">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="rx:Condition">
+                    <Name>StartStimulusReply?</Name>
+                    <Workflow>
+                      <Nodes>
+                        <Expression xsi:type="WorkflowInput">
+                          <Name>Source1</Name>
+                        </Expression>
+                        <Expression xsi:type="scr:ExpressionTransform">
+                          <scr:Expression>CommandCode == 1</scr:Expression>
+                        </Expression>
+                        <Expression xsi:type="WorkflowOutput" />
+                      </Nodes>
+                      <Edges>
+                        <Edge From="0" To="1" Label="Source1" />
+                        <Edge From="1" To="2" Label="Source1" />
+                      </Edges>
+                    </Workflow>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Take">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Zip" />
+                  </Expression>
+                  <Expression xsi:type="MemberSelector">
+                    <Selector>Item1</Selector>
+                  </Expression>
+                  <Expression xsi:type="SubscribeSubject">
+                    <Name>settings</Name>
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:WithLatestFrom" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="p1:CheckZapitArmed" />
+                  </Expression>
+                  <Expression xsi:type="Combinator">
+                    <Combinator xsi:type="rx:Take">
+                      <rx:Count>1</rx:Count>
+                    </Combinator>
+                  </Expression>
                 </Nodes>
                 <Edges>
                   <Edge From="0" To="1" Label="Source1" />
@@ -5329,12 +5452,22 @@
                   <Edge From="7" To="8" Label="Source1" />
                   <Edge From="8" To="9" Label="Source3" />
                   <Edge From="9" To="10" Label="Source1" />
-                  <Edge From="10" To="11" Label="Source1" />
+                  <Edge From="17" To="18" Label="Source1" />
+                  <Edge From="18" To="19" Label="Source1" />
+                  <Edge From="19" To="20" Label="Source1" />
+                  <Edge From="20" To="21" Label="Source1" />
+                  <Edge From="10" To="21" Label="Source2" />
+                  <Edge From="21" To="22" Label="Source1" />
+                  <Edge From="22" To="24" Label="Source1" />
+                  <Edge From="23" To="24" Label="Source2" />
+                  <Edge From="24" To="25" Label="Source1" />
+                  <Edge From="25" To="11" Label="Source1" />
                   <Edge From="11" To="14" Label="Source1" />
                   <Edge From="12" To="13" Label="Source1" />
                   <Edge From="13" To="14" Label="Source2" />
                   <Edge From="14" To="15" Label="Source3" />
-                  <Edge From="15" To="16" Label="Source1" />
+                  <Edge From="15" To="26" Label="Source1" />
+                  <Edge From="26" To="16" Label="Source1" />
                 </Edges>
               </Workflow>
             </Expression>
@@ -5343,7 +5476,7 @@
             </Expression>
             <Expression xsi:type="rx:SelectMany">
               <Name>StartLaser</Name>
-              <Description>Pulses the Zapit TTL line (zapit.triggerLine) 0.1 s after arming. The condition that limits this to hardware-triggered opto trials is disabled, so every trial pulses the line.</Description>
+              <Description>Pulses the Zapit TTL line (zapit.triggerLine) 0.1 s after ArmZapit passes (on a laser-on trial, once Zapit has confirmed it is armed). The condition that limits this to hardware-triggered opto trials is disabled, so every trial pulses the line.</Description>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="WorkflowInput">
