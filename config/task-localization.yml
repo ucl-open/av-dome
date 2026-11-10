@@ -46,7 +46,8 @@ taskParameters:
     rulesPerType: [onFailure, onFailure, onFailure, onTimeout, onTimeout]
   optogenetics:
     enabled: true
-    zapitConditionsPath: C:\Users\CoenLabUsers\zapit\experimental_configs\avdome_main_initialstim.yml
+    zapitConfigPath: C:\Users\CoenLabUsers\zapit\experimental_configs\avdome_main_initialstim.yml
+    laserPowerMw: 3.0              # mW on laser-on trials, every condition (avdome_main_initialstim.yml's laserPowerInMW, BLUE-OPTO-2, 10 Nov 2026)
     laserOnProbability: 0.5
     laserDelaySeconds: 0.0         # s
     laserDurationSeconds: 2.5      # s

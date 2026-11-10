@@ -90,6 +90,37 @@ def test_the_discrimination_iti_adds_what_gerion_s_did():
     assert (trial.iti_min_seconds, trial.iti_max_seconds) == pytest.approx((1.5 + 0.6, 2.5 + 0.6))
 
 
+@pytest.mark.parametrize("path", TASK_FILES + [CONFIG / "zapit-test.yml"], ids=lambda p: p.name)
+def test_rig_control_keeps_the_zapit_file(path):
+    # rig-control copies a task field ending in ConfigPath beside the task file at Go (taskfile.keep_files):
+    # renamed zapitConditionsPath on 9 Nov 2026, the file stopped being kept (audit, 10 Nov 2026).
+    opto = yaml.safe_load(path.read_text())["taskParameters"]["optogenetics"]
+    assert [k for k in opto if k.endswith("Path")] == ["zapitConfigPath"]
+
+
+def test_laser_power_is_required_with_optogenetics_on():
+    # Pip, 10 Nov 2026: av-dome sends and logs laserPowerMw as coen-dome-navigation does, required when on.
+    data = yaml.safe_load((CONFIG / "task-discrimination.yml").read_text())["taskParameters"]
+    on = {**data["optogenetics"], "enabled": True}
+    with pytest.raises(ValidationError, match="laser_power_mw is not set"):
+        UclOpenAvDomeTaskParameters.model_validate({**data, "optogenetics": on})
+    with pytest.raises(ValidationError):
+        UclOpenAvDomeTaskParameters.model_validate({**data, "optogenetics": {**on, "laserPowerMw": 0}})
+    UclOpenAvDomeTaskParameters.model_validate({**data, "optogenetics": {**on, "laserPowerMw": 2.0}})
+    # The same rule in the committed schema, which is what rig-control checks before Go.
+    import json
+    schema = json.loads((CONFIG.parent / "src" / "DataSchemas" / "ucl_open_av_dome_task.json").read_text(encoding="utf-8"))
+    rule = schema["$defs"]["OptogeneticsSettings"]
+    assert rule["if"]["properties"]["enabled"] == {"const": True} and rule["then"]["required"] == ["laserPowerMw"]
+
+
+def test_the_trial_row_logs_the_power_sent():
+    source = (CONFIG.parent / "src" / "Extensions" / "TrialRow.cs").read_text(encoding="utf-8-sig")
+    assert "laserPowerMw = trial.OptogeneticPower," in source
+    workflow = (CONFIG.parent / "src" / "main.bonsai").read_text(encoding="utf-8-sig")
+    assert '<Property Name="LaserPower" Selector="OptogeneticPower" />' in workflow
+
+
 def test_target_modality_is_visual_or_auditory():
     data = yaml.safe_load((CONFIG / "task-discrimination.yml").read_text())["taskParameters"]
     UclOpenAvDomeTaskParameters.model_validate({**data, "targetModality": "auditory"})

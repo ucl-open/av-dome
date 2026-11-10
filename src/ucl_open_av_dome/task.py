@@ -1,7 +1,7 @@
 from enum import StrEnum
 from typing import List, Literal, Optional
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import ConfigDict, Field, field_validator, model_validator
 from swc.aeon.schema import BaseSchema
 from open_rigs.components import SphericalPosition
 from open_rigs.core.base import Bool, Double, Int, String
@@ -169,14 +169,35 @@ class OptogeneticsSettings(BaseSchema):
     """Zapit optogenetic stimulation parameters. Names as coen-dome-navigation's where they mean the same (Pip,
     9 Nov 2026); laser_duration_seconds is a timed stimulus here, where the corridor's laserMaxSeconds is a cap."""
 
+    # Required with optogenetics on, in the JSON schema too: rig-control checks the task file against the
+    # schema, not this model. additionalProperties is spelt out because rig-control closes every object
+    # that lists properties (as coen-dome-navigation's).
+    model_config = ConfigDict(
+        json_schema_extra={
+            "if": {"properties": {"enabled": {"const": True}}, "required": ["enabled"], "additionalProperties": True},
+            "then": {"properties": {"laserPowerMw": {"type": "number"}}, "required": ["laserPowerMw"], "additionalProperties": True},
+        }
+    )
+
     enabled: Bool = Field(default=False, description="Whether optogenetic stimulation is enabled")
-    zapit_conditions_path: String = Field(default="", description="Path to the Zapit conditions file (the one loaded in Zapit) listing the stimulation conditions")
+    zapit_config_path: String = Field(default="", description="Path to the Zapit conditions file (the one loaded in Zapit) listing the stimulation conditions. Named ...ConfigPath so rig-control keeps a copy beside the task file at Go")
+    laser_power_mw: Optional[Double] = Field(
+        default=None,
+        gt=0,
+        description="Laser power on laser-on trials, in mW, the same for every condition: sent to Zapit with each StartStimulus (overriding the conditions file's power) and logged as laserPowerMw (0 on laser-off trials). Required with optogenetics on",
+    )
     laser_on_probability: Double = Field(default=0.75, ge=0, le=1, description="Probability that a trial after trials_before_laser is a laser-on trial")
     laser_delay_seconds: Double = Field(default=0.0, ge=0, description="Delay from the trial's start to laser onset, in seconds")
     laser_duration_seconds: Double = Field(default=1.5, ge=0, description="How long the laser stays on, in seconds (a timed stimulus)")
     no_laser_on_repeats: Bool = Field(default=True, description="Whether repeat trials never have the laser on")
     balanced_conditions: Bool = Field(default=True, description="Draw conditions from a shuffled queue, so each is used equally often, rather than independently each trial")
     trials_before_laser: Int = Field(default=0, ge=0, description="Trials at the experiment's start with no laser-on trial among them (counted by TrialCount, repeats included)")
+
+    @model_validator(mode="after")
+    def _power_when_on(self) -> "OptogeneticsSettings":
+        if self.enabled and self.laser_power_mw is None:
+            raise ValueError("optogenetics is enabled but laser_power_mw is not set")
+        return self
 
 class TrainingStage(BaseSchema):
     """One complete row of the training stage table; stages are selected by index at runtime."""

@@ -73,7 +73,7 @@ public class InitialiseTrial
 
             if (parameters.Optogenetics.Enabled)
             {
-                LoadZapitConfigIfNeeded(parameters.Optogenetics.ZapitConditionsPath);
+                LoadZapitConfigIfNeeded(parameters.Optogenetics.ZapitConfigPath);
             }
 
             // Generate new trial
@@ -131,6 +131,13 @@ public class InitialiseTrial
         {
             throw new InvalidOperationException(
                 "speakerLocations must not have an azimuth-0 entry; the centre sound is fixed in code.");
+        }
+        var optogenetics = parameters.Optogenetics;
+        if (optogenetics.Enabled && (!(optogenetics.LaserPowerMw > 0) || double.IsInfinity(optogenetics.LaserPowerMw.Value)))
+        {
+            throw new InvalidOperationException(string.Format(
+                "optogenetics.laserPowerMw must be a power in mW above 0 when optogenetics is on; got {0}.",
+                optogenetics.LaserPowerMw.HasValue ? optogenetics.LaserPowerMw.Value.ToString() : "nothing"));
         }
         configChecked = true;
     }
@@ -422,7 +429,7 @@ public class InitialiseTrial
             // Set timing parameters from config
             trialData.OptogeneticDelay = optogenetics.LaserDelaySeconds;
             trialData.OptogeneticDuration = optogenetics.LaserDurationSeconds;
-            trialData.OptogeneticPower = 0; // Will be set by Zapit config
+            trialData.OptogeneticPower = optogenetics.LaserPowerMw.Value; // sent with StartStimulus, overriding the Zapit config's power
         }
     }
 
@@ -801,7 +808,7 @@ public class Trial
     public int OptogeneticCondition;
     public double OptogeneticDelay;
     public double OptogeneticDuration;
-    public double OptogeneticPower;
+    public double OptogeneticPower;  // laser power sent with StartStimulus, in mW (the task's laserPowerMw); 0 on laser-off trials
 
     public Trial Clone()
     {

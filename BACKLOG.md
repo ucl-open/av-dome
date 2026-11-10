@@ -1,5 +1,16 @@
 # Backlog
 
+## 2026-11-10 Independent audit of the 9 Nov naming pass
+
+Fixed: `zapitConfigPath` again (renamed `zapitConditionsPath` on 9 Nov, rig-control's `keep_files`, which copies fields ending ConfigPath, stopped keeping the Zapit file at Go); `laserPowerMw` sent with each laser-on StartStimulus and logged (Pip: required with optogenetics on; task-localization.yml 3.0, the laserPowerInMW of BLUE-OPTO-2's avdome_main_initialstim.yml; zapit-test.yml 2.0, left_right_pair.yml's), so laser on is `laserPowerMw > 0` here as in coen-dome-navigation; `scripts\add-names.ps1` (was a one-off); `visualContrast`'s description (stages draw 3.0). rig-control's names check now reads only the workflows `main.bonsai` includes: the unused `src\Extensions\StallDiagnostics.bonsai` had failed every dome since its three logs left the lab list on 9 Nov. Not recommended, each kept on its merits:
+
+- **Speaker positions keep `SphericalPosition`'s `azimuth`/`elevation`**: an open-rigs type whose descriptions say degrees.
+- **Internal Trial fields keep old names** (`visualAzimuth`, `openLoopDuration`, `Optogenetic*`): only recorded names, task fields and metrics are the lab's.
+- **Laser timing names unlike the corridor's**: `laserDelaySeconds` counts from the trial's start, the corridor's lead from its first pip; `laserDurationSeconds` is timed, the corridor's `laserMaxSeconds` a cap.
+- **`degreesPerLick`, `thresholdLicks`**: a rate and a count, read correctly as they are.
+- **`test_the_committed_schema_is_the_model_s` failing**: open-rigs' upstream description of `WiredLine.device`, unrelated; regenerate when the open-rigs pin moves.
+- **Legacy variants** (`schemas\session.yml`, `main_ClosedLoop.bonsai`, `main_NabbefeldG.bonsai`, `TrialTypeInitialise.cs`): untouched on purpose.
+
 ## 2026-11-08 Independent audit of the discrimination task, auto-reward and leak fix
 
 Fixed: the discrimination ITI (his 1.5-2.5 s plus the 0.6 s more this workflow subtracts), the auto-reward description (a rewarded miss still counts as a timeout for repeats); rig-control's view labels and help (rig-control, same day). Not recommended, each kept on its merits:
@@ -47,7 +58,7 @@ The certain findings were fixed in 0078311, 97358e6, 1234f38 and d565649. NoResp
 - **Visual stimulus ends on a 1.5 s timer** (`gl:Timer` `PT1.5S`), not on the response; the response-driven `StopStimuli` multicast is disabled (as on `main`). A `closedLoopSeconds` under 1.5 s rewards while the grating is still on.
 - **Durations typed into the graph** rather than the task file: the 1.5 s stimulus timer, the 2 s drink delay and the ITI arithmetic (`ITI - 0.1 - 0.5 - 2.0`, #35, clamped at 0 since 5 Nov 2026, so an ITI under 2.6 s runs as 2.6 s) in `ApplyConsequences`, and the 0.1 s and 0.5 s opto delays. Move them to `task.py` or document them there.
 - **Never-read task fields.** `rewardProbability`/`IsRewarded`, `Quiescent`, `audioElevation` (playback snaps to the nearest wired speaker, elevation fixed at 15) and, since #35, `autoReward`/`autoRewardProbability` are drawn but change nothing; since 5 Nov 2026 none of them is a `BonsaiData_Trial` column (the row has the speaker that played). Wire them or drop them from `src\ucl_open_av_dome\task.py` and regenerate (`uv run python src\ucl_open_av_dome\regenerate.py`). #35 also notes the ITI pieces in `ApplyConsequences` "need to be applied elsewhere".
-- **The Zapit config is not recorded.** `laserCondition` is a number into the Zapit config at task-localization.yml `zapitConditionsPath` (a path on the rig), and the experiment keeps only that path (TaskSchema). `ExperimentManifest`'s `ConfigFiles` is read at Start, before Go chooses the task file, so it cannot hash it; copy the file into the experiment at Go (a `LogDataSchema` of its contents, named in `K:\config\data-dictionary.json`'s `streams`) or teach the manifest a file named at Go.
+- **The Zapit config is not recorded.** `laserCondition` is a number into the Zapit config at task-localization.yml `zapitConfigPath` (a path on the rig), and the experiment keeps only that path (TaskSchema). `ExperimentManifest`'s `ConfigFiles` is read at Start, before Go chooses the task file, so it cannot hash it; copy the file into the experiment at Go (a `LogDataSchema` of its contents, named in `K:\config\data-dictionary.json`'s `streams`) or teach the manifest a file named at Go.
 
 ### Decisions for Pip
 

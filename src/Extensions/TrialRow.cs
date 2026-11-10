@@ -33,6 +33,7 @@ public class TrialRow
     public double audioElevationDeg;
     public int audioWaveformIndex;
     public int laserCondition;  // 0 when not stimulated (Zapit numbers conditions from 1)
+    public double laserPowerMw;  // the power sent with StartStimulus; 0 on laser-off trials
     public bool autoRewarded;  // a miss on an auto-reward trial, rewarded at the target spout
 }
 
@@ -86,6 +87,7 @@ public class CreateTrialRow
             audioElevationDeg = played ? locations[speaker].Y : double.NaN,
             audioWaveformIndex = trial.audioWaveformIdx,
             laserCondition = trial.OptogeneticCondition,
+            laserPowerMw = trial.OptogeneticPower,
             autoRewarded = trial.autoReward && choice == "NoResponse",
         };
         previousIti = trial.ITI;

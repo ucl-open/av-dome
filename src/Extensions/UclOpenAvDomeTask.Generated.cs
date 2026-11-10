@@ -229,7 +229,9 @@ namespace UclOpenAvDomeTask
     
         private bool _enabled;
     
-        private string _zapitConditionsPath;
+        private string _zapitConfigPath;
+    
+        private double? _laserPowerMw;
     
         private double _laserOnProbability;
     
@@ -246,7 +248,7 @@ namespace UclOpenAvDomeTask
         public OptogeneticsSettings()
         {
             _enabled = false;
-            _zapitConditionsPath = "";
+            _zapitConfigPath = "";
             _laserOnProbability = 0.75D;
             _laserDelaySeconds = 0D;
             _laserDurationSeconds = 1.5D;
@@ -258,7 +260,8 @@ namespace UclOpenAvDomeTask
         protected OptogeneticsSettings(OptogeneticsSettings other)
         {
             _enabled = other._enabled;
-            _zapitConditionsPath = other._zapitConditionsPath;
+            _zapitConfigPath = other._zapitConfigPath;
+            _laserPowerMw = other._laserPowerMw;
             _laserOnProbability = other._laserOnProbability;
             _laserDelaySeconds = other._laserDelaySeconds;
             _laserDurationSeconds = other._laserDurationSeconds;
@@ -286,21 +289,42 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Path to the Zapit conditions file (the one loaded in Zapit) listing the stimulation conditions
+        /// Path to the Zapit conditions file (the one loaded in Zapit) listing the stimulation conditions. Named ...ConfigPath so rig-control keeps a copy beside the task file at Go
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("zapitConditionsPath")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="zapitConditionsPath")]
+        [Newtonsoft.Json.JsonPropertyAttribute("zapitConfigPath")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="zapitConfigPath")]
         [System.ComponentModel.DescriptionAttribute("Path to the Zapit conditions file (the one loaded in Zapit) listing the stimulati" +
-            "on conditions")]
-        public string ZapitConditionsPath
+            "on conditions. Named ...ConfigPath so rig-control keeps a copy beside the task f" +
+            "ile at Go")]
+        public string ZapitConfigPath
         {
             get
             {
-                return _zapitConditionsPath;
+                return _zapitConfigPath;
             }
             set
             {
-                _zapitConditionsPath = value;
+                _zapitConfigPath = value;
+            }
+        }
+    
+        /// <summary>
+        /// Laser power on laser-on trials, in mW, the same for every condition: sent to Zapit with each StartStimulus (overriding the conditions file's power) and logged as laserPowerMw (0 on laser-off trials). Required with optogenetics on
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("laserPowerMw")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="laserPowerMw")]
+        [System.ComponentModel.DescriptionAttribute("Laser power on laser-on trials, in mW, the same for every condition: sent to Zapi" +
+            "t with each StartStimulus (overriding the conditions file\'s power) and logged as" +
+            " laserPowerMw (0 on laser-off trials). Required with optogenetics on")]
+        public double? LaserPowerMw
+        {
+            get
+            {
+                return _laserPowerMw;
+            }
+            set
+            {
+                _laserPowerMw = value;
             }
         }
     
@@ -427,7 +451,8 @@ namespace UclOpenAvDomeTask
         protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
         {
             stringBuilder.Append("Enabled = " + _enabled + ", ");
-            stringBuilder.Append("ZapitConditionsPath = " + _zapitConditionsPath + ", ");
+            stringBuilder.Append("ZapitConfigPath = " + _zapitConfigPath + ", ");
+            stringBuilder.Append("LaserPowerMw = " + _laserPowerMw + ", ");
             stringBuilder.Append("LaserOnProbability = " + _laserOnProbability + ", ");
             stringBuilder.Append("LaserDelaySeconds = " + _laserDelaySeconds + ", ");
             stringBuilder.Append("LaserDurationSeconds = " + _laserDurationSeconds + ", ");

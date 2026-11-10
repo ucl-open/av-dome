@@ -84,7 +84,7 @@ visualElevationDeg:
   description: Grating elevation.
 visualContrast:
   type: double
-  description: Grating contrast, 0 to 1.
+  description: Grating contrast as BonVision's Contrast, 1 full contrast; the task files' habituation stages draw 3.0.
 visualPhaseRad:
   type: double
   unit: rad
@@ -106,7 +106,11 @@ audioWaveformIndex:
 laserCondition:
   type: int
   formerly: [optoCondition]
-  description: The Zapit condition stimulated, 0 when none (Zapit numbers conditions from 1). Until 9 Nov 2026 optoStimulated also said whether there was stimulation; it was always laserCondition > 0.
+  description: The Zapit condition sent to Zapit this trial, 0 when none was sent (Zapit numbers conditions from 1). Here a condition is sent only with the laser on, so laserCondition > 0 and laserPowerMw > 0 agree. Until 9 Nov 2026 optoStimulated also said whether there was stimulation; it was always laserCondition > 0.
+laserPowerMw:
+  type: double
+  unit: mW
+  description: Laser power sent to Zapit for this trial (the task's optogenetics.laserPowerMw), as commanded, not measured. 0 on laser-off trials and without optogenetics. From 10 Nov 2026; before, Zapit's config file set the power.
 autoRewarded:
   type: bool
   description: True when a miss on an auto-reward trial was rewarded at the target spout.

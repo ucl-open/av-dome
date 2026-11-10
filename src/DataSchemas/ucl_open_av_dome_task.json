@@ -29,6 +29,17 @@
     },
     "OptogeneticsSettings": {
       "description": "Zapit optogenetic stimulation parameters. Names as coen-dome-navigation's where they mean the same (Pip,\n9 Nov 2026); laser_duration_seconds is a timed stimulus here, where the corridor's laserMaxSeconds is a cap.",
+      "if": {
+        "additionalProperties": true,
+        "properties": {
+          "enabled": {
+            "const": true
+          }
+        },
+        "required": [
+          "enabled"
+        ]
+      },
       "properties": {
         "enabled": {
           "default": false,
@@ -36,11 +47,25 @@
           "title": "Enabled",
           "type": "boolean"
         },
-        "zapitConditionsPath": {
+        "zapitConfigPath": {
           "default": "",
-          "description": "Path to the Zapit conditions file (the one loaded in Zapit) listing the stimulation conditions",
-          "title": "ZapitConditionsPath",
+          "description": "Path to the Zapit conditions file (the one loaded in Zapit) listing the stimulation conditions. Named ...ConfigPath so rig-control keeps a copy beside the task file at Go",
+          "title": "ZapitConfigPath",
           "type": "string"
+        },
+        "laserPowerMw": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Laser power on laser-on trials, in mW, the same for every condition: sent to Zapit with each StartStimulus (overriding the conditions file's power) and logged as laserPowerMw (0 on laser-off trials). Required with optogenetics on",
+          "title": "LaserPowerMw"
         },
         "laserOnProbability": {
           "default": 0.75,
@@ -84,6 +109,17 @@
           "title": "TrialsBeforeLaser",
           "type": "integer"
         }
+      },
+      "then": {
+        "additionalProperties": true,
+        "properties": {
+          "laserPowerMw": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "laserPowerMw"
+        ]
       },
       "title": "OptogeneticsSettings",
       "type": "object"
