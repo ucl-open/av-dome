@@ -1,5 +1,15 @@
 # Backlog
 
+## 2026-11-10 Independent audit, round 3 of 5 (the 9-10 Nov naming and laser work)
+
+Fixed: `trainingStages.rewardSizeUl` said every reward is ceil(size/2) valve pulses, true only of an uncalibrated valve; `RewardLine` plans a calibrated valve's pulses from its calibration (test). rig-control's ITI Min and Max help now says 2.1 s plus `laserToStimulusSeconds` comes out of the drawn ITI. The lab command's test-run hint named a `Zapit` parameter and a `task.yml` that do not exist: a shell launch takes `task-discrimination.yml`, Zapit off.
+
+Not recommended, each kept on its merits:
+
+- **`task-localization.yml` has Zapit on, with BLUE-OPTO-2's file**: on a rig without Zapit the window refuses Go loudly (Zapit Not Answering) until it is unticked, and the default fits the opto rig the file was set for.
+- **No ramp-down check as the corridor's `ZapitConditions.CheckRampDowns`**: Zapit plays a timed trial's own ramp-down, and the corridor's limits come from holding its masking light to 1 s after the outcome; a minimum ramp for these trials is an experiment-design choice.
+- **`TrainingStage` declared 0 to 5 while both task files have rows 0 to 4**: a row past the end runs the last, as its description says, and the form offers 0 to 4.
+
 ## 2026-11-10 Independent audit, round 2 of 5 (the 9-10 Nov naming and laser work)
 
 Fixed: nothing checked that Zapit had the task's Zapit file loaded. The workflow asked Zapit `GetNumConditions` at startup and ignored the answer, and it took condition numbers from the file's keys, while Zapit numbers conditions by position, so a different file or one numbered with a gap stimulated the wrong sites with no error. Now `CheckZapitConditionCount` (as coen-dome-navigation's) stops the experiment at startup when Zapit's count differs from the file's or Zapit answers with an error, and `InitialiseTrial.ReadZapitConditions` refuses a file not numbered exactly 1 to N (`check-workflow.ps1` step 4; untried against a running Zapit). The ITI subtracted a typed 0.5 s for the wait before ExecuteTrial after that wait became the task's `laserToStimulusSeconds`, so any other value changed the ITI: it subtracts the task's value now (test). The schema and model refuse `useZapit` with an empty `zapitConfigPath`, as the corridor's do and as the form said (test, with jsonschema). rig-control's view help says both.

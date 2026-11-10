@@ -1283,11 +1283,13 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Reward size, in microliters; delivered as ceil(size/2) valve pulses
+        /// Reward size, in microliters. The valve's calibration plans the pulses; an uncalibrated valve gives ceil(size/2) pulses of rig.yml's width, taken as 2 ul each (RewardLine)
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("rewardSizeUl", Required=Newtonsoft.Json.Required.Always)]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="rewardSizeUl")]
-        [System.ComponentModel.DescriptionAttribute("Reward size, in microliters; delivered as ceil(size/2) valve pulses")]
+        [System.ComponentModel.DescriptionAttribute("Reward size, in microliters. The valve\'s calibration plans the pulses; an uncalib" +
+            "rated valve gives ceil(size/2) pulses of rig.yml\'s width, taken as 2 ul each (Re" +
+            "wardLine)")]
         public double RewardSizeUl
         {
             get

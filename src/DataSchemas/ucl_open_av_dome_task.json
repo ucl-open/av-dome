@@ -345,7 +345,7 @@
           "type": "number"
         },
         "rewardSizeUl": {
-          "description": "Reward size, in microliters; delivered as ceil(size/2) valve pulses",
+          "description": "Reward size, in microliters. The valve's calibration plans the pulses; an uncalibrated valve gives ceil(size/2) pulses of rig.yml's width, taken as 2 ul each (RewardLine)",
           "minimum": 0,
           "title": "RewardSizeUl",
           "type": "number"

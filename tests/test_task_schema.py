@@ -192,3 +192,9 @@ def test_target_modality_is_visual_or_auditory():
     UclOpenAvDomeTaskParameters.model_validate({**data, "targetModality": "auditory"})
     with pytest.raises(ValidationError):
         UclOpenAvDomeTaskParameters.model_validate({**data, "targetModality": "smell"})
+
+def test_reward_size_says_a_calibrated_valve_plans_its_pulses():
+    # Audit, 10 Nov 2026, round 3: it said every reward is ceil(size/2) pulses, true only of an uncalibrated valve (RewardLine.cs).
+    from ucl_open_av_dome.task import TrainingStage
+    description = TrainingStage.model_fields["reward_size_ul"].description
+    assert "calibration" in description and "uncalibrated" in description

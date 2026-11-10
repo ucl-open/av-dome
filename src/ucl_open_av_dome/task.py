@@ -215,7 +215,10 @@ class TrainingStage(BaseSchema):
     trial_weights: List[Int] = Field(description="Relative draw weight per trial type, indexed by trial type: each new trial draws its type at random with these as relative chances, independently of every other trial (repeats copy the trial they repeat)")
     auto_reward_probability: Double = Field(ge=0, le=1, description="Probability that a trial is an auto-reward trial: a miss on it is rewarded at the target spout, and still counts as a timeout for repeats")
     both_spouts_probability: Double = Field(ge=0, le=1, description="Probability that both spouts are presented rather than only the correct one")
-    reward_size_ul: Double = Field(ge=0, description="Reward size, in microliters; delivered as ceil(size/2) valve pulses")
+    reward_size_ul: Double = Field(
+        ge=0,
+        description="Reward size, in microliters. The valve's calibration plans the pulses; an uncalibrated valve gives ceil(size/2) pulses of rig.yml's width, taken as 2 ul each (RewardLine)",
+    )
     contrasts: List[Double] = Field(description="Candidate grating contrasts to draw from on visual trials")
     allow_repeats: Bool = Field(description="Whether failed trials may be repeated in this stage")
     spout_movements: Bool = Field(
