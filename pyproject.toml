@@ -47,5 +47,5 @@ ignore-words-list = 'nd'
 required-version = '>=0.8.4'
 
 [tool.uv.sources]
-open-rigs = {git = "https://github.com/Coen-Lab/lib-open-rigs", rev = "d0829e07b0abca1b76f3b69a28dbd75586a50b8d"}
+open-rigs = {git = "https://github.com/Coen-Lab/lib-open-rigs", rev = "e30933342697cce4a7278ce0467f79adcd8c600c"}
 swc-aeon = { git = "https://github.com/SainsburyWellcomeCentre/aeon_api.git", branch = "main" }
