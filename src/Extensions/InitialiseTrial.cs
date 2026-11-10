@@ -33,8 +33,10 @@ public class InitialiseTrial
     // while fewer than optogenetics.trialsBeforeLaser came before are never stimulated.
     private int trialsDrawn = 0;
 
-    private static List<int> _zapitConditions = new List<int>();
-    private static DateTime _zapitConfigLastLoaded = DateTime.MinValue;
+    // The Zapit file's condition numbers, read once, at the experiment's first trial with useZapit on.
+    // A file that is missing, unreadable or lists no condition stops the experiment there, as the
+    // corridor's does: it was a console warning, and every trial ran with the laser off (audit, 10 Nov 2026).
+    private List<int> zapitConditions;
 
     public IObservable<Trial> Process(IObservable<Tuple<string, UclOpenAvDomeTaskLogic>> source)
     {
@@ -65,9 +67,10 @@ public class InitialiseTrial
                 return repeatTrial;
             }
 
-            if (parameters.Optogenetics.UseZapit)
+            if (parameters.Optogenetics.UseZapit && zapitConditions == null)
             {
-                LoadZapitConfigIfNeeded(parameters.Optogenetics.ZapitConfigPath);
+                zapitConditions = ReadZapitConditions(parameters.Optogenetics.ZapitConfigPath);
+                Console.WriteLine("Zapit file '" + parameters.Optogenetics.ZapitConfigPath + "' has " + zapitConditions.Count + " conditions");
             }
 
             // Generate new trial
@@ -204,7 +207,7 @@ public class InitialiseTrial
         // Trial structure timings
         trialData.ITI = drawRandomUniformFromRange(parameters.TrialStructure.ItiMinSeconds, parameters.TrialStructure.ItiMaxSeconds, trialRand);
         trialData.Quiescent = drawRandomUniformFromRange(parameters.TrialStructure.QuiescentMinSeconds, parameters.TrialStructure.QuiescentMaxSeconds, trialRand);
-        trialData.SpoutINDelay = parameters.TrialStructure.SpoutInDelaySeconds;
+        trialData.SpoutINDelay = parameters.TrialStructure.StimulusToSpoutsInSeconds;
         trialData.IncorrectTimeoutDuration = parameters.Punishment.TimeoutSeconds;
         trialData.punishSoundEnabled = parameters.Punishment.Sound.Enabled;
         trialData.openLoopDuration = parameters.TrialStructure.OpenLoopSeconds;
@@ -318,51 +321,45 @@ public class InitialiseTrial
         return trialWeights.Count - 1;
     }
 
-    private void LoadZapitConfigIfNeeded(string configPath)
+    private static List<int> ReadZapitConditions(string configPath)
     {
+        if (string.IsNullOrEmpty(configPath))
+        {
+            throw new InvalidOperationException("optogenetics.useZapit is on but optogenetics.zapitConfigPath is empty.");
+        }
+        if (!File.Exists(configPath))
+        {
+            throw new InvalidOperationException("The Zapit file (optogenetics.zapitConfigPath) was not found: '" + configPath + "'.");
+        }
+        Dictionary<string, object> yamlData;
         try
         {
-            if (!string.IsNullOrEmpty(configPath) &&
-                File.Exists(configPath) &&
-                (DateTime.Now - _zapitConfigLastLoaded).TotalMinutes > 5)
-            {
-                LoadZapitConditions(configPath);
-                _zapitConfigLastLoaded = DateTime.Now;
-                Console.WriteLine("Loaded Zapit config with " + _zapitConditions.Count + " stimulation conditions");
-            }
+            var deserializer = new DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .IgnoreUnmatchedProperties()
+                .Build();
+            yamlData = deserializer.Deserialize<Dictionary<string, object>>(File.ReadAllText(configPath));
         }
         catch (Exception ex)
         {
-            Console.WriteLine("Warning: Error loading Zapit configuration: " + ex.Message);
-            _zapitConditions.Clear();
+            throw new InvalidOperationException("The Zapit file '" + configPath + "' could not be read: " + ex.Message, ex);
         }
-    }
 
-    private void LoadZapitConditions(string configPath)
-    {
-        var yaml = File.ReadAllText(configPath);
-        var deserializer = new DeserializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .IgnoreUnmatchedProperties()
-            .Build();
-
-        var yamlData = deserializer.Deserialize<Dictionary<string, object>>(yaml);
-        _zapitConditions.Clear();
-
-        foreach (var kvp in yamlData)
+        var conditions = new List<int>();
+        foreach (var kvp in yamlData ?? new Dictionary<string, object>())
         {
-            if (kvp.Key.StartsWith("stimLocations"))
+            int conditionNumber;
+            if (kvp.Key.StartsWith("stimLocations") && int.TryParse(kvp.Key.Substring("stimLocations".Length), out conditionNumber))
             {
-                var numberStr = kvp.Key.Substring("stimLocations".Length);
-                int conditionNumber;  // Declare separately
-                if (int.TryParse(numberStr, out conditionNumber))
-                {
-                    _zapitConditions.Add(conditionNumber);
-                }
+                conditions.Add(conditionNumber);
             }
         }
-
-        _zapitConditions.Sort();
+        if (conditions.Count == 0)
+        {
+            throw new InvalidOperationException("The Zapit file '" + configPath + "' lists no condition (no stimLocationsNN entry).");
+        }
+        conditions.Sort();
+        return conditions;
     }
 
     private void SetupOptogeneticParameters(Trial trialData, UclOpenAvDomeTaskParameters parameters, Random rand)
@@ -380,20 +377,13 @@ public class InitialiseTrial
             Console.WriteLine("Optogenetics warmup: trial " + (trialsDrawn + 1) + "/" + optogenetics.TrialsBeforeLaser + " - no stimulation");
             return;
         }
-        // Check if Zapit conditions are available
-        if (_zapitConditions.Count == 0)
-        {
-            Console.WriteLine("Warning: useZapit is on but no Zapit conditions are available");
-            return;
-        }
-
         // Roll for stimulation
         if (rand.NextDouble() < optogenetics.LaserOnProbability)
         {
             trialData.OptogeneticEnabled = true;
 
             // A random condition, independently of every other trial: a shuffled queue made a site unlikely to follow itself and the end of each cycle predictable, which confounds trial-history analyses (Pip, 10 Nov 2026)
-            trialData.OptogeneticCondition = _zapitConditions[rand.Next(_zapitConditions.Count)];
+            trialData.OptogeneticCondition = zapitConditions[rand.Next(zapitConditions.Count)];
 
             // Set timing parameters from config
             trialData.OptogeneticDuration = optogenetics.LaserDurationSeconds;

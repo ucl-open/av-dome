@@ -144,7 +144,15 @@ def test_each_laser_on_trial_draws_its_condition_at_random():
     schema = (CONFIG.parent / "src" / "DataSchemas" / "ucl_open_av_dome_task.json").read_text(encoding="utf-8")
     assert "balancedConditions" not in schema and "pseudorandomSelection" not in schema
     source = (CONFIG.parent / "src" / "Extensions" / "InitialiseTrial.cs").read_text(encoding="utf-8-sig")
-    assert "_conditionQueue" not in source and "_zapitConditions[rand.Next(_zapitConditions.Count)]" in source
+    assert "_conditionQueue" not in source and "zapitConditions[rand.Next(zapitConditions.Count)]" in source
+
+
+def test_the_spout_wait_is_named_by_its_ends():
+    # Pip's rule (10 Nov 2026): a gap between two moments is named by its ends, as laserToStimulusSeconds.
+    schema = (CONFIG.parent / "src" / "DataSchemas" / "ucl_open_av_dome_task.json").read_text(encoding="utf-8")
+    assert '"stimulusToSpoutsInSeconds"' in schema and '"spoutInDelaySeconds"' not in schema
+    for path in TASK_FILES:
+        assert yaml.safe_load(path.read_text())["taskParameters"]["trialStructure"]["stimulusToSpoutsInSeconds"] == 0.5
 
 
 def test_each_trial_type_is_drawn_at_random_by_weight():

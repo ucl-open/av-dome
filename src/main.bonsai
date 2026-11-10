@@ -5171,7 +5171,7 @@
             </Expression>
             <Expression xsi:type="rx:SelectMany">
               <Name>ArmZapit</Name>
-              <Description>Sends Zapit the stimulus command for an opto trial (condition, duration, delay, hardware-triggered or not); non-opto trials pass straight through.</Description>
+              <Description>Sends Zapit the stimulus command for a laser-on trial (condition, duration, power, hardware-triggered or not); laser-off trials send nothing and pass straight through. Without hardware triggering Zapit starts the laser on receipt, 0.1 s before StartLaser's trigger.</Description>
               <Workflow>
                 <Nodes>
                   <Expression xsi:type="WorkflowInput">

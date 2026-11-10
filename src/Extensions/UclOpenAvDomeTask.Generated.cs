@@ -267,12 +267,13 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Whether Zapit runs this experiment: every trial sends it a condition, laser on or off, and rig-control checks Zapit is answering before Go
+        /// Whether Zapit runs this experiment: each laser-on trial sends it a condition (laser-off trials send nothing), and rig-control checks Zapit is answering before Go
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("useZapit")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="useZapit")]
-        [System.ComponentModel.DescriptionAttribute("Whether Zapit runs this experiment: every trial sends it a condition, laser on or" +
-            " off, and rig-control checks Zapit is answering before Go")]
+        [System.ComponentModel.DescriptionAttribute("Whether Zapit runs this experiment: each laser-on trial sends it a condition (las" +
+            "er-off trials send nothing), and rig-control checks Zapit is answering before Go" +
+            "")]
         public bool UseZapit
         {
             get
@@ -362,11 +363,11 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// From laser on (the trial's trigger) to the start of the trial's stimulus sequence, in seconds, on every trial whether the laser is on or not; the stimulus itself comes about 0.1-0.25 s later, varying by trial (stimulusOnsetTime is the true onset). The corridor's laserToStimulusSeconds is exact; this one is not
+        /// From the trial's laser trigger (zapit.triggerLine) to the start of the trial's stimulus sequence, in seconds, on every trial, laser on or off and with or without Zapit; the stimulus itself comes about 0.1-0.25 s later, varying by trial (stimulusOnsetTime is the true onset). On a rig without hardware triggering the laser starts when Zapit gets the command, 0.1 s before the trigger. The corridor's laserToStimulusSeconds is exact; this one is not
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("laserToStimulusSeconds")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="laserToStimulusSeconds")]
-        [System.ComponentModel.DescriptionAttribute(@"From laser on (the trial's trigger) to the start of the trial's stimulus sequence, in seconds, on every trial whether the laser is on or not; the stimulus itself comes about 0.1-0.25 s later, varying by trial (stimulusOnsetTime is the true onset). The corridor's laserToStimulusSeconds is exact; this one is not")]
+        [System.ComponentModel.DescriptionAttribute(@"From the trial's laser trigger (zapit.triggerLine) to the start of the trial's stimulus sequence, in seconds, on every trial, laser on or off and with or without Zapit; the stimulus itself comes about 0.1-0.25 s later, varying by trial (stimulusOnsetTime is the true onset). On a rig without hardware triggering the laser starts when Zapit gets the command, 0.1 s before the trigger. The corridor's laserToStimulusSeconds is exact; this one is not")]
         public double LaserToStimulusSeconds
         {
             get
@@ -1415,7 +1416,7 @@ namespace UclOpenAvDomeTask
     
         private double _closedLoopSeconds;
     
-        private double _spoutInDelaySeconds;
+        private double _stimulusToSpoutsInSeconds;
     
         public TrialStructure()
         {
@@ -1425,7 +1426,7 @@ namespace UclOpenAvDomeTask
             _quiescentMaxSeconds = 0.25D;
             _openLoopSeconds = 0D;
             _closedLoopSeconds = 1.5D;
-            _spoutInDelaySeconds = 0.5D;
+            _stimulusToSpoutsInSeconds = 0.5D;
         }
     
         protected TrialStructure(TrialStructure other)
@@ -1436,7 +1437,7 @@ namespace UclOpenAvDomeTask
             _quiescentMaxSeconds = other._quiescentMaxSeconds;
             _openLoopSeconds = other._openLoopSeconds;
             _closedLoopSeconds = other._closedLoopSeconds;
-            _spoutInDelaySeconds = other._spoutInDelaySeconds;
+            _stimulusToSpoutsInSeconds = other._stimulusToSpoutsInSeconds;
         }
     
         /// <summary>
@@ -1548,20 +1549,21 @@ namespace UclOpenAvDomeTask
         }
     
         /// <summary>
-        /// Delay from stimulus onset to moving the response spouts in, in seconds
+        /// From stimulus onset to moving the response spouts in, in seconds (spoutInDelaySeconds until 10 Nov 2026)
         /// </summary>
-        [Newtonsoft.Json.JsonPropertyAttribute("spoutInDelaySeconds")]
-        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="spoutInDelaySeconds")]
-        [System.ComponentModel.DescriptionAttribute("Delay from stimulus onset to moving the response spouts in, in seconds")]
-        public double SpoutInDelaySeconds
+        [Newtonsoft.Json.JsonPropertyAttribute("stimulusToSpoutsInSeconds")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="stimulusToSpoutsInSeconds")]
+        [System.ComponentModel.DescriptionAttribute("From stimulus onset to moving the response spouts in, in seconds (spoutInDelaySec" +
+            "onds until 10 Nov 2026)")]
+        public double StimulusToSpoutsInSeconds
         {
             get
             {
-                return _spoutInDelaySeconds;
+                return _stimulusToSpoutsInSeconds;
             }
             set
             {
-                _spoutInDelaySeconds = value;
+                _stimulusToSpoutsInSeconds = value;
             }
         }
     
@@ -1583,7 +1585,7 @@ namespace UclOpenAvDomeTask
             stringBuilder.Append("QuiescentMaxSeconds = " + _quiescentMaxSeconds + ", ");
             stringBuilder.Append("OpenLoopSeconds = " + _openLoopSeconds + ", ");
             stringBuilder.Append("ClosedLoopSeconds = " + _closedLoopSeconds + ", ");
-            stringBuilder.Append("SpoutInDelaySeconds = " + _spoutInDelaySeconds);
+            stringBuilder.Append("StimulusToSpoutsInSeconds = " + _stimulusToSpoutsInSeconds);
             return true;
         }
     

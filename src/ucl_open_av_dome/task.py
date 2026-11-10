@@ -23,7 +23,9 @@ class TrialStructure(BaseSchema):
     quiescent_max_seconds: Double = Field(default=0.25, ge=0, description="Upper bound of the uniformly drawn quiescent period, in seconds")
     open_loop_seconds: Double = Field(default=0.0, ge=0, description="Open-loop period after stimulus onset, in seconds")
     closed_loop_seconds: Double = Field(default=1.5, ge=0, description="Closed-loop response period, in seconds")
-    spout_in_delay_seconds: Double = Field(default=0.5, ge=0, description="Delay from stimulus onset to moving the response spouts in, in seconds")
+    stimulus_to_spouts_in_seconds: Double = Field(
+        default=0.5, ge=0, description="From stimulus onset to moving the response spouts in, in seconds (spoutInDelaySeconds until 10 Nov 2026)"
+    )
 
 
 class VisualStimulus(BaseSchema):
@@ -179,7 +181,7 @@ class OptogeneticsSettings(BaseSchema):
         }
     )
 
-    use_zapit: Bool = Field(default=False, description="Whether Zapit runs this experiment: every trial sends it a condition, laser on or off, and rig-control checks Zapit is answering before Go")
+    use_zapit: Bool = Field(default=False, description="Whether Zapit runs this experiment: each laser-on trial sends it a condition (laser-off trials send nothing), and rig-control checks Zapit is answering before Go")
     zapit_config_path: String = Field(default="", description="Path to the Zapit conditions file (the one loaded in Zapit) listing the stimulation conditions. Named ...ConfigPath so rig-control keeps a copy beside the task file at Go")
     laser_power_mw: Optional[Double] = Field(
         default=None,
@@ -188,7 +190,7 @@ class OptogeneticsSettings(BaseSchema):
     )
     laser_on_probability: Double = Field(default=0.75, ge=0, le=1, description="Probability that a trial after trials_before_laser is a laser-on trial")
     laser_duration_seconds: Double = Field(default=1.5, ge=0, description="How long the laser stays on, in seconds (a timed stimulus)")
-    laser_to_stimulus_seconds: Double = Field(default=0.5, ge=0, description="From laser on (the trial's trigger) to the start of the trial's stimulus sequence, in seconds, on every trial whether the laser is on or not; the stimulus itself comes about 0.1-0.25 s later, varying by trial (stimulusOnsetTime is the true onset). The corridor's laserToStimulusSeconds is exact; this one is not")
+    laser_to_stimulus_seconds: Double = Field(default=0.5, ge=0, description="From the trial's laser trigger (zapit.triggerLine) to the start of the trial's stimulus sequence, in seconds, on every trial, laser on or off and with or without Zapit; the stimulus itself comes about 0.1-0.25 s later, varying by trial (stimulusOnsetTime is the true onset). On a rig without hardware triggering the laser starts when Zapit gets the command, 0.1 s before the trigger. The corridor's laserToStimulusSeconds is exact; this one is not")
     no_laser_on_repeats: Bool = Field(default=True, description="Whether repeat trials never have the laser on")
     trials_before_laser: Int = Field(default=0, ge=0, description="Trials at the experiment's start with no laser-on trial among them (counted by TrialCount, repeats included)")
 

@@ -390,6 +390,28 @@ public static class DrawTrials {
                 param($t) $t.autoReward -eq ($t.targetSide -eq 'Left') }
         }
     } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; "  FAIL  drawing trials: $($x.Message)"; $failed++ }
+    # Optogenetics (audit, 10 Nov 2026): laser-on trials take a condition from the Zapit file and the
+    # task's power, none before trialsBeforeLaser; a missing file stops the experiment (it once ran
+    # every trial with the laser off, with only a console warning). The draws' console lines are
+    # kept out of this output.
+    try {
+        $zapit = Join-Path $bin 'zapit-check.yml'
+        [IO.File]::WriteAllText($zapit, "stimLocations01:`n  ML: [-2, 2]`nstimLocations02:`n  ML: [0, 0]`n")
+        $task = Read-Task 'task-localization.yml'
+        $opto = $task.TaskParameters.Optogenetics
+        $opto.UseZapit = $true; $opto.ZapitConfigPath = $zapit; $opto.LaserPowerMw = 3.0; $opto.LaserOnProbability = 0.5; $opto.TrialsBeforeLaser = 20
+        $console = [Console]::Out; [Console]::SetOut([IO.StringWriter]::new())
+        try {
+            $all = [DrawTrials]::Draw($task, 4, 300)
+            $opto.ZapitConfigPath = Join-Path $bin 'no-such-zapit-file.yml'
+            $missing = try { $null = [DrawTrials]::Draw($task, 4, 30); 'not refused' } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; $x.Message }
+        } finally { [Console]::SetOut($console) }
+        Test-Trials 'optogenetics: laser-on trials take a condition from the Zapit file and the task''s power, none before trialsBeforeLaser' $all {
+            param($t) if ($t.OptogeneticEnabled) { $t.trialNumber -gt 20 -and $t.OptogeneticCondition -in 1, 2 -and $t.OptogeneticPower -eq 3.0 } else { $t.OptogeneticCondition -eq 0 -and $t.OptogeneticPower -eq 0 } }
+        $drawn = @($all | Where-Object OptogeneticEnabled | ForEach-Object OptogeneticCondition | Select-Object -Unique)
+        if ($drawn.Count -eq 2) { "  ok    optogenetics: every condition in the Zapit file is drawn" } else { "  FAIL  optogenetics: conditions drawn: $($drawn -join ', ') (expected 1 and 2)"; $failed++ }
+        if ($missing -match 'not found') { "  ok    optogenetics: a missing Zapit file stops the experiment" } else { "  FAIL  optogenetics: a missing Zapit file: $missing"; $failed++ }
+    } catch { $x = $_.Exception; while ($x.InnerException) { $x = $x.InnerException }; "  FAIL  optogenetics draws: $($x.Message)"; $failed++ }
     # CreateTrialRow (Pip, 9 Nov 2026): itiSeconds is the interval drawn before the trial (the last
     # trial's, NaN on the first); the timeout follows an incorrect choice or a miss not auto-rewarded;
     # the error sound only an incorrect choice.

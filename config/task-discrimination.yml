@@ -14,7 +14,7 @@ taskParameters:
     quiescentMaxSeconds: 0.25     # s
     openLoopSeconds: 0.0  # s
     closedLoopSeconds: 1.5   # s
-    spoutInDelaySeconds: 0.5      # s, from stimulus onset to spouts in
+    stimulusToSpoutsInSeconds: 0.5   # s, from stimulus onset to spouts in
   visualStimulus:
     azimuthMinDeg: -60        # deg, grating azimuth drawn uniformly in [min, max]
     azimuthMaxDeg: 60         # deg

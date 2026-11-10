@@ -1,5 +1,20 @@
 # Backlog
 
+## 2026-11-10 Independent audit, round 1 of 5 (the 9-10 Nov naming and laser work)
+
+Fixed: a Zapit file that is missing, unreadable or lists no condition stops the experiment at its first trial. It was a console warning, and every trial ran with the laser off (reproduced: 300 trials, 0 laser-on); the list was also static, so a second experiment in one Bonsai process kept the first's conditions for 5 minutes. `check-workflow.ps1` step 4 now draws trials with Zapit on. Descriptions: `useZapit` (laser-off trials send Zapit nothing here), `laserToStimulusSeconds` (from the trigger, with or without Zapit; without hardware triggering the laser starts 0.1 s earlier), ArmZapit (no delay). `spoutInDelaySeconds` is `stimulusToSpoutsInSeconds` (Pip's rule: a gap is named by its ends). rig-control's view shows Zapit Conditions and Laser Power, as the corridor's does.
+
+### For Pip
+
+- **Optogenetics on a rig without hardware triggering.** BLUE-OPTO-1's rig.yml has `zapit.hardwareTriggered: false`, so Zapit starts the laser when ArmZapit's command arrives, about 0.1 s before StartLaser's trigger plus Zapit's latency, with no onset in the Harp log. coen-dome-navigation refuses this for any mouse but `test`; this branch runs it. Refuse it here too, or keep it for BLUE-OPTO-1's mice.
+
+Not recommended, each kept on its merits:
+
+- **`laserToStimulusSeconds` in the optogenetics block though it times every trial, Zapit or not**: Pip's word (10 Nov 2026); it keeps production's 0.5 s, and its description now says so.
+- **Random trial types can leave a short experiment without a rare type** (neutral, 1 in 31 at stage 4): Pip chose independent draws.
+- **The disabled `HardwareTriggeredOptoTrial?` in StartLaser**: Bonsai passes values through a disabled node (probed), so every trial pulses the line, as its description says.
+- **Two `add-names.ps1` copies and the Zapit C# in both repos**: one shared script or a lab package is a platform decision for Pip.
+
 ## 2026-11-10 Independent audit of the 9 Nov naming pass
 
 Fixed: `zapitConfigPath` again (renamed `zapitConditionsPath` on 9 Nov, rig-control's `keep_files`, which copies fields ending ConfigPath, stopped keeping the Zapit file at Go); `laserPowerMw` sent with each laser-on StartStimulus and logged (Pip: required with optogenetics on; task-localization.yml 3.0, the laserPowerInMW of BLUE-OPTO-2's avdome_main_initialstim.yml; zapit-test.yml 2.0, left_right_pair.yml's; later that night Pip took Tom Childs' Zapit test harness off the branch: ZapitDemo.bonsai, ZapitTrialTest.bonsai, config\zapit-test.yml and docs\zapit-testing.md, still on main), so laser on is `laserPowerMw > 0` here as in coen-dome-navigation; `scripts\add-names.ps1` (was a one-off); `visualContrast`'s description (stages draw 3.0). rig-control's names check now reads only the workflows `main.bonsai` includes: the unused `src\Extensions\StallDiagnostics.bonsai` had failed every dome since its three logs left the lab list on 9 Nov. Not recommended, each kept on its merits:
