@@ -1727,6 +1727,8 @@ namespace UclOpenAvDome
     
         private double _maximumRunCurrent;
     
+        private StepperWiring _wiring;
+    
         public HarpStepperDriver()
         {
             _stepInterval = 250;
@@ -1741,6 +1743,7 @@ namespace UclOpenAvDome
             _stepInterval = other._stepInterval;
             _microstepResolution = other._microstepResolution;
             _maximumRunCurrent = other._maximumRunCurrent;
+            _wiring = other._wiring;
         }
     
         /// <summary>
@@ -1834,6 +1837,27 @@ namespace UclOpenAvDome
             }
         }
     
+        /// <summary>
+        /// What each motor and input is connected to (Pip, 11 Nov 2026): checked at Start against the lines the workflow uses (its schemas/board-lines.yml) by OpenRigs.HarpDevices.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("wiring")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="wiring")]
+        [System.ComponentModel.DescriptionAttribute("What each motor and input is connected to (Pip, 11 Nov 2026): checked at Start ag" +
+            "ainst the lines the workflow uses (its schemas/board-lines.yml) by OpenRigs.Harp" +
+            "Devices.")]
+        public StepperWiring Wiring
+        {
+            get
+            {
+                return _wiring;
+            }
+            set
+            {
+                _wiring = value;
+            }
+        }
+    
         public System.IObservable<HarpStepperDriver> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new HarpStepperDriver(this)));
@@ -1850,7 +1874,8 @@ namespace UclOpenAvDome
             stringBuilder.Append("UsbSerial = " + _usbSerial + ", ");
             stringBuilder.Append("StepInterval = " + _stepInterval + ", ");
             stringBuilder.Append("MicrostepResolution = " + _microstepResolution + ", ");
-            stringBuilder.Append("MaximumRunCurrent = " + _maximumRunCurrent);
+            stringBuilder.Append("MaximumRunCurrent = " + _maximumRunCurrent + ", ");
+            stringBuilder.Append("Wiring = " + _wiring);
             return true;
         }
     
@@ -3647,6 +3672,244 @@ namespace UclOpenAvDome
 
 
     /// <summary>
+    /// What each motor output and digital input of a Harp StepperDriver is connected to, by the
+    ///driver's own names (Pip, 11 Nov 2026): the board stays a board, recorded as itself, and a spare
+    ///motor can drive anything else under its own name. A line left out is unknown, which is allowed
+    ///only for a line no workflow on the rig uses.
+    /// </summary>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
+    [System.ComponentModel.DescriptionAttribute(@"What each motor output and digital input of a Harp StepperDriver is connected to, by the
+    driver's own names (Pip, 11 Nov 2026): the board stays a board, recorded as itself, and a spare
+    motor can drive anything else under its own name. A line left out is unknown, which is allowed
+    only for a line no workflow on the rig uses.")]
+    [Bonsai.WorkflowElementCategoryAttribute(Bonsai.ElementCategory.Source)]
+    [Bonsai.CombinatorAttribute(MethodName="Generate")]
+    public partial class StepperWiring
+    {
+    
+        private WiredLine _motor0;
+    
+        private WiredLine _motor1;
+    
+        private WiredLine _motor2;
+    
+        private WiredLine _motor3;
+    
+        private WiredLine _input0;
+    
+        private WiredLine _input1;
+    
+        private WiredLine _input2;
+    
+        private WiredLine _input3;
+    
+        public StepperWiring()
+        {
+        }
+    
+        protected StepperWiring(StepperWiring other)
+        {
+            _motor0 = other._motor0;
+            _motor1 = other._motor1;
+            _motor2 = other._motor2;
+            _motor3 = other._motor3;
+            _input0 = other._input0;
+            _input1 = other._input1;
+            _input2 = other._input2;
+            _input3 = other._input3;
+        }
+    
+        /// <summary>
+        /// What is plugged into Motor0 (motor output 0); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("Motor0")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Motor0")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into Motor0 (motor output 0); left out when unknown.")]
+        public WiredLine Motor0
+        {
+            get
+            {
+                return _motor0;
+            }
+            set
+            {
+                _motor0 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into Motor1 (motor output 1); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("Motor1")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Motor1")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into Motor1 (motor output 1); left out when unknown.")]
+        public WiredLine Motor1
+        {
+            get
+            {
+                return _motor1;
+            }
+            set
+            {
+                _motor1 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into Motor2 (motor output 2); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("Motor2")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Motor2")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into Motor2 (motor output 2); left out when unknown.")]
+        public WiredLine Motor2
+        {
+            get
+            {
+                return _motor2;
+            }
+            set
+            {
+                _motor2 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into Motor3 (motor output 3); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("Motor3")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Motor3")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into Motor3 (motor output 3); left out when unknown.")]
+        public WiredLine Motor3
+        {
+            get
+            {
+                return _motor3;
+            }
+            set
+            {
+                _motor3 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into Input0 (digital input 0); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("Input0")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Input0")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into Input0 (digital input 0); left out when unknown.")]
+        public WiredLine Input0
+        {
+            get
+            {
+                return _input0;
+            }
+            set
+            {
+                _input0 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into Input1 (digital input 1); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("Input1")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Input1")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into Input1 (digital input 1); left out when unknown.")]
+        public WiredLine Input1
+        {
+            get
+            {
+                return _input1;
+            }
+            set
+            {
+                _input1 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into Input2 (digital input 2); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("Input2")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Input2")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into Input2 (digital input 2); left out when unknown.")]
+        public WiredLine Input2
+        {
+            get
+            {
+                return _input2;
+            }
+            set
+            {
+                _input2 = value;
+            }
+        }
+    
+        /// <summary>
+        /// What is plugged into Input3 (digital input 3); left out when unknown.
+        /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute()]
+        [Newtonsoft.Json.JsonPropertyAttribute("Input3")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="Input3")]
+        [System.ComponentModel.DescriptionAttribute("What is plugged into Input3 (digital input 3); left out when unknown.")]
+        public WiredLine Input3
+        {
+            get
+            {
+                return _input3;
+            }
+            set
+            {
+                _input3 = value;
+            }
+        }
+    
+        public System.IObservable<StepperWiring> Generate()
+        {
+            return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new StepperWiring(this)));
+        }
+    
+        public System.IObservable<StepperWiring> Generate<TSource>(System.IObservable<TSource> source)
+        {
+            return System.Reactive.Linq.Observable.Select(source, _ => new StepperWiring(this));
+        }
+    
+        protected virtual bool PrintMembers(System.Text.StringBuilder stringBuilder)
+        {
+            stringBuilder.Append("Motor0 = " + _motor0 + ", ");
+            stringBuilder.Append("Motor1 = " + _motor1 + ", ");
+            stringBuilder.Append("Motor2 = " + _motor2 + ", ");
+            stringBuilder.Append("Motor3 = " + _motor3 + ", ");
+            stringBuilder.Append("Input0 = " + _input0 + ", ");
+            stringBuilder.Append("Input1 = " + _input1 + ", ");
+            stringBuilder.Append("Input2 = " + _input2 + ", ");
+            stringBuilder.Append("Input3 = " + _input3);
+            return true;
+        }
+    
+        public override string ToString()
+        {
+            System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
+            stringBuilder.Append(GetType().Name);
+            stringBuilder.Append(" { ");
+            if (PrintMembers(stringBuilder))
+            {
+                stringBuilder.Append(" ");
+            }
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+    }
+
+
+    /// <summary>
     /// A behavior board digital output that can drive a reward valve.
     /// </summary>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Bonsai.Sgen", "0.9.0.0 (Newtonsoft.Json v13.0.0.0, YamlDotNet v16.0.0.0)")]
@@ -4488,6 +4751,11 @@ namespace UclOpenAvDome
             return Process<StepperPositions>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<StepperWiring> source)
+        {
+            return Process<StepperWiring>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<WiredLine> source)
         {
             return Process<WiredLine>(source);
@@ -4539,6 +4807,7 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SphericalPosition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpinnakerCamera>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperPositions>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperWiring>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<WiredLine>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ZapitServer>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DO2>))]
@@ -4813,6 +5082,11 @@ namespace UclOpenAvDome
             return Process<StepperPositions>(source);
         }
 
+        public System.IObservable<string> Process(System.IObservable<StepperWiring> source)
+        {
+            return Process<StepperWiring>(source);
+        }
+
         public System.IObservable<string> Process(System.IObservable<WiredLine> source)
         {
             return Process<WiredLine>(source);
@@ -4864,6 +5138,7 @@ namespace UclOpenAvDome
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SphericalPosition>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<SpinnakerCamera>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperPositions>))]
+    [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<StepperWiring>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<WiredLine>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<ZapitServer>))]
     [System.Xml.Serialization.XmlIncludeAttribute(typeof(Bonsai.Expressions.TypeMapping<DO2>))]

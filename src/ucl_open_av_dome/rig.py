@@ -6,14 +6,14 @@ from swc.aeon.schema import BaseSchema
 from open_rigs.components import ProjectionCalibration, SpeakerArray
 from open_rigs.core.rig import Rig
 from open_rigs.devices import (
-    HarpStepperDriver,
     HarpTimestampGeneratorGen3,
     LicketySplit,
     StepperPositions,
 )
-# The lab's board and camera: open_rigs' with a liveView: block (OpenRigs.LiveView), and the
-# board's usbSerial required (OpenRigs.HarpDevices checks the board by it).
-from open_rigs.rigs.behaviour_box import BehaviorBoard, SpinnakerCamera
+# The lab's board, camera and stepper driver: open_rigs' with a liveView: block (OpenRigs.LiveView),
+# the board's usbSerial required (OpenRigs.HarpDevices checks the board by it), and the board's and
+# driver's wiring: (what each line or motor is connected to).
+from open_rigs.rigs.behaviour_box import BehaviorBoard, HarpStepperDriver, SpinnakerCamera
 
 from ucl_open_av_dome import __semver__
 

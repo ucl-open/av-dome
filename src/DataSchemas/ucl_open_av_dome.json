@@ -621,6 +621,19 @@
           "minimum": 0.0,
           "title": "MaximumRunCurrent",
           "type": "number"
+        },
+        "wiring": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/StepperWiring"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What each motor and input is connected to (Pip, 11 Nov 2026): checked at Start against the lines the workflow uses (its schemas/board-lines.yml) by OpenRigs.HarpDevices.",
+          "title": "Wiring"
         }
       },
       "required": [
@@ -1172,6 +1185,117 @@
         "baseTransverse"
       ],
       "title": "StepperPositions",
+      "type": "object"
+    },
+    "StepperWiring": {
+      "description": "What each motor output and digital input of a Harp StepperDriver is connected to, by the\ndriver's own names (Pip, 11 Nov 2026): the board stays a board, recorded as itself, and a spare\nmotor can drive anything else under its own name. A line left out is unknown, which is allowed\nonly for a line no workflow on the rig uses.",
+      "properties": {
+        "Motor0": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into Motor0 (motor output 0); left out when unknown.",
+          "title": "Motor0"
+        },
+        "Motor1": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into Motor1 (motor output 1); left out when unknown.",
+          "title": "Motor1"
+        },
+        "Motor2": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into Motor2 (motor output 2); left out when unknown.",
+          "title": "Motor2"
+        },
+        "Motor3": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into Motor3 (motor output 3); left out when unknown.",
+          "title": "Motor3"
+        },
+        "Input0": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into Input0 (digital input 0); left out when unknown.",
+          "title": "Input0"
+        },
+        "Input1": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into Input1 (digital input 1); left out when unknown.",
+          "title": "Input1"
+        },
+        "Input2": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into Input2 (digital input 2); left out when unknown.",
+          "title": "Input2"
+        },
+        "Input3": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WiredLine"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "What is plugged into Input3 (digital input 3); left out when unknown.",
+          "title": "Input3"
+        }
+      },
+      "title": "StepperWiring",
       "type": "object"
     },
     "TimerFrequency": {
