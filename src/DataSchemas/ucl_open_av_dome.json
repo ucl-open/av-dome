@@ -1133,27 +1133,27 @@
       "description": "Absolute target position for the 5-axis spout rig, expressed in task-relative axes.",
       "properties": {
         "leftElevation": {
-          "description": "Left spout elevation axis absolute position (steps). Maps to motor 1",
+          "description": "Left spout elevation axis absolute position (steps). Maps to motor 4 (StepperDriver b, motor 0)",
           "title": "LeftElevation",
           "type": "integer"
         },
         "rightElevation": {
-          "description": "Right spout elevation axis absolute position (steps). Maps to motor 2",
+          "description": "Right spout elevation axis absolute position (steps). Maps to motor 5 (StepperDriver b, motor 1)",
           "title": "RightElevation",
           "type": "integer"
         },
         "rightRadial": {
-          "description": "Right spout radial axis (in/out) absolute position (steps). Maps to motor 3",
+          "description": "Right spout radial axis (in/out) absolute position (steps). Maps to motor 3 (StepperDriver a, motor 2)",
           "title": "RightRadial",
           "type": "integer"
         },
         "leftRadial": {
-          "description": "Left spout radial axis (in/out) absolute position (steps). Maps to motor 4",
+          "description": "Left spout radial axis (in/out) absolute position (steps). Maps to motor 2 (StepperDriver a, motor 1)",
           "title": "LeftRadial",
           "type": "integer"
         },
         "baseTransverse": {
-          "description": "Base transverse axis absolute position (steps). Maps to motor 5",
+          "description": "Base transverse axis absolute position (steps). Maps to motor 1 (StepperDriver a, motor 0)",
           "title": "BaseTransverse",
           "type": "integer"
         }
@@ -1304,7 +1304,7 @@
       "description": "What is plugged into one line of the board. A workflow's schemas/board-lines.yml says what it\nuses each line for, and OpenRigs.HarpDevices compares the two at Start: device, side and targets\nmust agree on every line the workflow uses, or the workflow stops. part and note are for people.",
       "properties": {
         "device": {
-          "description": "What is on the line, a word from the lab's list (wiredDevices in K:\\config\\device-dictionary.json).",
+          "description": "What is on the line, as the workflow's board-lines.yml names it. Nothing holds the word to a lab list yet: wiredDevices in K:\\config\\device-dictionary.json, checked by rig-control's names check, is planned.",
           "examples": [
             "RewardValve",
             "CameraTrigger",

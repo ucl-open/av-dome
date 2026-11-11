@@ -28,6 +28,7 @@ dependencies = [
 # Changelog = "https://github.com/UclOpen/Ucl.Open.AvDome/releases"
 [project.scripts]
 av-dome = "ucl_open_av_dome.cli:main"
+regenerate-schemas = "ucl_open_av_dome.regenerate:main"
 
 [tool.ruff]
 line-length = 120
