@@ -3275,6 +3275,8 @@ namespace UclOpenAvDome
     
         private LiveView _liveView;
     
+        private string _pixelFormat;
+    
         public SpinnakerCamera()
         {
             _triggerFrequency = 50D;
@@ -3283,6 +3285,7 @@ namespace UclOpenAvDome
             _gain = 1D;
             _binning = 1;
             _discriminatorType = "SpinnakerCamera";
+            _pixelFormat = "Mono8";
         }
     
         protected SpinnakerCamera(SpinnakerCamera other)
@@ -3294,6 +3297,7 @@ namespace UclOpenAvDome
             _binning = other._binning;
             _discriminatorType = other._discriminatorType;
             _liveView = other._liveView;
+            _pixelFormat = other._pixelFormat;
         }
     
         /// <summary>
@@ -3419,6 +3423,27 @@ namespace UclOpenAvDome
             }
         }
     
+        /// <summary>
+        /// The pixel format the camera sends, a Spinnaker PixelFormat name such as Mono8 or Mono16 (Pip, 11 Nov 2026). Set each time the camera opens, so a format stored on the camera is never used; the camera refuses an unknown name at Start. Mono8 when not set.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("pixelFormat")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="pixelFormat")]
+        [System.ComponentModel.DescriptionAttribute("The pixel format the camera sends, a Spinnaker PixelFormat name such as Mono8 or " +
+            "Mono16 (Pip, 11 Nov 2026). Set each time the camera opens, so a format stored on" +
+            " the camera is never used; the camera refuses an unknown name at Start. Mono8 wh" +
+            "en not set.")]
+        public string PixelFormat
+        {
+            get
+            {
+                return _pixelFormat;
+            }
+            set
+            {
+                _pixelFormat = value;
+            }
+        }
+    
         public System.IObservable<SpinnakerCamera> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new SpinnakerCamera(this)));
@@ -3437,7 +3462,8 @@ namespace UclOpenAvDome
             stringBuilder.Append("Gain = " + _gain + ", ");
             stringBuilder.Append("Binning = " + _binning + ", ");
             stringBuilder.Append("DiscriminatorType = " + _discriminatorType + ", ");
-            stringBuilder.Append("LiveView = " + _liveView);
+            stringBuilder.Append("LiveView = " + _liveView + ", ");
+            stringBuilder.Append("PixelFormat = " + _pixelFormat);
             return true;
         }
     

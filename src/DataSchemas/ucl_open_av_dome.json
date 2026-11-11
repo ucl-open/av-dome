@@ -1124,6 +1124,12 @@
           "default": null,
           "description": "Live view settings for this camera (OpenRigs.LiveView).",
           "title": "LiveView"
+        },
+        "pixelFormat": {
+          "default": "Mono8",
+          "description": "The pixel format the camera sends, a Spinnaker PixelFormat name such as Mono8 or Mono16 (Pip, 11 Nov 2026). Set each time the camera opens, so a format stored on the camera is never used; the camera refuses an unknown name at Start. Mono8 when not set.",
+          "title": "PixelFormat",
+          "type": "string"
         }
       },
       "title": "SpinnakerCamera",
