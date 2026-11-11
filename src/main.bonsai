@@ -6543,57 +6543,55 @@
                         <Expression xsi:type="Combinator">
                           <Combinator xsi:type="rx:Zip" />
                         </Expression>
-                        <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
-                          <Name>Timestamp</Name>
-                        </Expression>
                         <Expression xsi:type="scr:ExpressionTransform">
                           <scr:Expression>new(
-    Seconds as Seconds,
-    Value.Item1.CorrectResponse as correctResponse,
-    Value.Item1.Response as response,
-    Value.Item1.TrialCnt as TrialCnt,
-    Value.Item2.trialType as trialType,
-    Value.Item2.RewardProbability as RewardProbability,
-    Value.Item2.IsRewarded as IsRewarded,
-    Value.Item2.IsRepeat as IsRepeat,
-    Value.Item2.RepeatCount as RepeatCount,
-    Value.Item2.targetSide as targetSide,
-    Value.Item2.ITI as ITI,
-    Value.Item2.Quiescent as Quiescent,
-    Value.Item2.rngSeedUsed as rngSeedUsed,
-    Value.Item2.autoRewardProbability as autoRewardProbability,
-    Value.Item2.autoReward as autoReward,
-    Value.Item2.largeReward as largeReward,
-    Value.Item2.RewardSizeInUl as RewardSizeInUl,
-    Value.Item2.BothSpouts as BothSpouts,
-    Value.Item2.visualAzimuth as visualAzimuth,
-    Value.Item2.visualContrast as visualContrast,
-    Value.Item2.visualPhase as visualPhase,
-    Value.Item2.audioAzimuth as audioAzimuth,
-    Value.Item2.OptogeneticEnabled as OptogeneticEnabled,
-    Value.Item2.OptogeneticCondition as OptogeneticCondition,
-    Value.Item2.OptogeneticDelay as OptogeneticDelay,
-    Value.Item2.OptogeneticDuration as OptogeneticDuration,
-    Value.Item2.OptogeneticPower as OptogeneticPower,
-    Value.Item2.IncorrectTimeoutDuration as IncorrectTimeoutDuration,
-    Value.Item2.LargeRewardMultiplier as LargeRewardMultiplier,
-    Value.Item2.LargeRewardProbability as LargeRewardProbability,
-    Value.Item2.BothSpoutsProbability as BothSpoutsProbability,
-    Value.Item2.openLoopDuration as openLoopDuration,
-    Value.Item2.closedLoopDuration as closedLoopDuration,
-    Value.Item2.visualElevation as visualElevation,
-    Value.Item2.visualGaussianWindowSigma as visualGaussianWindowSigma,
-    Value.Item2.visualOrientation as visualOrientation,
-    Value.Item2.visualSpatialFrequency as visualSpatialFrequency,
-    Value.Item2.visualTemporalFrequency as visualTemporalFrequency,
-    Value.Item2.visualFlickerFrequency as visualFlickerFrequency,
-    Value.Item2.audioElevation as audioElevation,
-    Value.Item2.audioFlickerFrequency as audioFlickerFrequency)</scr:Expression>
+    Item1.CorrectResponse as correctResponse,
+    Item1.Response as response,
+    Item1.TrialCnt as TrialCnt,
+    Item2.trialType as trialType,
+    Item2.RewardProbability as RewardProbability,
+    Item2.IsRewarded as IsRewarded,
+    Item2.IsRepeat as IsRepeat,
+    Item2.RepeatCount as RepeatCount,
+    Item2.targetSide as targetSide,
+    Item2.ITI as ITI,
+    Item2.Quiescent as Quiescent,
+    Item2.rngSeedUsed as rngSeedUsed,
+    Item2.autoRewardProbability as autoRewardProbability,
+    Item2.autoReward as autoReward,
+    Item2.largeReward as largeReward,
+    Item2.RewardSizeInUl as RewardSizeInUl,
+    Item2.BothSpouts as BothSpouts,
+    Item2.visualAzimuth as visualAzimuth,
+    Item2.visualContrast as visualContrast,
+    Item2.visualPhase as visualPhase,
+    Item2.audioAzimuth as audioAzimuth,
+    Item2.OptogeneticEnabled as OptogeneticEnabled,
+    Item2.OptogeneticCondition as OptogeneticCondition,
+    Item2.OptogeneticDelay as OptogeneticDelay,
+    Item2.OptogeneticDuration as OptogeneticDuration,
+    Item2.OptogeneticPower as OptogeneticPower,
+    Item2.IncorrectTimeoutDuration as IncorrectTimeoutDuration,
+    Item2.LargeRewardMultiplier as LargeRewardMultiplier,
+    Item2.LargeRewardProbability as LargeRewardProbability,
+    Item2.BothSpoutsProbability as BothSpoutsProbability,
+    Item2.openLoopDuration as openLoopDuration,
+    Item2.closedLoopDuration as closedLoopDuration,
+    Item2.visualElevation as visualElevation,
+    Item2.visualGaussianWindowSigma as visualGaussianWindowSigma,
+    Item2.visualOrientation as visualOrientation,
+    Item2.visualSpatialFrequency as visualSpatialFrequency,
+    Item2.visualTemporalFrequency as visualTemporalFrequency,
+    Item2.visualFlickerFrequency as visualFlickerFrequency,
+    Item2.audioElevation as audioElevation,
+    Item2.audioFlickerFrequency as audioFlickerFrequency)</scr:Expression>
+                        </Expression>
+                        <Expression xsi:type="IncludeWorkflow" Path="Bonsai.Harp:WithLatestTimestamp.bonsai">
+                          <Name>Timestamp</Name>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
                           <LogName>TrialSettings</LogName>
                           <Selector />
-                          <Extension>csv</Extension>
                         </Expression>
                         <Expression xsi:type="WorkflowOutput" />
                       </Nodes>
@@ -7466,7 +7464,6 @@ Item4 as ExposureTime)</scr:Expression>
                           <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
                             <LogName />
                             <Selector>Seconds</Selector>
-                            <Extension>csv</Extension>
                           </Expression>
                           <Expression xsi:type="WorkflowOutput" />
                         </Nodes>
@@ -7523,7 +7520,6 @@ Item4 as ExposureTime)</scr:Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
                     <LogName>SessionState</LogName>
                     <Selector>Seconds,Value</Selector>
-                    <Extension>csv</Extension>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
                     <Name>RigConfigs</Name>
@@ -7535,7 +7531,6 @@ Item4 as ExposureTime)</scr:Expression>
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogDataSchema.bonsai">
                     <Name>RigSchema</Name>
-                    <Extension>json</Extension>
                   </Expression>
                   <Expression xsi:type="SubscribeSubject">
                     <Name>TaskConfig</Name>
@@ -7547,7 +7542,6 @@ Item4 as ExposureTime)</scr:Expression>
                   </Expression>
                   <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogDataSchema.bonsai">
                     <Name>TaskSchema</Name>
-                    <Extension>json</Extension>
                   </Expression>
                   <Expression xsi:type="GroupWorkflow">
                     <Name>ZapitReplies</Name>
@@ -7571,7 +7565,6 @@ Item4 as ExposureTime)</scr:Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
                           <LogName>Zapit</LogName>
                           <Selector />
-                          <Extension>csv</Extension>
                         </Expression>
                         <Expression xsi:type="WorkflowOutput" />
                       </Nodes>
@@ -7597,7 +7590,6 @@ Item4 as ExposureTime)</scr:Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
                           <LogName>StimulusStartEvents</LogName>
                           <Selector>Seconds,Value</Selector>
-                          <Extension>csv</Extension>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
                           <Name>DecisionVariable</Name>
@@ -7608,7 +7600,6 @@ Item4 as ExposureTime)</scr:Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
                           <LogName>DecisionVariable</LogName>
                           <Selector>Seconds,Value</Selector>
-                          <Extension>csv</Extension>
                         </Expression>
                         <Expression xsi:type="SubscribeSubject">
                           <Name>visualAzimuth</Name>
@@ -7619,7 +7610,6 @@ Item4 as ExposureTime)</scr:Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Logging:LogData.bonsai">
                           <LogName>VisualAzimuth</LogName>
                           <Selector>Seconds,Value</Selector>
-                          <Extension>csv</Extension>
                         </Expression>
                       </Nodes>
                       <Edges>
@@ -7714,6 +7704,15 @@ Item4 as ExposureTime)</scr:Expression>
           </Nodes>
           <Edges>
             <Edge From="1" To="2" Label="Source1" />
+            <Edge From="3" To="4" Label="Source1" />
+            <Edge From="4" To="5" Label="Source1" />
+            <Edge From="5" To="6" Label="Source1" />
+            <Edge From="7" To="8" Label="Source1" />
+            <Edge From="8" To="9" Label="Source1" />
+            <Edge From="9" To="10" Label="Source1" />
+            <Edge From="11" To="12" Label="Source1" />
+            <Edge From="12" To="13" Label="Source1" />
+            <Edge From="13" To="14" Label="Source1" />
           </Edges>
         </Workflow>
       </Expression>
