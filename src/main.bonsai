@@ -391,6 +391,7 @@
                             <Property Name="ExposureTime" Selector="ExposureTime" />
                             <Property Name="Gain" Selector="Gain" />
                             <Property Name="Binning" Selector="Binning" />
+                            <Property Name="PixelFormat" Selector="PixelFormat" />
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:TriggeredSpinnaker.bonsai">
@@ -414,6 +415,7 @@
                             <Property Name="ExposureTime" Selector="ExposureTime" />
                             <Property Name="Gain" Selector="Gain" />
                             <Property Name="Binning" Selector="Binning" />
+                            <Property Name="PixelFormat" Selector="PixelFormat" />
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:TriggeredSpinnaker.bonsai">
@@ -437,6 +439,7 @@
                             <Property Name="ExposureTime" Selector="ExposureTime" />
                             <Property Name="Gain" Selector="Gain" />
                             <Property Name="Binning" Selector="Binning" />
+                            <Property Name="PixelFormat" Selector="PixelFormat" />
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:TriggeredSpinnaker.bonsai">
