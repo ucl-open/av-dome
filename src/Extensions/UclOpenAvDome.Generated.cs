@@ -3449,14 +3449,13 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
-        /// The pixel format the camera sends, a Spinnaker PixelFormat name such as Mono8 or Mono16 (Pip, 11 Nov 2026). Set each time the camera opens, so a format stored on the camera is never used; the camera refuses an unknown name at Start. Mono8 when not set.
+        /// The pixel format the camera sends, a Spinnaker PixelFormat name LogVideo can write: Mono8 (Pip, 11 Nov 2026). Set each time the camera opens, so a format stored on the camera is never used. Mono8 when not set.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("pixelFormat")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="pixelFormat")]
-        [System.ComponentModel.DescriptionAttribute("The pixel format the camera sends, a Spinnaker PixelFormat name such as Mono8 or " +
-            "Mono16 (Pip, 11 Nov 2026). Set each time the camera opens, so a format stored on" +
-            " the camera is never used; the camera refuses an unknown name at Start. Mono8 wh" +
-            "en not set.")]
+        [System.ComponentModel.DescriptionAttribute("The pixel format the camera sends, a Spinnaker PixelFormat name LogVideo can writ" +
+            "e: Mono8 (Pip, 11 Nov 2026). Set each time the camera opens, so a format stored " +
+            "on the camera is never used. Mono8 when not set.")]
         public string PixelFormat
         {
             get
@@ -3969,13 +3968,13 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
-        /// What is on the line, as the workflow's board-lines.yml names it. Nothing holds the word to a lab list yet: wiredDevices in K:\config\device-dictionary.json, checked by rig-control's names check, is planned.
+        /// What is on the line, as the workflow's board-lines.yml names it: one of the lab's wiredDevices in K:\config\device-dictionary.json, checked by rig-control's names check.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("device", Required=Newtonsoft.Json.Required.Always)]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="device")]
-        [System.ComponentModel.DescriptionAttribute("What is on the line, as the workflow\'s board-lines.yml names it. Nothing holds th" +
-            "e word to a lab list yet: wiredDevices in K:\\config\\device-dictionary.json, chec" +
-            "ked by rig-control\'s names check, is planned.")]
+        [System.ComponentModel.DescriptionAttribute("What is on the line, as the workflow\'s board-lines.yml names it: one of the lab\'s" +
+            " wiredDevices in K:\\config\\device-dictionary.json, checked by rig-control\'s name" +
+            "s check.")]
         public string Device
         {
             get
