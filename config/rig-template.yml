@@ -61,21 +61,29 @@ licketySplitRight:
   channel0TriggerThreshold: 0
   channel0UntriggerThreshold: 0
 
+# pixelFormat is applied before acquisition starts, ahead of binning, because a format change can
+# reset the sensor size limits. A camera keeps the format the last program left it in (SpinView,
+# Zapit) until it is power cycled, which is what this setting guards against. Omit the key to get
+# Mono8, which the 8-bit mono video writers expect. Set it to an empty string to apply no format at
+# all and record in whatever the camera was left in.
 cameraFace:
   serialNumber: "00000000"
   exposureTime: 19000    # microseconds
   gain: 0
   binning: 1
+  pixelFormat: Mono8
 cameraPupil:
   serialNumber: "00000000"
   exposureTime: 19000    # microseconds
   gain: 20
   binning: 1
+  pixelFormat: Mono8
 cameraBody:
   serialNumber: "00000000"
   exposureTime: 19000    # microseconds
   gain: 0
   binning: 1
+  pixelFormat: Mono8
 
 
 projectionCalibration:

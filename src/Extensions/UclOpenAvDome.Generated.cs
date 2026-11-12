@@ -876,10 +876,13 @@ namespace UclOpenAvDome
     
         private int _trigger1Frequency;
     
+        private int _cameraCount;
+    
         public CameraTriggerController()
         {
             _trigger0Enabled = true;
             _trigger1Enabled = false;
+            _cameraCount = 0;
         }
     
         protected CameraTriggerController(CameraTriggerController other)
@@ -888,6 +891,7 @@ namespace UclOpenAvDome
             _trigger0Frequency = other._trigger0Frequency;
             _trigger1Enabled = other._trigger1Enabled;
             _trigger1Frequency = other._trigger1Frequency;
+            _cameraCount = other._cameraCount;
         }
     
         /// <summary>
@@ -965,6 +969,25 @@ namespace UclOpenAvDome
             }
         }
     
+        /// <summary>
+        /// The number of triggered cameras that must report ready before the triggers start. Zero starts the triggers without waiting.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("cameraCount")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="cameraCount")]
+        [System.ComponentModel.DescriptionAttribute("The number of triggered cameras that must report ready before the triggers start." +
+            " Zero starts the triggers without waiting.")]
+        public int CameraCount
+        {
+            get
+            {
+                return _cameraCount;
+            }
+            set
+            {
+                _cameraCount = value;
+            }
+        }
+    
         public System.IObservable<CameraTriggerController> Generate()
         {
             return System.Reactive.Linq.Observable.Defer(() => System.Reactive.Linq.Observable.Return(new CameraTriggerController(this)));
@@ -980,7 +1003,8 @@ namespace UclOpenAvDome
             stringBuilder.Append("Trigger0Enabled = " + _trigger0Enabled + ", ");
             stringBuilder.Append("Trigger0Frequency = " + _trigger0Frequency + ", ");
             stringBuilder.Append("Trigger1Enabled = " + _trigger1Enabled + ", ");
-            stringBuilder.Append("Trigger1Frequency = " + _trigger1Frequency);
+            stringBuilder.Append("Trigger1Frequency = " + _trigger1Frequency + ", ");
+            stringBuilder.Append("CameraCount = " + _cameraCount);
             return true;
         }
     
@@ -2517,6 +2541,8 @@ namespace UclOpenAvDome
     
         private int _binning;
     
+        private string _pixelFormat;
+    
         private string _discriminatorType;
     
         public SpinnakerCamera()
@@ -2526,6 +2552,7 @@ namespace UclOpenAvDome
             _serialNumber = "00000";
             _gain = 1D;
             _binning = 1;
+            _pixelFormat = "Mono8";
             _discriminatorType = "SpinnakerCamera";
         }
     
@@ -2536,6 +2563,7 @@ namespace UclOpenAvDome
             _serialNumber = other._serialNumber;
             _gain = other._gain;
             _binning = other._binning;
+            _pixelFormat = other._pixelFormat;
             _discriminatorType = other._discriminatorType;
         }
     
@@ -2629,6 +2657,25 @@ namespace UclOpenAvDome
             }
         }
     
+        /// <summary>
+        /// The Spinnaker pixel format set before acquisition starts (e.g. Mono8, Mono16). Empty keeps the camera's current format.
+        /// </summary>
+        [Newtonsoft.Json.JsonPropertyAttribute("pixelFormat")]
+        [YamlDotNet.Serialization.YamlMemberAttribute(Alias="pixelFormat")]
+        [System.ComponentModel.DescriptionAttribute("The Spinnaker pixel format set before acquisition starts (e.g. Mono8, Mono16). Em" +
+            "pty keeps the camera\'s current format.")]
+        public string PixelFormat
+        {
+            get
+            {
+                return _pixelFormat;
+            }
+            set
+            {
+                _pixelFormat = value;
+            }
+        }
+    
         [Newtonsoft.Json.JsonPropertyAttribute("discriminatorType")]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="discriminatorType")]
         public string DiscriminatorType
@@ -2660,6 +2707,7 @@ namespace UclOpenAvDome
             stringBuilder.Append("SerialNumber = " + _serialNumber + ", ");
             stringBuilder.Append("Gain = " + _gain + ", ");
             stringBuilder.Append("Binning = " + _binning + ", ");
+            stringBuilder.Append("PixelFormat = " + _pixelFormat + ", ");
             stringBuilder.Append("DiscriminatorType = " + _discriminatorType);
             return true;
         }

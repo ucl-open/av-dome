@@ -259,12 +259,14 @@
                             <Property Name="ExposureTime" Selector="ExposureTime" />
                             <Property Name="Gain" Selector="Gain" />
                             <Property Name="Binning" Selector="Binning" />
+                            <Property Name="PixelFormat" Selector="PixelFormat" />
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:TriggeredSpinnaker.bonsai">
                           <ExposureTime>19000</ExposureTime>
                           <Gain>0</Gain>
                           <Binning>1</Binning>
+                          <PixelFormat>Mono8</PixelFormat>
                           <SerialNumber>25366326</SerialNumber>
                           <ColorProcessing>Default</ColorProcessing>
                           <CameraTriggerEventsSubjectName>Camera0TriggerEvents</CameraTriggerEventsSubjectName>
@@ -282,12 +284,14 @@
                             <Property Name="ExposureTime" Selector="ExposureTime" />
                             <Property Name="Gain" Selector="Gain" />
                             <Property Name="Binning" Selector="Binning" />
+                            <Property Name="PixelFormat" Selector="PixelFormat" />
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:TriggeredSpinnaker.bonsai">
                           <ExposureTime>19000</ExposureTime>
                           <Gain>0</Gain>
                           <Binning>1</Binning>
+                          <PixelFormat>Mono8</PixelFormat>
                           <SerialNumber>25366318</SerialNumber>
                           <ColorProcessing>Default</ColorProcessing>
                           <CameraTriggerEventsSubjectName>Camera0TriggerEvents</CameraTriggerEventsSubjectName>
@@ -305,12 +309,14 @@
                             <Property Name="ExposureTime" Selector="ExposureTime" />
                             <Property Name="Gain" Selector="Gain" />
                             <Property Name="Binning" Selector="Binning" />
+                            <Property Name="PixelFormat" Selector="PixelFormat" />
                           </PropertyMappings>
                         </Expression>
                         <Expression xsi:type="IncludeWorkflow" Path="OpenRigs.Devices:TriggeredSpinnaker.bonsai">
                           <ExposureTime>19000</ExposureTime>
                           <Gain>0</Gain>
                           <Binning>1</Binning>
+                          <PixelFormat>Mono8</PixelFormat>
                           <SerialNumber>25366328</SerialNumber>
                           <ColorProcessing>Default</ColorProcessing>
                           <CameraTriggerEventsSubjectName>Camera0TriggerEvents</CameraTriggerEventsSubjectName>

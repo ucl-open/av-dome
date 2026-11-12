@@ -194,6 +194,13 @@
           ],
           "title": "Trigger1Frequency",
           "type": "integer"
+        },
+        "cameraCount": {
+          "default": 0,
+          "description": "The number of triggered cameras that must report ready before the triggers start. Zero starts the triggers without waiting.",
+          "minimum": 0,
+          "title": "CameraCount",
+          "type": "integer"
         }
       },
       "required": [
@@ -727,6 +734,12 @@
           "minimum": 1,
           "title": "Binning",
           "type": "integer"
+        },
+        "pixelFormat": {
+          "default": "Mono8",
+          "description": "The Spinnaker pixel format set before acquisition starts (e.g. Mono8, Mono16). Empty keeps the camera's current format.",
+          "title": "PixelFormat",
+          "type": "string"
         },
         "discriminatorType": {
           "const": "SpinnakerCamera",
