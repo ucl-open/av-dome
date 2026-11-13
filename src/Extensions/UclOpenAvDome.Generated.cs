@@ -3968,13 +3968,13 @@ namespace UclOpenAvDome
         }
     
         /// <summary>
-        /// What is on the line, as the workflow's board-lines.yml names it: one of the lab's wiredDevices in K:\config\device-dictionary.json, checked by rig-control's names check.
+        /// What is on the line, as the workflow's board-lines.yml names it: one of the lab's wiredDevices in K:\config\device-dictionary.json, checked by app-rig-control's names check.
         /// </summary>
         [Newtonsoft.Json.JsonPropertyAttribute("device", Required=Newtonsoft.Json.Required.Always)]
         [YamlDotNet.Serialization.YamlMemberAttribute(Alias="device")]
         [System.ComponentModel.DescriptionAttribute("What is on the line, as the workflow\'s board-lines.yml names it: one of the lab\'s" +
-            " wiredDevices in K:\\config\\device-dictionary.json, checked by rig-control\'s name" +
-            "s check.")]
+            " wiredDevices in K:\\config\\device-dictionary.json, checked by app-rig-control\'s " +
+            "names check.")]
         public string Device
         {
             get

@@ -1435,7 +1435,7 @@
       "description": "What is plugged into one line of the board. A workflow's schemas/board-lines.yml says what it\nuses each line for, and OpenRigs.HarpDevices compares the two at Start: device, side and targets\nmust agree on every line the workflow uses, or the workflow stops. part and note are for people.",
       "properties": {
         "device": {
-          "description": "What is on the line, as the workflow's board-lines.yml names it: one of the lab's wiredDevices in K:\\config\\device-dictionary.json, checked by rig-control's names check.",
+          "description": "What is on the line, as the workflow's board-lines.yml names it: one of the lab's wiredDevices in K:\\config\\device-dictionary.json, checked by app-rig-control's names check.",
           "examples": [
             "RewardValve",
             "CameraTrigger",
